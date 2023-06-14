@@ -21,19 +21,19 @@
             }
         Args.[MRM Directory] = {
                 "Type": "Folder",
-                "Value": %Model Folder%
+                "Value": "%Model Folder%"
             }
         Args.[Run Directory] = {
                 "Type": "Folder",
-                "Value": "%Base Folder%\\scenarios\\2018"
+                "Value": "%Base Folder%\\Scenarios\\2018"
             }
         Args.InputFolder = {
                 "Type": "Folder",
-                "Value": "%ScenarioFolder%Input"
+                "Value": "%Run Directory%Input"
             }
         Args.OutputFolder = {
                 "Type": "Folder",
-                "Value": "%ScenarioFolder%Output"
+                "Value": "%Run Directory%\\Output"
             }
         Args.[Run Year] = {
                 "Type": "string",
