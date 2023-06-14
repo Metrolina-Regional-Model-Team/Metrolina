@@ -1,0 +1,26 @@
+{
+	"Model": {
+		"Description": [
+			"The main model is tdm.model",
+			"Source code files listed in Parameters, Scenarios, Plugins, Menus, Styles and Reports are common to all the models in this folder",
+			"The Initial state of the model has no submodels included (no Models array)."
+		],
+		"Author": null,
+		"Version": null,
+		"Name": "tdm.model",
+		"Parameters": [
+			"Parameters\\tdm.parameters"
+		],
+		"Styles": [
+			"Parameters\\tdm.styles",
+			"Parameters\\Common.styles"
+		],
+		"Scenarios": "tdm.scenarios",
+		"Plugins": [
+			"Code\\tdm Plugins.rsc"
+		],
+		"Menus": [
+			"Code\\tdm Menus.rsc"
+		]
+	}
+}
