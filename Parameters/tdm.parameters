@@ -19,17 +19,59 @@
                 "Type": "Folder",
                 "Value": null
             }
-        Args.ScenarioFolder = {
-                "Type": "string",
+        Args.[MRM Directory] = {
+                "Type": "Folder",
+                "Value": %Model Folder%
+            }
+        Args.[Run Directory] = {
+                "Type": "Folder",
                 "Value": "%Base Folder%\\scenarios\\2018"
             }
         Args.InputFolder = {
-                "Type": "folder",
+                "Type": "Folder",
                 "Value": "%ScenarioFolder%Input"
             }
         Args.OutputFolder = {
-                "Type": "folder",
+                "Type": "Folder",
                 "Value": "%ScenarioFolder%Output"
+            }
+        Args.[Run Year] = {
+                "Type": "string",
+                "Value": "2018"
+            }
+        Args.[TAZ File] = {
+                "Type": "file",
+                "Value": "%MRM Directory%\\..\\TAZ\\TAZ3578.dbd"
+            }
+
+    Section = "Networks"
+
+        Args.ProjectFile = {
+                "Type": "file",
+                "Value": "%MRM Direcotry%\\MasterNet\\PROJLIST_2050MTP_MRM22v1.0.dbf"
+            }
+        Args.MasterHwyFile = {
+                "Type": "file",
+                "Value": "%MRM Direcotry%\\MasterNet\\Master_2050MTP_MRM22v1.0.dbd"
+            }
+        Args.TollFile = {
+                "Type": "file",
+                "Value": "%MRM Direcotry%\\MasterNet\\tolls_2050MTP_MRM22v1.0.bin"
+            }
+
+        Args.[AM Peak Hwy Name] = {
+                "Type": "file",
+                "Value": "%OutputFolder%\\networks\\RegNet_AMPeak.dbd"
+            }
+
+        Args.[PM Peak Hwy Name] = {
+                "Type": "file",
+                "Value": "%OutputFolder%\\networks\\RegNet_PMPeak.dbd"
+            }
+
+        Args.[Offpeak Hwy Name] = {
+                "Type": "file",
+                "Value": "%OutputFolder%\\networks\\RegNet_OPPeak.dbd"
             }
 
     Section = "Tables"
