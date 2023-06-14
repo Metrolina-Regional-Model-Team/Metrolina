@@ -19,17 +19,17 @@
                 "Type": "Folder",
                 "Value": null
             }
-        Args.Scenario = {
+        Args.ScenarioFolder = {
                 "Type": "string",
-                "Value": "Base"
+                "Value": "%Base Folder%\\scenarios\\2018"
             }
         Args.InputFolder = {
                 "Type": "folder",
-                "Value": "%Base Folder%\\%Scenario%\\Input"
+                "Value": "%ScenarioFolder%Input"
             }
         Args.OutputFolder = {
                 "Type": "folder",
-                "Value": "%Base Folder%\\%Scenario%\\Output"
+                "Value": "%ScenarioFolder%Output"
             }
 
     Section = "Tables"
