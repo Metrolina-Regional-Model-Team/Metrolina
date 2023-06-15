@@ -31,7 +31,7 @@ Macro "Create Tour Dir" (Args)
     // if keepgoing = "Yes" then RunMacro("GetMRM")
     // if keepgoing = "Yes" then RunMacro("GetYear")
     if keepgoing = "Yes" then RunMacro("CreateDir", Args)
-    Throw()
+    Throw(0)
     if keepgoing = "Yes" then RunMacro("GetTAZ")
     if keepgoing = "Yes" then RunMacro("GetLU")
     if keepgoing = "Yes" 
@@ -89,6 +89,8 @@ Macro "CreateDir" (Args)
 
     MRMUser = Args.[MRM Directory]
     METUser = Args.MetrolinaFolder
+    DirUser = Args.[Run Directory]
+    YearUser = Args.[Run Year]
 
     // //If Metrolina does not exist create it and subdirs (not year yet), otherwise check for msg files 
     // keepgoing = "Yes"
@@ -264,7 +266,7 @@ Macro "CreateDir" (Args)
     CloseFile(batchhandle)
 
     status = RunProgram(batchname, )
-Throw()
+
     if (status <> 0) 
         then do
             Throw("CreateDir WARNING! Error in batch copy from MRM to \\Metrolina, status=" +i2s(status))
@@ -278,16 +280,25 @@ Throw()
     //Make sure year exists in MRM
     MRMInfo = GetDirectoryInfo(MRMUser + "\\" + YearUser, "Directory")
     if MRMInfo = null then do
-        MRMSignalStatus = 1
-        Message = Message + {"CreateDir ERROR! Year: " + YearUser + " does not exist in MRM: " + MRMUser}
-        goto badCreateDir
+        Throw("CreateDir ERROR! Year: " + YearUser + " does not exist in MRM: " + MRMUser)
+        // MRMSignalStatus = 1
+        // Message = Message + {"CreateDir ERROR! Year: " + YearUser + " does not exist in MRM: " + MRMUser}
+        // goto badCreateDir
     end
-    CreateDirectory(DirUser)
+    if GetDirectoryInfo(DirUser, "All") = null then CreateDirectory(DirUser)
 
     LandUseStatus = 1
 
+    RunDirSubDir = 
+        {"\\AutoSkims", "\\Ext", "\\HwyAssn", "\\LandUse", "\\ModeSplit", "\\Report", "\\Skims", "\\TD", "\\TG", "\\TOD2",
+            "\\TranAssn", "\\TripTables", "\\HwyAssn\\HOT",
+            "\\TranAssn\\PPrmW", "\\TranAssn\\PPrmD", "\\TranAssn\\PPrmDrop", "\\TranAssn\\OPPrmW", "\\TranAssn\\OPPrmD",
+            "\\TranAssn\\OPPrmDrop", "\\TranAssn\\PBusW", "\\TranAssn\\PBusD", "\\TranAssn\\PBusDrop", "\\TranAssn\\OPBusW", 
+            "\\TranAssn\\OPBusD", "\\TranAssn\\OPBusDrop",
+            "\\ModeSplit\\Inputs","\\ModeSplit\\Inputs\\Controls", "\\ModeSplit\\Results"}	
+
     for i = 1 to RunDirSubDir.length do
-        CreateDirectory(DirUser + RunDirSubDir[i])
+        if GetDirectoryInfo(DirUser + RunDirSubDir[i], "All") = null then CreateDirectory(DirUser + RunDirSubDir[i])
     end
             
     //Copy files	
@@ -297,7 +308,14 @@ Throw()
     batchhandle = OpenFile(batchname, "w")
 
     // need to add year onto extsta vol files	
+    
     YearTwo = Right(YearUser,2)
+    rundir_files = 
+        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf", 
+            "transys.rtg", "transys.rts","transysc.bin", "transysc.BX", "transysc.DCB", "transysL.bin",
+            "transysL.BX", "transysL.DCB", "transysR.bin", "transysR.BX", "transysR.DCB", "transysS.bin",
+            "transysS.BX", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
+            "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"}
     rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}   
 
     //Standard runyear files
@@ -307,13 +325,14 @@ Throw()
         if MRMInfo <> null
             then WriteLine(batchhandle, "copy " + MRMpath + rundir_files[i] + " " + DirUser + "\\" + rundir_files[i])
             else do
-                Message = Message + {"MRM file: " + YearUser + "\\" + rundir_files[i] + " not found - not copied"}
-                DirSignalStatus = 2
+                Throw("MRM file: " + YearUser + "\\" + rundir_files[i] + " not found - not copied")
+                // Message = Message + {"MRM file: " + YearUser + "\\" + rundir_files[i] + " not found - not copied"}
+                // DirSignalStatus = 2
             end
     end // for i
     
     //Everything in TG subdirectory (ONLY for TOUR model files)
-    if modeltype = "Tour" then do
+    // if modeltype = "Tour" then do
         MRMpath = MRMUser + "\\TG\\"
         MRMInfo = GetDirectoryInfo(MRMpath + "*.*", "File")
         if MRMInfo <> null 
@@ -323,20 +342,24 @@ Throw()
                 end
             end
             else do
-                Message = Message + {MRMPath + " files missing, not copied"}
-                DirSignalStatus = 2
+                Throw(MRMpath + " files missing, not copied")
+                // Message = Message + {MRMPath + " files missing, not copied"}
+                // DirSignalStatus = 2
             end
-    end
+    // end
 
     // HOT
+    hotassn_dcb =
+        {"Assn_template.dcb"}
     MRMpath = MRMUser + "\\HOT\\"
     for i = 1 to hotassn_dcb.length do	
         MRMInfo = GetFileInfo(MRMpath + hotassn_dcb[i])
         if MRMInfo <> null
             then WriteLine(batchhandle, "copy " + MRMpath + hotassn_dcb[i] + " " + DirUser + "\\HwyAssn\\HOT\\" + hotassn_dcb[i])
             else do
-                Message = Message + {"MRM\\HOT dcb: " + hotassn_dcb[i] + " not found - not copied"}
-                DirSignalStatus = 2
+                Throw("MRM\\HOT dcb: " + hotassn_dcb[i] + " not found - not copied")
+                // Message = Message + {"MRM\\HOT dcb: " + hotassn_dcb[i] + " not found - not copied"}
+                // DirSignalStatus = 2
             end
     end // for i
 
@@ -350,8 +373,9 @@ Throw()
             end
         end	
         else do
-            Message = Message + {MRMPath + " files missing, not copied"}
-            DirSignalStatus = 2
+            Throw(MRMPath + " files missing, not copied")
+            // Message = Message + {MRMPath + " files missing, not copied"}
+            // DirSignalStatus = 2
         end
 
     // end of copy batch
@@ -359,18 +383,19 @@ Throw()
     status = RunProgram(batchname, )
     if (status <> 0) 
         then do
-            Message = Message + {"Error in batch copy from MRM to " + YearUser}
-            DirSignalStatus = 2
+            Throw("Error in batch copy from MRM to " + YearUser)
+            // Message = Message + {"Error in batch copy from MRM to " + YearUser}
+            // DirSignalStatus = 2
         end
         else DeleteFile(batchname)
 
-    goto quitCreateDir
+    // goto quitCreateDir
     
-    badCreateDir:
-    DirSignalStatus = 1
-    keepgoing = "No"
+    // badCreateDir:
+    // DirSignalStatus = 1
+    // keepgoing = "No"
     
-    quitCreateDir:
+    // quitCreateDir:
     
 endmacro // Macro CreateDir
 
