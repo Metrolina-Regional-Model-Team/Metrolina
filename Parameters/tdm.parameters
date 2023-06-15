@@ -23,9 +23,13 @@
                 "Type": "Folder",
                 "Value": "%Model Folder%"
             }
+        Args.MetrolinaFolder = {
+                "Type": "Folder",
+                "Value": "%Base Folder%\\Metrolina"
+            }    
         Args.[Run Directory] = {
                 "Type": "Folder",
-                "Value": "%Base Folder%\\Scenarios\\2018"
+                "Value": "%MetrolinaFolder%\\2018"
             }
         Args.InputFolder = {
                 "Type": "Folder",

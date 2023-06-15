@@ -1,0 +1,1144 @@
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 1
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	      1 ! * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+	      2 !                                                                       
+	      3 !                   P R O G R A M :   E X T S T A C B D                         
+	      4 !                                                                       
+	      5 !                     VERSION  2.0 -  Sept., 2006                         
+	      6 !                CHARLOTTE DEPARTMENT OF TRANSPORTATION                 
+	      7 !                                                                       
+	      8 !    Job to calculate closest external station and time to CBD files 
+	      9 !    for input to trip generation model.
+	     10 !
+	     11 !    Must have completed highway skims before running
+	     12 
+	     13 !    compile from \metrolina\pgm.  Must have caliper matrix dll and
+	     14 !    lib files in pgm directory  (calipermtxf.lib, calipermtxf.dll,
+	     15 !    shw32.dll)
+	     16 
+	     17 !    command > df source\extstacbd calipermtxf.lib /list /fpscomp:general
+	     18 !              /fpscomp:filesfromcmd
+	     19 
+	     20 !    Search skim matrix for shortest path to an external station and  
+	     21 !    CBD - CBD is set by a proxy taz on the Square (BofA).  Paths
+	     22 !    are built by travel time.  Shortest is shortest distance 
+	     23 !    v.1.2 - corrected problem reading possible integer field from SPMAT
+	     24 !             used f10.0 instead of 10.2 in read stmt.
+	     25 !            also added time and date block
+	     26 !    v.2.0 - added Caliper matrix routines
+	     27 !
+	     28 !
+	     29 !    McLelland,   Sept 29, 2006  - stored in extstacbd.f90
+	     30 
+	     31 !    Changed CBD proxy TAZ to 10003 (new TAZ structure)--Kinnamon, 7-9-13
+	     32 
+	     33 !    TransCad matrix routines
+	     34 
+	     35 implicit none
+	     36    
+	     37 
+	     38       interface
+	     39       subroutine MTXF_INITMATDLL(ptc_status)
+	     40       integer ptc_status
+	     41       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_INITMATDLL
+	     42       end subroutine
+	     43       end interface
+	     44       
+	     45       interface
+	     46       integer*2 function MTXF_CLEAR(m)
+	     47       integer m
+	     48       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_CLEAR
+	     49       end function
+	     50       end interface
+	     51 
+	     52       interface
+	     53       integer*2 function MTXF_CLOSEFILE(m)
+	     54       integer m
+	     55       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_CLOSEFILE
+	     56       end function
+	     57       end interface
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 2
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	     58 
+	     59       interface
+	     60       integer*2 function MTXF_CREATECACHE(m, Typ, apply, nSize)
+	     61       integer m
+	     62       integer Typ
+	     63       integer apply
+	     64       integer nSize
+	     65       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_CREATECACHE
+	     66       end function
+	     67       end interface
+	     68 
+	     69       interface
+	     70       subroutine MTXF_DESTROYCACHE(m)
+	     71       integer m
+	     72       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_DESTROYCACHE
+	     73       end subroutine
+	     74       end interface
+	     75 
+	     76       interface
+	     77       integer*2 function MTXF_DISABLECACHE(m)
+	     78       integer m
+	     79       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_DISABLECACHE
+	     80       end function
+	     81       end interface
+	     82 
+	     83       interface
+	     84       integer*2 function MTXF_DONE(m)
+	     85       integer m
+	     86       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_DONE
+	     87       end function
+	     88       end interface
+	     89 
+	     90       interface
+	     91       integer*2 function MTXF_ENABLECACHE(m)
+	     92       integer m
+	     93       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_ENABLECACHE
+	     94       end function
+	     95       end interface
+	     96 
+	     97       interface
+	     98       integer*4 function MTXF_GETBASENCOLS(m)
+	     99       integer m
+	    100       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETBASENCOLS
+	    101       end function
+	    102       end interface
+	    103 
+	    104       interface
+	    105       integer*4 function MTXF_GETBASENROWS(m)
+	    106       integer m
+	    107       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETBASENROWS
+	    108       end function
+	    109       end interface
+	    110 
+	    111       interface
+	    112       integer*2 function MTXF_GETBASEVECTOR(m, iPos, dim, Array)
+	    113       integer m
+	    114       integer iPos
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 3
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    115       integer dim
+	    116       real*8  Array(:)
+	    117       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETBASEVECTOR
+	    118       end function
+	    119       end interface
+	    120 
+	    121       interface
+	    122       integer*2 function MTXF_GETCORE(m)
+	    123       integer m
+	    124       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETCORE
+	    125       end function
+	    126       end interface
+	    127 
+	    128       interface
+	    129       integer*2 function MTXF_GETCURRENTINDEXPOS(m, dim)
+	    130       integer m
+	    131       integer dim
+	    132       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETCURRENTINDEXPOS
+	    133       end function
+	    134       end interface
+	    135 
+	    136       interface
+	    137       integer*2 function MTXF_GETELEMENT(m, idRow, idCol, p)
+	    138       integer m
+	    139       integer idRow
+	    140       integer idCol
+	    141       real*8  p
+	    142       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETELEMENT
+	    143       end function
+	    144       end interface
+	    145 
+	    146       interface
+	    147       integer*2 function MTXF_GETIDS(m, dim, ids)
+	    148       integer m
+	    149       integer dim
+	    150       integer ids (:)
+	    151       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETIDS
+	    152       end function
+	    153       end interface
+	    154 
+	    155       interface
+	    156       subroutine MTXF_GETLABEL(m, iCore, szLabel)
+	    157       integer m
+	    158       integer iCore
+	    159       character*80 szLabel
+	    160       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETLABEL
+	    161       end subroutine
+	    162       end interface
+	    163 
+	    164       interface
+	    165       integer*4 function MTXF_GETNCOLS(m)
+	    166       integer m
+	    167       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETNCOLS
+	    168       end function
+	    169       end interface
+	    170 
+	    171       interface
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 4
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    172       integer*2 function MTXF_GETNCORES(m)
+	    173       integer m
+	    174       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETNCORES
+	    175       end function
+	    176       end interface
+	    177 
+	    178       interface
+	    179       integer*4 function MTXF_GETNROWS(m)
+	    180       integer m
+	    181       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETNROWS
+	    182       end function
+	    183       end interface
+	    184 
+	    185       interface
+	    186       integer*2 function MTXF_GETVECTOR(m, ID, dim, Array)
+	    187       integer m
+	    188       integer ID
+	    189       integer dim
+	    190       real*8  Array(:)
+	    191       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETVECTOR
+	    192       end function
+	    193       end interface
+	    194 
+	    195       interface
+	    196       integer*2 function MTXF_ISCOLMAJOR(m)
+	    197       integer m
+	    198       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_ISCOLMAJOR
+	    199       end function
+	    200       end interface
+	    201 
+	    202       interface
+	    203       integer*2 function MTXF_ISFILEBASED(m)
+	    204       integer m
+	    205       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_ISFILEBASED
+	    206       end function
+	    207       end interface
+	    208 
+	    209       interface
+	    210       integer*2 function MTXF_ISREADONLY(m)
+	    211       integer m
+	    212       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_ISREADONLY
+	    213       end function
+	    214       end interface
+	    215 
+	    216       interface
+	    217       integer*2 function MTXF_ISSPARSE(m)
+	    218       integer m
+	    219       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_ISSPARSE
+	    220       end function
+	    221       end interface
+	    222 
+	    223       interface
+	    224       integer*4 function MTXF_LOADFROMFILE(szFileName, FileBased)
+	    225       character*260 szFileName
+	    226       integer FileBased
+	    227       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_LOADFROMFILE
+	    228       end function
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 5
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    229       end interface
+	    230 
+	    231       interface
+	    232       integer*2 function MTXF_OPENFILE(m, fRead)
+	    233       integer m
+	    234       integer fRead
+	    235       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_OPENFILE
+	    236       end function
+	    237       end interface
+	    238 
+	    239       interface
+	    240       integer*2 function MTXF_SAVETOFILE(m, szFileName)
+	    241       integer m
+	    242       character*260 szFileName
+	    243       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SAVETOFILE
+	    244       end function
+	    245       end interface
+	    246 
+	    247       interface
+	    248       integer*2 function MTXF_SETBASEVECTOR(m, iPos, dim, Array)
+	    249       integer m
+	    250       integer iPos
+	    251       integer dim
+	    252       real*8  Array(:)
+	    253       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SETBASEVECTOR
+	    254       end function
+	    255       end interface
+	    256 
+	    257       interface
+	    258       integer*2 function MTXF_SETCORE(m, iCore)
+	    259       integer m
+	    260       integer iCore
+	    261       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SETCORE
+	    262       end function
+	    263       end interface
+	    264 
+	    265       interface
+	    266       integer*2 function MTXF_SETELEMENT(m, idRow, idCol, p)
+	    267       integer m
+	    268       integer idRow
+	    269       integer idCol
+	    270       real*8  p
+	    271       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SETELEMENT
+	    272       end function
+	    273       end interface
+	    274 
+	    275       interface
+	    276       integer*2 function MTXF_SETINDEX(m, dim, iIdx)
+	    277       integer m
+	    278       integer dim
+	    279       integer iIdx
+	    280       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SETINDEX
+	    281       end function
+	    282       end interface
+	    283 
+	    284       interface
+	    285       integer*2 function MTXF_SETVECTOR(m, ID, dim, Array)
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 6
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    286       integer m
+	    287       integer ID
+	    288       integer dim
+	    289       real*8  Array(:)
+	    290       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_SETVECTOR
+	    291       end function
+	    292       end interface
+	    293 
+	    294       interface
+	    295       subroutine MTXF_GETMATRIXTYPE(szType, m)
+	    296       character*80 szType
+	    297       integer m
+	    298       !DEC$ ATTRIBUTES DLLIMPORT :: MTXF_GETMATRIXTYPE
+	    299       end subroutine
+	    300       end interface
+	    301 
+	    302 
+	    303 ! TransCad Matrix variables
+	    304                                               
+	    305       integer tc_status
+	    306       integer m1, i, j, k, rtn
+	    307 	  integer nrows, ncols
+	    308       integer filebased 
+	    309       character*80 spmat
+	    310       character*80 mtxtype
+	    311 	  integer*4, allocatable :: rowID(:)
+	    312       integer*4, allocatable :: colID(:) 
+	    313       real*8,    allocatable :: RowLen(:)
+	    314 	  logical*1, allocatable :: extstaflag(:)
+	    315           
+	    316       
+	    317 !  TAZ selection sets
+	    318 
+	    319       integer*4    extsta(100) /100*0/, cbdproxy /10003/, proxyID /1/	                                            
+	    319       
+	    320     
+	    321 !  Local variables
+	    322 
+	    323       integer*4    loext /999999/, hiext /0/, cursta,                     &
+	    324 	               ext(200) /200*0/, numext /0/, startext, stopext
+	    325 
+	    326 	  real*4       curmin   
+	    327 	  integer*4    printit /100/
+	    328       logical*1    first 
+	    329 
+	    330 
+	    331 !  Run date and time
+	    332 
+	    333       integer*4    date_time(8)     
+	    334                                                                        
+	    335       character*20 VDATE/'ver 2.0, 09-29-2006'/
+	    336 	  character*12 clk1, clk2, clk3
+	    337 	  character*4  yr
+	    338 	  character*2  mo, day, h, m                                          
+	    339 
+	    340 				  
+	    341 
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 7
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    342 !  File variables
+	    343 
+	    344 	  character*80 in05 /'parameter file'/,                                 &
+	    345 	               out06, out14, out15, out16, out17, out18 
+	    346 	  integer*4    fid, i_var05 /0/, i_var06 /0/, i_var14 /0/, i_var15 /0/, &
+	    347 	               i_var16 /0/, i_var17 /0/, i_var18 /0/ 
+	    348 	  logical*1    fatal /.false./
+	    349 
+	    350 	  NAMELIST /INFILES/ spmat
+	    351 	  NAMELIST /OUTFILES/ out06, out14, out15, out16, out17, out18     
+	    352 	  NAMELIST /PARAM/ extsta, cbdproxy                                   
+	    353                                                                        
+	    354                                                                        
+	    355 ! Open Files
+	    356 
+	    357       open (5, file=' ', err=805, iostat=i_var05, READONLY, status='OLD')
+	    358 
+	    359       read(5,NML=INFILES)
+	    360  	  read(5,NML=OUTFILES)
+	    361 	  read(5,NML=PARAM)
+	    362 
+	    363  
+	    364 !&OUTFILES OUT06='report\extstacbd.txt',
+	    365 !          OUT14='ext\dist_to_closest_extsta.asc', 
+	    366 !          OUT15='ext\dist_to_closest_extsta.dct',
+	    367 !          OUT16='landuse\dist_to_cbd.asc',
+	    368 !          OUT17='landuse\dist_to_cbd.dct'
+	    369 !          OUT18='report\return_code_extstacbd.txt'
+	    370 
+	    371       open (6, file=OUT06, err=806, iostat=i_var06, status = 'REPLACE', recl = 132)
+	    372   	  
+	    373       open (14, file=OUT14, err=814, iostat=i_var14, status = 'REPLACE', recl=30)
+	    374 
+	    375       open (15, file=OUT15, err=815, iostat=i_var15, status = 'REPLACE', recl=80)
+	    376 
+	    377       open (16, file=OUT16, err=816, iostat=i_var16, status = 'REPLACE', recl=30)
+	    378 
+	    379       open (17, file=OUT17, err=817, iostat=i_var17, status = 'REPLACE', recl=80)
+	    380 
+	    381       open (18, file=OUT18, err=818, iostat=i_var18, status = 'REPLACE', recl=8)
+	    382 
+	    383    10 continue
+	    384 
+	    385 !  Time and date
+	    386 
+	    387 	  call date_and_time(clk1, clk2, clk3, date_time)    
+	    388 	  yr = clk1(1:4)
+	    389 	  mo = clk1(5:6)
+	    390 	  day = clk1(7:8)
+	    391 	  h = clk2(1:2)
+	    392 	  m = clk2(3:4)                                                           
+	    393       write (6,9002) VDATE, mo, day, yr, h, m
+	    394  9002 format('Metrolina Regional Model'/'ExtstaCBD ',a20/'Run:',a2,'-',a2,'-',a4,', ',a2,':',a2)
+	    395 
+	    396 
+	    397       write(6, NML=INFILES)
+	    398       write(6, NML=OUTFILES)
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 8
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    399 	  write(6, NML=PARAM)
+	    400 
+	    401 
+	    402 ! Open SPMAT matrix, get row and column IDs (TAZ) and allocate arrays
+	    403 ! Must append char(0) - C null char to indicate end of file name.  Also must have
+	    404 ! double \\ characters - TransCad 
+	    405 ! open length skim core (2nd core, ID = 1 under C counting standard 0,1,2)
+	    406  
+	    407       call MTXF_INITMATDLL(tc_status)
+	    408  
+	    409       spmat = trim(spmat)//char(0) 
+	    410 
+	    411       write(6,8995) spmat
+	    412  8995 format('Trace: matfile:',A80)
+	    413 
+	    414       filebased = 0
+	    415       m1 = MTXF_LoadFromFile(spmat, filebased)
+	    416   
+	    417       if (m1 .eq. 0) call tcerror(m1, 'Load matrix',spmat)
+	    418 
+	    419       call MTXF_CreateCache(m1, 0, 1,  90000)
+	    420  
+	    421       call MTXF_GetMatrixType(mtxtype, m1)
+	    422 
+	    423 	  rtn = MTXF_SetCore(m1,1)
+	    424 	  if (rtn .ne. 0) call tcerror(rtn, 'Set matrix core', spmat)
+	    425 
+	    426       nrows =  MTXF_GetNRows(m1)
+	    427       ncols =  MTXF_GetNCols(m1)
+	    428 
+	    429       allocate(rowID(1:nrows))
+	    430       allocate(colID(1:ncols))
+	    431 
+	    432       call MTXF_GetIDs(m1, 0, rowID)
+	    433       call MTXF_GetIDs(m1, 1, colID)
+	    434  
+	    435       allocate(RowLen(1:ncols))
+	    436 
+	    437 	  allocate(extstaflag(1:nrows))      
+	    438 
+	    439      
+	    440 ! fill array of external stations based on param file
+	    441 ! input is allowed in old UTPS form 100,-111 as a range from 100 to 111
+	    442 ! up to 200 stations are allowed in current form
+	    443 ! minimum and maximum station number set to speed processing of large file
+	    444  
+	    445       do 40 i = 1, 100
+	    446 
+	    447 	    if (numext .gt. 200) then
+	    448 		  write(6,9010)
+	    449  9010     format( 'ERROR:  Maximum no. of external stations (200) exceeded.'/   &
+	    450                   '        Run Dead.  Either cut no. of stations or        '/   &
+	    451 			      '        recompile with higher max. no. of stations.     ')
+	    452 		  go to 890
+	    453         end if
+	    454 
+	    455 !       Positive no.  - add station to ext array.  Check min and and max
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 9
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    456 
+	    457 	    if (extsta(i) .gt. 0) then 
+	    458 		  startext = extsta(i)
+	    459           numext = numext + 1
+	    460 		  ext(numext) = extsta(i)
+	    461 		  if (ext(numext) .lt. loext) loext = ext(numext)
+	    462 		  if (ext(numext) .gt. hiext) hiext = ext(numext)
+	    463   	      write(6,9005) i, extsta(i), numext, ext(numext), loext, hiext
+	    464  9005     format( 'trace: i/extsta:', 6i8)
+	    465 
+	    466 
+	    467 !       Negative no.  - set range and fill all between after couple of error checks
+	    468 
+	    469         else if (extsta(i) .lt. 0) then
+	    470 		  stopext = abs(extsta(i))
+	    471   	      write(6,9005) i, extsta(i), numext, ext(numext), loext, hiext
+	    472 
+	    473 		  if (startext .eq. 0) then
+	    474 		    write(6, 9020) extsta(i) 
+	    475  9020		format ( 'ERROR:  Cannot start with end of range.  Run Dead:  ', i10)
+	    476             go to 890
+	    477           end if
+	    478 
+	    479 		  if (stopext .lt. startext) then
+	    480 		    write(6, 9030) startext, extsta(i) 
+	    481  9030		format ( 'ERROR:  Illegal range in extsta.  Run Dead:  ', 2i10)
+	    482             go to 890
+	    483           end if
+	    484  
+	    485 	      do j = startext + 1, stopext
+	    486  	  	    numext = numext + 1
+	    487 	        if (numext .gt. 200) then
+	    488 		      write(6,9010)
+	    489 		      go to 890
+	    490             end if
+	    491 			ext(numext) = j
+	    492    	        write(6,9006) i, extsta(i), numext, ext(numext), startext, stopext
+	    493  9006       format( 'trac2: i/extsta:', 6i8)
+	    494           end do
+	    495 		  if (ext(numext) .gt. hiext) hiext = ext(numext)
+	    496         end if
+	    497    40 continue
+	    498 	  
+	    499 	  if (numext .eq. 0) then
+	    500 	    write(6, 9040) 
+	    501  9040   format( 'ERROR :  No external stations coded.  Run Dead')
+	    502 		go to 890
+	    503       end if
+	    504    		 
+	    505 	  write (6,9050) numext, loext, hiext
+	    506  9050 format( 'External Station listing. No. stations=',i4/           &
+	    507               '   Lowest station no.', i6,' Highest station no.', i6) 
+	    508 	  do i = 1, numext
+	    509         write(6, 9060) i, ext(i)
+	    510 	  end do		  	 
+	    511  9060 format(10x,i4,i10) 	  
+	    512 
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 10
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    513 !     Initialize flag array
+	    514       do j = 1, ncols
+	    515 	    extstaflag(j) = .false.
+	    516 	  end do
+	    517 
+	    518 ! read spmat matrix
+	    519 
+	    520       first = .true.
+	    521   100 continue
+	    522       do 190 i=1, nrows
+	    523 
+	    524 ! reset distance to station 
+	    525 	    curmin = 999.	  
+	    526         cursta = 0
+	    527 
+	    528 	    if (mod(i,printit) .eq. 0 .or. i .eq. nrows) then
+	    529 		  write(*,9105) i, rowID(i)
+	    530  9105     format('+',' Processing row=',i6, ' TAZ=',i6)
+	    531         end if
+	    532         
+	    533 		call MTXF_GETVECTOR(m1, rowID(i), 0, RowLen)
+	    534 
+	    535 ! first row in - set extstaflag and colID of cbdproxy
+	    536 
+	    537         if (.not.first) go to 120
+	    538         do j=1, ncols
+	    539 		  if (colID(j) .eq. cbdproxy) proxyID = j
+	    540           do k = 1,numext
+	    541 		    if (colID(j) .eq. ext(k)) extstaflag(j) = .true.
+	    542 		  end do
+	    543 		end do
+	    544 		first = .false.
+	    545 
+	    546   120   continue
+	    547 
+	    548 ! write len to cbd file.  cbdproxy is taz in cbd used for len
+	    549 ! for that taz, len is zero (it is null in spmat)
+	    550  
+	    551         if (RowID(i) .eq. cbdproxy) RowLen(i) = 0.
+	    552         write(16,9120) rowID(i), cbdproxy, RowLen(proxyID)
+	    553  9120   format(2i10,f10.6)
+	    554      
+	    555 ! find minimum distance to an external station
+	    556 
+	    557         do j =1, ncols
+	    558 		  if (extstaflag(j)) then
+	    559 		    if (RowLen(j) .lt. curmin .and. RowID(i) .ne. colID(j)) then
+	    560 			  curmin = RowLen(j)
+	    561 			  cursta = colID(j)
+	    562 			end if
+	    563 		  end if
+	    564 		end do
+	    565 
+	    566 ! write closest extsta to file
+	    567 
+	    568 	    write(14, 9120) rowID(i), cursta, curmin
+	    569 
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 11
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    570   190 continue
+	    571 
+	    572 ! write dictionary files
+	    573       write(15,9200)
+	    574       write(17,9200)
+	    575 
+	    576  9200 format(' '/'30'/                         &
+	    577              '"From",I,1,10,0,10,0,,,"",,,'/   &
+	    578              '"To",I,11,10,0,10,0,,,"",,,'/    &
+	    579              '"Len",F,21,10,0,10,6,,,"",,,')
+	    580 
+	    581       print *
+	    582 
+	    583       go to 900
+	    584 
+	    585 ! File error section
+	    586 
+	    587   805 fid = 5
+	    588       fatal = .true.
+	    589       print 9801,  fid, in05, i_var05
+	    590       write(6,9801) fid, in05, i_var05
+	    591 	  go to 890
+	    592 
+	    593   806 fid = 6
+	    594       fatal = .true.
+	    595       print 9801,  fid, out06, i_var06
+	    596       write(6,9801) fid, out06, i_var06
+	    597 	  go to 890
+	    598 
+	    599   814 fid = 14
+	    600       fatal = .true.
+	    601       print 9801,  fid, out14, i_var14
+	    602       write(6,9801) fid, out14, i_var14
+	    603 	  go to 890
+	    604 
+	    605   815 fid = 15
+	    606       fatal = .true.
+	    607       print 9801,  fid, out15, i_var15
+	    608       write(6,9801) fid, out15, i_var15
+	    609 	  go to 890
+	    610 
+	    611   816 fid = 16
+	    612       fatal = .true.
+	    613       print 9801,  fid, out16, i_var16
+	    614       write(6,9801) fid, out16, i_var16
+	    615 	  go to 890
+	    616 
+	    617   817 fid = 17
+	    618       fatal = .true.
+	    619       print 9801,  fid, out17, i_var17
+	    620       write(6,9801) fid, out17, i_var17
+	    621 	  go to 890
+	    622 
+	    623   818 fid = 18
+	    624       fatal = .true.
+	    625       print 9801,  fid, out18, i_var18
+	    626       write(6,9801) fid, out18, i_var18
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 12
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    627 	  go to 890
+	    628 
+	    629  9801 format( 'ERROR:  File problem, file:',i3,' ', a80,/':  iostat=', i5, ' Run Dead')
+	    630 
+	    631 !  fatal close
+	    632 	  
+	    633   890 continue
+	    634 
+	    635       call MTXF_Done(m1)
+	    636 
+	    637       rtn = 24
+	    638       write(18, 9901) rtn
+	    639 
+	    640 	  write(6,9890)
+	    641       close	(5, disp='keep') 
+	    642       close	(6, disp='keep') 
+	    643       close	(14, disp='keep') 
+	    644       close	(15, disp='keep') 
+	    645       close	(16, disp='keep') 
+	    646       close	(17, disp='keep') 
+	    647       close	(18, disp='keep') 
+	    648       print 9890 
+	    649  9890 format(' Abnormal stop')
+	    650       stop 24
+	    651 
+	    652 ! normal close
+	    653   900 continue
+	    654 
+	    655       call MTXF_Done(m1)
+	    656 
+	    657       rtn = 0
+	    658       write(18, 9901) rtn
+	    659 
+	    660 	  write(6,9900)
+	    661       close	(5, disp='keep') 
+	    662       close	(6, disp='keep') 
+	    663       close	(14, disp='keep') 
+	    664       close	(15, disp='keep') 
+	    665       close	(16, disp='keep') 
+	    666       close	(17, disp='keep') 
+	    667       close	(18, disp='keep') 
+	    668       print 9900 
+	    669 
+	    670  9900 format(' Normal stop')
+	    671  9901 format(i8)
+	    672       stop 0
+	    673 	  end                                                               
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 13
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+
+
+PROGRAM SECTIONS
+
+    Name				 Bytes   Attributes
+
+  1 .bss                                   828 NOPIC CON REL LCL NOSHR NOEXE   RD   WRT QUAD
+  2 .data                                 8716 NOPIC CON REL LCL NOSHR NOEXE   RD   WRT QUAD
+  3 .literal                               408   PIC CON REL LCL   SHR NOEXE   RD NOWRT QUAD
+  4 .text                                10227   PIC CON REL LCL   SHR   EXE NORD NOWRT QUAD
+  5 .drectve                               115 NOPIC CON REL LCL NOSHR NOEXE NORD NOWRT QUAD
+
+    Total Space Allocated                20294
+
+
+ENTRY POINTS
+
+ Address      Name          
+                            
+  4-00000000  MAIN$EXTSTACBD
+
+
+VARIABLES
+
+ Address      Type  Name       Address      Type  Name       Address      Type  Name       Address      Type  Name     
+                                                                                                                       
+  2-00001C70  I*4   CBDPROXY    2-00001C64  I*4   HIEXT       2-00001C68  I*4   LOEXT       1-0000010C  CHAR  OUT17    
+  1-00000090  CHAR  CLK1            **      I*4   I           1-00000074  CHAR  M           1-000000BC  CHAR  OUT18    
+  1-00000084  CHAR  CLK2        2-00001D0C  CHAR  IN05        1-0000006C  I*4   M1          2-00001C5C  I*4   PRINTIT  
+  1-00000078  CHAR  CLK3        2-00001C58  I*4   I_VAR05     1-00000060  CHAR  MO          2-00001C6C  I*4   PROXYID  
+      **      R*4   CURMIN      2-00001C54  I*4   I_VAR06     1-0000029C  CHAR  MTXTYPE     0-FFFFFFF8  I*4   RTN      
+      **      I*4   CURSTA      2-00001C50  I*4   I_VAR14         **      I*4   NCOLS       1-000002EC  CHAR  SPMAT    
+  1-0000005C  CHAR  DAY         2-00001C4C  I*4   I_VAR15         **      I*4   NROWS       1-00000068  I*4   STARTEXT 
+  2-00001C3C  L*1   FATAL       2-00001C48  I*4   I_VAR16     2-00001C60  I*4   NUMEXT          **      I*4   STOPEXT  
+  1-00000054  I*4   FID         2-00001C44  I*4   I_VAR17     1-0000024C  CHAR  OUT06       1-00000070  I*4   TC_STATUS
+  0-FFFFFFFC  I*4   FILEBASED   2-00001C40  I*4   I_VAR18     1-000001FC  CHAR  OUT14       2-00001CF8  CHAR  VDATE    
+      **      L*1   FIRST           **      I*4   J           1-000001AC  CHAR  OUT15       1-00000064  CHAR  YR       
+  1-00000058  CHAR  H               **      I*4   K           1-0000015C  CHAR  OUT16                                  
+
+
+ARRAYS
+
+ Address      Type  Name              Bytes  Dimensions
+
+  2-00001CB8  I*4   COLID                32  (:)
+  1-0000009C  I*4   DATE_TIME            32  (8)
+  2-00001D5C  I*4   EXT                 800  (200)
+  2-0000207C  I*4   EXTSTA              400  (100)
+  2-00001C78  L*1   EXTSTAFLAG           32  (:)
+  2-00001CD8  I*4   ROWID                32  (:)
+  2-00001C98  R*8   ROWLEN               32  (:)
+
+
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 14
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+LABELS
+
+ Address      Label  Address      Label  Address      Label  Address      Label  Address      Label
+                                                                                                   
+      **      10      4-0000151C  120         **      806         **      816         **      890  
+  4-000010F8  40          **      190         **      814         **      817         **      900  
+      **      100         **      805         **      815         **      818                      
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 15
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    674 !
+	    675 !
+	    676 !  Error message subroutine
+	    677 ! 
+	    678       subroutine tcerror(errcode, step, fname)
+	    679 
+	    680 	  integer errcode
+	    681 	  character*20 step
+	    682 	  character*260 fname
+	    683 
+	    684       character*60 errmsg
+	    685 	  integer i
+	    686 
+	    687 	  ! TransCad Matrix error messages
+	    688 
+	    689       integer tcerrcnt /43/
+	    690       integer tcerr(43)                                         &
+	    691 	     /  -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8,  -9, -10,    &
+	    692 	       -11, -12, -13, -14, -15, -16, -17, -18, -19, -20,    &
+	    693 	       -21, -22, -23, -24, -25, -26, -27, -28, -29, -30,    &
+	    694 	       -31, -32, -33, -34, -35, -36, -37, -38, -39, -40,    &
+	    695 	       -41, -42,-950 /                                             
+	    696       character*60 tcmsg(43)                                    &
+	    697 				/'Database not opened',							& !  -1
+	    698 				 'Invalid set',									& ! 
+	    698  -2
+	    699 				 'Invalid record',								& ! 
+	    699  -3
+	    700 				 'Invalid database',							& !  -4
+	    701 				 'Invalid field name',							& !  -5 
+	    702 				 'Invalid db_address',							& !  -6
+	    703 				 'No current record',							& !  -7
+	    704 				 'Set has no current owner',					& !  -8
+	    705 				 'Set has no current member',					& !  -9
+	    706 				 'Key value required',							& ! -10
+	    707 				 'Invalid lock type',							& ! -11
+	    708 				 'Record is owner of non-empty set(s)',			& ! -12
+	    709 				 'Record is member of set(s)',					& ! -13
+	    710 				 'Member already owned',						& ! -14
+	    711 				 'Field is a compound key',						& ! -15
+	    712 				 'Record not connected to set',					& ! -16
+	    713 				 'Field is not a valid key',					& ! -17
+	    714 				 'Record not legal owner of set',				& ! -18
+	    715 				 'Record not legal member of set',				& ! -19
+	    716 				 'Error in d_setpages (db open or bad param)',	& ! -20
+	    717 				 'Incompatible dictionary file',				& ! -21
+	    718 				 'Illegal attempt to delete system record',		& ! -22
+	    719 				 'Attempt to lock previously locked rec or set',& ! -23
+	    720 				 'Attempt to access unlocked record or set',	& ! -24
+	    721 				 'Transaction id not be supplied',				& ! -25
+	    722 				 'Transaction already active',					& ! -26
+	    723 				 'Transaction not currently active',			& ! -27
+	    724 				 'Transaction cannot begin due to locked files',& ! -28
+	    725 				 'Attempt to free a lock inside a transaction', & ! -29
+	    726 				 'Too many pages changed within transaction',	& ! -30
+	    727 				 'Attempted update outside of transaction',		& ! -31
+	    728 				 'Functions requires exclusive db access',		& ! -32
+
+TCERROR                         Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 16
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    729 				 'Attempted to write lock a static file',		& ! -33
+	    730 				 'No user id exists',							& ! -34
+	    731 				 'Database file/path name too long',			& ! -35
+	    732 				 'Invalid file number was passed to d_renfile', & ! -36
+	    733 				 'Field is not an optional key',				& ! -37
+	    734 				 'Field not defined in current record type',	& ! -38
+	    735 				 'Record/field has/in a compound key',			& ! -39
+	    736 				 'Invalid record or set number',				& ! -40
+	    737 				 'Record or set not timestamped',				& ! -41
+	    738 				 'Corrupted copy protected file',				& ! -42 
+	    739 				 'Floating point error trap'/				  	  !-950
+	    740 
+	    741 ! System Errors
+	    742 	  integer syserrcnt /26/
+	    743       integer syserr(26)                                        & 
+	    744 		/-900,-901,-902,-903,-904,-905,-906,-907,-908,-909,     &
+	    745 	     -910,-911,-912,-913,-914,-915,-916,-917,-918,-919,     &
+	    746 		 -920,-921,-922,-933,-934,-935/
+	    747 	  character*60 sysmsg(26)									&  
+	    748 	             /'No more space on file',						& !-900
+	    749 				 'System error',								& !-
+	    749 901
+	    750 				 'Page fault -- changed during usage',			& !-902
+	    751 				 'No working file set in dio',					& !-903
+	    752 				 'Unable to allocate sufficient memory',		& !-904
+	    753 				 'Unable to locate a file',						& !-905
+	    754 				 'Unable to access db lock file',				& !-906
+	    755 				 'Db lock file open/access error',				& !-907
+	    756 				 'Inconsistent database locks',					& !-908
+	    757 				 'File record limit reached',					& !-909
+	    758 				 'Key file inconsistency detected',				& !-910
+	    759 				 'Max concurrent user limit reached',			& !-911
+	    760 				 'Bad seek on database file',					& !-912
+	    761 				 'Invalid file specified',						& !-913
+	    762 				 'Bad read on database/overflow file',			& !-914
+	    763 				 'Network synchronization error',				& !-915
+	    764 				 'Debugging check interrupt',					& !-916
+	    765 				 'Network communications error',				& !-917
+	    766 				 'Auto-recovery is in process',					& !-918
+	    767 				 'Bad write on database/overflow file',			& !-919
+	    768 				 'Unable to open lockmgr session',				& !-920
+	    769 				 'DBUSERID is already used by another user',	& !-921
+	    770 				 'The lock manager is busy',					& !-922
+	    771 				 'Port/field not wide enough to show all text', & !-933
+	    772 				 'Invalid input',								& !-
+	    772 934
+	    773 				 'Device off-line or otherwise timed-out'/        !-935
+	    774 
+	    775 ! funcerr 
+	    776 	  integer funcerrcnt /16/
+	    777       integer funcerr(16)                                       & 
+	    778 		/   0,   1,   2,   3,   4,   5,   6,   7,   8,   9,		&
+	    779 		   10,  11,  12,  13,  14,  15/
+	    780 	  character*60 funcmsg(16)                                  &
+	    781 	            /'Normal return',                               &  ! 0  
+	    782 				 'End of set',                                  &  ! 1
+	    783 				 'Record not found',                            &  ! 2
+
+TCERROR                         Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 17
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    784 				 'Duplicate key',                               &  ! 3
+	    785 				 'Field type used out of sequence in d_keynext',&  ! 4
+	    786 				 'Database file currently unavailable',         &  ! 5
+	    787 				 'Record/set deleted since last accessed',      &  ! 6
+	    788 				 'Record/set updated since last accessed',      &  ! 7
+	    789 				 'Current record lock bit is set',				&  ! 8
+	    790 				 'Current record lock bit is clear',			&  ! 9
+	    791 				 'No more undo records in file',                &  !10
+	    792 				 'Input function returns ESC',                  &  !11
+	    793 				 'Editor needs re-sizing',                      &  !12
+	    794 				 'Missing value',                               &  !13
+	    795 				 'Interrupted operations',                      &  !14
+	    796 				 'Moved to a different location'/                  !15
+	    797 
+	    798 !     Job specific errors
+	    799       integer joberrcnt /5/
+	    800       integer joberr(5)                                         & 
+	    801 		/  90,  91,  92,  93,  94 /
+	    802 	  character*60 jobmsg(5)									&  
+	    803 	           /'Mismatch number of rows', 						& ! 90
+	    804 				'Mismatch number of columns',					& ! 91
+	    805 				'Mismatch in Row IDs',							& ! 92
+	    806 				'Mismatch in Column IDs',						& ! 93
+	    807 				'Mismatch in Matrix type'/						  ! 94
+	    808 
+	    809   
+	    810 !     0 return for file read, otherwise look through msg arrays
+	    811 
+	    812       if (errcode .eq. 0) then
+	    813 	    errmsg = 'NO hardware block'
+	    814 	    go to 900
+	    815 	  end if
+	    816 
+	    817 !     tc error
+	    818       do i =1,tcerrcnt
+	    819 		if (errcode .eq. tcerr(i)) then
+	    820 		  errmsg = tcmsg(i) 
+	    821 		  go to 900
+	    822 	    end if
+	    823 	  end do
+	    824 
+	    825 !     system error
+	    826       do i = 1,syserrcnt
+	    827 	    if (errcode .eq. syserr(i)) then
+	    828 		  errmsg = sysmsg(i)
+	    829 		  go to 900
+	    830 		end if
+	    831 	  end do
+	    832 
+	    833 !     function error
+	    834       do i = 1, funcerrcnt
+	    835 	    if (errcode .eq. funcerr(i)) then
+	    836 		  errmsg = funcmsg(i)
+	    837 		  go to 900
+	    838 		end if
+	    839 	  end do
+	    840 
+
+TCERROR                         Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 18
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+	    841 !     job error
+	    842       do i = 1, joberrcnt
+	    843 	    if (errcode .eq. joberr(i)) then
+	    844 		  errmsg = jobmsg(i)
+	    845 		  go to 900
+	    846 		end if
+	    847 	  end do
+	    848 
+	    849 !     can't find error code
+	    850 
+	    851       errmsg = 'Error msg not found'
+	    852 
+	    853 !     write msg and kill job
+	    854   900 continue 
+	    855       fatal = .true.
+	    856       print 9001, errcode, errmsg, step, fname 
+	    857       write(6,9001) errcode, errmsg, step, fname
+	    858 
+	    859  	  rtn = 24
+	    860       write(7,9901) rtn               
+	    861 	  
+	    862       call MTXF_Done(m1)
+	    863       call MTXF_Done(m2)
+	    864       call MTXF_Done(m3)
+	    865       close	(5, disp='keep') 
+	    866       close	(6, disp='keep') 
+	    867       close	(7, disp='keep') 
+	    868       close	(11, disp='keep') 
+	    869 
+	    870  9001 format(' FATAL matrix error: err=',i10,' msg=',a60,/' Step=',a20 /A)
+	    871  9901 format(i8)
+	    872 
+	    873 	  stop
+	    874 	  end subroutine
+
+TCERROR                         Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 19
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+
+
+PROGRAM SECTIONS
+
+    Name				 Bytes   Attributes
+
+  1 .bss                                   828 NOPIC CON REL LCL NOSHR NOEXE   RD   WRT QUAD
+  2 .data                                 8716 NOPIC CON REL LCL NOSHR NOEXE   RD   WRT QUAD
+  3 .literal                               408   PIC CON REL LCL   SHR NOEXE   RD NOWRT QUAD
+  4 .text                                10227   PIC CON REL LCL   SHR   EXE NORD NOWRT QUAD
+  5 .drectve                               115 NOPIC CON REL LCL NOSHR NOEXE NORD NOWRT QUAD
+
+    Total Space Allocated                20294
+
+
+ENTRY POINTS
+
+ Address      Name   
+                     
+  4-0000230D  TCERROR
+
+
+VARIABLES
+
+ Address      Type  Name        Address      Type  Name        Address      Type  Name        Address      Type  Name      
+                                                                                                                           
+      **      I*4   ERRCODE      2-000005B0  I*4   FUNCERRCNT   1-00000008  I*4   M2           2-000005B4  I*4   SYSERRCNT 
+  1-00000018  CHAR  ERRMSG           **      I*4   I            1-00000004  I*4   M3           2-000005B8  I*4   TCERRCNT  
+  1-00000014  R*4   FATAL        2-000005AC  I*4   JOBERRCNT    1-00000010  R*4   RTN                                      
+      **      CHAR  FNAME        1-0000000C  I*4   M1               **      CHAR  STEP                                     
+
+
+ARRAYS
+
+ Address      Type  Name           Bytes  Dimensions
+
+  2-000005D0  I*4   FUNCERR           64  (16)
+  2-0000073C  CHAR  FUNCMSG          960  (16)
+  2-000005BC  I*4   JOBERR            20  (5)
+  2-00000610  CHAR  JOBMSG           300  (5)
+  2-00001114  I*4   SYSERR           104  (26)
+  2-00000AFC  CHAR  SYSMSG          1560  (26)
+  2-00001B90  I*4   TCERR            172  (43)
+  2-0000117C  CHAR  TCMSG           2580  (43)
+
+
+LABELS
+
+ Address      Label
+                   
+      **      900  
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 20
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+COMPILER OPTIONS BEING USED
+
+  /noalign:commons                      /noalign:dcommons
+  /align:records                        /noalign:sequence
+  /noalign:rec1byte                     /noalign:rec2byte
+  /noalign:rec4byte                     /noalign:rec8byte
+  /altparam                             /noannotations:code
+  /noannotations:detail                 /noannotations:feedback
+  /noannotations:inlining               /noannotations:loop_transforms
+  /noannotations:loop_unrolling         /noannotations:prefetching
+  /noannotations:shrinkwrapping         /noannotations:software_pipelining
+  /noannotations:tail_calls             /noannotations:tail_recursion
+  /arch:generic                         /noasmattributes:machine
+  /noasmattributes:source               /assume:accuracy_sensitive
+  /noassume:buffered_io                 /noassume:byterecl
+  /noassume:dummy_aliases               /noassume:minus0
+  /assume:protect_constants             /assume:source_include
+  /noassume:underscore                  /noassume:2underscores
+  /noautomatic                          /nobintext
+  /ccdefault:default                    /nocheck:arg_temp_created
+  /nocheck:bounds                       /check:flawed_pentium
+  /nocheck:format                       /nocheck:output_conversion
+  /nocheck:overflow                     /nocheck:power
+  /nocheck:underflow                    /convert:native
+  /D:_WIN32=1                           /D:_DF_VER=660
+  /D:_VF_VER=660                        /D:_X86_=1
+  /D:_M_IX86=500                        /D:_INTEGRAL_MAX_BITS=32
+  /double_size:64                       /nod_lines
+  /error_limit:30                       /extend_source:72
+  /nof66                                /nof77rtl
+  /nofast                               /nofltconsist
+  /nofpscomp:filesfromcmd               /fpscomp:general
+  /nofpscomp:ioformat                   /fpscomp:ldio_spacing
+  /fpscomp:libs                         /nofpscomp:logicals
+  /nofpconstant                         /fpe3
+  /free                                 /g1
+  /Gt0                                  /iface:stdref
+  /nointconstant                        /integer_size:32
+  /libdir:automatic                     /libdir:user
+  /nolibs_dll                           /nomachine_code
+  /math_library:check                   /mixed_str_len_arg
+  /nomodule                             /names:uppercase
+  /nonoinclude                          /O4
+  /inline:speed                         /notransform_loops
+  /nopipeline                           /tune:generic
+  /unroll:0                             /nopad_source
+  /real_size:32                         /norecursive
+  /reentrancy:none                      /noshow:include
+  /show:map                             /stand:none
+  /nosyntax_only                        /notraceback
+  /novms                                /warn:alignments
+  /nowarn:argument_checking             /nowarn:declarations
+  /nowarn:errors                        /warn:general
+  /nowarn:granularity                   /nowarn:ignore_loc
+  /nowarn:stderrors                     /nowarn:truncated_source
+  /warn:uncalled                        /warn:uninitialized
+  /nowarn:unused                        /warn:usage
+
+MAIN$EXTSTACBD$BLK              Source Listing                  23-Jul-2013 15:47:09  Compaq Visual Fortran 6.6-1877    Page 21
+                                                                 9-Jul-2013 14:33:46  source\extstacbd.F90
+
+  /I         path : source\,C:\Program Files\Microsoft Visual Studio\DF98\INCLUDE\,C:\Program Files\Microsoft Visual Studio\VC98\...
+  /V         filename : extstacbd.lst
+  /o         filename : C:\DOCUME~1\MKINNA~1\LOCALS~1\Temp\obj13C.tmp
+  /nobrowser
+  /Fd        filename : none
+
+COMPILER: Compaq Visual Fortran 6.6-1877-47BAQ
+
+COMPILATION STATISTICS
+
+  CPU time:          0.24 seconds
+  Elapsed time:      0.24 seconds
+  Pagefaults:           0
+  I/O Count:            0

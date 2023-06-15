@@ -7,6 +7,7 @@ Macro "Model.Attributes" (Args,Result)
         {"BannerWidth", 2000},
         {"ResizePicture", 1},
         {"HideBanner", 0},
+        {"DebugMode", 1},
         {"Layout", null},
         {"ExpandStages", "Side by Side"},
         {"MinItemSpacing", 5},

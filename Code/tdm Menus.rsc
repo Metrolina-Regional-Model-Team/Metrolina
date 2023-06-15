@@ -24,40 +24,26 @@ Macro "OpenParamFile"
 	result = mr.OpenFile(curr_param.Name)
 endMacro
 
-MenuItem "tdm Menu Item" text: "tdm"
-    menu "tdm Menu"
+MenuItem "Metro Menu Item" text: "Metrolina"
+    menu "Metrolina Menu"
 
-menu "tdm Menu"
+menu "Metrolina Menu"
     init do
-	runtimeObj = CreateObject("Model.Runtime")
-	curr_param = runtimeObj.GetSelectedParamInfo() 
-	menu_items = {"Show Map", "Show Matrix", "Show Table"}
-	if curr_param = null then
-		DisableItems(menu_items)
-	status = curr_param.Status
-	if status = "Missing" then DisableItems(menu_items)
-	else if status = "Exists" then do
-		type = curr_param.Type
-		if type = "NETWORK" then type = "MAP"
-		menu_item = "Show " + Proper(type)
-		DisableItems(menu_items)
-		EnableItem(menu_item)
-		end
     enditem
 
-    MenuItem "Show Map" text: "Show Map"
+    MenuItem "Create Scenario" text: "Create Scenario"
         do 
-        RunMacro("OpenParamFile")
-        enditem 
+        mr = CreateObject("Model.Runtime")
+        Args = mr.GetValues()
+        {, scen_name} = mr.GetScenario()
 
-    MenuItem "Show Matrix" text: "Show Matrix"
-        do 
-        RunMacro("OpenParamFile")
-        enditem 
+        // Check that a scenario is selected and that a folder has been chosen
+        if scen_name = null then do
+            ShowMessage("Choose a scenario.")
+            return()
+        end
 
-    MenuItem "Show Table" text: "Show Table"
-        do 
-        RunMacro("OpenParamFile")
-        enditem 
-
+        mr.RunCode("Create Tour Dir", Args)
+        return(1)
+    enditem
 endMenu 

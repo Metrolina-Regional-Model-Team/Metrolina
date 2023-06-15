@@ -1,3 +1,6 @@
+1 - Create Tour Directory.rsc
+Initial Processing.rsc
+
 RunSetUp\\TCMenu
 RunSetUp\\MasterDBox_laptop
 RunSetUp\\InitializeArgs
@@ -14,7 +17,6 @@ RunSetUp\\Select_PartialRun
 RunSetUp\\Select_PartialRun_Tour_laptop
 RunSetUp\\DidItRun
 
-Initial Processing.rsc
 Highway\\Build_Networks
 Highway\\Fill_prj_year
 Highway\\Build_HwyNet
