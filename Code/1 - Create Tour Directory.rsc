@@ -31,21 +31,20 @@ Macro "Create Tour Dir" (Args)
     // if keepgoing = "Yes" then RunMacro("GetMRM")
     // if keepgoing = "Yes" then RunMacro("GetYear")
     if keepgoing = "Yes" then RunMacro("CreateDir", Args)
-    Throw(0)
-    if keepgoing = "Yes" then RunMacro("GetTAZ")
-    if keepgoing = "Yes" then RunMacro("GetLU")
+    if keepgoing = "Yes" then RunMacro("GetTAZ", Args)
+    if keepgoing = "Yes" then RunMacro("GetLU", Args)
     if keepgoing = "Yes" 
         then do
-            Args = RunMacro("InitializeArgs")
+            // Args = RunMacro("InitializeArgs")
 
             // Report and Log files initialized
-            datentime = GetDateandTime()
-            ReportFile = DirUser + "\\Report\\TC_Report.xml"
-            SetReportFileName(ReportFile)
+            // datentime = GetDateandTime()
+            // ReportFile = DirUser + "\\Report\\TC_Report.xml"
+            // SetReportFileName(ReportFile)
             AppendtoReportFile(1, "Create Directory: " + DirUser + ",  " + datentime)
             AppendtoReportFile(1, " ") 
-            LogFile = DirUser + "\\Report\\TC_Log.xml"
-            SetLogFileName(LogFile)
+            // LogFile = DirUser + "\\Report\\TC_Log.xml"
+            // SetLogFileName(LogFile)
             AppendtoLogFile(1, "Create Tour Directory: " + DirUser + ",  " + datentime)
             AppendtoLogFile(1, " ") 
             AppendtoLogFile(1, "Create Tour Directory messages")
@@ -54,11 +53,12 @@ Macro "Create Tour Dir" (Args)
             end
             AppendtoLogFile(2, " ")				
             
-            RunMacro("SetArguments")
+            // RunMacro("SetArguments")
         end
-    RunMacro("SetSignals")
+    // RunMacro("SetSignals")
 
     quitcreatedirtourbutton:
+    ShowMessage("Tour Directory Created.")
 
 endmacro
 
@@ -399,60 +399,69 @@ Macro "CreateDir" (Args)
     
 endmacro // Macro CreateDir
 
-Macro "GetTAZ"
+/*
+
+*/
+
+Macro "GetTAZ" (Args)
 // Macro to identify TAZ file, copy from MRM if necessary
     keepgoing = "Yes"
     TAZSignalStatus = 3
     on error goto notaz
 
-    // Pull TAZ from Arguments
-    if TAZUser = null and TAZArgs <> null
-        then do
-            TAZUser = TAZArgs
-            tazpath = SplitPath(TAZUser)
-            goto gottaz				
-        end
-            
-    if TAZUser <> null and TAZArgs <> null and Upper(TAZUser) <> Upper(TAZArgs)
-        then do
-            Message = Message + {"GetTAZ WARNING!  User TAZ file: " + TAZUser + " differs from Args"}
-            Message = Message + {"GetTAZ WARNING!  User TAZ file: " + TAZUser + " differs from Args"}
-            PlaySound(sysdir + "\\media\\Windows Notify.wav", "null")
-            TAZSignalStatus = 2
-        end
-            
-    TAZInfo = GetFileInfo(TAZUser)
-    if TAZInfo = null 
-        then goto gettaz
+    MRMUser = Args.[MRM Directory]
+    METUser = Args.MetrolinaFolder
+    TAZArgs = Args.[TAZ File]
+    TAZUser = TAZArgs
 
-    tazpath = SplitPath(TAZUser)
-    if Upper(tazpath[1] + tazpath[2]) = Upper(METUser + "\\TAZ\\") 
-        then goto gottaz
+    // // Pull TAZ from Arguments
+    // if TAZUser = null and TAZArgs <> null
+    //     then do
+    //         TAZUser = TAZArgs
+    //         tazpath = SplitPath(TAZUser)
+    //         goto gottaz				
+    //     end
+            
+    // if TAZUser <> null and TAZArgs <> null and Upper(TAZUser) <> Upper(TAZArgs)
+    //     then do
+    //         Message = Message + {"GetTAZ WARNING!  User TAZ file: " + TAZUser + " differs from Args"}
+    //         Message = Message + {"GetTAZ WARNING!  User TAZ file: " + TAZUser + " differs from Args"}
+    //         PlaySound(sysdir + "\\media\\Windows Notify.wav", "null")
+    //         TAZSignalStatus = 2
+    //     end
+            
+    // TAZInfo = GetFileInfo(TAZUser)
+    // if TAZInfo = null 
+    //     then goto gettaz
+
+    // tazpath = SplitPath(TAZUser)
+    // if Upper(tazpath[1] + tazpath[2]) = Upper(METUser + "\\TAZ\\") 
+    //     then goto gottaz
     
-    gettaz: 
-    on escape goto notaz
+    // gettaz: 
+    // on escape goto notaz
 
-    TAZDir = METDir + "\\TAZ\\*.dbd"
-    dbdexist = GetDirectoryInfo(METDir,"File")
-    if dbdexist = null 
-        then InitDir = MRMUser + "\\TAZ"
-        else InitDir = METUser + "\\TAZ"
+    // TAZDir = METDir + "\\TAZ\\*.dbd"
+    // dbdexist = GetDirectoryInfo(METDir,"File")
+    // if dbdexist = null 
+    //     then InitDir = MRMUser + "\\TAZ"
+    //     else InitDir = METUser + "\\TAZ"
 
-    TAZUser = ChooseFile({{"Standard","*.dbd"}},"Choose the TAZ File",{{"Initial Directory", InitDir}})
-    TAZInfo = GetFileInfo(TAZUser)
-    if TAZInfo = null 
-        then goto gettaz
-        else do
-            tazpath = SplitPath(TAZUser)
-            if Upper(tazpath[1] + tazpath[2]) = Upper(METUser + "\\TAZ\\") 
-                then goto gottaz
-                else do
-                    CopyDataBase(TAZUser, METUser + "\\TAZ\\" + tazpath[3] + tazpath[4])
-                    TAZUser = METUser + "\\TAZ\\" + tazpath[3] + tazpath[4]
-                    Message = Message + {"Copied TAZ : " + tazpath[3] + " from MRM to \\Metrolina"} 
-                end		
-        end		
-    gottaz:
+    // TAZUser = ChooseFile({{"Standard","*.dbd"}},"Choose the TAZ File",{{"Initial Directory", InitDir}})
+    // TAZInfo = GetFileInfo(TAZUser)
+    // if TAZInfo = null 
+    //     then goto gettaz
+    //     else do
+    //         tazpath = SplitPath(TAZUser)
+    //         if Upper(tazpath[1] + tazpath[2]) = Upper(METUser + "\\TAZ\\") 
+    //             then goto gottaz
+    //             else do
+    //                 CopyDataBase(TAZUser, METUser + "\\TAZ\\" + tazpath[3] + tazpath[4])
+    //                 TAZUser = METUser + "\\TAZ\\" + tazpath[3] + tazpath[4]
+    //                 Message = Message + {"Copied TAZ : " + tazpath[3] + " from MRM to \\Metrolina"} 
+    //             end		
+    //     end		
+    // gottaz:
     
     // Create/check TAZ template matrix and tazid files (1-good,2-warn,3-bad return)
 
@@ -461,7 +470,9 @@ Macro "GetTAZ"
     TAZSignalStatus = TAZrtn[1]
     if TAZrtn[1] = 1 then goto notaz 
     
-    TAZID = OpenTable("TAZID", "FFA", {METUser + "\\TAZ\\" + tazpath[3] + "_TAZID.asc",})
+    tazpath = SplitPath(TAZUser)
+    // TAZID = OpenTable("TAZID", "FFA", {METUser + "\\TAZ\\" + tazpath[3] + "_TAZID.asc",})
+    TAZID = OpenTable("TAZID", "FFA", {MRMUser + "\\TAZ\\" + tazpath[3] + "_TAZID.asc",})
     SetView(TAZID)
     selinttaz = "Select * where TAZ < 12000"
     selexttaz = "Select * where TAZ >= 12000"
@@ -485,43 +496,48 @@ Macro "GetTAZ"
     
 endmacro  //Macro GetTAZ	
 
-Macro "GetLU"
+Macro "GetLU" (Args)
 // Macro to identify LU file 
     keepgoing = "Yes"
     LUSignalStatus = 3
     checkLUTAZ = "False"
 
-    // Pull LU from Arguments
-    if LUUser = null and LUArgs <> null
-        then do
-            LUUser = LUArgs
-            goto gotLU
-        end
+    LUArgs = Args.[LandUse File]
+    LUUser = LUArgs
+    TAZArgs = Args.[TAZ File]
+    TAZUser = TAZArgs
+
+    // // Pull LU from Arguments
+    // if LUUser = null and LUArgs <> null
+    //     then do
+    //         LUUser = LUArgs
+    //         goto gotLU
+    //     end
     
-    if LUUser <> null and LUArgs <> null and Upper(LUUser) <> Upper(LUArgs)
-        then do
-            Message = Message + {"GetLU WARNING!  User Land Use file: " + LUUser + " differs from"}
-            Message = Message + {"   Args Land Use file: " + LUArgs}
-            PlaySound(sysdir + "\\media\\Windows Notify.wav", "null")
-            LUSignalStatus = 2
-        end
+    // if LUUser <> null and LUArgs <> null and Upper(LUUser) <> Upper(LUArgs)
+    //     then do
+    //         Message = Message + {"GetLU WARNING!  User Land Use file: " + LUUser + " differs from"}
+    //         Message = Message + {"   Args Land Use file: " + LUArgs}
+    //         PlaySound(sysdir + "\\media\\Windows Notify.wav", "null")
+    //         LUSignalStatus = 2
+    //     end
 
-    LUInfo = GetFileInfo(LUUser)
-    if LUInfo = null 
-        then goto getLU
-        else goto gotLU
+    // LUInfo = GetFileInfo(LUUser)
+    // if LUInfo = null 
+    //     then goto getLU
+    //     else goto gotLU
         
-    // Get land use file
-    getLU:
-    on error goto getLU
-    on escape goto noLU
-    LUUser = ChooseFile({{"DBASE","*.dbf"}},"Choose the Land Use File",{{"Initial Directory", DirUser + "\\LandUse"}})
-    LUInfo = GetFileInfo(LUUser)
-    if LUInfo = null 
-        then goto getLU
-        else goto gotLU
+    // // Get land use file
+    // getLU:
+    // on error goto getLU
+    // on escape goto noLU
+    // LUUser = ChooseFile({{"DBASE","*.dbf"}},"Choose the Land Use File",{{"Initial Directory", DirUser + "\\LandUse"}})
+    // LUInfo = GetFileInfo(LUUser)
+    // if LUInfo = null 
+    //     then goto getLU
+    //     else goto gotLU
 
-    gotLU:
+    // gotLU:
 
     // check against TAZ
     checkLUrtn = RunMacro("checkLU", LUUser, TAZUser)

@@ -45,7 +45,11 @@
             }
         Args.[TAZ File] = {
                 "Type": "file",
-                "Value": "%MRM Directory%\\..\\TAZ\\TAZ3578.dbd"
+                "Value": "%MRM Directory%\\TAZ\\TAZ3578.dbd"
+            }
+        Args.[LandUse File] = {
+                "Type": "file",
+                "Value": "%MetrolinaFolder%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
             }
 
     Section = "Networks"

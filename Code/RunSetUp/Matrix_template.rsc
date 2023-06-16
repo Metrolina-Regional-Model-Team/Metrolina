@@ -12,9 +12,10 @@ Macro "Matrix_template" (TAZFile)
 	info = GetDBInfo(TAZFile)
 	if info = null 
 		then do
-			msg = msg + {"Matrix Template ERROR! - No TAZ file"}
-			TemplateOK = 1
-			return({TemplateOK,msg})
+			Throw("Matrix Template ERROR! - No TAZ file")
+			// msg = msg + {"Matrix Template ERROR! - No TAZ file"}
+			// TemplateOK = 1
+			// return({TemplateOK,msg})
 		end
 		
 	//TAZ view
@@ -32,32 +33,34 @@ Macro "Matrix_template" (TAZFile)
 
 	if IntCount = 0 or ExtCount = 0 
 		then do
-			msg = msg + {"Matrix_template: ERROR!  Problem with TAZ file"}
-			goto badtemplate
+			Throw("Matrix_template: ERROR!  Problem with TAZ file")
+			// msg = msg + {"Matrix_template: ERROR!  Problem with TAZ file"}
+			// goto badtemplate
 		end	
 			
 	//Matrix template - Base template file to create taz x taz matrices
 	TemplateName = tazpath[1] + tazpath[2] + "matrix_template.mtx"
-	exist = GetFileInfo(TemplateName)
-	if exist = null 
-		then goto createtemplate
+	if GetFileInfo(TemplateName) <> null then DeleteFile(TemplateName)
+	// exist = GetFileInfo(TemplateName)
+	// if exist = null 
+	// 	then goto createtemplate
 
-	// Check if template matches TAZ, if not - replace it
-	mat = null
-	mat = OpenMatrix(TemplateName, )
-	TemplateInfo = GetMatrixInfo(mat)
-	NumTAZ = TemplateInfo[5][1]	
-	mat = null
-	if NumTAZ = (IntCount + ExtCount) 
-		then goto checktazid
-		else do
-			msg = msg + {"Matrix_Template: Warning - existing matrix template being replaced"}
-			TemplateOK = 2
-		end
+	// // Check if template matches TAZ, if not - replace it
+	// mat = null
+	// mat = OpenMatrix(TemplateName, )
+	// TemplateInfo = GetMatrixInfo(mat)
+	// NumTAZ = TemplateInfo[5][1]	
+	// mat = null
+	// if NumTAZ = (IntCount + ExtCount) 
+	// 	then goto checktazid
+	// 	else do
+	// 		msg = msg + {"Matrix_Template: Warning - existing matrix template being replaced"}
+	// 		TemplateOK = 2
+	// 	end
 		
 	//Create Matrix Template
 	createtemplate:
-	on error goto badtemplate
+	// on error goto badtemplate
 	mat = null
 	mat = CreateMatrix({TAZName+"|", TAZName+".TAZ", "Rows"},
 		{TAZName+"|", TAZName+".TAZ", "Columns"},
