@@ -50,11 +50,11 @@ Macro "Build_Networks" (Args)
 	timeperiod = "AMpeak"
 
 	HwyName = AMPkHwyName
-	AMPkHwyName = RunMacro("Build_HwyNet", MRMDir, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
+	AMPkHwyName = RunMacro("Build_HwyNet", Args, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
 	datentime = GetDateandTime()
 	AppendToLogFile(2, "Exit Build_HwyNet (AM): " + datentime)
 
-	Args.[AM Peak Hwy Name].value = AMPkHwyName
+	// Args.[AM Peak Hwy Name].value = AMPkHwyName
 
 	if AMPkHwyName = null 
 		then do
@@ -72,11 +72,11 @@ Macro "Build_Networks" (Args)
 	timeperiod = "PMpeak"
 
 	HwyName = PMPkHwyName
-	PMPkHwyName = RunMacro("Build_HwyNet", MRMDir, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
+	PMPkHwyName = RunMacro("Build_HwyNet", Args, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
 	datentime = GetDateandTime()
 	AppendToLogFile(2, "Exit Build_HwyNet (PM): " + datentime)
 
-	Args.[PM Peak Hwy Name].value = PMPkHwyName
+	// Args.[PM Peak Hwy Name].value = PMPkHwyName
 
 	if PMPkHwyName = null 
 		then do
@@ -94,12 +94,12 @@ Macro "Build_Networks" (Args)
 	timeperiod = "Offpeak"
 
 	HwyName = OPHwyName
-	OPHwyName = RunMacro("Build_HwyNet", MRMDir, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
+	OPHwyName = RunMacro("Build_HwyNet", Args, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName, timeperiod)			
 	timeperiod = null
 	datentime = GetDateandTime()
 	AppendToLogFile(2, "Exit Build_HwyNet (Offpeak): " + datentime)
 
-	Args.[Offpeak Hwy Name].value = OPHwyName
+	// Args.[Offpeak Hwy Name].value = OPHwyName
 
 	if OPHwyName = null 
 		then do

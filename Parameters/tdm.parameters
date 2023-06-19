@@ -56,15 +56,15 @@
 
         Args.ProjectFile = {
                 "Type": "file",
-                "Value": "%MRM Direcotry%\\MasterNet\\PROJLIST_2050MTP_MRM22v1.0.dbf"
+                "Value": "%MRM Directory%\\MasterNet\\PROJLIST_2050MTP_MRM22v1.0.dbf"
             }
         Args.MasterHwyFile = {
                 "Type": "file",
-                "Value": "%MRM Direcotry%\\MasterNet\\Master_2050MTP_MRM22v1.0.dbd"
+                "Value": "%MRM Directory%\\MasterNet\\Master_2050MTP_MRM22v1.0.dbd"
             }
         Args.TollFile = {
                 "Type": "file",
-                "Value": "%MRM Direcotry%\\MasterNet\\tolls_2050MTP_MRM22v1.0.bin"
+                "Value": "%MRM Directory%\\MasterNet\\tolls_2050MTP_MRM22v1.0.bin"
             }
 
         Args.[AM Peak Hwy Name] = {

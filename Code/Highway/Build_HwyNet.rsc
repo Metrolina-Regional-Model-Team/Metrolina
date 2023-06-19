@@ -1,8 +1,13 @@
-Macro"Build_HwyNet" (MRMDir, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName, timeperiod)
+Macro"Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName, timeperiod)
 //Macro"Build_HwyNet" (MRMDir, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, AMPkHwyName, PMPkHwyName, OPHwyName, timeperiod)
 
 //Returns netview - Hwy file name
 // 5/30/19, mk: This version is set up to create three distinct networks: AM peak, PM peak, and offpeak
+
+MRMDir = Args.[MRM Directory]
+AMPkHwyName = Args.[AM Peak Hwy Name]
+PMPkHwyName = Args.[PM Peak Hwy Name]
+OPHwyName = Args.[OffPeak Hwy Name]
 
 CreateProgressBar("Build Highway Network", "False")
 
@@ -50,25 +55,28 @@ closemap("MetroRoads")
 	select = "Select*where YEAR < " + I2S(yearselect)
 
 	hwyname_ar = {AMPkHwyName, PMPkHwyName, OPHwyName}
-	if timeperiod = "AMpeak" then do	
-//		if AMPkHwyName <> null 
-		if HwyName <> null 
-			then netview = HwyName
-			else netview = "RegNet"+yearnet+"_AMPeak"
-	end
-	else if timeperiod = "PMpeak" then do	
-		if HwyName <> null 
-			then netview = HwyName
-			else netview = "RegNet"+yearnet+"_PMPeak"
-	end
-	else if timeperiod = "Offpeak" then do	
-		if HwyName <> null 
-			then netview = HwyName
-			else netview = "RegNet"+yearnet+"_Offpeak"
-	end
-	else do
-		goto badtimeperiod
-	end
+
+	netview = "RegNet" + yearnet + "_" + timeperiod
+
+// 	if timeperiod = "AMpeak" then do	
+// //		if AMPkHwyName <> null 
+// 		if HwyName <> null 
+// 			then netview = HwyName
+// 			else netview = "RegNet"+yearnet+"_AMPeak"
+// 	end
+// 	else if timeperiod = "PMpeak" then do	
+// 		if HwyName <> null 
+// 			then netview = HwyName
+// 			else netview = "RegNet"+yearnet+"_PMPeak"
+// 	end
+// 	else if timeperiod = "Offpeak" then do	
+// 		if HwyName <> null 
+// 			then netview = HwyName
+// 			else netview = "RegNet"+yearnet+"_Offpeak"
+// 	end
+// 	else do
+// 		goto badtimeperiod
+// 	end
 		
 
 	// Get the scope of a geographic file
