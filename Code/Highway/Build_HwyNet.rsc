@@ -1,4 +1,4 @@
-Macro"Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName, timeperiod)
+Macro "Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName, timeperiod)
 //Macro"Build_HwyNet" (MRMDir, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, AMPkHwyName, PMPkHwyName, OPHwyName, timeperiod)
 
 //Returns netview - Hwy file name

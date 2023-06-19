@@ -1,13 +1,13 @@
 Macro "RouteSystemSetUp" (Args)
 // 5/30/19, mk: There are now three distinct networks, use offpeak initially for transit set-up
 
-	Dir = Args.[Run Directory].value
-	METDir = Args.[MET Directory].value
-	netname = Args.[Offpeak Hwy Name].value
-	theyear = Args.[Run Year].value
+	Dir = Args.[Run Directory]
+	METDir = Args.[MET Directory]
+	net_file = Args.[Offpeak Hwy Name]
+	theyear = Args.[Run Year]
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter RouteSystemSetUp:  " + datentime)
@@ -18,7 +18,8 @@ Macro "RouteSystemSetUp" (Args)
 
 	routename = "transys"
 	route_file = Dir + "\\"+routename+".rts"
-	net_file = Dir + "\\"+netname+".dbd"
+	// net_file = Dir + "\\"+netname+".dbd"
+	{, , netname, } = SplitPath(net_file)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
@@ -51,9 +52,10 @@ Macro "RouteSystemSetUp" (Args)
 	nottagged = TagRouteStopsWithNode("Vehicle Routes", null, "UserID", 0.02)
 	if nottagged > 0 
 		then do
-			msg = msg + {"RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!"}
-			AppendToLogFile(2, "RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
-			goto badquit2
+			Throw("RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
+			// msg = msg + {"RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!"}
+			// AppendToLogFile(2, "RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
+			// goto badquit2
 		end	
 	closemap()
 

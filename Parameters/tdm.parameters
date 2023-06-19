@@ -27,21 +27,17 @@
                 "Type": "Folder",
                 "Value": "%Base Folder%\\Metrolina"
             }    
+        Args.[Run Year] = {
+                "Type": "string",
+                "Value": "2018"
+            }
         Args.[Run Directory] = {
                 "Type": "Folder",
-                "Value": "%MET Directory%\\2018"
+                "Value": "%MET Directory%\\%Run Year%"
             }
         Args.InputFolder = {
                 "Type": "Folder",
                 "Value": "%Run Directory%Input"
-            }
-        Args.OutputFolder = {
-                "Type": "Folder",
-                "Value": "%Run Directory%\\Output"
-            }
-        Args.[Run Year] = {
-                "Type": "string",
-                "Value": "2018"
             }
         Args.[TAZ File] = {
                 "Type": "file",
@@ -69,17 +65,17 @@
 
         Args.[AM Peak Hwy Name] = {
                 "Type": "file",
-                "Value": "%OutputFolder%\\networks\\RegNet_AMPeak.dbd"
+                "Value": "%Run Directory%\\RegNet_AMPeak.dbd"
             }
 
         Args.[PM Peak Hwy Name] = {
                 "Type": "file",
-                "Value": "%OutputFolder%\\networks\\RegNet_PMPeak.dbd"
+                "Value": "%Run Directory%\\RegNet_PMPeak.dbd"
             }
 
         Args.[Offpeak Hwy Name] = {
                 "Type": "file",
-                "Value": "%OutputFolder%\\networks\\RegNet_OPPeak.dbd"
+                "Value": "%Run Directory%\\RegNet_OffPeak.dbd"
             }
     
     Section = "Numeric Values"
