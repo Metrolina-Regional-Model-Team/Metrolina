@@ -3,28 +3,29 @@ macro "CapSpd" (Args)
 //Modified for 2015 User Interface - Aug, 2015
 // 5/30/19, mk: Loops to fill capacity fields for three distinct networks: AM peak, PM peak, and offpeak
 
-	Dir = Args.[Run Directory].value
-	METDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
+	Dir = Args.[Run Directory]
+	METDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
 
-	timeweight = Args.[TimeWeight].value
-	distweight = Args.[DistWeight].value
+	timeweight = Args.[TimeWeight]
+	distweight = Args.[DistWeight]
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter CapSpd: " + datentime)
 
 	msg = null
 
-	hwyname_ar = {Args.[AM Peak Hwy Name].value, Args.[PM Peak Hwy Name].value, Args.[Offpeak Hwy Name].value}
-	timeperiod_ar = {"AM Peak", "PM Peak", "Offpeak"}
-	
+	hwyname_ar = {Args.[AM Peak Hwy Name], Args.[PM Peak Hwy Name], Args.[Offpeak Hwy Name]}
+	timeperiod_ar = {"AMPeak", "PMPeak", "Offpeak"}
+
 	for tp = 1 to 3 do
 		HwyName = hwyname_ar[tp]
-		netview = HwyName
+		// netview = HwyName
+		netview = "RegNet_" + timeperiod_ar[tp]
 		altname = netview
 		
 		CreateProgressBar("Capacity and Speed Calculations "+timeperiod_ar[tp], "False")
@@ -33,9 +34,10 @@ macro "CapSpd" (Args)
 		// Get the scope of a geographic file
 		info = GetDBInfo(Dir + "\\"+netview+".dbd")
 		if info = null then do
-			msg = msg + {"CapSpd: " + netview + ".dbd does not exist in this directory"}
-			AppendToLogFile(1, "CapSpd: " + netview + ".dbd does not exist in this directory")
-			goto badquit
+			Throw("CapSpd: " + netview + ".dbd does not exist in this directory")
+			// msg = msg + {"CapSpd: " + netview + ".dbd does not exist in this directory"}
+			// AppendToLogFile(1, "CapSpd: " + netview + ".dbd does not exist in this directory")
+			// goto badquit
 			end
 		else scope = info[1]
 	
@@ -56,7 +58,7 @@ macro "CapSpd" (Args)
 	
 	     stat = UpdateProgressBar("Reestimating future densities",13)
 	
-	     Runmacro("ped_drive_den_update", Args, HwyName)
+	     Runmacro("ped_drive_den_update", Args, netview)
 	
 	     stat = UpdateProgressBar("Getting A and B Node information",16)
 		j = GetRecordCount(netview,)
@@ -107,6 +109,8 @@ macro "CapSpd" (Args)
 		TimeStamp = FortInfo[7] + " " + FortInfo[8]
 		AppendToLogFile(2, "CapSpd call to fortran: pgm=capspd.exe, timestamp: " + TimeStamp)
 	
+		ctldir = METDir + "\\Pgm\\Param"
+		if GetDirectoryInfo(ctldir, "All") = null then CreateDirectory(ctldir)
 		ctlname = METDir + "\\Pgm\\Param\\capspd.ctl"
 	  	exist = GetFileInfo(ctlname)
 	  	if (exist <> null) then DeleteFile(ctlname)
@@ -143,14 +147,16 @@ macro "CapSpd" (Args)
 		severe = '       8'
 		fatal =  '      24'
 		if fortrtn = severe then do 
-			msg = msg + {"Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt"}
-			AppendToLogFile(1, "Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
-			goto badquit
+			Throw("Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
+			// msg = msg + {"Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt"}
+			// AppendToLogFile(1, "Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
+			// goto badquit
 			end
 		if fortrtn = fatal then do 
-			msg = msg + {"Fortran Fatal error - CapSpd did not run"}
-			AppendToLogFile(1, "Fortran Fatal error - CapSpd did not run")
-			goto badquit
+			Throw("Fortran Fatal error - CapSpd did not run")
+			// msg = msg + {"Fortran Fatal error - CapSpd did not run"}
+			// AppendToLogFile(1, "Fortran Fatal error - CapSpd did not run")
+			// goto badquit
 			end
 		closefile(rtnfptr)
 		

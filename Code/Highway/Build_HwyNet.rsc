@@ -56,7 +56,8 @@ closemap("MetroRoads")
 
 	hwyname_ar = {AMPkHwyName, PMPkHwyName, OPHwyName}
 
-	netview = "RegNet" + yearnet + "_" + timeperiod
+	// netview = "RegNet" + yearnet + "_" + timeperiod
+	netview = "RegNet_" + timeperiod
 
 // 	if timeperiod = "AMpeak" then do	
 // //		if AMPkHwyName <> null 

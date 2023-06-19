@@ -1,4 +1,4 @@
-macro "ped_drive_den_update" (Args, HwyName)
+macro "ped_drive_den_update" (Args, netview)
 
 //	Modified for 2015 User Interface  8/6/15
 //  TAZ required
@@ -6,11 +6,8 @@ macro "ped_drive_den_update" (Args, HwyName)
 
 
 //for tp = 2 to 3 do
-	Dir = Args.[Run Directory].value
-	tazfile = Args.[TAZ File].value
-
-	netview = HwyName
-	
+	Dir = Args.[Run Directory]
+	tazfile = Args.[TAZ File]
 
 	notaz = "Select*where TAZ = null"
 	tazlayers = GetDBLayers(tazfile)
