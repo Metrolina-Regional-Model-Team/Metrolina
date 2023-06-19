@@ -32,10 +32,11 @@ Macro "Area_Type" (Args)
 	info = GetFileInfo(ZonePctFile)
 	if info = null 
 		then do
-			msg = msg + {"Area Type - ERROR - cannot find TAZNeighbors_pct file"}
-			msg = msg + {"Please run MRM Utilities - AreaType_TAZNeighbors"}
-			msg = msg + {" or copy valid TAZNeighbor_pct.asc into TAZ directory"}
-			goto badend
+			Throw("Area Type - ERROR - cannot find TAZNeighbors_pct file. Please run MRM Utilities - AreaType_TAZNeighbors or copy valid TAZNeighbor_pct.asc into TAZ directory")
+			// msg = msg + {"Area Type - ERROR - cannot find TAZNeighbors_pct file"}
+			// msg = msg + {"Please run MRM Utilities - AreaType_TAZNeighbors"}
+			// msg = msg + {" or copy valid TAZNeighbor_pct.asc into TAZ directory"}
+			// goto badend
 		end
 	msg = null
 	AreaTypeOK = 1
@@ -56,9 +57,10 @@ Macro "Area_Type" (Args)
 	
 	if selnopctcount > 0
 		then do
-			msg = msg + {"AreaType ERROR! SE file has TAZ "}
-			msg = msg + {"not present in TAZNeighbors_pct file"}
-			goto badend
+			Throw("AreaType ERROR! SE file has TAZ not present in TAZNeighbors_pct file")
+			// msg = msg + {"AreaType ERROR! SE file has TAZ "}
+			// msg = msg + {"not present in TAZNeighbors_pct file"}
+			// goto badend
 		end
 	CloseView(join1)
 
@@ -72,9 +74,10 @@ Macro "Area_Type" (Args)
 	
 	if selnosecount > 0
 		then do
-			msg = msg + {"AreaType ERROR! TAZNeighbors_pct file "}
-			msg = msg + {"has TAZ not present in SE file"}
-			goto badend
+			Throw("AreaType ERROR! TAZNeighbors_pct file has TAZ not present in SE file")
+			// msg = msg + {"AreaType ERROR! TAZNeighbors_pct file "}
+			// msg = msg + {"has TAZ not present in SE file"}
+			// goto badend
 		end
 	CloseView(join2)
 
@@ -189,10 +192,11 @@ Macro "Area_Type" (Args)
 	exist = GetFileInfo(TAZIDFile)
 	if exist = null
 		then do
-			msg = msg + {"AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
-			AppendToLogFile(2, "AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
-			AreaTypeOK = 0
-			goto badend
+			Throw("AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
+			// msg = msg + {"AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
+			// AppendToLogFile(2, "AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
+			// AreaTypeOK = 0
+			// goto badend
 		end
 
 	TAZID = OpenTable("TAZID", "FFA", {TAZIDFile,})
@@ -206,10 +210,11 @@ Macro "Area_Type" (Args)
 	exist = GetFileInfo(TFFile)
 	if exist = null
 		then do
-			msg = msg + {"AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found"}
-			AppendToLogFile(2, "AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
-			AreaTypeOK = 0
-			goto badend
+			Throw("AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
+			// msg = msg + {"AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found"}
+			// AppendToLogFile(2, "AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
+			// AreaTypeOK = 0
+			// goto badend
 		end
 
 	TFIn = OpenTable("TFIn", "DBASE", {TFFile,})
