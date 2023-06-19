@@ -81,6 +81,64 @@
                 "Type": "file",
                 "Value": "%OutputFolder%\\networks\\RegNet_OPPeak.dbd"
             }
+    
+    Section = "Numeric Values"
+
+        Args.[TimeWeight] = {
+                "Type": "double",
+                "Value": 1,
+                "Description":"Minimum path weight on travel time (minutes)"
+            }
+        Args.[DistWeight] = {
+                "Type": "double",
+                "Value": 0,
+                "Description":"Minimum path weight on distance (miles)"
+            }
+        Args.[MaxTravTimeFactor] = {
+                "Type": "double",
+                "Value": 10,
+                "Description":"Maximum travel time on link expressed as multiple of free speed travel time (Min Speed)"
+            }
+        Args.[Peak Hour Factor] = {
+                "Type": "double",
+                "Value": 0.4,
+                "Description":"Pct of peak hour of the 3 hour peak period - used in calculating V/C in tot_assn"
+            }
+        Args.[Feedback Iterations] = {
+                "Type": "int",
+                "Value": 3,
+                "Description":"Number of peak speed feedback iterations"
+            }
+        Args.[Current Feedback Iter] = {
+                "Type": "int",
+                "Value": 1,
+                "Description":"Current iteration in peak speed feedback"
+            }
+        Args.[HOTAssn Iterations] = {
+                "Type": "int",
+                "Value": 5,
+                "Description":"Number of iterations for HOT lanes assignment"
+            }
+        Args.[HwyAssn Max Iter Feedback] = {
+                "Type": "int",
+                "Value": 250,
+                "Description":"TransCad MMA assignment - max. number of iterations for all but final assignment"
+            }
+        Args.[HwyAssn Converge Feedback] = {
+                "Type": "double",
+                "Value": .01,
+                "Description":"TransCad MMA assignment - convergence criteria for all but final assignment"
+            }
+        Args.[HwyAssn Max Iter Final] = {
+                "Type": "int",
+                "Value": 25000,
+                "Description":"TransCad MMA assignment - max. number of iterations for final assignment"
+            }
+        Args.[HwyAssn Converge Final] = {
+                "Type": "double",
+                "Value": .0001,
+                "Description":"TransCad MMA assignment - convergence criteria for final assignment"
+            }
 
     Section = "Tables"
         Args.[Simple Table] = {
