@@ -5,16 +5,17 @@ Macro "AutoSkims_Free" (Args)
 // McLelland - Sept, 2015
 // 5/30/19, mk: There are now three distinct networks, use offpeak for Free
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	theyear = Args.[Run Year].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	netname = Args.[Offpeak Hwy Name].value
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 	msg = null
 	AutoSkimsFreeOK = 1
 
@@ -339,34 +340,39 @@ spmatafterHOV:
 goto quit
 
 badopprmd:
-	msg = msg + {"AutoSkims_Free - error creating spmat_opprmd"}
-	AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opprmd")
-	AutoSkimsFreeOK = 0
-    goto badquit
+	Throw("AutoSkims_Free - error creating spmat_opprmd")
+	// msg = msg + {"AutoSkims_Free - error creating spmat_opprmd"}
+	// AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opprmd")
+	// AutoSkimsFreeOK = 0
+    // goto badquit
 
 badopxprd:
-	msg = msg + {"AutoSkims_Free - error creating spmat_opxprd"}
-	AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opxprd")
-	AutoSkimsFreeOK = 0
-    goto badquit
+	Throw("AutoSkims_Free - error creating spmat_opxprd")
+	// msg = msg + {"AutoSkims_Free - error creating spmat_opxprd"}
+	// AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opxprd")
+	// AutoSkimsFreeOK = 0
+    // goto badquit
 
 badhwybldhov:
-	msg = msg + {"AutoSkims_Free - error building highway network - hov network"}
-	AppendToLogFile(1, "AutoSkims_Free - error building highway network - hov network")
-	AutoSkimsFreeOK = 0
-    goto badquit
+	Throw("AutoSkims_Free - error building highway network - hov network")
+	// msg = msg + {"AutoSkims_Free - error building highway network - hov network"}
+	// AppendToLogFile(1, "AutoSkims_Free - error building highway network - hov network")
+	// AutoSkimsFreeOK = 0
+    // goto badquit
 
 badhwysethov:
-	msg = msg + {"AutoSkims_Free - error highway network settings - hov network"}
-	AppendToLogFile(1, "AutoSkims_Free - error highway network settings - hov network")
-	AutoSkimsFreeOK = 0
-    goto badquit
+	Throw("AutoSkims_Free - error highway network settings - hov network")
+	// msg = msg + {"AutoSkims_Free - error highway network settings - hov network"}
+	// AppendToLogFile(1, "AutoSkims_Free - error highway network settings - hov network")
+	// AutoSkimsFreeOK = 0
+    // goto badquit
 
 badspmathovfree:
-	msg = msg + {"AutoSkims_Free - error highway skims - free speed - hov network, free speed"}
-	AppendToLogFile(1, "AutoSkims_Free - error highway skims - free speed - hov network, free speed")
-	AutoSkimsFreeOK = 0
-    goto badquit
+	Throw("AutoSkims_Free - error highway skims - free speed - hov network, free speed")
+	// msg = msg + {"AutoSkims_Free - error highway skims - free speed - hov network, free speed"}
+	// AppendToLogFile(1, "AutoSkims_Free - error highway skims - free speed - hov network, free speed")
+	// AutoSkimsFreeOK = 0
+    // goto badquit
 
 
 badquit:

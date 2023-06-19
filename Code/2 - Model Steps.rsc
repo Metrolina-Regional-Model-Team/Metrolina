@@ -13,6 +13,7 @@ endmacro
 Macro "Skimming" (Args)
     // RunMacro("HwySkim_Free", Args)
     // RunMacro("HwySkim_Peak", Args)
-    RunMacro("FillParkCost", Args)
+    // RunMacro("FillParkCost", Args)
+    RunMacro("AutoSkims_Free", Args)
     return(1)
 endmacro
