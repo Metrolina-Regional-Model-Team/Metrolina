@@ -411,8 +411,8 @@ Macro "GetTAZ" (Args)
 
     MRMUser = Args.[MRM Directory]
     METUser = Args.[MET Directory]
-    TAZArgs = Args.[TAZ File]
-    TAZUser = TAZArgs
+    TAZArgs = Args.[MRM TAZ File]
+    TAZUser = Args.[TAZ File]
 
     // // Pull TAZ from Arguments
     // if TAZUser = null and TAZArgs <> null
@@ -462,6 +462,9 @@ Macro "GetTAZ" (Args)
     //             end		
     //     end		
     // gottaz:
+
+    
+    CopyDataBase(TAZArgs, TAZUser)
     
     // Create/check TAZ template matrix and tazid files (1-good,2-warn,3-bad return)
 

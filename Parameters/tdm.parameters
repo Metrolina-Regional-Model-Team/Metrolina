@@ -39,9 +39,13 @@
                 "Type": "Folder",
                 "Value": "%Run Directory%Input"
             }
-        Args.[TAZ File] = {
+        Args.[MRM TAZ File] = {
                 "Type": "file",
                 "Value": "%MRM Directory%\\TAZ\\TAZ3578.dbd"
+            }
+        Args.[TAZ File] = {
+                "Type": "file",
+                "Value": "%MET Directory%\\TAZ\\TAZ3578.dbd"
             }
         Args.[LandUse File] = {
                 "Type": "file",

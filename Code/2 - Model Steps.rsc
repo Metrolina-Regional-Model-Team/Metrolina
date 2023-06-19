@@ -9,3 +9,9 @@ Macro "Initial Processing" (Args)
     RunMacro("RouteSystemSetUp", Args)
     return(1)
 endmacro
+
+Macro "Skimming" (Args)
+    RunMacro("HwySkim_Free", Args)
+    RunMacro("HwySkim_Peak", Args)
+    return(1)
+endmacro

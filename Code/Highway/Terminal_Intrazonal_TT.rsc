@@ -12,9 +12,9 @@ Macro "Terminal_Intrazonal_TT" (Args, TermTimeFile, SPMATFile, SPMATCoreName, Pe
 	MinDelay = {5.0, 4.0, 3.0, 2.0, 1.0}
 
 	// Args
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
-	Dir = Args.[Run Directory].value
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
+	Dir = Args.[Run Directory]
 
 	TermIntraOK = 1
 	msg = null
@@ -26,7 +26,7 @@ Macro "Terminal_Intrazonal_TT" (Args, TermTimeFile, SPMATFile, SPMATCoreName, Pe
 	stat = UpdateProgressBar("Terminal Time and Intrazonal Time",1)
 
 	// Open SPMAT
-	on error, notfound goto badspmat
+	// on error, notfound goto badspmat
 	SPMATMtx = OpenMatrix(SPMATFile, "True")
 	SPMATNdx = GetMatrixIndex(SPMATMtx)
 	SPMATCore = CreateMatrixCurrency(SPMATMtx, SPMATCoreName, SPMATNdx[1], SPMATNdx[2],)
@@ -35,18 +35,18 @@ Macro "Terminal_Intrazonal_TT" (Args, TermTimeFile, SPMATFile, SPMATCoreName, Pe
 	NumTAZ = Row_labels.length
 
 	// Area type file (written by Area_Type macro)
-	on error, notfound goto badatype
+	// on error, notfound goto badatype
 	ATFile = Dir + "\\TAZ_ATYPE.asc"
 	ATView = OpenTable("ATView", "FFA", {ATFile, })
 
 	// open new matrix - get core labels (xref to ATYPE and SPMAT
-	on error, notfound goto badTTIntraFile
+	// on error, notfound goto badTTIntraFile
 	TermTimeMtx = OpenMatrix(TermTimeFile, "True")
 	TermTimeCore = CreateMatrixCurrency(TermTimeMtx, PeakFree, "Rows", "Columns",)
 	TermTimeNdx = GetMatrixIndex(TermTimeMtx)
 	Row_labels2 = GetMatrixIndexIDs(TermTimeMtx, TermTimeNdx[1])
 	
-	on error, notfound default
+	// on error, notfound default
 
 	// Area type file into vectors
 	//	vTAZ = GetDataVector(ATView + "|", "ZONE", {{"Sort Order", {"ZONE", "Ascending"}}, {"Match Matrix Index", {{"Row", "True"}, TermTimeMtx, TermTimeCore}}})  didn't work

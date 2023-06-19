@@ -14,14 +14,15 @@ Macro "HwySkim_Free" (Args)
 // 5/30/19, mk: There are now three distinct networks, use offpeak network for Free
 
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	netview = Args.[Offpeak Hwy Name].value	// here's the only change for new networks
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	hwy_file = Args.[Offpeak Hwy Name]	// here's the only change for new networks
+	{, , netview, } = SplitPath(hwy_file)
 	msg = null
 	SkimOK = 1
 
@@ -161,30 +162,34 @@ Macro "HwySkim_Free" (Args)
 
 
 	badnetbuild:
-	msg = msg + {"HwySkim_Free, Error building highway network"}
-			AppendToLogFile(1, "HwySkim_Free, Error building highway network")
-	SkimOK = 0
+	Throw("HwySkim_Free, Error building highway network")
+	// msg = msg + {"HwySkim_Free, Error building highway network"}
+	// 		AppendToLogFile(1, "HwySkim_Free, Error building highway network")
+	// SkimOK = 0
 	goto TCbadquit 
  
 	badnetsettings:
-	msg = msg + {"HwySkim_Free, Error in highway network settings"}
-			AppendToLogFile(1, "HwySkim_Free, Error in highway network settings")
-	SkimOK = 0
+	Throw("HwySkim_Free, Error in highway network settings")
+	// msg = msg + {"HwySkim_Free, Error in highway network settings"}
+	// 		AppendToLogFile(1, "HwySkim_Free, Error in highway network settings")
+	// SkimOK = 0
 	goto TCbadquit 
 
 	badskim:
-	msg = msg + {"HwySkim_Free, Error in highway skims"}
-	AppendToLogFile(1, "HwySkim_Free, Error in highway skims")
-	SkimOK = 0
+	Throw("HwySkim_Free, Error in highway skims")
+	// msg = msg + {"HwySkim_Free, Error in highway skims"}
+	// AppendToLogFile(1, "HwySkim_Free, Error in highway skims")
+	// SkimOK = 0
 	goto TCbadquit 
 
 	TCbadquit:
 	RunMacro("TCB Closing", ret_value, "TRUE" )
 
 	badTermIntra:
-	msg = msg + {TTrtn[2]}
-	AppendToLogFile(1, "HwySkim_Peak, Error in terminal_intrazonal time!")
-	SkimOK = 0
+	Throw(TTrtn[2][1])
+	// msg = msg + {TTrtn[2]}
+	// AppendToLogFile(1, "HwySkim_Peak, Error in terminal_intrazonal time!")
+	// SkimOK = 0
 	goto quit 
 
 
