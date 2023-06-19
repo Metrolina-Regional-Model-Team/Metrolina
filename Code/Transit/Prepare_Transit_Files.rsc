@@ -12,15 +12,15 @@ macro "Prepare_Transit_Files" (Args)
 //Renamed - Prepare_Transit_Files.rsc
 	
 	
-	RunYear = Args.[Run Year].value
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	RunYear = Args.[Run Year]
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	msg = null
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter Prepare Transit Files " + datentime)
@@ -48,33 +48,38 @@ macro "Prepare_Transit_Files" (Args)
 
 	if ok1[1] = 0 
 		then do
-			msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
-			msg = msg + ok1[2]
-			goto badquit
+			Throw("Prepare Transit Files - error return from Mode Split Controls")
+			// msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
+			// msg = msg + ok1[2]
+			// goto badquit
 		end	
 	if ok2[1] = 0 
 		then do
-			msg = msg + {"Prepare Transit Files - error return from ModeChoice Files"}
-			msg = msg + ok1[2]
-			goto badquit
+			Throw("Prepare Transit Files - error return from ModeChoice Files")
+			// msg = msg + {"Prepare Transit Files - error return from ModeChoice Files"}
+			// msg = msg + ok1[2]
+			// goto badquit
 		end	
 	if ok3[1] = 0 
 		then do
-			msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
-			msg = msg + ok3[2]
-			goto badquit
+			Throw("Prepare Transit Files - error return from Mode Split Controls")
+			// msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
+			// msg = msg + ok3[2]
+			// goto badquit
 		end	
 	if ok4[1] = 0 
 		then do
-			msg = msg + {"Prepare Transit Files - error return from Transit Skims Output Matrices"}
-			msg = msg + ok4[2]
-			goto badquit
+			Throw("Prepare Transit Files - error return from Transit Skims Output Matrices")
+			// msg = msg + {"Prepare Transit Files - error return from Transit Skims Output Matrices"}
+			// msg = msg + ok4[2]
+			// goto badquit
 		end	
 	if ok5[1] = 0 
 		then do
-			msg = msg + {"Prepare Transit Files - error return from Create Mode Split Output Matrices"}
-			msg = msg + ok5[2]
-			goto badquit
+			Throw("Prepare Transit Files - error return from Create Mode Split Output Matrices")
+			// msg = msg + {"Prepare Transit Files - error return from Create Mode Split Output Matrices"}
+			// msg = msg + ok5[2]
+			// goto badquit
 		end	
 	
 	datentime = GetDateandTime()

@@ -3,11 +3,11 @@ Macro "Update_Drive_Skims_Mtx" (time_period,transit_mode, access_mode, Args)
 	shared route_file, routename, net_file, link_lyr, node_lyr
 
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File]
+	// SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 
 	msg = null
 	UpdateDriveSkimOK = 1
@@ -602,24 +602,28 @@ goto quit
 done:
 
 	badmerge:
-	msg = msg + {"Update_Drive_Skim_Mtx - Error merging matrices"}
-	AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error merging matrices")
-	goto badquit
+	Throw("Update_Drive_Skim_Mtx - Error merging matrices")
+     // msg = msg + {"Update_Drive_Skim_Mtx - Error merging matrices"}
+	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error merging matrices")
+	// goto badquit
 
 	badfill:
-	msg = msg + {"Update_Drive_Skim_Mtx - Error filling matrices"}
-	AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error filling matrices")
-	goto badquit
+     Throw("Update_Drive_Skim_Mtx - Error filling matrices")
+	// msg = msg + {"Update_Drive_Skim_Mtx - Error filling matrices"}
+	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error filling matrices")
+	// goto badquit
 
 	nofortran:
-	msg = msg + {"Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing"}
-	AppendToLogFile(2, "Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
-	goto badquit
+     Throw("Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
+	// msg = msg + {"Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing"}
+	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
+	// goto badquit
 
 	badfortran:
-	msg = msg + {"Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !"}
-	AppendToLogFile(2, "Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
-	goto badquit
+     Throw("Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
+	// msg = msg + {"Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !"}
+	// AppendToLogFile(2, "Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
+	// goto badquit
 
 	badquit:
     RunMacro("TCB Closing", 0, "TRUE" ) 

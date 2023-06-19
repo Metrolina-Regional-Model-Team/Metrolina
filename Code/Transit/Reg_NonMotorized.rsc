@@ -4,16 +4,17 @@ Macro "Reg_NonMotorized" (Args)
 // McLelland - Sept, 2015
 // 5/30/19, mk: There are now three distinct networks, use offpeak for Nonmotorized
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	theyear = Args.[Run Year].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	netname = Args.[Offpeak Hwy Name].value
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 	msg = null
 	RegNonMotorizedOK = 1
 
@@ -120,9 +121,10 @@ Macro "Reg_NonMotorized" (Args)
   
 
 	on error do
-		msg = msg + {"Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template"}
-		AppendToLogFile(1, "Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
-	    RegNonMotorizedOK = 0
+		Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
+		// msg = msg + {"Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template"}
+		// AppendToLogFile(1, "Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
+	    // RegNonMotorizedOK = 0
 	end
 
 // --- Copy TR_NonMotorized Matrix from the Template Directory

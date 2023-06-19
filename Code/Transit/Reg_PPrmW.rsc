@@ -5,18 +5,19 @@ Macro "Reg_PPrmW" (Args)
 
 	shared route_file, routename, net_file, link_lyr, node_lyr
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	taz_file = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
-	netname = Args.[Offpeak Hwy Name].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	taz_file = Args.[TAZ File]
+	theyear = Args.[Run Year]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 		
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	RegPPrmWOK = 1
 	msg = null
 
@@ -42,8 +43,9 @@ Macro "Reg_PPrmW" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 
@@ -105,7 +107,7 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 	Opts = RunMacro("set_tnet", "peak", "premium", "walk", Dir)
       ret_value = RunMacro("TCB Run Operation", 2, "Transit Network Setting PF", Opts)
 
-	if !ret_value then goto badtransettings
+	if !ret_value then Throw("Reg_PPrmW - Error return from transit network settings")
 
 // ----------------------------------- STEP 3: Transit Skim Path Finder  -----------------------------------
 
@@ -476,31 +478,35 @@ goto quit
 
 
 	badbuildtrannet:
-	msg = msg + {"Reg_PPrmW - Error return build transit network"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return build transit network") 
-	goto badquit
+	Throw("Reg_PPrmW - Error return build transit network")
+	// msg = msg + {"Reg_PPrmW - Error return build transit network"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return build transit network") 
+	// goto badquit
 
 	badtransettings:
-	msg = msg + {"Reg_PPrmW - Error return from transit network settings"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return from transit network settings") 
-	goto badquit
+	// msg = msg + {"Reg_PPrmW - Error return from transit network settings"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return from transit network settings") 
+	// goto badquit
 
 	badtranskim:
-	msg = msg + {"Reg_PPrmW - Error return from transit network skims"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return from transit network skims")
-	goto badquit
+	Throw("Reg_PPrmW - Error return from transit network skims")
+	// msg = msg + {"Reg_PPrmW - Error return from transit network skims"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return from transit network skims")
+	// goto badquit
 
 	badmatrixop:
-	msg = msg + {"Reg_PPrmW - Error in matrix operations"}
-	AppendToLogFile(1, "Reg_PPrmW - Error in matrix operations")
-	goto badquit
+	Throw("Reg_PPrmW - Error in matrix operations")
+	// msg = msg + {"Reg_PPrmW - Error in matrix operations"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error in matrix operations")
+	// goto badquit
 
 	badxpr_stopflags:
-	msg = msg + {rtnmsg}
-	AppendToLogFile(2, rtnmsg)
-	msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
-	goto badquit
+	Throw(rtnmsg)
+	// msg = msg + {rtnmsg}
+	// AppendToLogFile(2, rtnmsg)
+	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
+	// goto badquit
 
 	badquit:
 	msg = msg + {"badquit: Last error message= " + GetLastError()}

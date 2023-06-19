@@ -4,11 +4,12 @@ Macro "XPR_StopFlags"  (Args)
 //	Updated from AECOM xpr_stopflags for TC ver 7.
 // 5/30/19, mk: There are now three distinct networks, use offpeak for Free
 
-	Dir = Args.[Run Directory].value
-	theyear = Args.[Run Year].value
-	taz_file = Args.[TAZ File].value
+	Dir = Args.[Run Directory]
+	theyear = Args.[Run Year]
+	taz_file = Args.[TAZ File]
 	yearnet = right(theyear,2)
-	netname = Args.[Offpeak Hwy Name].value
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 
 
 	xprflagerr = 1
@@ -148,8 +149,9 @@ Macro "XPR_StopFlags"  (Args)
 	if n_prm_stop > 0
 		then SetRecordsValues("StopsRoutesView|Premium Stops", {{"PRM_FLAG"}, null}, "Value", {1},)
 		else do
-			xprflagerr = 2
-			msg = msg + {"XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)"}
+			Throw("XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)")
+			// xprflagerr = 2
+			// msg = msg + {"XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)"}
 		end
 
 	
@@ -174,8 +176,9 @@ Macro "XPR_StopFlags"  (Args)
 	n_taz_xpr = SelectByQuery("TAZ XPR Flag", "Several", query, )
 	if n_taz_xpr = 0 
 		then do
-			xprflagerr = 2
-			msg = msg + {"XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG"}
+			Throw("XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG")
+			// xprflagerr = 2
+			// msg = msg + {"XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG"}
 		end
 		
 	// Back to route stops layer, still joined to routes.dbf
@@ -210,15 +213,17 @@ Macro "XPR_StopFlags"  (Args)
 	if n_ExpIn > 0
 		then SetRecordsValues("StopsRoutesView|Express Inbound", {{"XPR_FLAG"}, null}, "Value", {2},)  //Alight only
 		else do 
-			xprflagerr = 2
-			msg = msg + {"XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)"}
+			Throw("XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)")
+			// xprflagerr = 2
+			// msg = msg + {"XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)"}
 		end
 
 	if n_ExpOut > 0
 		then SetRecordsValues("StopsRoutesView|Express Outbound", {{"XPR_FLAG"}, null}, "Value", {1},)  //Board only
 		else do 
-			xprflagerr = 2
-			msg = msg + {"XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)"}
+			Throw("XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)")
+			// xprflagerr = 2
+			// msg = msg + {"XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)"}
 		end
 
 	CloseView(zone_vw)
@@ -230,8 +235,9 @@ Macro "XPR_StopFlags"  (Args)
 
 	badinitialize:
 	xprflagerr = 3
-	msg = msg + {"XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG"}
-	goto quit
+	Throw("XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG")
+	// msg = msg + {"XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG"}
+	// goto quit
 
 	quit:
 		return({xprflagerr, msg})

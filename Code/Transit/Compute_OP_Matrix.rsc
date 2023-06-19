@@ -3,12 +3,12 @@ Macro "Compute_OP_Matrix"(time_period,transit_mode,access_mode, Args)
     shared route_file, routename, net_file, link_lyr, node_lyr
 
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 		
 	msg = null
 	ComputeOPMatrixOK = 1
@@ -751,29 +751,34 @@ end
 goto quit
 
 badaddfield:
-	msg = msg + {"Compute_OP_Matrix - Error adding field to node layer"}
-	AppendToLogFile(2, "Compute_OP_Matrix - Error adding field to node layer")
-	goto badquit
+    Throw("Compute_OP_Matrix - Error adding field to node layer")
+	// msg = msg + {"Compute_OP_Matrix - Error adding field to node layer"}
+	// AppendToLogFile(2, "Compute_OP_Matrix - Error adding field to node layer")
+	// goto badquit
 
 badfill:
-	msg = msg + {"Compute_OP_Matrix - Error filling matrix"}
-	AppendToLogFile(2, "Compute_OP_Matrix - Error filling matrix")
-	goto badquit
+    Throw("Compute_OP_Matrix - Error filling matrix")
+	// msg = msg + {"Compute_OP_Matrix - Error filling matrix"}
+	// AppendToLogFile(2, "Compute_OP_Matrix - Error filling matrix")
+	// goto badquit
 
 badhwynet:
-	msg = msg + {"Compute_OP_Matrix - Error building highway network"}
-	AppendToLogFile(2, "Compute_OP_Matrix - Error building highway network")
-	goto badquit
+    Throw("Compute_OP_Matrix - Error building highway network")
+	// msg = msg + {"Compute_OP_Matrix - Error building highway network"}
+	// AppendToLogFile(2, "Compute_OP_Matrix - Error building highway network")
+	// goto badquit
 
 badhwysettings:
-	msg = msg + {"Compute_OP_Matrix - Error in highway network settings"}
-	AppendToLogFile(2, "Compute_OP_Matrix - Error in highway network settings")
-	goto badquit
+    Throw("Compute_OP_Matrix - Error in highway network settings")
+	// msg = msg + {"Compute_OP_Matrix - Error in highway network settings"}
+	// AppendToLogFile(2, "Compute_OP_Matrix - Error in highway network settings")
+	// goto badquit
 
 badtcspmat:
-	msg = msg + {"Compute_OP_Matrix - Error creating highway skim (TCSPMAT)"}
-	AppendToLogFile(2, "Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
-	goto badquit
+    Throw("Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
+	// msg = msg + {"Compute_OP_Matrix - Error creating highway skim (TCSPMAT)"}
+	// AppendToLogFile(2, "Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
+	// goto badquit
 
 badquit:
 	ComputeOPMatrixOK = 0
