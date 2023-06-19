@@ -88,7 +88,7 @@ Macro "CreateDir" (Args)
 // Creates run directory and subdirectories, fills files from MRM
 
     MRMUser = Args.[MRM Directory]
-    METUser = Args.MetrolinaFolder
+    METUser = Args.[MET Directory]
     DirUser = Args.[Run Directory]
     YearUser = Args.[Run Year]
 
@@ -410,7 +410,7 @@ Macro "GetTAZ" (Args)
     on error goto notaz
 
     MRMUser = Args.[MRM Directory]
-    METUser = Args.MetrolinaFolder
+    METUser = Args.[MET Directory]
     TAZArgs = Args.[TAZ File]
     TAZUser = TAZArgs
 

@@ -23,13 +23,13 @@
                 "Type": "Folder",
                 "Value": "%Model Folder%"
             }
-        Args.MetrolinaFolder = {
+        Args.[MET Directory] = {
                 "Type": "Folder",
                 "Value": "%Base Folder%\\Metrolina"
             }    
         Args.[Run Directory] = {
                 "Type": "Folder",
-                "Value": "%MetrolinaFolder%\\2018"
+                "Value": "%MET Directory%\\2018"
             }
         Args.InputFolder = {
                 "Type": "Folder",
@@ -49,7 +49,7 @@
             }
         Args.[LandUse File] = {
                 "Type": "file",
-                "Value": "%MetrolinaFolder%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
+                "Value": "%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
             }
 
     Section = "Networks"

@@ -9,17 +9,16 @@ Macro "Area_Type" (Args)
 //	Uses TAZNeighbors file replacing zone_pct 
 
 	on error goto badend
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
-	
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
-	METDir = Args.[MET Directory].value
-	SEDataFile = Args.[LandUse file].value
-	TAZFile = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
+	Dir = Args.[Run Directory]
+	METDir = Args.[MET Directory]
+	SEDataFile = Args.[LandUse file]
+	TAZFile = Args.[TAZ File]
+	theyear = Args.[Run Year]
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter Area_Type2 " + datentime)
