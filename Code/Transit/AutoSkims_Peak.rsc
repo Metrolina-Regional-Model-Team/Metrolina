@@ -5,18 +5,19 @@ Macro "AutoSkims_Peak" (Args)
 // McLelland - Sept, 2015
 // 5/30/19, mk: There are now three distinct networks, use AM network for Peak
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	theyear = Args.[Run Year].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	netname = Args.[AM Peak Hwy Name].value
+	hwy_file = Args.[AM Peak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	AutoSkimsPeakOK = 1
 	msg = null
 
@@ -343,34 +344,39 @@ spmatafterHOV:
 goto quit
 
 badpprmd:
-	msg = msg + {"AutoSkims_Peak - error creating spmat_pprmd"}
-	AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pprmd")
-	AutoSkimsPeakOK = 0
-    goto badquit
+	Throw("AutoSkims_Peak - error creating spmat_pprmd")
+	// msg = msg + {"AutoSkims_Peak - error creating spmat_pprmd"}
+	// AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pprmd")
+	// AutoSkimsPeakOK = 0
+    // goto badquit
 
 badpxprd:
-	msg = msg + {"AutoSkims_Peak - error creating spmat_pxprd"}
-	AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pxprd")
-	AutoSkimsPeakOK = 0
-    goto badquit
+	Throw("AutoSkims_Peak - error creating spmat_pxprd")
+	// msg = msg + {"AutoSkims_Peak - error creating spmat_pxprd"}
+	// AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pxprd")
+	// AutoSkimsPeakOK = 0
+    // goto badquit
 
 badhwybldhov:
-	msg = msg + {"AutoSkims_Peak - error building highway network - hov network"}
-	AppendToLogFile(1, "AutoSkims_Peak - error building highway network - hov network")
-	AutoSkimsPeakOK = 0
-    goto badquit
+	Throw("AutoSkims_Peak - error building highway network - hov network")
+	// msg = msg + {"AutoSkims_Peak - error building highway network - hov network"}
+	// AppendToLogFile(1, "AutoSkims_Peak - error building highway network - hov network")
+	// AutoSkimsPeakOK = 0
+    // goto badquit
 
 badhwysethov:
-	msg = msg + {"AutoSkims_Peak - error highway network settings - hov network"}
-	AppendToLogFile(1, "AutoSkims_Peak - error highway network settings - hov network")
-	AutoSkimsPeakOK = 0
-	goto badquit
+	Throw("AutoSkims_Peak - error highway network settings - hov network")
+	// msg = msg + {"AutoSkims_Peak - error highway network settings - hov network"}
+	// AppendToLogFile(1, "AutoSkims_Peak - error highway network settings - hov network")
+	// AutoSkimsPeakOK = 0
+	// goto badquit
 
 badspmathovpeak:
-	msg = msg + {"AutoSkims_Peak - error highway skims - peak speed - hov network, free speed"}
-	AppendToLogFile(1, "AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
-	AutoSkimsPeakOK = 0
-    goto badquit
+	Throw("AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
+	// msg = msg + {"AutoSkims_Peak - error highway skims - peak speed - hov network, free speed"}
+	// AppendToLogFile(1, "AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
+	// AutoSkimsPeakOK = 0
+    // goto badquit
 
 badquit:
     RunMacro("TCB Closing", 0, "TRUE" ) 
