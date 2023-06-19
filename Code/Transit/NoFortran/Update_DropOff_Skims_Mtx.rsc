@@ -2,11 +2,11 @@ Macro "Update_DropOff_Skims_Mtx" (time_period,transit_mode, access_mode, Args)
 
 	shared route_file, routename, net_file, link_lyr, node_lyr
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File]
+	// SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 
 	msg = null
 	UpdateDropSkimOK = 1
