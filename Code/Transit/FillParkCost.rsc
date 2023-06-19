@@ -3,16 +3,16 @@ Macro "FillParkCost" (Args)
 // Edited for new User Interface - Aug, 2015
 //	Repaired external station segment - JWM, June, 2016
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	se_file = Args.[LandUse File].value
-	theyear = Args.[Run Year].value
-	TAZFile = Args.[TAZ File].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	se_file = Args.[LandUse File]
+	theyear = Args.[Run Year]
+	TAZFile = Args.[TAZ File]
 	
 	msg = null
 	FillParkCostOK = 1
@@ -28,10 +28,11 @@ Macro "FillParkCost" (Args)
 	exist = GetFileInfo(base_file)
 	if exist = null
 		then do
-			msg = msg + {"FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found"}
-			AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
-			FillParkCostOK = 0
-			goto badend
+            Throw("FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
+			// msg = msg + {"FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found"}
+			// AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
+			// FillParkCostOK = 0
+			// goto badend
 		end
 
     // -- create a table to store peak (average weekday) parking cost
@@ -248,10 +249,11 @@ writecost:
 	exist = GetFileInfo(TAZIDFile)
 	if exist = null
 		then do
-			msg = msg + {"FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
-			AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
-			FillParkCostOK = 0
-			goto badend
+            Throw("FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
+			// msg = msg + {"FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
+			// AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
+			// FillParkCostOK = 0
+			// goto badend
 		end
 	TAZID = OpenTable("TAZID", "FFA", {TAZIDFile,})
 	selext = "Select * where INT_EXT = 2"
@@ -359,8 +361,9 @@ CopyMatrixStructure({templatecore}, {{"File Name", Dir + "\\Autoskims\\parkingco
 
     badquit:
         FillParkCostOK = 0
-        msg = msg + {"FillParkCost:  Error in TCB Fill Matrices"}
-		AppendToLogFile(1, "FillParkCost:  Error in TCB Fill Matrices")
+        Throw("FillParkCost:  Error in TCB Fill Matrices")
+        // msg = msg + {"FillParkCost:  Error in TCB Fill Matrices"}
+		// AppendToLogFile(1, "FillParkCost:  Error in TCB Fill Matrices")
         RunMacro("TCB Closing", ret_value, True )
         return({FillParkCostOK, msg})
         

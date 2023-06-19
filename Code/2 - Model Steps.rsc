@@ -11,7 +11,8 @@ Macro "Initial Processing" (Args)
 endmacro
 
 Macro "Skimming" (Args)
-    RunMacro("HwySkim_Free", Args)
-    RunMacro("HwySkim_Peak", Args)
+    // RunMacro("HwySkim_Free", Args)
+    // RunMacro("HwySkim_Peak", Args)
+    RunMacro("FillParkCost", Args)
     return(1)
 endmacro
