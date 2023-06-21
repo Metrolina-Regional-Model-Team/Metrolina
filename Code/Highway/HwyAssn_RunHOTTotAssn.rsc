@@ -15,7 +15,7 @@ Macro "HwyAssn_RunHOTTotAssn" (Args)
 	AppendToLogFile(1, "Enter HwyAssnRunHOTTotAssn: " + datentime)
 	AppendToLogFile(2, "Aggregate highway assignments for : " + assntype)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	AssnSubDir = Dir + "\\hwyassn\\HOT"
 	assntype = "HOT3+"
 	

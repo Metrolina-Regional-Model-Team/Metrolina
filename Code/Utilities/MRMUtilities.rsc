@@ -25,7 +25,7 @@ DBox "MRMUtilities" (Args) , top Title: "MRM Utilities"
 
 	Text " " same, after, , 0.5
 	Button "Transit Change Hwy" same, after, 25 Help:"Set directory and highway system for transys.rts" 	do
-		Dir = Args.[Run Directory].value
+		Dir = Args.[Run Directory]
 		HwyName = Args.[Hwy Name].value
 		on error goto tranchhwyerr				
 

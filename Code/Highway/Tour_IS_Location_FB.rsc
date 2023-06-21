@@ -13,8 +13,8 @@ Macro "Tour_IS_Location_FB" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 	
-	sedata_file = Args.[LandUse file].value
-	Dir = Args.[Run Directory].value
+	sedata_file = Args.[LandUse file]
+	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year].value
 	curiter = Args.[Current Feedback Iter].value
 	msg = null

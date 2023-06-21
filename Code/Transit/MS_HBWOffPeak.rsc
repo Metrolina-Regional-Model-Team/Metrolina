@@ -7,7 +7,7 @@ Macro "MS_HBWOffPeak" (Args)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year].value
 	
 	msg = null

@@ -7,7 +7,7 @@ DBox "AssnonExistingTripTables" (Args) center, center Title: "Highway Assignment
 		dim JobsToRun[1]
 		dim hwyassnarguments[11]
 
-		Dir = Args.[Run Directory].Value
+		Dir = Args.[Run Directory]
 		BaseYear = Args.[Run Year].Value
 		BaseHwyNameAM = Args.[AM Peak Hwy Name].value
 		BaseHwyNamePM = Args.[PM Peak Hwy Name].value

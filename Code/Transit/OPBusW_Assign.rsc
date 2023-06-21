@@ -9,7 +9,7 @@ Macro "OPBusW_Assign" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	taz_file = Args.[TAZ File].value
 	theyear = Args.[Run Year].value
 	netname = Args.[Offpeak Hwy Name].value

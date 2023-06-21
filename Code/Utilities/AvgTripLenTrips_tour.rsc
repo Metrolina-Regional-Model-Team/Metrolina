@@ -3,7 +3,7 @@ macro "AvgTripLenTrips_tour" (Args)
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	METDir = Args.[MET Directory].value
 	msg = null
 	atltripsOK = 1

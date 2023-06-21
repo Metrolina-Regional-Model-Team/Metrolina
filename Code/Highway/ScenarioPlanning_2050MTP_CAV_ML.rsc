@@ -46,7 +46,8 @@ macro "ScenarioPlanning_2050MTP_CAV_ML" (Args, hwyassnarguments, timeperiod)
 		netview = Args.[PM Peak Hwy Name].value
 	end
 	else if timeperiod = "Offpeak" then do	
-		netview = Args.[Offpeak Hwy Name].value
+		hwy_file = Args.[Offpeak Hwy Name]
+	{, , netview, } = SplitPath(hwy_file)
 	end
 	else do
 		goto badtimeperiod

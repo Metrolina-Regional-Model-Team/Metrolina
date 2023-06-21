@@ -9,7 +9,7 @@ Macro "Transit_Input" (Args)
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	
 	TranInputOK = 1
 	msg = null

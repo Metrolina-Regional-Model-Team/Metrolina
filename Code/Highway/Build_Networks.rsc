@@ -149,7 +149,7 @@ init do
 	createhwy = 0
 	createtrn = 0
 	MRMDir = Args.[MRM Directory].value
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	RunYear = Args.[Run Year].value
 	TAZFile = Args.[TAZ File].value
 	AMPkHwyName = Args.[AM Peak Hwy Name].value		

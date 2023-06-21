@@ -11,8 +11,8 @@ macro "Tour_XX" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 	
-	sedata_file = Args.[LandUse file].value
-	Dir = Args.[Run Directory].value
+	sedata_file = Args.[LandUse file]
+	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory].value
 	theyear = Args.[Run Year].value
 	msg = null

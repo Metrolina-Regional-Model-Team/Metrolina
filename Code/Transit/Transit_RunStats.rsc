@@ -9,7 +9,7 @@ Macro "Transit_RunStats" (Args)
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter Transit_RunStats: " + datentime)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	TrackIDFile = Dir + "\\Track_ID.dbf"
 	RouteOutFile = Dir  + "\\Report\\RouteOut.dbf"
 	OpStatsFile = Dir  + "\\Report\\Operation_Statistics.dbf"

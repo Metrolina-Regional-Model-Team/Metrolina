@@ -13,8 +13,8 @@ Macro "Tour_ToD1" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 	
-	sedata_file = Args.[LandUse file].value
-	Dir = Args.[Run Directory].value
+	sedata_file = Args.[LandUse file]
+	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year].value
 //	net_file = Args.[Hwy Name].value
 	msg = null

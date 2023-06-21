@@ -9,7 +9,7 @@ Macro "HwyAssn_RunNight" (Args)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	msg = null
 	HwyAssnOK = 1
 

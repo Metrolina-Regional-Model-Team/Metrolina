@@ -6,7 +6,7 @@
 Macro "tdm" (Args)
 Body:
     // model = FlowChart( { StartNodes } , { EndNodes } , Description)
-    model = FlowChart({"Initial Processing"},{"Skimming"},)
+    model = FlowChart({"Initial Processing"},{"Trip Generation"},)
     //
     // Nodes
     //
@@ -14,12 +14,14 @@ Body:
     //
     FlowChartNode(model,"Initial Processing",,,)
     FlowChartNode(model,"Skimming",,,)
+    FlowChartNode(model,"Trip Generation",,,)
     //
     // Links
     //
     // FlowChartLink(model , FromNode , ToNode , Condition , Description , IsFeedbackLoop)
     //
     FlowChartLink(model,"Initial Processing","Skimming",True,,)
+    FlowChartLink(model,"Skimming","Trip Generation",True,,)
     Return(model)
 EndMacro
 
@@ -36,6 +38,14 @@ Macro "Skimming" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
         {"MacroNames", {"Skimming"}}
+    }
+EndMacro
+
+
+Macro "Trip Generation" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Trip Generation"}}
     }
 EndMacro
 

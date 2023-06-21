@@ -33,7 +33,7 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 	Text " " same, after, , 1.0
 
 	Button " Save Args " 23.5, after, 15 do
-		Dir = Args.[Run Directory].value
+		Dir = Args.[Run Directory]
 		ArgsInfo = GetFileInfo(Dir + "\\Arguments.args")
 		if ArgsInfo = null
 			then do

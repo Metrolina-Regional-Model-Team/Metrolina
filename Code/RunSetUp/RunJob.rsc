@@ -420,7 +420,7 @@ Macro "RunJob" (Args, JobsToRun)
 								  
 	    }
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 	msg = null

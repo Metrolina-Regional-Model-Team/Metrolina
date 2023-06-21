@@ -11,7 +11,7 @@ macro "Aggregate_TripGen" (Args)
 
 	METDir = Args.[MET Directory].value
 	TAZFile = Args.[TAZ File].value
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 //	netview = Args.[Hwy Name].value
 	msg = null
 

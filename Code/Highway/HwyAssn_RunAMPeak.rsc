@@ -11,7 +11,7 @@ Macro "HwyAssn_RunAMPeak" (Args)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	msg = null
 
 	curiter = Args.[Current Feedback Iter].value

@@ -8,8 +8,9 @@ Macro "ExtStaforTripGen" (Args)
 	// Look to get rid of Dist_to_CBD - I can't find it used anywhere
 // 5/30/19, mk: There are now three distinct networks, use offpeak 
 
-	Dir = Args.[Run Directory].value
-	netview = Args.[Offpeak Hwy Name].value
+	Dir = Args.[Run Directory]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netview, } = SplitPath(hwy_file)
 	SPMATFile = Dir + "\\Skims\\SPMAT_Free.mtx"
 	SPMATCoreName = "Length (skim)"
 	CBDProxy = 10003
@@ -23,9 +24,10 @@ Macro "ExtStaforTripGen" (Args)
 	// Get the scope of a geographic file
 	info = GetDBInfo(Dir + "\\"+netview+".dbd")
 	if info = null then do
-		msg = msg + {"ExtStaforTripGen: " + netview + ".dbd does not exist in this directory"}
-//		AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
-		goto badnetview
+		Throw("ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
+// 		msg = msg + {"ExtStaforTripGen: " + netview + ".dbd does not exist in this directory"}
+// //		AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
+// 		goto badnetview
 		end
 	else scope = info[1]
 
@@ -94,7 +96,8 @@ Macro "ExtStaforTripGen" (Args)
 					if MtxTAZ[i] = aExtSta[j] then goto gothit
 				end
 				// no hit
-				msg = msg + {"ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array"}
+				Throw("ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array")
+				// msg = msg + {"ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array"}
 			//	AppendToLogFile(1, ""ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
 				ExtStaOK = 0
 				gothit:
@@ -103,7 +106,8 @@ Macro "ExtStaforTripGen" (Args)
 
 	if CBDNdx = 0 
 		then do
-			msg = msg + {"ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free"}
+			Throw("ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
+			// msg = msg + {"ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free"}
 		//	AppendToLogFile(1, ""ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
 			ExtStaOK = 0
 		end
@@ -206,16 +210,18 @@ Macro "ExtStaforTripGen" (Args)
 	goto done
 
 	badextsta:
-	msg = msg + {"ExtStaforTripGen: " + netview + ".dbd has no external stations"}
-//	AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd has no external stations")
-	showarray(msg)
-	goto done
+	Throw("ExtStaforTripGen: " + netview + ".dbd has no external stations")
+// 	msg = msg + {"ExtStaforTripGen: " + netview + ".dbd has no external stations"}
+// //	AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd has no external stations")
+// 	showarray(msg)
+// 	goto done
 
 	badspmat:
-	msg = msg + {"ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx"}
-//	AppendToLogFile(1, ""ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
-	showarray(msg)
-	goto done
+	Throw("ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
+// 	msg = msg + {"ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx"}
+// //	AppendToLogFile(1, ""ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
+// 	showarray(msg)
+// 	goto done
 
 	baddone:
 	showarray(msg)

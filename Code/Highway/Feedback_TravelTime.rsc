@@ -12,7 +12,7 @@ Macro "Feedback_TravelTime" (Args)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	netview = Args.[AM Peak Hwy Name].value
 	timeweight = Args.[TimeWeight].value
 	distweight = Args.[DistWeight].value

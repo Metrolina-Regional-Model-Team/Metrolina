@@ -19,7 +19,7 @@ Macro "HighwayCalibrationStats_tour" (Args)
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	METDir = Args.[MET Directory].value
 	msg = null
 	HwyCalibStatsOK = 1

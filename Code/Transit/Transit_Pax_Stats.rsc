@@ -1,7 +1,7 @@
 Macro "Transit_Pax_Stats" (Args)
 // Generate Report\\RouteOut.dbf - Passenger hours and passenger miles
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 

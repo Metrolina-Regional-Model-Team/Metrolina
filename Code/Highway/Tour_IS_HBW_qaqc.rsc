@@ -12,10 +12,10 @@ Macro "Tour_IS" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 */	
-//	Dir = Args.[Run Directory].value
+//	Dir = Args.[Run Directory]
 	Dir = "C:\\SL_GR\\Metrolina\\2045"
 
-//	sedata_file = Args.[LandUse file].value
+//	sedata_file = Args.[LandUse file]
 	sedata_file = Dir + "\\LandUse\\SE_2045_200710_final"
 	
 	theyear = "2045"

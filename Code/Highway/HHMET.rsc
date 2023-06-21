@@ -21,8 +21,8 @@ Macro "HHMET" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 	
-	sedata_file = Args.[LandUse file].value
-	Dir = Args.[Run Directory].value
+	sedata_file = Args.[LandUse file]
+	Dir = Args.[Run Directory]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter HH Synthesis: " + datentime)
@@ -663,10 +663,11 @@ CloseView(hhdetail)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"HHMET: Error somewhere"}
-		AppendToLogFile(1, "HHMET: Error somewhere")
-		datentime = GetDateandTime()
-		AppendToLogFile(1, "Exit HHMET " + datentime)
+		Throw("HHMET: Error somewhere")
+		// msg = msg + {"HHMET: Error somewhere"}
+		// AppendToLogFile(1, "HHMET: Error somewhere")
+		// datentime = GetDateandTime()
+		// AppendToLogFile(1, "Exit HHMET " + datentime)
 
        	return({0, msg})
 

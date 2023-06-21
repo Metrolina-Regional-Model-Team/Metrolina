@@ -15,7 +15,7 @@ Macro "HwyAssn_RunTotAssn" (Args)
 	AppendToLogFile(1, "Enter Tot_Assn: " + datentime)
 	AppendToLogFile(2, "Aggregate highway assignments for : " + assntype)
 
-	Dir = Args.[Run Directory].value
+	Dir = Args.[Run Directory]
 	AssnSubDir = Dir + "\\hwyassn"
 	assntype = "base"
 	

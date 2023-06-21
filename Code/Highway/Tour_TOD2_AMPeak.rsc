@@ -10,8 +10,8 @@ Macro "Tour_TOD2_AMPeak" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 	
-	sedata_file = Args.[LandUse file].value
-	Dir = Args.[Run Directory].value
+	sedata_file = Args.[LandUse file]
+	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory].value
 	theyear = Args.[Run Year].value
 	net_file = Args.[Hwy Name].value
