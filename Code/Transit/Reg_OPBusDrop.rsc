@@ -629,46 +629,54 @@ goto quit
 //	if status = 0 then DeleteFile(Dir+"\\skims\\TR_Skim_opbusdrop.mtx")
 
 	badcomputeopmatrix:
-	msg = msg + {"Reg_OPBusDrop - Error return from Compute_OP_Matrix"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return from Compute_OP_Matrix") 
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
+	// msg = msg + {"Reg_OPBusDrop - Error return from Compute_OP_Matrix"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Compute_OP_Matrix") 
+	// goto badquit
 
 	badupskim:
-	msg = rtn_upskim[2] + {"Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx")
+	// msg = rtn_upskim[2] + {"Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
+	// goto badquit
 		
 	badparkflags:
-	msg = rtn_Pflags[2] + {"Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags") 
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags")
+	// msg = rtn_Pflags[2] + {"Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags") 
+	// goto badquit
 		
 	badbuildtrannet:
-	msg = msg + {"Reg_OPBusDrop - Error return build transit network"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return build transit network") 
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return build transit network")
+	// msg = msg + {"Reg_OPBusDrop - Error return build transit network"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return build transit network") 
+	// goto badquit
 
 	badtransettings:
-	msg = msg + {"Reg_OPBusDrop - Error return from transit network settings"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network settings") 
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return from transit network settings")
+	// msg = msg + {"Reg_OPBusDrop - Error return from transit network settings"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network settings") 
+	// goto badquit
 
 	badtranskim:
-	msg = msg + {"Reg_OPBusDrop - Error return from transit network skims"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network skims")
-	goto badquit
+	Throw("Reg_OPBusDrop - Error return from transit network skims")
+	// msg = msg + {"Reg_OPBusDrop - Error return from transit network skims"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network skims")
+	// goto badquit
 
 	badmatrixop:
-	msg = msg + {"Reg_OPBusDrop - Error in matrix operations"}
-	AppendToLogFile(1, "Reg_OPBusDrop - Error matrix operations")
-	goto badquit
+	Throw("Reg_OPBusDrop - Error in matrix operations")
+	// msg = msg + {"Reg_OPBusDrop - Error in matrix operations"}
+	// AppendToLogFile(1, "Reg_OPBusDrop - Error matrix operations")
+	// goto badquit
 
 	badxpr_stopflags:
-	msg = msg + {rtnmsg}
-	AppendToLogFile(2, rtnmsg)
-	msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
-	goto badquit
+	Throw("Reg_PPrmW - Error return from XPR_StopFlags")
+	// msg = msg + {rtnmsg}
+	// AppendToLogFile(2, rtnmsg)
+	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
+	// goto badquit
 
 	badquit:
 	msg = msg + {"badquit: Last error message= " + GetLastError()}
