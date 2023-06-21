@@ -2,11 +2,11 @@ Macro "Update_DropOff_Skims_Mtx" (time_period,transit_mode, access_mode, Args)
 
 	shared route_file, routename, net_file, link_lyr, node_lyr
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File]
+	// SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 
 	msg = null
 	UpdateDropSkimOK = 1
@@ -378,24 +378,28 @@ done:
 goto quit
 
 	badmerge:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Error merging matrices"}
-	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error merging matrices")
-	goto badquit
+     Throw("Update_Dropoff_Skim_Mtx - Error merging matrices")
+	// msg = msg + {"Update_Dropoff_Skim_Mtx - Error merging matrices"}
+	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error merging matrices")
+	// goto badquit
 
 	badfill:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Error filling matrices"}
-	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error filling matrices")
-	goto badquit
+     Throw("Update_Dropoff_Skim_Mtx - Error filling matrices")
+	// msg = msg + {"Update_Dropoff_Skim_Mtx - Error filling matrices"}
+	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error filling matrices")
+	// goto badquit
 
 	nofortran:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing"}
-	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
-	goto badquit
+     Throw("Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
+	// msg = msg + {"Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing"}
+	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
+	// goto badquit
 
 	badfortran:
-	msg = msg + {"Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !"}
-	AppendToLogFile(2, "Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
-	goto badquit
+     Throw("Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
+	// msg = msg + {"Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !"}
+	// AppendToLogFile(2, "Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
+	// goto badquit
 
 	badquit:
     RunMacro("TCB Closing", 0, "TRUE" ) 
