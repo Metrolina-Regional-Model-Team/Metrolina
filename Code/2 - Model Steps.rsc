@@ -19,6 +19,7 @@ Macro "Skimming" (Args)
     // RunMacro("AutoSkims_Peak", Args)
     // RunMacro("Reg_NonMotorized", Args)
     // RunMacro("Reg_PPrmW", Args)
-    RunMacro("Reg_PPrmD", Args)
+    // RunMacro("Reg_PPrmD", Args)
+    RunMacro("Reg_PPrmDrop", Args)
     return(1)
 endmacro
