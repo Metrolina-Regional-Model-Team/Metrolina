@@ -1,7 +1,7 @@
 Macro "ScreenLine" (Args)
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory].value
 	msg = null

@@ -13,8 +13,8 @@ Macro "Transit_Boardings" (Args)
 
 	Dir = Args.[Run Directory].value
 	netname = Args.[Offpeak Hwy Name].value
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	msg = null
 	TransitBoardsOK = 1

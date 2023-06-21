@@ -327,8 +327,8 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 
 	Dir = Args.[Run Directory].value
 	MetDir = Args.[MET Directory].value
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	msg = null
 
 	EnableProgressBar("Metrolina Regional TOUR Model", 2)	// Double progress bar

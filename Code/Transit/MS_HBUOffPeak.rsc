@@ -2,8 +2,8 @@ Macro "MS_HBUOffPeak" (Args)
 
 // Macro to call HBU_OffPeak Modechoice ONLY - Not a part of standard conformity run (Conformity run uses MS_OffRunPeak)
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

@@ -3,8 +3,8 @@ Macro "Market_Segment" (Args)
 	//Altered for new UI - McLelland, Jan 2016
 
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory].value
 		
@@ -25,7 +25,7 @@ Macro "Market_Segment" (Args)
 
      pos = ArrayPosition(core_list, {"CBD Attractions Flag"}, )
 
-// If there isn’t one, add it
+// If there isnï¿½t one, add it
      if pos = 0 then AddMatrixCore(OM, "CBD Attractions Flag")
 
 // Copy TAZ_AtYPE to new file so columns can be added without screwing up mode split .def file call to TAZ_ATYPE

@@ -10,8 +10,8 @@ Macro "PPrmDrop_Assign" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	taz_file = Args.[TAZ File].value
 	theyear = Args.[Run Year].value
 	netname = Args.[AM Peak Hwy Name].value

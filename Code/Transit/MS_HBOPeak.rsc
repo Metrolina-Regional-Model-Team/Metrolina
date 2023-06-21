@@ -2,8 +2,8 @@ Macro "MS_HBOPeak" (Args)
 
 // Macro to call HBO_Peak Modechoice ONLY - Not a part of standard conformity run (Conformity run uses MS_RunPeak)
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

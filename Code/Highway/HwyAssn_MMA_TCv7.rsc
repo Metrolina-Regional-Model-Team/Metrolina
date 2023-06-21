@@ -19,13 +19,13 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 
 //*********************************************************************************************************************
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	timeweight = Args.[TimeWeight].value
 	distweight = Args.[DistWeight].value
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback].value

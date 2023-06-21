@@ -7,8 +7,8 @@ Macro "TOD2_COM_MTK_HTK" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	msg = null
 	TOD2_COMMTKHTKOK = 1
 

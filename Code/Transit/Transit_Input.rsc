@@ -6,8 +6,8 @@ Macro "Transit_Input" (Args)
 	// Juvva, August, 2015
 	// Updated for new UI - McLelland, Jan, 2016
 	
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory].value
 	

@@ -25,6 +25,7 @@ Macro "Skimming" (Args)
     // RunMacro("Reg_PBusD", Args)
     // RunMacro("Reg_PBusDrop", Args)
     // RunMacro("Reg_OPPrmW", Args)
-    RunMacro("Reg_OPPrmD", Args)
+    // RunMacro("Reg_OPPrmD", Args)
+    RunMacro("Reg_OPPrmDrop", Args)
     return(1)
 endmacro

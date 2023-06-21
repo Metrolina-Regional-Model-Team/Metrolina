@@ -8,8 +8,8 @@ Macro "TOD2_PMPeak" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	msg = null
 	TOD2_PMPeakOK = 1
 

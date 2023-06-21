@@ -7,8 +7,8 @@ Macro "Feedback_TravelTime" (Args)
 //Updated for new UI, McLelland, Nov 2015
 // 5/30/19, mk: There are now three distinct networks, use AM Peak
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

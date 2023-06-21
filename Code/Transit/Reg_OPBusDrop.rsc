@@ -716,11 +716,11 @@ Macro "Create OPbusDrop Parking Flags" (Args)
 shared route_file, routename, net_file, link_lyr, node_lyr, parking_view, nodes_view
 
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 		
 	msg = null
 	ParkFlagsOK = 1

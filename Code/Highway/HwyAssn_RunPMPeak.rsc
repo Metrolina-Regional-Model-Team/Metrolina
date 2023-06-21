@@ -5,8 +5,8 @@ Macro "HwyAssn_RunPMPeak" (Args)
 // 5/30/19, mk: There are now three distinct networks: AM peak, PM peak, and offpeak; pass correct netview through
 
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

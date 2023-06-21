@@ -16,8 +16,8 @@ Macro "HighwayCalibrationStats" (Args)
 	//	MRMDir + "\\ATFUN_ID.dbf"
 
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory].value
 	METDir = Args.[MET Directory].value

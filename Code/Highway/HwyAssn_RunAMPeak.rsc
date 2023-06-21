@@ -6,8 +6,8 @@ Macro "HwyAssn_RunAMPeak" (Args)
 // Allows user to choose gc_mrm assignment - it won't work in TC 7 though
 // 5/30/19, mk: There are now three distinct networks: AM peak, PM peak, and offpeak; pass correct netview through
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

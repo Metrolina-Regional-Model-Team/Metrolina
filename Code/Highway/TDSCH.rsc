@@ -9,8 +9,8 @@ Macro "TDSCH" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	
 	msg = null
 	TripDistOK = 1

@@ -322,13 +322,13 @@ vt_ar = {"COM", "MTK", "HTK"}
 // Moved from Trip Gen macro - Aug 2015
 // Moved EE trip tables (TDeeA, TDeeC, TDeeM, TDeeH) from TG subdirector to TD subdirectory
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	MetDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	sedata_dbf = Args.[LandUse File].value
 	theyear = Args.[Run Year].value
 	yearnet = right(theyear,2)
@@ -733,8 +733,8 @@ vt_ar = {"COM", "MTK", "HTK"}
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	MetDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	msg = null
 	TOD2_COMMTKHTKOK = 1
 

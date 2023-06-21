@@ -9,8 +9,8 @@ Macro "TOD1_HBW_Peak" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 
 	curiter = Args.[Current Feedback Iter].value
 	TOD1OK = 1

@@ -1,8 +1,8 @@
 Macro "MS_RunPeak" (Args)
 // Macro to call batch file \modesplit\MS_<year>_RUNPEAK.bat - batch file calls 4 peak mode choice runs - HBW, HBO, NHB, HBU
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

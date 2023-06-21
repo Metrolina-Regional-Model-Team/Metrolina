@@ -2,8 +2,8 @@ Macro "Transit_Operations_Stats" (Args)
 	
 
 	Dir = Args.[Run Directory].value
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
 	msg = null
 	TransitOpsOK = 1

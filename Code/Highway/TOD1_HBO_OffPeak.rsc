@@ -9,8 +9,8 @@ Macro "TOD1_HBO_OffPeak" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 	msg = null
 	TOD1OK = 1
 	

@@ -4,8 +4,8 @@ Macro "HwyAssn_RunHOTTotAssn" (Args)
 // AssnSubDir currently set to \\HwyAssn and \\HwyAssn\\HOT
 // assntype = "base", "HOT2+", or "HOT3+"
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 

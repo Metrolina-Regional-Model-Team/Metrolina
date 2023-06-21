@@ -19,13 +19,13 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	on error goto TCError
 	on escape goto UserKill
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 	ReportFile = Args.[Report File].value
 	SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 //	netview = Args.[Hwy Name].value
 	timeweight = Args.[TimeWeight].value
 	distweight = Args.[DistWeight].value
@@ -380,7 +380,7 @@ new_mat = CopyMatrix(mc, {{"File Name", od_hot_matrix},
 		CPMS_VOTpos = ArrayPosition(core_list, {"CPMS_VOT"}, )
 		Percentpos = ArrayPosition(core_list, {"PERCENT"}, )
 
-// If there isn’t one, add it; if there is one, go to next step
+// If there isnï¿½t one, add it; if there is one, go to next step
 
 		if TTSAVpos = 0 then
     	 	AddMatrixCore(HOT, "TTSav")
