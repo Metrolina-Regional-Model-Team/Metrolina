@@ -11,9 +11,10 @@ Macro "OPPrmDrop_Assign" (Args)
 	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
-	taz_file = Args.[TAZ File].value
+	taz_file = Args.[TAZ File]
 	theyear = Args.[Run Year]
-	netname = Args.[Offpeak Hwy Name].value
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null
 	OPPrmDropAssnOK = 1

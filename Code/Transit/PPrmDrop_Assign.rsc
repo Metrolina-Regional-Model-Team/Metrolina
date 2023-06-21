@@ -12,9 +12,10 @@ Macro "PPrmDrop_Assign" (Args)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	taz_file = Args.[TAZ File].value
+	taz_file = Args.[TAZ File]
 	theyear = Args.[Run Year]
-	netname = Args.[AM Peak Hwy Name].value
+	hwy_file = Args.[AM Peak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null
 	PPrmDropAssnOK = 1

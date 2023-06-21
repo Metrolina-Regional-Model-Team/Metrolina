@@ -6,7 +6,7 @@
 Macro "tdm" (Args)
 Body:
     // model = FlowChart( { StartNodes } , { EndNodes } , Description)
-    model = FlowChart({"Initial Processing"},{"Post Feedback"},)
+    model = FlowChart({"Initial Processing"},{"Summaries"},)
     //
     // Nodes
     //
@@ -21,6 +21,9 @@ Body:
     FlowChartNode(model,"Peak Highway Assignment",,,)
     FlowChartNode(model,"Convergence",,,)
     FlowChartNode(model,"Post Feedback",,,)
+    FlowChartNode(model,"Transit Assignment",,,)
+    FlowChartNode(model,"HOT",,,)
+    FlowChartNode(model,"Summaries",,,)
     //
     // Links
     //
@@ -35,6 +38,9 @@ Body:
     FlowChartLink(model,"Peak Highway Assignment","Convergence",True,,)
     FlowChartLink(model,"Convergence","Skimming",True,,1)
     FlowChartLink(model,"Convergence","Post Feedback",2,,)
+    FlowChartLink(model,"Post Feedback","Transit Assignment",True,,)
+    FlowChartLink(model,"Transit Assignment","HOT",True,,)
+    FlowChartLink(model,"HOT","Summaries",True,,)
     Return(model)
 EndMacro
 
@@ -109,5 +115,32 @@ Macro "Post Feedback" (Args,Result)
         {"Class", {"GISDK"}},
         {"MacroNames", {"Post Feedback"}}
     }
+EndMacro
+
+
+Macro "Transit Assignment" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Transit Assignment"}}
+    }
+    Return(True)
+EndMacro
+
+
+Macro "HOT" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"HOT"}}
+    }
+    Return(True)
+EndMacro
+
+
+Macro "Summaries" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Summaries"}}
+    }
+    Return(True)
 EndMacro
 
