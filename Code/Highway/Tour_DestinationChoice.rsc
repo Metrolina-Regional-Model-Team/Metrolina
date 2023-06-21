@@ -28,10 +28,10 @@ Macro "Tour_DestinationChoice" (Args)
 //Note: SCHOOL external probability for Catawba County zones (6500-6699) increased to 90%, since there are no schools in current Catawba zones
 
 	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value

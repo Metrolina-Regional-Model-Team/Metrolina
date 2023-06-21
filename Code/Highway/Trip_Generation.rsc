@@ -15,10 +15,10 @@ macro "Trip_Generation" (Args)
 //new compile TGMET for 2015 base year with Iredell Expansion - compile 7.11.16 Familian; macro update 9.7.16 Gallup
 
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

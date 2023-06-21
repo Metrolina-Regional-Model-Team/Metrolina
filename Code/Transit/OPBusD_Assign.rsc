@@ -4,10 +4,10 @@ Macro "OPBusD_Assign" (Args)
 	//Modified for new UI, McLelland, Jan 2016
 	// 5/30/19, mk: There are now three distinct networks: AM peak, PM peak, and offpeak; use offpeak
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory].value
 	taz_file = Args.[TAZ File].value

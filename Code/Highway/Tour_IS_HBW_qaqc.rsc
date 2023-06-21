@@ -7,10 +7,10 @@ Macro "Tour_IS" (Args)
 // 5/30/19, mk: There are now three distinct networks; can use offpeak here (doesn't really matter, just uses to get distances)
 
 /*	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 */	
 //	Dir = Args.[Run Directory].value
 	Dir = "C:\\SL_GR\\Metrolina\\2045"

@@ -2,10 +2,10 @@ Macro "TOD2_Midday" (Args)
 
 //PA-AP fractions updated 10/2/13; 3+ occupancy rates derived from 2012 HHTS
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

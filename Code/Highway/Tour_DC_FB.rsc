@@ -17,10 +17,10 @@ Macro "Tour_DC_FB" (Args)
 // 2/25/19, mk: change HBW coeffs to match DCapp5 per Bill's 2/25/19 email
 
 	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value

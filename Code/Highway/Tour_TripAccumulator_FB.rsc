@@ -4,10 +4,10 @@ Macro "Tour_TripAccumulator_FB" (Args)
 // 1/17, mk: changed from .dbf to .bin
 
 	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value

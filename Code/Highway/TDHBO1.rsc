@@ -4,10 +4,10 @@ Macro "TDHBO1" (Args)
 	//Friction factors, intrazonal K : Bill Allen Oct, 2013
 	//Modified for new UI - Oct, 2015
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

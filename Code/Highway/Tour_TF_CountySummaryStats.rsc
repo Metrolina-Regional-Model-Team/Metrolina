@@ -3,10 +3,10 @@ Macro "Tour_TF_CountySummaryStats"
 //Creates the "Productions" and "Attractions" files (.bin)
 
 	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value

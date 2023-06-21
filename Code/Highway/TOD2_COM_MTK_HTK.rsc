@@ -2,10 +2,10 @@ Macro "TOD2_COM_MTK_HTK" (Args)
 
 //Transpose matrix of commercial vehicles, medium and heavy trucks.  
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

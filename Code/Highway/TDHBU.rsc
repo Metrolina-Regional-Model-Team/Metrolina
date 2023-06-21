@@ -8,10 +8,10 @@ Macro "TDHBU" (Args)
 	//  Intra K = 75 (was 23)
 	//  % transit curves = 15% (was 3%) - ttimefac (old.03)
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

@@ -1,9 +1,9 @@
 Macro "Transit_RunStats" (Args)
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	TransitRunStatsOK = 1
 
 	datentime = GetDateandTime()

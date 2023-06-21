@@ -4,10 +4,10 @@ Macro "Tour_TruckTGTD" (Args)
 //		Includes trip generation, EE trips, trip distribution, and transposing TD files for TOD2.
 
 	on error goto badquit
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 	
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value
@@ -551,10 +551,10 @@ vt_ar = {"COM", "MTK", "HTK"}
 	//Friction factors, intrazonal K : Bill Allen Oct, 2013
 	//Modified for new UI - Oct, 2015
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	sedata_file = Args.[LandUse file].value
 	Dir = Args.[Run Directory].value
@@ -728,10 +728,10 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 //Transpose matrix of commercial vehicles, medium and heavy trucks.  
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	MetDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

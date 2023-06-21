@@ -4,11 +4,6 @@ Macro "Reg_OPPrmDrop" (Args)
 // Commented out pkzip for skim file and delete - (lines 542+)
 // 5/30/19, mk: There are now three distinct networks, use offpeak since was used to setup route system
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
-
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

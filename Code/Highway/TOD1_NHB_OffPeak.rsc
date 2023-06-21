@@ -4,10 +4,10 @@ Macro "TOD1_NHB_OffPeak" (Args)
 	//Calculations for percentages are in calibration\TRIPPROP_MRM14v1.0.xls, tab TOD1
 	//Modified for new UI, Oct, 2015
 	
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value

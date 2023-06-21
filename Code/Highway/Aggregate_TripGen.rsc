@@ -1,9 +1,9 @@
 macro "Aggregate_TripGen" (Args)
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter Aggregate_TripGen: " + datentime)

@@ -6,10 +6,10 @@ Macro "TD_TranPath_Free" (Args)
 //McLelland - September, 2006
 //Altered for new user interface, Split into peak and free speed versions Nov, 2015
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value
