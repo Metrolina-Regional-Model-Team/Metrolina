@@ -32,6 +32,7 @@ Body:
     FlowChartLink(model,"Trucks","Mode Split",True,,)
     FlowChartLink(model,"Mode Split","Peak Highway Assignment",True,,)
     FlowChartLink(model,"Peak Highway Assignment","Convergence",True,,)
+    FlowChartLink(model,"Convergence","Skimming",True,,1)
     Return(model)
 EndMacro
 
@@ -98,6 +99,5 @@ Macro "Convergence" (Args,Result)
         {"Shape", "Decision"},
         {"MacroNames", {"Convergence"}}
     }
-    Return(True)
 EndMacro
 
