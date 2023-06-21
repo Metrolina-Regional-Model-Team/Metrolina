@@ -21,25 +21,27 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	timeweight = Args.[TimeWeight].value
-	distweight = Args.[DistWeight].value
-	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback].value
-	hwyassnconverge = Args.[HwyAssn Converge Feedback].value
+	timeweight = Args.[TimeWeight]
+	distweight = Args.[DistWeight]
+	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
+	hwyassnconverge = Args.[HwyAssn Converge Feedback]
 
 	if timeperiod = "AMpeak" then do	
-		netview = Args.[AM Peak Hwy Name].value
+		hwy_file = Args.[AM Peak Hwy Name]
+		{, , netview, } = SplitPath(hwy_file)
 	end
 	else if timeperiod = "PMpeak" then do	
-		netview = Args.[PM Peak Hwy Name].value
+		hwy_file = Args.[PM Peak Hwy Name]
+		{, , netview, } = SplitPath(hwy_file)
 	end
 	else if timeperiod = "Offpeak" then do	
 		hwy_file = Args.[Offpeak Hwy Name]
-	{, , netview, } = SplitPath(hwy_file)
+		{, , netview, } = SplitPath(hwy_file)
 	end
 	else do
 		goto badtimeperiod

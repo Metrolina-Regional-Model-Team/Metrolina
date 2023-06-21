@@ -326,7 +326,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 	    }
 
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
+	MetDir = Args.[MET Directory]
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
 	msg = null

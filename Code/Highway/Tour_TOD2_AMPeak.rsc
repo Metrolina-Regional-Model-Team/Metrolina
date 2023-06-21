@@ -12,9 +12,9 @@ Macro "Tour_TOD2_AMPeak" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
-	net_file = Args.[Hwy Name].value
+	MetDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
+	// net_file = Args.[Hwy Name].value
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour TOD2_AMPEAK: " + datentime)

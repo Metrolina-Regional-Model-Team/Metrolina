@@ -15,7 +15,7 @@ Macro "Tour_IS_Location" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Intermediate Stop Location: " + datentime)

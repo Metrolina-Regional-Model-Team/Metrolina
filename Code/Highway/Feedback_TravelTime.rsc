@@ -9,16 +9,16 @@ Macro "Feedback_TravelTime" (Args)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
 	netview = Args.[AM Peak Hwy Name].value
-	timeweight = Args.[TimeWeight].value
-	distweight = Args.[DistWeight].value
+	timeweight = Args.[TimeWeight]
+	distweight = Args.[DistWeight]
 	maxTTfac = Args.[MaxTravTimeFactor].value
 
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	FeedbackTTOK = 1
 	msg = null
 

@@ -4,7 +4,7 @@ Macro "VolGroupStats" (Args)
 	SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory]
-	METDir = Args.[MET Directory].value
+	MetDir = Args.[MET Directory]
 	msg = null
 	atltripsOK = 1
 

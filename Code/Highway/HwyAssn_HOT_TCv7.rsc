@@ -21,18 +21,18 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
 //	netview = Args.[Hwy Name].value
-	timeweight = Args.[TimeWeight].value
-	distweight = Args.[DistWeight].value
+	timeweight = Args.[TimeWeight]
+	distweight = Args.[DistWeight]
 	maxTTfac = Args.[MaxTravTimeFactor].value
 	HOTAssnIterations = Args.[HOTAssn Iterations].value
-	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback].value
-	hwyassnconverge = Args.[HwyAssn Converge Feedback].value
+	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
+	hwyassnconverge = Args.[HwyAssn Converge Feedback]
 	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final].value
 	hwyassnconvergefinal = Args.[HwyAssn Converge Final].value
 
@@ -40,10 +40,12 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	hwyassntype = "BPR"
 
 	if timeperiod = "AMpeak" then do	
-		netview = Args.[AM Peak Hwy Name].value
+		hwy_file = Args.[AM Peak Hwy Name]
+		{, , netview, } = SplitPath(hwy_file)
 	end
 	else if timeperiod = "PMpeak" then do	
-		netview = Args.[PM Peak Hwy Name].value
+		hwy_file = Args.[PM Peak Hwy Name]
+		{, , netview, } = SplitPath(hwy_file)
 	end
 	else if timeperiod = "Offpeak" then do	
 		hwy_file = Args.[Offpeak Hwy Name]

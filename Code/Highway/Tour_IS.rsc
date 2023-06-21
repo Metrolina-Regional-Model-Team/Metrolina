@@ -15,8 +15,10 @@ Macro "Tour_IS" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
-	net_file = Args.[Offpeak Hwy Name].value
+	theyear = Args.[Run Year]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , net_file, } = SplitPath(hwy_file)
+
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Intermediate Stops: " + datentime)

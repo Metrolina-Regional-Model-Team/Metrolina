@@ -4,11 +4,11 @@ Macro "MS_NHBOffPeak" (Args)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	
 	msg = null
 	MSOffPeakOK = 1

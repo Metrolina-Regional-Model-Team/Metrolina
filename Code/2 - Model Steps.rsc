@@ -34,8 +34,37 @@ Macro "Skimming" (Args)
 endmacro
 
 Macro "Trip Generation" (Args)
-    // RunMacro("ExtStaforTripGen", Args)
-    // RunMacro("HHMET", Args)
+    RunMacro("ExtStaforTripGen", Args)
+    RunMacro("HHMET", Args)
     RunMacro("Tour_Accessibility", Args)
+    RunMacro("Tour_XX", Args)
+    RunMacro("Tour_Frequency", Args)
+    return(1)
+endmacro
+
+Macro "Trip Distribution" (Args)
+    RunMacro("TD_TranPath_Peak", Args)
+    RunMacro("TD_TranPath_Free", Args)
+    RunMacro("Tour_DestinationChoice", Args)
+    RunMacro("Tour_IS", Args)
+    RunMacro("Tour_IS_Location", Args)
+    return(1)
+endmacro
+
+Macro "Trucks" (Args)
+    RunMacro("Tour_TruckTGTD", Args)
+    return(1)
+endmacro
+
+Macro "Mode Split" (Args)
+    RunMacro("Tour_ToD1", Args)
+    RunMacro("Tour_TripAccumulator", Args)
+    RunMacro("MS_RunPeak", Args)
+    RunMacro("Tour_TOD2_AMPeak", Args)
+    return(1)
+endmacro
+
+Macro "Peak Highway Assignment" (Args)
+    RunMacro("HwyAssn_RunAMPeak", Args)    
     return(1)
 endmacro

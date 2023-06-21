@@ -4,13 +4,13 @@ Macro "EE_Trips" (Args)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File].value
-	theyear = Args.[Run Year].value
+	sedata_dbf = Args.[LandUse File]
+	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null
 	TripGenOK = 1

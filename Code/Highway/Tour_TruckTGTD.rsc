@@ -11,8 +11,8 @@ Macro "Tour_TruckTGTD" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
+	MetDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Truck Model: " + datentime)
@@ -324,13 +324,13 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File].value
-	theyear = Args.[Run Year].value
+	sedata_dbf = Args.[LandUse File]
+	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null
 	TripGenOK = 1
@@ -558,8 +558,8 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
+	MetDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Truck Model: " + datentime)

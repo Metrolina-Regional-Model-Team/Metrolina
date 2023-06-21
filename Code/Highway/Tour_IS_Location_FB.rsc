@@ -15,8 +15,8 @@ Macro "Tour_IS_Location_FB" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
-	curiter = Args.[Current Feedback Iter].value
+	theyear = Args.[Run Year]
+	curiter = Args.[Current Feedback Iter]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour IS Location Feedback Loop " + i2s(curiter) + ": " + datentime)

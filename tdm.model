@@ -6,7 +6,7 @@
 Macro "tdm" (Args)
 Body:
     // model = FlowChart( { StartNodes } , { EndNodes } , Description)
-    model = FlowChart({"Initial Processing"},{"Trip Generation"},)
+    model = FlowChart({"Initial Processing"},{"Peak Highway Assignment"},)
     //
     // Nodes
     //
@@ -15,6 +15,10 @@ Body:
     FlowChartNode(model,"Initial Processing",,,)
     FlowChartNode(model,"Skimming",,,)
     FlowChartNode(model,"Trip Generation",,,)
+    FlowChartNode(model,"Trip Distribution",,,)
+    FlowChartNode(model,"Trucks",,,)
+    FlowChartNode(model,"Mode Split",,,)
+    FlowChartNode(model,"Peak Highway Assignment",,,)
     //
     // Links
     //
@@ -22,6 +26,10 @@ Body:
     //
     FlowChartLink(model,"Initial Processing","Skimming",True,,)
     FlowChartLink(model,"Skimming","Trip Generation",True,,)
+    FlowChartLink(model,"Trip Generation","Trip Distribution",True,,)
+    FlowChartLink(model,"Trip Distribution","Trucks",True,,)
+    FlowChartLink(model,"Trucks","Mode Split",True,,)
+    FlowChartLink(model,"Mode Split","Peak Highway Assignment",True,,)
     Return(model)
 EndMacro
 
@@ -46,6 +54,38 @@ Macro "Trip Generation" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
         {"MacroNames", {"Trip Generation"}}
+    }
+EndMacro
+
+
+Macro "Trip Distribution" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Trip Distribution"}}
+    }
+EndMacro
+
+
+Macro "Trucks" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Trucks"}}
+    }
+EndMacro
+
+
+Macro "Mode Split" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Mode Split"}}
+    }
+EndMacro
+
+
+Macro "Peak Highway Assignment" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Peak Highway Assignment"}}
     }
 EndMacro
 

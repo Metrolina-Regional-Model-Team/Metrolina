@@ -9,7 +9,7 @@ macro "Aggregate_TripGen" (Args)
 	AppendToLogFile(1, "Enter Aggregate_TripGen: " + datentime)
 
 
-	METDir = Args.[MET Directory].value
+	MetDir = Args.[MET Directory]
 	TAZFile = Args.[TAZ File].value
 	Dir = Args.[Run Directory]
 //	netview = Args.[Hwy Name].value

@@ -10,8 +10,8 @@ Macro "Tour_TF_CountySummaryStats"
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
+	MetDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
 	net_file = Args.[Hwy Name].value
 	msg = null
 	datentime = GetDateandTime()

@@ -17,7 +17,7 @@ Macro "Tour_Frequency" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Frequency: " + datentime)

@@ -16,13 +16,16 @@ Class "Visualize.Menu.Items"
         ShowArray({ SelectedParamInfo: self.runtimeObj.GetSelectedParamInfo() })
         enditem  
  
-endClass 
+EndClass
 
-Macro "OpenParamFile"
+
+Macro "OpenParamFile" (Args,Result)
+Body:
 	mr = CreateObject("Model.Runtime")
 	curr_param = mr.GetSelectedParamInfo()
 	result = mr.OpenFile(curr_param.Name)
-endMacro
+EndMacro
+
 
 MenuItem "Metro Menu Item" text: "Metrolina"
     menu "Metrolina Menu"
@@ -47,3 +50,6 @@ menu "Metrolina Menu"
         return(1)
     enditem
 endMenu 
+
+
+

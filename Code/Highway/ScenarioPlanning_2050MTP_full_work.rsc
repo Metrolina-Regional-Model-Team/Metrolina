@@ -21,7 +21,7 @@ Macro "ScenarioPlanning_2050MTP" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 //	net_file = Args.[Hwy Name].value
 	msg = null
 	datentime = GetDateandTime()

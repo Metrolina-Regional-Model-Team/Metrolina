@@ -13,8 +13,8 @@ macro "Tour_XX" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory].value
-	theyear = Args.[Run Year].value
+	MetDir = Args.[MET Directory]
+	theyear = Args.[Run Year]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "XX Tours: " + datentime)

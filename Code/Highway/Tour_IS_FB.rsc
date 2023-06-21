@@ -14,9 +14,9 @@ Macro "Tour_IS_FB" (Args)
 	
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 //	net_file = Args.[Hwy Name].value
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Intermediate Stops Feedback Loop " + i2s(curiter) + ": " + datentime)

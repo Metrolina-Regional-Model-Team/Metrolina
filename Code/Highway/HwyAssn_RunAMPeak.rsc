@@ -8,14 +8,14 @@ Macro "HwyAssn_RunAMPeak" (Args)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
 	msg = null
 
-	curiter = Args.[Current Feedback Iter].value
-	maxiter = Args.[Feedback Iterations].value
+	curiter = Args.[Current Feedback Iter]
+	maxiter = Args.[Feedback Iterations]
 	msg = null
 
 	datentime = GetDateandTime()

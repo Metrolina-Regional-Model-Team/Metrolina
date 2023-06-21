@@ -13,7 +13,7 @@ Macro "PPrmDrop_Assign" (Args)
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
 	taz_file = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	netname = Args.[AM Peak Hwy Name].value
 		
 	msg = null

@@ -3,13 +3,13 @@ Macro "MS_RunPeak" (Args)
 
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)
-	ReportFile = Args.[Report File].value
-	SetReportFileName(ReportFile)
+	// ReportFile = Args.[Report File].value
+	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	MSPeakOK = 1
 	msg = null
 

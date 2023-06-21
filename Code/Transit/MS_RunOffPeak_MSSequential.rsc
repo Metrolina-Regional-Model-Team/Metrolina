@@ -8,7 +8,7 @@ Macro "MS_RunOffPeak" (Args)
 	// SetReportFileName(ReportFile)
 
 	Dir = Args.[Run Directory]
-	theyear = Args.[Run Year].value
+	theyear = Args.[Run Year]
 	msg = null
 	MSOffPeakOK = 1
 

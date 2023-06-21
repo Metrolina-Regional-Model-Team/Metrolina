@@ -12,7 +12,7 @@ Macro "TDHBW3" (Args)
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
 
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	TripDistOK = 1
 	msg = null
 	
