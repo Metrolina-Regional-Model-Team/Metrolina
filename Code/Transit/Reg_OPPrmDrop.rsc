@@ -9,6 +9,11 @@ Macro "Reg_OPPrmDrop" (Args)
 	SetLogFileName(LogFile)
 	SetReportFileName(ReportFile)
 
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
+
 	METDir = Args.[MET Directory].value
 	Dir = Args.[Run Directory].value
 	taz_file = Args.[TAZ File].value
@@ -39,8 +44,9 @@ Macro "Reg_OPPrmDrop" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 
@@ -113,8 +119,9 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 	rtn_OP = RunMacro("Compute_OP_Matrix", "offpeak", "premium", "dropoff", Args)
 	if rtn_OP[1] = 0
 		then do
-			msg = msg + rtn_OP[2]
-			goto badcomputeopmatrix
+            Throw(rtn_OP[2])
+			// msg = msg + rtn_OP[2]
+			// goto badcomputeopmatrix
 		end
 
 //////

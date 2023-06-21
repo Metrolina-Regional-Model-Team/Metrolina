@@ -6,18 +6,19 @@ Macro "Reg_PBusDrop" (Args)
 
 	shared route_file, routename, net_file, link_lyr, node_lyr, parking_view, nodes_view
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	taz_file = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
-	netname = Args.[Offpeak Hwy Name].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	taz_file = Args.[TAZ File]
+	theyear = Args.[Run Year]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 
-	curiter = Args.[Current Feedback Iter].value
+	curiter = Args.[Current Feedback Iter]
 	RegPBusDropOK = 1
 	msg = null
 		
@@ -42,8 +43,9 @@ Macro "Reg_PBusDrop" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 	//-- Set up the network names
@@ -114,8 +116,9 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 	rtn_OP = RunMacro("Compute_OP_Matrix", "peak", "bus", "dropoff", Args)
 	if rtn_OP[1] = 0
 		then do
-			msg = msg + rtn_OP[2]
-			goto badcomputeopmatrix
+			Throw(rtn_OP[2])
+			// msg = msg + rtn_OP[2]
+			// goto badcomputeopmatrix
 		end
 
 //////
@@ -623,46 +626,54 @@ goto quit
 //	if status = 0 then DeleteFile(Dir+"\\skims\\TR_Skim_pbusdrop.mtx")
 
 	badcomputeopmatrix:
-	msg = msg + {"Reg_PBusDrop - Error return from Compute_OP_Matrix"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return from Compute_OP_Matrix") 
-	goto badquit
+	Throw("Reg_PBusDrop - Error return from Compute_OP_Matrix")
+	// msg = msg + {"Reg_PBusDrop - Error return from Compute_OP_Matrix"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return from Compute_OP_Matrix") 
+	// goto badquit
 
 	badupskim:
-	msg = rtn_upskim[2] + {"Reg_PBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
-	goto badquit
+	Throw("Reg_PBusDrop - Error return from Update_Dropoff_Skim_Mtx")
+	// msg = rtn_upskim[2] + {"Reg_PBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
+	// goto badquit
 		
 	badparkflags:
-	msg = rtn_Pflags[2] + {"Reg_PBusDrop - Error return from Create PPrmDrop Parking Flags"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return from Create PPrmDrop Parking Flags") 
-	goto badquit
+	Throw("Reg_PBusDrop - Error return from Create PPrmDrop Parking Flags")
+	// msg = rtn_Pflags[2] + {"Reg_PBusDrop - Error return from Create PPrmDrop Parking Flags"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return from Create PPrmDrop Parking Flags") 
+	// goto badquit
 
 	badbuildtrannet:
-	msg = msg + {"Reg_PBusDrop - Error return build transit network"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return build transit network") 
-	goto badquit
+	Throw("Reg_PBusDrop - Error return build transit network")
+	// msg = msg + {"Reg_PBusDrop - Error return build transit network"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return build transit network") 
+	// goto badquit
 
 	badtransettings:
-	msg = msg + {"Reg_PBusDrop - Error return from transit network settings"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return from transit network settings") 
-	goto badquit
+	Throw("Reg_PBusDrop - Error return from transit network settings")
+	// msg = msg + {"Reg_PBusDrop - Error return from transit network settings"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return from transit network settings") 
+	// goto badquit
 
 	badtranskim:
-	msg = msg + {"Reg_PBusDrop - Error return from transit network skims"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error return from transit network skims")
-	goto badquit
+	Throw("Reg_PBusDrop - Error return from transit network skims")
+	// msg = msg + {"Reg_PBusDrop - Error return from transit network skims"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error return from transit network skims")
+	// goto badquit
 
 	badmatrixop:
-	msg = msg + {"Reg_PBusDrop - Error in matrix operations"}
-	AppendToLogFile(1, "Reg_PBusDrop - Error in matrix operations")
-	goto badquit
+	Throw("Reg_PBusDrop - Error in matrix operations")
+	// msg = msg + {"Reg_PBusDrop - Error in matrix operations"}
+	// AppendToLogFile(1, "Reg_PBusDrop - Error in matrix operations")
+	// goto badquit
 
 	badxpr_stopflags:
-	msg = msg + {rtnmsg}
-	AppendToLogFile(2, rtnmsg)
-	msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
-	AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
-	goto badquit
+	Throw("Reg_PPrmW - Error return from XPR_StopFlags")
+	// msg = msg + {rtnmsg}
+	// AppendToLogFile(2, rtnmsg)
+	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
+	// goto badquit
 
 	badquit:
 	msg = msg + {"badquit: Last error message= " + GetLastError()}
@@ -710,11 +721,11 @@ Macro "Create PbusDrop Parking Flags" (Args)
 
 shared route_file, routename, net_file, link_lyr, node_lyr, parking_view, nodes_view
 
-	LogFile = Args.[Log File].value
-	SetLogFileName(LogFile)
+	// LogFile = Args.[Log File].value
+	// SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
 		
 	msg = null
 	ParkFlagsOK = 1
@@ -797,19 +808,22 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
 	goto quit
 	
 	nofortran:
-	msg = msg + {"Fortran program to compute parking flag is missing"}
-	AppendToLogFile(2, "Fortran program to compute parking flag is missing")
-	goto badquit
+	Throw("Fortran program to compute parking flag is missing")
+	// msg = msg + {"Fortran program to compute parking flag is missing"}
+	// AppendToLogFile(2, "Fortran program to compute parking flag is missing")
+	// goto badquit
 
 	badfortran:
-	msg = msg + {"Error return from fortran program KNR_LOC_Cat"}
-	AppendToLogFile(2, "Error return from fortran program KNR_LOC_Cat")
-	goto badquit
+	Throw("Error return from fortran program KNR_LOC_Cat")
+	// msg = msg + {"Error return from fortran program KNR_LOC_Cat"}
+	// AppendToLogFile(2, "Error return from fortran program KNR_LOC_Cat")
+	// goto badquit
 
 	badmerge:
-	msg = msg + {"Create PBusDrop Parking Flags - Error merging matrices"}
-	AppendToLogFile(1, "Create PBusDrop Parking Flags - Error merging matrices")
-	goto badquit
+	Throw("Create PBusDrop Parking Flags - Error merging matrices")
+	// msg = msg + {"Create PBusDrop Parking Flags - Error merging matrices"}
+	// AppendToLogFile(1, "Create PBusDrop Parking Flags - Error merging matrices")
+	// goto badquit
 
 	badquit:
 	msg = msg + {"badquit: Last error message= " + GetLastError()}

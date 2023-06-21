@@ -40,8 +40,9 @@ Macro "PPrmD_Assign" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 

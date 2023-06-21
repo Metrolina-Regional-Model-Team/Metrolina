@@ -46,14 +46,14 @@ Macro "OPBusDrop_Assign" (Args)
 
      pos = ArrayPosition(core_list, {"CBD Attractions"}, )
 
-// If there isn’t one, add it;
+// If there isnï¿½t one, add it;
      if pos = 0 then AddMatrixCore(OM, "CBD Attractions")
 
 // Look for a core named "NonCBD Attractions"
 
      pos = ArrayPosition(core_list, {"NonCBD Attractions"}, )
 
-// If there isn’t one, add it;
+// If there isnï¿½t one, add it;
      if pos = 0 then AddMatrixCore(OM, "NonCBD Attractions")
 
      OM=Null
@@ -105,8 +105,9 @@ Macro "OPBusDrop_Assign" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 

@@ -4,16 +4,17 @@ Macro "Reg_OPPrmD" (Args)
 // Commented out pkzip for skim file and delete - (lines 542+)
 // 5/30/19, mk: There are now three distinct networks, use offpeak since was used to setup route system
 
-	LogFile = Args.[Log File].value
-	ReportFile = Args.[Report File].value
-	SetLogFileName(LogFile)
-	SetReportFileName(ReportFile)
+	// LogFile = Args.[Log File].value
+	// ReportFile = Args.[Report File].value
+	// SetLogFileName(LogFile)
+	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	taz_file = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
-	netname = Args.[Offpeak Hwy Name].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	taz_file = Args.[TAZ File]
+	theyear = Args.[Run Year]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null
 	RegOPPrmDOK = 1
@@ -39,8 +40,9 @@ Macro "Reg_OPPrmD" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 
@@ -123,8 +125,9 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 	rtn_OP = RunMacro("Compute_OP_Matrix", "offpeak", "premium", "drive", Args)
 	if rtn_OP[1] = 0
 		then do
-			msg = msg + rtn_OP[2]
-			goto badcomputeopmatrix
+            Throw(rtn_OP[2])
+			// msg = msg + rtn_OP[2]
+			// goto badcomputeopmatrix
 		end
 
 //////
@@ -587,29 +590,34 @@ goto quit
 //	if status = 0 then DeleteFile(Dir+"\\skims\\TR_Skim_opprmd.mtx")
 
 	badcomputeopmatrix:
-	msg = msg + {"Reg_OPPrmD - Error return from Compute_OP_Matrix"}
-	AppendToLogFile(1, "Reg_OPPrmD - Error return from Compute_OP_Matrix") 
-	goto badquit
+    Throw("Reg_OPPrmD - Error return from Compute_OP_Matrix")
+	// msg = msg + {"Reg_OPPrmD - Error return from Compute_OP_Matrix"}
+	// AppendToLogFile(1, "Reg_OPPrmD - Error return from Compute_OP_Matrix") 
+	// goto badquit
 		
 	badupskim:
-	msg = rtn_upskim[2] + {"Reg_OPPrmD - Error return from Update_Drive_Skim_Mtx"}
-	AppendToLogFile(1, "Reg_OPOrmD - Error return from Update_Drive_Skim_Mtx") 
-	goto badquit
+    Throw("Reg_OPPrmD - Error return from Update_Drive_Skim_Mtx")
+	// msg = rtn_upskim[2] + {"Reg_OPPrmD - Error return from Update_Drive_Skim_Mtx"}
+	// AppendToLogFile(1, "Reg_OPOrmD - Error return from Update_Drive_Skim_Mtx") 
+	// goto badquit
 		
 	badbuildtrannet:
-	msg = msg + {"Reg_OPPrmD - Error return build transit network"}
-	AppendToLogFile(1, "Reg_OPPrmD - Error return build transit network") 
-	goto badquit
+    Throw("Reg_OPPrmD - Error return build transit network")
+	// msg = msg + {"Reg_OPPrmD - Error return build transit network"}
+	// AppendToLogFile(1, "Reg_OPPrmD - Error return build transit network") 
+	// goto badquit
 
 	badtransettings:
-	msg = msg + {"Reg_OPPrmD - Error return from transit network settings"}
-	AppendToLogFile(1, "Reg_OPPrmD - Error return from transit network settings") 
-	goto badquit
+    Throw("Reg_OPPrmD - Error return from transit network settings")
+	// msg = msg + {"Reg_OPPrmD - Error return from transit network settings"}
+	// AppendToLogFile(1, "Reg_OPPrmD - Error return from transit network settings") 
+	// goto badquit
 
 	badtranskim:
-	msg = msg + {"Reg_OPPrmD - Error return from transit network skims"}
-	AppendToLogFile(1, "Reg_OPPrmD - Error return from transit network skims")
-	goto badquit
+    Throw("Reg_OPPrmD - Error return from transit network skims")
+	// msg = msg + {"Reg_OPPrmD - Error return from transit network skims"}
+	// AppendToLogFile(1, "Reg_OPPrmD - Error return from transit network skims")
+	// goto badquit
 
 
 	badmatrixop:

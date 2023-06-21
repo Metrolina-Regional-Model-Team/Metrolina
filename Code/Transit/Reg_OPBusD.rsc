@@ -39,8 +39,9 @@ Macro "Reg_OPBusD" (Args)
 
 	if runerr = 2
 		then do
-			msg = msg + {rtnmsg}
-			AppendToLogFile(2, rtnmsg)
+			Throw(rtnmsg)
+			// msg = msg + {rtnmsg}
+			// AppendToLogFile(2, rtnmsg)
 		end
 
 
@@ -121,8 +122,9 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 	rtn_OP = RunMacro("Compute_OP_Matrix", "offpeak", "bus", "drive", Args)
 	if rtn_OP[1] = 0
 		then do
-			msg = msg + rtn_OP[2]
-			goto badcomputeopmatrix
+            Throw(rtn_OP[2])
+			// msg = msg + rtn_OP[2]
+			// goto badcomputeopmatrix
 		end
 
 //////
