@@ -9,11 +9,12 @@ Macro "Reg_OPBusDrop" (Args)
 	// SetLogFileName(LogFile)
 	// SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory].value
-	Dir = Args.[Run Directory].value
-	taz_file = Args.[TAZ File].value
-	theyear = Args.[Run Year].value
-	netname = Args.[Offpeak Hwy Name].value
+	METDir = Args.[MET Directory]
+	Dir = Args.[Run Directory]
+	taz_file = Args.[TAZ File]
+	theyear = Args.[Run Year]
+	hwy_file = Args.[Offpeak Hwy Name]
+	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null
 	RegOPBusDropOK = 1
