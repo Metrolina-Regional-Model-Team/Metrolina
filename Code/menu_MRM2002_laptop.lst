@@ -133,10 +133,8 @@ Transit\\XPR_StopFlags
 Transit\\create_tnet
 Transit\\set_tnet
 Transit\\Compute_OP_Matrix
-Transit\\NoFortran\\Update_Drive_Skims_Mtx
-Transit\\NoFortran\\Update_DropOff_Skims_Mtx
-Transit\\NoFortran\\Update_Drive_PNR_SkimsB
-Transit\\NoFortran\\Update_DropOff_KNR_Skims
+Transit\\Update_Drive_Skims_Mtx
+Transit\\Update_DropOff_Skims_Mtx
 Transit\\TD_TranPath_Free
 Transit\\TD_TranPath_Peak
 Transit\\MS_RunPeak
