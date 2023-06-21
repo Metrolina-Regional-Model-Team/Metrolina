@@ -68,3 +68,14 @@ Macro "Peak Highway Assignment" (Args)
     RunMacro("HwyAssn_RunAMPeak", Args)    
     return(1)
 endmacro
+
+Macro "Convergence" (Args)
+    curiter = Args.[Current Feedback Iter]
+	maxiter = Args.[Feedback Iterations]
+    if curiter < maxiter then do
+        converged = 0
+        RunMacro("Feedback_TravelTime", Args)    
+        Args.[Current Feedback Iter] = Args.[Current Feedback Iter] + 1
+    end else converged = 1
+    return(converged + 1)
+endmacro

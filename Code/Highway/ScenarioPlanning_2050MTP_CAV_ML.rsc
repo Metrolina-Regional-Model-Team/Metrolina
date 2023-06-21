@@ -29,7 +29,7 @@ macro "ScenarioPlanning_2050MTP_CAV_ML" (Args, hwyassnarguments, timeperiod)
 //	netview = Args.[Hwy Name].value
 	timeweight = Args.[TimeWeight]
 	distweight = Args.[DistWeight]
-	maxTTfac = Args.[MaxTravTimeFactor].value
+	maxTTfac = Args.[MaxTravTimeFactor]
 	HOTAssnIterations = Args.[HOTAssn Iterations].value
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = Args.[HwyAssn Converge Feedback]
