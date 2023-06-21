@@ -85,22 +85,22 @@ Macro "Market_Segment" (Args)
 	goto quit
 
 	notaz_atype:
-	msg = msg + {"Market_Segment - bad copy of TAZ_ATYPE.asc"}
+	Throw("Market_Segment - bad copy of TAZ_ATYPE.asc")
 	AppendToLogFile(1, "Market_Segment - bad copy of TAZ_ATYPE.asc")
 	goto badquit
 
 	badaddfields:
-	msg = msg + {"Market_Segment - cannot add field to \\TranAssn\\TAZ_ATYPE_Market_Segment.asc"}
+	Throw("Market_Segment - cannot add field to \\TranAssn\\TAZ_ATYPE_Market_Segment.asc")
 	AppendToLogFile(1, "Market_Segment - cannot add field to \\TranAssn\\TAZ_ATYPE_Market_Segment.asc")
 	goto badquit
 
 	badfill:
-	msg = msg + {"Market_Segment - cannot fill matricies \\TranAssn\\Transit Assign DropOff.mtx"}
+	Throw("Market_Segment - cannot fill matricies \\TranAssn\\Transit Assign DropOff.mtx")
 	AppendToLogFile(1, "Market_Segment - cannot fill matricies \\TranAssn\\Transit Assign DropOff.mtx")
 	goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 
 	tmp = GetViews()

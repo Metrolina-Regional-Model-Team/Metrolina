@@ -69,7 +69,7 @@ Macro "Transit_Operations_Stats" (Args)
 
 	info = GetFileInfo(corr_id_file)
 	if ( info = null) then do
-		msg = msg + {"Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found"}
+		Throw("Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found")
 		AppendToLogFile(2, "Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found")
 		goto badend
 	end
@@ -514,7 +514,7 @@ Macro "Transit_Operations_Stats" (Args)
 
 			rh1 = LocateRecord(link_lyr + "|", "ID", {links[i][1]}, {{"Exact", "True"}})
 			if (rh1 = null) then do 
-				msg = msg + {"Transit_Operations_Stats:  ERROR! - transit link " +String(links[i][1]) + " not found in the highway file"}
+				Throw("Transit_Operations_Stats:  ERROR! - transit link " +String(links[i][1]) + " not found in the highway file")
 				AppendToLogFile(2, "Transit_Operations_Stats:  ERROR! - transit link " +String(links[i][1]) + " not found in the highway file")
 				goto badend
 			end
@@ -847,7 +847,7 @@ Macro "Transit_Operations_Stats" (Args)
 
 	info = GetFileInfo(corr_id_file)
 	if ( info = null) then do
-		msg = msg + {"Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found"}
+		Throw("Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found")
 		AppendToLogFile(2, "Transit_Operations_Stats:  ERROR! - transit_corridor_id.dbf not found")
 		goto badend
 	end
@@ -1011,13 +1011,13 @@ Macro "Transit_Operations_Stats" (Args)
 
 	badend:
 		TransitOpsOK = 0
-		msg = msg + {"Transit_Operations_Stats: ERROR end"}
+		Throw("Transit_Operations_Stats: ERROR end")
 		AppendToLogFile(2, "Transit_Pax Stats: ERROR end")
 		goto quit
 		    
 	userkill:
 		TransitOpsOK = 0
-		msg = msg + {"Transit_Operations_Stats: Killed by User"}
+		Throw("Transit_Operations_Stats: Killed by User")
 		AppendToLogFile(2, "Transit_Pax Stats: Killed by User")
 		goto quit
 		    

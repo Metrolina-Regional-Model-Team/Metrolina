@@ -201,7 +201,7 @@ Macro "HighwayCalibrationStats_tour" (Args)
 	goto quit
 		
 //	badmat: 
-//	msg = msg + {"HighwwayCalibrationStats:  Error - matrix " + MatArray[mcnt] + " not found"}
+//	Throw("HighwwayCalibrationStats:  Error - matrix " + MatArray[mcnt] + " not found")
 //	AppendToLogFile(1, "HighwayCalibrationStats:  Error - matrix " + MatArray[mcnt] + " not found")
 //	HwyCalibStatsOK = 0
 //	goto quit 

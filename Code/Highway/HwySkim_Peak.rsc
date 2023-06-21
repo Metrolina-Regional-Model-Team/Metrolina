@@ -164,21 +164,21 @@ Macro "HwySkim_Peak" (Args)
 
 	badnetbuild:
 	Throw("HwySkim_Peak, Error building highway network")
-	// msg = msg + {"HwySkim_Peak, Error building highway network"}
+	// Throw("HwySkim_Peak, Error building highway network")
 	// 		AppendToLogFile(1, "HwySkim_Peak, Error building highway network")
 	// SkimOK = 0
 	goto TCbadquit 
  
 	badnetsettings:
 	Throw("HwySkim_Peak, Error in highway network settings")
-	// msg = msg + {"HwySkim_Peak, Error in highway network settings"}
+	// Throw("HwySkim_Peak, Error in highway network settings")
 	// 		AppendToLogFile(1, "HwySkim_Peak, Error in highway network settings")
 	// SkimOK = 0
 	goto TCbadquit 
 
 	badskim:
 	Throw("HwySkim_Peak, Error in highway skims")
-	// msg = msg + {"HwySkim_Peak, Error in highway skims"}
+	// Throw("HwySkim_Peak, Error in highway skims")
 	// AppendToLogFile(1, "HwySkim_Peak, Error in highway skims")
 	// SkimOK = 0
 	goto TCbadquit 
@@ -188,7 +188,7 @@ Macro "HwySkim_Peak" (Args)
 
 	badTermIntra:
 	Throw(TTrtn[2][1])
-	// msg = msg + {TTrtn[2]}
+	// Throw(TTrtn[2])
 	// AppendToLogFile(1, "HwySkim_Peak, Error in terminal_intrazonal time!")
 	// SkimOK = 0
 	goto quit 

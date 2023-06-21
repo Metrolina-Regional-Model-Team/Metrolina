@@ -341,35 +341,35 @@ goto quit
 
 badopprmd:
 	Throw("AutoSkims_Free - error creating spmat_opprmd")
-	// msg = msg + {"AutoSkims_Free - error creating spmat_opprmd"}
+	// Throw("AutoSkims_Free - error creating spmat_opprmd")
 	// AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opprmd")
 	// AutoSkimsFreeOK = 0
     // goto badquit
 
 badopxprd:
 	Throw("AutoSkims_Free - error creating spmat_opxprd")
-	// msg = msg + {"AutoSkims_Free - error creating spmat_opxprd"}
+	// Throw("AutoSkims_Free - error creating spmat_opxprd")
 	// AppendToLogFile(1, "AutoSkims_Free - error creating spmat_opxprd")
 	// AutoSkimsFreeOK = 0
     // goto badquit
 
 badhwybldhov:
 	Throw("AutoSkims_Free - error building highway network - hov network")
-	// msg = msg + {"AutoSkims_Free - error building highway network - hov network"}
+	// Throw("AutoSkims_Free - error building highway network - hov network")
 	// AppendToLogFile(1, "AutoSkims_Free - error building highway network - hov network")
 	// AutoSkimsFreeOK = 0
     // goto badquit
 
 badhwysethov:
 	Throw("AutoSkims_Free - error highway network settings - hov network")
-	// msg = msg + {"AutoSkims_Free - error highway network settings - hov network"}
+	// Throw("AutoSkims_Free - error highway network settings - hov network")
 	// AppendToLogFile(1, "AutoSkims_Free - error highway network settings - hov network")
 	// AutoSkimsFreeOK = 0
     // goto badquit
 
 badspmathovfree:
 	Throw("AutoSkims_Free - error highway skims - free speed - hov network, free speed")
-	// msg = msg + {"AutoSkims_Free - error highway skims - free speed - hov network, free speed"}
+	// Throw("AutoSkims_Free - error highway skims - free speed - hov network, free speed")
 	// AppendToLogFile(1, "AutoSkims_Free - error highway skims - free speed - hov network, free speed")
 	// AutoSkimsFreeOK = 0
     // goto badquit

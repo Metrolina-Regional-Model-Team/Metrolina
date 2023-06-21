@@ -404,22 +404,22 @@ done:
 goto quit
 
 	badmerge:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Error merging matrices"}
+	Throw("Update_Dropoff_Skim_Mtx - Error merging matrices")
 	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error merging matrices")
 	goto badquit
 
 	badfill:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Error filling matrices"}
+	Throw("Update_Dropoff_Skim_Mtx - Error filling matrices")
 	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error filling matrices")
 	goto badquit
 
 	nofortran:
-	msg = msg + {"Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing"}
+	Throw("Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
 	AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
 	goto badquit
 
 	badfortran:
-	msg = msg + {"Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !"}
+	Throw("Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
 	AppendToLogFile(2, "Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
 	goto badquit
 

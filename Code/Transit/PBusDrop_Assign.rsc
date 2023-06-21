@@ -105,7 +105,7 @@ Macro "PBusDrop_Assign" (Args)
 	if runerr = 2
 		then do
 			Throw(rtnmsg)
-			// msg = msg + {rtnmsg}
+			// Throw(rtnmsg)
 			// AppendToLogFile(2, rtnmsg)
 		end
 
@@ -386,49 +386,49 @@ Macro "PBusDrop_Assign" (Args)
 	goto quit
 			
 	nomktseg:
-	msg = msg + {"PBusDrop_Assign - Zero return from Market_Segment - No assignment"}
+	Throw("PBusDrop_Assign - Zero return from Market_Segment - No assignment")
 	AppendToLogFile(1, "PBusDrop_Assign - Zero return from Market_Segment - No assignment") 
 	goto badquit
 			
 	badfill:
-	msg = msg + {"PBusDrop_Assign - Error return from Fill Dataview - see TC_Report  to determine step"}
+	Throw("PBusDrop_Assign - Error return from Fill Dataview - see TC_Report  to determine step")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from Fill Dataview - see TC_Report  to determine step") 
 	goto badquit
 
 	badbuildtrannet:
-	msg = msg + {"PBusDrop_Assign - Error return build transit network"}
+	Throw("PBusDrop_Assign - Error return build transit network")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return build transit network") 
 	goto badquit
 
 	badtransettings1:
-	msg = msg + {"PBusDrop_Assign - Error return from transit network settings - Non CBD"}
+	Throw("PBusDrop_Assign - Error return from transit network settings - Non CBD")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from transit network settings - Non CBD") 
 	goto badquit
 
 	badtranassn1:
-	msg = msg + {"PBusDrop_Assign - Error return from transit network skims - Non CBD"}
+	Throw("PBusDrop_Assign - Error return from transit network skims - Non CBD")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from transit network skims - Non CBD")
 	goto badquit
 
 	badtransettings2:
-	msg = msg + {"PBusDrop_Assign - Error return from transit network settings - CBD"}
+	Throw("PBusDrop_Assign - Error return from transit network settings - CBD")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from transit network settings - CBD") 
 	goto badquit
 
 	badtranassn2:
-	msg = msg + {"PBusDrop_Assign - Error return from transit network skims - CBD"}
+	Throw("PBusDrop_Assign - Error return from transit network skims - CBD")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from transit network skims - CBD")
 	goto badquit
 
 	badxpr_stopflags:
-	msg = msg + {rtnmsg}
+	Throw(rtnmsg)
 	AppendToLogFile(2, rtnmsg)
-	msg = msg + {"PBusDrop_Assign - Error return from XPR_StopFlags"}
+	Throw("PBusDrop_Assign - Error return from XPR_StopFlags")
 	AppendToLogFile(1, "PBusDrop_Assign - Error return from XPR_StopFlags")
 	goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 	RunMacro("TCB Closing", 0, "TRUE" ) 
 	PBusDropAssnOK = 0

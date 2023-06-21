@@ -940,7 +940,7 @@ NT-NT	0.088	|*/
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Trip Accumulator Feedback Iter " + i2s(curiter) + ": Error somewhere"}
+		Throw("Tour Trip Accumulator Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		AppendToLogFile(1, "Tour Trip Accumulator Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Trip Accumulator Feedback Iter " + i2s(curiter) + " " + datentime)

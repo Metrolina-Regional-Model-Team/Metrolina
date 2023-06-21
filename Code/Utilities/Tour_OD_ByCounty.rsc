@@ -102,7 +102,7 @@ Macro "Tour_OD_ByCounty"
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Run Stats: Error somewhere"}
+		Throw("Tour Run Stats: Error somewhere")
 		AppendToLogFile(1, "Tour Run Stats: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Run Stats " + datentime)

@@ -33,9 +33,9 @@ Macro "Area_Type" (Args)
 	if info = null 
 		then do
 			Throw("Area Type - ERROR - cannot find TAZNeighbors_pct file. Please run MRM Utilities - AreaType_TAZNeighbors or copy valid TAZNeighbor_pct.asc into TAZ directory")
-			// msg = msg + {"Area Type - ERROR - cannot find TAZNeighbors_pct file"}
-			// msg = msg + {"Please run MRM Utilities - AreaType_TAZNeighbors"}
-			// msg = msg + {" or copy valid TAZNeighbor_pct.asc into TAZ directory"}
+			// Throw("Area Type - ERROR - cannot find TAZNeighbors_pct file")
+			// Throw("Please run MRM Utilities - AreaType_TAZNeighbors")
+			// Throw(" or copy valid TAZNeighbor_pct.asc into TAZ directory")
 			// goto badend
 		end
 	msg = null
@@ -58,8 +58,8 @@ Macro "Area_Type" (Args)
 	if selnopctcount > 0
 		then do
 			Throw("AreaType ERROR! SE file has TAZ not present in TAZNeighbors_pct file")
-			// msg = msg + {"AreaType ERROR! SE file has TAZ "}
-			// msg = msg + {"not present in TAZNeighbors_pct file"}
+			// Throw("AreaType ERROR! SE file has TAZ ")
+			// Throw("not present in TAZNeighbors_pct file")
 			// goto badend
 		end
 	CloseView(join1)
@@ -75,8 +75,8 @@ Macro "Area_Type" (Args)
 	if selnosecount > 0
 		then do
 			Throw("AreaType ERROR! TAZNeighbors_pct file has TAZ not present in SE file")
-			// msg = msg + {"AreaType ERROR! TAZNeighbors_pct file "}
-			// msg = msg + {"has TAZ not present in SE file"}
+			// Throw("AreaType ERROR! TAZNeighbors_pct file ")
+			// Throw("has TAZ not present in SE file")
 			// goto badend
 		end
 	CloseView(join2)
@@ -193,7 +193,7 @@ Macro "Area_Type" (Args)
 	if exist = null
 		then do
 			Throw("AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
-			// msg = msg + {"AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
+			// Throw("AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
 			// AppendToLogFile(2, "AreaType: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
 			// AreaTypeOK = 0
 			// goto badend
@@ -211,7 +211,7 @@ Macro "Area_Type" (Args)
 	if exist = null
 		then do
 			Throw("AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
-			// msg = msg + {"AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found"}
+			// Throw("AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
 			// AppendToLogFile(2, "AreaType: ERROR! \\MS_Control_Template\\TAZ_ATYPE_TRANSIT_FLAGS.dbf not found")
 			// AreaTypeOK = 0
 			// goto badend
@@ -254,7 +254,7 @@ Macro "Area_Type" (Args)
 	badend:
 		on error, notfound default
 		AppendToLogFile(2, "Area_Type: Error ")
-		msg = msg + {"Area_Type: Error "}
+		Throw("Area_Type: Error ")
 
     quit:
 		on error, notfound default

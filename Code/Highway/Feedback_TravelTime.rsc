@@ -190,42 +190,42 @@ skipHOVfeedback:
 goto quit
 
 badpeakprev:
-	msg = msg + {"Feedback Travel time - error filling prev peak travel times"}
+	Throw("Feedback Travel time - error filling prev peak travel times")
 	AppendToLogFile(2, "Feedback Travel time - error filling prev peak travel times")
 	goto badquit
 
 badpeakassn:
-	msg = msg + {"Feedback Travel time - error calculating peak assignment travel times"}
+	Throw("Feedback Travel time - error calculating peak assignment travel times")
 	AppendToLogFile(2, "Feedback Travel time - error calculating peak assignment travel times")
 	goto badquit
 
 badimpedance:
-	msg = msg + {"Feedback Travel time - error calculating highway impedance"}
+	Throw("Feedback Travel time - error calculating highway impedance")
 	AppendToLogFile(2, "Feedback Travel time - error calculating highway impedance")
 	goto badquit
 
 badspeedab:
-	msg = msg + {"Feedback Travel time - error re-calculating AB peak speed (MPH)"}
+	Throw("Feedback Travel time - error re-calculating AB peak speed (MPH)")
 	AppendToLogFile(2, "Feedback Travel time - error re-calculating AB peak speed (MPH)")
 	goto badquit
 
 badspeedba:
-	msg = msg + {"Feedback Travel time - error re-calculating BA peak speed (MPH)"}
+	Throw("Feedback Travel time - error re-calculating BA peak speed (MPH)")
 	AppendToLogFile(2, "Feedback Travel time - error re-calculating BA peak speed (MPH)")
 	goto badquit
 
 badtranreg:
-	msg = msg + {"Feedback Travel time - error re-calculating transit travel times on street network"}
+	Throw("Feedback Travel time - error re-calculating transit travel times on street network")
 	AppendToLogFile(2, "Feedback Travel time - error re-calculating transit travel times on street network")
 	goto badquit
 
 badtrangdwy:
-	msg = msg + {"Feedback Travel time - error re-calculating transit travel times on guideways"}
+	Throw("Feedback Travel time - error re-calculating transit travel times on guideways")
 	AppendToLogFile(2, "Feedback Travel time - error re-calculating transit travel times on guideways")
 	goto badquit
 
 badtrannonskp:
-	msg = msg + {"Feedback Travel time - error re-calculating non-stop and skip-stop transit travel times"}
+	Throw("Feedback Travel time - error re-calculating non-stop and skip-stop transit travel times")
 	AppendToLogFile(2, "Feedback Travel time - error re-calculating non-stop and skip-stop transit travel times")
 	goto badquit
 

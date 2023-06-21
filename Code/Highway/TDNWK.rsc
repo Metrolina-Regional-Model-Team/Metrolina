@@ -137,13 +137,13 @@ Macro "TDNWK" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDnwk, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDnwk, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDnwk,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDnwk, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDnwk, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDnwk, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

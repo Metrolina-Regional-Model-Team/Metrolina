@@ -25,7 +25,7 @@ Macro "ExtStaforTripGen" (Args)
 	info = GetDBInfo(Dir + "\\"+netview+".dbd")
 	if info = null then do
 		Throw("ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
-// 		msg = msg + {"ExtStaforTripGen: " + netview + ".dbd does not exist in this directory"}
+// 		Throw("ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
 // //		AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd does not exist in this directory")
 // 		goto badnetview
 		end
@@ -97,7 +97,7 @@ Macro "ExtStaforTripGen" (Args)
 				end
 				// no hit
 				Throw("ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array")
-				// msg = msg + {"ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array"}
+				// Throw("ExtStaforTripGen: ERROR!  TAZ " + MtxTAZ[i] + " should be Ext Sta but not found in TAZ array")
 			//	AppendToLogFile(1, ""ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
 				ExtStaOK = 0
 				gothit:
@@ -107,7 +107,7 @@ Macro "ExtStaforTripGen" (Args)
 	if CBDNdx = 0 
 		then do
 			Throw("ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
-			// msg = msg + {"ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free"}
+			// Throw("ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
 		//	AppendToLogFile(1, ""ExtStaforTripGen: ERROR!  Could not find TAZ " + CBDProxy + " in SPMAT_Free")
 			ExtStaOK = 0
 		end
@@ -211,14 +211,14 @@ Macro "ExtStaforTripGen" (Args)
 
 	badextsta:
 	Throw("ExtStaforTripGen: " + netview + ".dbd has no external stations")
-// 	msg = msg + {"ExtStaforTripGen: " + netview + ".dbd has no external stations"}
+// 	Throw("ExtStaforTripGen: " + netview + ".dbd has no external stations")
 // //	AppendToLogFile(1, ""ExtStaforTripGen: " + netview + ".dbd has no external stations")
 // 	showarray(msg)
 // 	goto done
 
 	badspmat:
 	Throw("ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
-// 	msg = msg + {"ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx"}
+// 	Throw("ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
 // //	AppendToLogFile(1, ""ExtStaforTripGen: Error opening \\Skims\\SPMAT_Free.mtx")
 // 	showarray(msg)
 // 	goto done

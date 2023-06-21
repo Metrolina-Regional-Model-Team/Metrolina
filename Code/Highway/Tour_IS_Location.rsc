@@ -474,7 +474,7 @@ RandSeed = r2i((RandSeed / 3) + 47)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Intermediate Stop Location: Error somewhere"}
+		Throw("Intermediate Stop Location: Error somewhere")
 		AppendToLogFile(1, "Intermediate Stop Location: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Intermediate Stop Location " + datentime)

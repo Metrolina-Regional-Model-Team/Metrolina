@@ -140,13 +140,13 @@ Macro "TDHBU" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDhbu, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDhbu, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDhbu,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDhbu, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDhbu, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDhbu, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

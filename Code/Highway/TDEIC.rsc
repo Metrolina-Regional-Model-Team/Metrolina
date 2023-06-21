@@ -136,13 +136,13 @@ Macro "TDEIC" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDeic, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDeic, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDeic,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDeic, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDeic, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDeic, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

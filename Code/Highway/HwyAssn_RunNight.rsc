@@ -36,7 +36,7 @@ Macro "HwyAssn_RunNight" (Args)
 
 	if HwyAssnNtOK = 0
 		then do
-			msg = msg + {"HwyAssn OffPeak - Night hwy assn error"}
+			Throw("HwyAssn OffPeak - Night hwy assn error")
 			HwyAssnOK = 0
 		end
 

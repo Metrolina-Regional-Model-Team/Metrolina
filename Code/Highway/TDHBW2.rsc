@@ -139,13 +139,13 @@ Macro "TDHBW2" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDhbw2, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDhbw2, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDhbw2,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDhbw2, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDhbw2, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDhbw2, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

@@ -117,19 +117,19 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 				if button = "Yes"
 					then do
 						if chgscenname = 1 then do
-							msg = msg + {"ShowArgs: Scenario name changed from " + Args.[Scenario Name].Value + " to " + argsscenname}
+							Throw("ShowArgs: Scenario name changed from " + Args.[Scenario Name].Value + " to " + argsscenname)
 							Args.[Scenario Name].Value = argsscenname
 						end
 						if chgampkhwyname = 1 then do 	
-							msg = msg + {"ShowArgs: AM Peak highway file name changed from " + Args.[AM Peak Hwy Name].Value + " to " + argsampkhwyname}
+							Throw("ShowArgs: AM Peak highway file name changed from " + Args.[AM Peak Hwy Name].Value + " to " + argsampkhwyname)
 							Args.[AM Peak Hwy Name].Value = argsampkhwyname
 						end
 						if chgpmpkhwyname = 1 then do 	
-							msg = msg + {"ShowArgs: PM Peak highway file name changed from " + Args.[PM Peak Hwy Name].Value + " to " + argspmpkhwyname}
+							Throw("ShowArgs: PM Peak highway file name changed from " + Args.[PM Peak Hwy Name].Value + " to " + argspmpkhwyname)
 							Args.[PM Peak Hwy Name].Value = argspmpkhwyname
 						end
 						if chgophwyname = 1 then do 	
-							msg = msg + {"ShowArgs: Offpeak highway file name changed from " + Args.[Offpeak Hwy Name].Value + " to " + argsophwyname}
+							Throw("ShowArgs: Offpeak highway file name changed from " + Args.[Offpeak Hwy Name].Value + " to " + argsophwyname)
 							Args.[Offpeak Hwy Name].Value = argsophwyname
 						end
 						if chgtimewgt = 1 then do

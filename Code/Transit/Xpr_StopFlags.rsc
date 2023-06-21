@@ -151,7 +151,7 @@ Macro "XPR_StopFlags"  (Args)
 		else do
 			Throw("XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)")
 			// xprflagerr = 2
-			// msg = msg + {"XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)"}
+			// Throw("XPR_StopFlags: WARNING - No Premium stops flagged (PRM_Flag)")
 		end
 
 	
@@ -178,7 +178,7 @@ Macro "XPR_StopFlags"  (Args)
 		then do
 			Throw("XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG")
 			// xprflagerr = 2
-			// msg = msg + {"XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG"}
+			// Throw("XPR_StopFlags: WARNING - No TAZ flagged with XPR_FLAG")
 		end
 		
 	// Back to route stops layer, still joined to routes.dbf
@@ -215,7 +215,7 @@ Macro "XPR_StopFlags"  (Args)
 		else do 
 			Throw("XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)")
 			// xprflagerr = 2
-			// msg = msg + {"XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)"}
+			// Throw("XPR_StopFlags: WARNING - No Express Inbound stops flagged (XPR_FLAG = 2)")
 		end
 
 	if n_ExpOut > 0
@@ -223,7 +223,7 @@ Macro "XPR_StopFlags"  (Args)
 		else do 
 			Throw("XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)")
 			// xprflagerr = 2
-			// msg = msg + {"XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)"}
+			// Throw("XPR_StopFlags: WARNING - No Express Outbound stops flagged (XPR_FLAG = 1)")
 		end
 
 	CloseView(zone_vw)
@@ -236,7 +236,7 @@ Macro "XPR_StopFlags"  (Args)
 	badinitialize:
 	xprflagerr = 3
 	Throw("XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG")
-	// msg = msg + {"XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG"}
+	// Throw("XPR_StopFlags: ERROR - Could not initialize Route Stops EXP_FLAG and/or PRM_FLAG")
 	// goto quit
 
 	quit:

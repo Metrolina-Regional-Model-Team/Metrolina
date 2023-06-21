@@ -544,7 +544,7 @@ skiptoend:
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Frequency: Error somewhere"}
+		Throw("Tour Frequency: Error somewhere")
 		AppendToLogFile(1, "Tour Frequency: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Frequency " + datentime)

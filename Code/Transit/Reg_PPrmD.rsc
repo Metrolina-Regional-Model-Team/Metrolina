@@ -44,7 +44,7 @@ Macro "Reg_PPrmD" (Args)
 		then do
 			AppendToLogFile(2, rtnmsg)
                Throw(rtnmsg)
-			// msg = msg + {rtnmsg}
+			// Throw(rtnmsg)
 		end
 
 	//-- Set up the network names
@@ -594,7 +594,7 @@ goto quit
 
 	badcomputeopmatrix:
      Throw("Reg_PPrmD - Error return from Compute_OP_Matrix")
-	// msg = msg + {"Reg_PPrmD - Error return from Compute_OP_Matrix"}
+	// Throw("Reg_PPrmD - Error return from Compute_OP_Matrix")
 	// AppendToLogFile(1, "Reg_PPrmD - Error return from Compute_OP_Matrix") 
 	// goto badquit
 		
@@ -606,38 +606,38 @@ goto quit
 
 	badbuildtrannet:
      Throw("Reg_PPrmD - Error return build transit network")
-	// msg = msg + {"Reg_PPrmD - Error return build transit network"}
+	// Throw("Reg_PPrmD - Error return build transit network")
 	// AppendToLogFile(1, "Reg_PPrmD - Error return build transit network") 
 	// goto badquit
 
 	badtransettings:
      Throw("Reg_PPrmD - Error return from transit network settings")
-	// msg = msg + {"Reg_PPrmD - Error return from transit network settings"}
+	// Throw("Reg_PPrmD - Error return from transit network settings")
 	// AppendToLogFile(1, "Reg_PPrmD - Error return from transit network settings") 
 	// goto badquit
 
 	badtranskim:
      Throw("Reg_PPrmD - Error return from transit network skims")
-	// msg = msg + {"Reg_PPrmD - Error return from transit network skims"}
+	// Throw("Reg_PPrmD - Error return from transit network skims")
 	// AppendToLogFile(1, "Reg_PPrmD - Error return from transit network skims")
 	// goto badquit
 
 	badmatrixop:
      Throw("Reg_PPrmD - Error in matrix operations")
-	// msg = msg + {"Reg_PPrmD - Error in matrix operations"}
+	// Throw("Reg_PPrmD - Error in matrix operations")
 	// AppendToLogFile(1, "Reg_PPrmD - Error in matrix operations")
 	// goto badquit
 
 	badxpr_stopflags:
      Throw(rtnmsg)
-	// msg = msg + {rtnmsg}
+	// Throw(rtnmsg)
 	// AppendToLogFile(2, rtnmsg)
-	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// Throw("Reg_PPrmW - Error return from XPR_StopFlags")
 	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
 	// goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
     RunMacro("TCB Closing", 0, "TRUE" ) 
 	RegPPrmDOK = 0

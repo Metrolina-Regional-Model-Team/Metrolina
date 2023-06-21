@@ -90,31 +90,31 @@ Macro "Terminal_Intrazonal_TT" (Args, TermTimeFile, SPMATFile, SPMATCoreName, Pe
 	goto done
 
 	badspmat:
-	msg = msg + {"Terminal_Intrazonal_TT ERROR opening SPMAT"}
+	Throw("Terminal_Intrazonal_TT ERROR opening SPMAT")
 	AppendToLogFile(1, "Terminal_Intrazonal_TT ERROR opening SPMAT")
 	TermIntraOK = 0
 	goto done
 
 	badTTIntraFile:
-	msg = msg + {"Terminal_Intrazonal_TT ERROR opening Terminal Time matrix"}
+	Throw("Terminal_Intrazonal_TT ERROR opening Terminal Time matrix")
 	AppendToLogFile(1, "Terminal_Intrazonal_TT ERROR opening Terminal Time matrix")
 	TermIntraOK = 0
 	goto done
 
 	badatype:
-	msg = msg + {"Terminal_Intrazonal_TT ERROR opening TAZ_ATYE.asc"}
+	Throw("Terminal_Intrazonal_TT ERROR opening TAZ_ATYE.asc")
 	AppendToLogFile(1, "Terminal_Intrazonal_TT ERROR opening TAZ_ATYE.asc")
 	TermIntraOK = 0
 	goto done
 	
 	badmatchTTIntra:
-	msg = msg + {"Terminal_Intrazonal_TT ERROR - Terminal time matrix does not match SPMAT!"}
+	Throw("Terminal_Intrazonal_TT ERROR - Terminal time matrix does not match SPMAT!")
 	AppendToLogFile(1, "Terminal_Intrazonal_TT ERROR  - Terminal time matrix does not match SPMAT!")
 	TermIntraOK = 0
 	goto done
 
 	badmatchATYPE:
-	msg = msg + {"Terminal_Intrazonal_TT ERROR - Area Type file does not match SPMAT!"}
+	Throw("Terminal_Intrazonal_TT ERROR - Area Type file does not match SPMAT!")
 	AppendToLogFile(1, "Terminal_Intrazonal_TT ERROR  - Area Type file does not match SPMAT!")
 	TermIntraOK = 0
 	goto done

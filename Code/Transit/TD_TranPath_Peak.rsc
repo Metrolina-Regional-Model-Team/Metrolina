@@ -69,7 +69,7 @@ Macro "TD_TranPath_Peak" (Args)
 goto quit
 
 badquit:
-	msg = msg + {"TD_TranPath_Peak - Error"}
+	Throw("TD_TranPath_Peak - Error")
 	AppendToLogFile(1, "TD_TranPath_Peak - Error")
 	TDPathOK = 0
 	

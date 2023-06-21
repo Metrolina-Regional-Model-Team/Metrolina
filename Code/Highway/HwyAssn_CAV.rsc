@@ -344,25 +344,25 @@ end // loop on time periods
 	goto quit
 
 	badnetbuild:
-	msg = msg + {"HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields"}
+	Throw("HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields")
 	HOTHwyAssnOK = 0
 	goto badquit
 	
 	badnetsettings:
-	msg = msg + {"HOT HwyAssn - ERROR in highway network settings"}
+	Throw("HOT HwyAssn - ERROR in highway network settings")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR in highway network settings")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badassign:
-	msg = msg + {"HOT HwyAssn - ERROR in highway assignment"}
+	Throw("HOT HwyAssn - ERROR in highway assignment")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR in highway assignment")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 	RunMacro("TCB Closing", ret_value, "TRUE" )
 	RunMacro("TCB Closing", ret_value, "TRUE" )
@@ -370,13 +370,13 @@ end // loop on time periods
 
 	TCError:
 	errmsg = GetLastError()
-	msg = msg + {"HOT HwyAssn - TC ERROR : "+ errmsg}
+	Throw("HOT HwyAssn - TC ERROR : "+ errmsg)
 	AppendToLogFile(2, "HOT HwyAssn - TC ERROR : "+ errmsg)
 	HOTHwyAssnOK = 0
 	goto quit
 
 	UserKill:
-	msg = msg + {"HOT HwyAssn - User killed job" }
+	Throw("HOT HwyAssn - User killed job" )
 	AppendToLogFile(2, "HOT HwyAssn - User killed job")
 	HOTHwyAssnOK = 0
 	goto quit

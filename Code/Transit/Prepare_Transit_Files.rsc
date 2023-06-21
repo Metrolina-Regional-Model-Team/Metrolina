@@ -49,35 +49,35 @@ macro "Prepare_Transit_Files" (Args)
 	if ok1[1] = 0 
 		then do
 			Throw("Prepare Transit Files - error return from Mode Split Controls")
-			// msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
+			// Throw("Prepare Transit Files - error return from Mode Split Controls")
 			// msg = msg + ok1[2]
 			// goto badquit
 		end	
 	if ok2[1] = 0 
 		then do
 			Throw("Prepare Transit Files - error return from ModeChoice Files")
-			// msg = msg + {"Prepare Transit Files - error return from ModeChoice Files"}
+			// Throw("Prepare Transit Files - error return from ModeChoice Files")
 			// msg = msg + ok1[2]
 			// goto badquit
 		end	
 	if ok3[1] = 0 
 		then do
 			Throw("Prepare Transit Files - error return from Mode Split Controls")
-			// msg = msg + {"Prepare Transit Files - error return from Mode Split Controls"}
+			// Throw("Prepare Transit Files - error return from Mode Split Controls")
 			// msg = msg + ok3[2]
 			// goto badquit
 		end	
 	if ok4[1] = 0 
 		then do
 			Throw("Prepare Transit Files - error return from Transit Skims Output Matrices")
-			// msg = msg + {"Prepare Transit Files - error return from Transit Skims Output Matrices"}
+			// Throw("Prepare Transit Files - error return from Transit Skims Output Matrices")
 			// msg = msg + ok4[2]
 			// goto badquit
 		end	
 	if ok5[1] = 0 
 		then do
 			Throw("Prepare Transit Files - error return from Create Mode Split Output Matrices")
-			// msg = msg + {"Prepare Transit Files - error return from Create Mode Split Output Matrices"}
+			// Throw("Prepare Transit Files - error return from Create Mode Split Output Matrices")
 			// msg = msg + ok5[2]
 			// goto badquit
 		end	
@@ -112,7 +112,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBW Peak MS Control"} 
+			Throw("Error in HBW Peak MS Control") 
 			goto badquit
 		end	
 
@@ -124,7 +124,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBW OffPeak MS Control"} 
+			Throw("Error in HBW OffPeak MS Control") 
 			goto badquit
 		end	
 
@@ -136,7 +136,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBO Peak MS Control"} 
+			Throw("Error in HBO Peak MS Control") 
 			goto badquit
 		end	
 
@@ -148,7 +148,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBO OffPeak MS Control"} 
+			Throw("Error in HBO OffPeak MS Control") 
 			goto badquit
 		end	
 	
@@ -160,7 +160,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in NHB Peak MS Control"} 
+			Throw("Error in NHB Peak MS Control") 
 			goto badquit
 		end	
 
@@ -172,7 +172,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in NHB OffPeak MS Control"} 
+			Throw("Error in NHB OffPeak MS Control") 
 			goto badquit
 		end	
 
@@ -184,7 +184,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBU Peak MS Control"} 
+			Throw("Error in HBU Peak MS Control") 
 			goto badquit
 		end	
 
@@ -196,7 +196,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBU OffPeak MS Control"} 
+			Throw("Error in HBU OffPeak MS Control") 
 			goto badquit
 		end	
 
@@ -208,7 +208,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBW Peak MS Batch"} 
+			Throw("Error in HBW Peak MS Batch") 
 			goto badquit
 		end	
 
@@ -220,7 +220,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBW OffPeak MS Batch"} 
+			Throw("Error in HBW OffPeak MS Batch") 
 			goto badquit
 		end	
 
@@ -232,7 +232,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBO Peak MS Batch"} 
+			Throw("Error in HBO Peak MS Batch") 
 			goto badquit
 		end	
 
@@ -244,7 +244,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBO OffPeak MS Batch"} 
+			Throw("Error in HBO OffPeak MS Batch") 
 			goto badquit
 		end	
 
@@ -256,7 +256,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in NHB Peak MS Batch"} 
+			Throw("Error in NHB Peak MS Batch") 
 			goto badquit
 		end	
 
@@ -268,7 +268,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in NHB OffPeak MS Batch"} 
+			Throw("Error in NHB OffPeak MS Batch") 
 			goto badquit
 		end	
 
@@ -280,7 +280,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBU Peak MS Batch"} 
+			Throw("Error in HBU Peak MS Batch") 
 			goto badquit
 		end	
 
@@ -292,7 +292,7 @@ Macro "Mode Split Controls" (template_dir, alt_dir, alt_name, METDir)
 	if ok[1] = 0 
 		then do
 			msg = ok[2]
-			msg = msg + {"Error in HBU OffPeak MS Batch"} 
+			Throw("Error in HBU OffPeak MS Batch") 
 			goto badquit
 		end	
 

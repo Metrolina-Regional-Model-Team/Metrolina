@@ -170,7 +170,7 @@ macro "AvgTripLenTrips" (Args)
 	goto quit
 		
 	badend: 
-	msg = msg + {"AvgTripLenTrips:  Error - file " + badfile + " not found"}
+	Throw("AvgTripLenTrips:  Error - file " + badfile + " not found")
 	AppendToLogFile(1, "AvgTripLenTrips:  Error - file " + badfile + " not found")
 	atltripsOK = 0
 	goto quit 

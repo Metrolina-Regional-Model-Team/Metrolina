@@ -372,7 +372,7 @@ RunMacro("G30 File Close All")
 goto quit
 
 badtimeperiod:
-		msg = msg + {"Highway Network Time period error"}
+		Throw("Highway Network Time period error")
 		AppendToLogFile(1, "Build_HwyNet: Error: - Time period error")
 		ShowItem(" Error/Warning messages ")
 		ShowItem("netmessageslist")

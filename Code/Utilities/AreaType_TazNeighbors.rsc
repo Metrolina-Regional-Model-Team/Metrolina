@@ -20,11 +20,11 @@ DBox "AreaType_TAZNeighbors" Title: "Create TAZ Neighbors file for Area Type"
 
 		//Set input file layernames and dataviews
 		mapname = "MRM TAZ Map"  //set mapname
-		msg = msg + {"AreaType_TAZNeighbors started"}
+		Throw("AreaType_TAZNeighbors started")
 		info = GetDBInfo(TAZFile)
 		if info = null 
 			then do
-				msg = msg + {"TAZ File missing!"}
+				Throw("TAZ File missing!")
 				goto killjob
 			end
 		TAZSplit = SplitPath(TAZFile)
@@ -211,12 +211,12 @@ DBox "AreaType_TAZNeighbors" Title: "Create TAZ Neighbors file for Area Type"
 		goto done
 
 		nointernals:
-		msg = msg + {"No internal TAZ in TAZ file!"}
+		Throw("No internal TAZ in TAZ file!")
 		goto killjob
 
 		
 		killjob:
-		msg = msg + {"AreaType_TAZNeighbors CANCELLED!"}
+		Throw("AreaType_TAZNeighbors CANCELLED!")
 		showarray(msg)
 		goto done
 		

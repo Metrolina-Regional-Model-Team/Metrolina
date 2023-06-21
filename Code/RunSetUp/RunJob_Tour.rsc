@@ -337,7 +337,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 	if JobsToRun.length > 0 
 		then Job1 = JobsToRun[1]
 		else Job1 = null 
-	msg = msg + {"Run MRM Tour, Job 1= " + Job1+ ", " + datentime}
+	Throw("Run MRM Tour, Job 1= " + Job1+ ", " + datentime)
 	AppendToLogFile(1, "Run MRM Tour, Job 1= " + Job1+ ", " + datentime)
 
 	// Loop through all jobs selected
@@ -382,7 +382,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 			exist = GetFileInfo(infile)
 			if exist = null
 				then do 
-					msg = msg + {"RunJob: " + job + " input file missing: " + infile}
+					Throw("RunJob: " + job + " input file missing: " + infile)
 					AppendToLogFile(1, "RunJob: " + job + " input file missing: " + infile)
 					PreRunStatus = 0
 				end
@@ -394,7 +394,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 				fieldok = rtn[1]
 				if fieldok = 0 
 					then do
-						msg = msg + {"RunJob: " + job + ", Error in GetFieldCore infile/infield" + infile + "/" + fieldname + ", " + rtn[2]}
+						Throw("RunJob: " + job + ", Error in GetFieldCore infile/infield" + infile + "/" + fieldname + ", " + rtn[2])
 						AppendToLogFile(1, "RunJob: " + job + ", Error in GetFieldCore infile/infield" + infile + "/" + fieldname + ", " + rtn[2])
 						PreRunStatus = 0
 					end
@@ -404,7 +404,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 		skipinfiles:
 		if PreRunStatus = 0 
 			then do
-				msg = msg + {"RunJob: " + job + " Run input files bad, job not run"}
+				Throw("RunJob: " + job + " Run input files bad, job not run")
 				AppendToLogFile(1, "RunJob: " + job + " Run input files bad, job not run")
 				goto killjob
 			end
@@ -439,7 +439,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 			exist = GetFileInfo(outfile)
 			if exist = null
 				then do 
-					msg = msg + {"RunJob: " + job + " output file missing: " + outfile}
+					Throw("RunJob: " + job + " output file missing: " + outfile)
 					AppendToLogFile(1, "RunJob: " + job + " output file missing: " + outfile)
 					PostRunStatus = 0
 					goto skipoutfieldcheck
@@ -454,7 +454,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 					fieldok = rtn[1]
 					if fieldok = 0 
 						then do
-							msg = msg + {"RunJob: " + job + ", Error in GetFieldCore outfile/outfield" + outfile + "/" + fieldname + ", " + rtn[2]}
+							Throw("RunJob: " + job + ", Error in GetFieldCore outfile/outfield" + outfile + "/" + fieldname + ", " + rtn[2])
 							AppendToLogFile(1, "RunJob: " + job + ", Error in GetFieldCore outfile/outfield" + outfile + "/" + fieldname + ", " + rtn[2])
 							PostRunStatus = 0
 						end
@@ -463,7 +463,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 			skipoutfieldcheck:
 			if PostRunStatus = 0 
 				then do
-					msg = msg + {"RunJob: " + job + " Run output files bad"}
+					Throw("RunJob: " + job + " Run output files bad")
 					AppendToLogFile(1, "RunJob: " + job + " Run output files bad")
 					goto killjob
 				end
@@ -486,7 +486,7 @@ Macro "RunJob_Tour" (Args, JobsToRun)
 	return({1, msg})			
 			
 	killjob:
-	msg = msg + {"RunJob: " + job + "RUN KILLED"}
+	Throw("RunJob: " + job + "RUN KILLED")
 	AppendToLogFile(1, "RunJob: " + job + "RUN KILLED")
 //	SaveArray(Args, Dir + "\\Arguments.args")
 	JobsToRun = null

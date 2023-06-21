@@ -597,7 +597,7 @@ SetRandomSeed(48)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Intermediate Stop Model Feedback Iter " + i2s(curiter) + ": Error somewhere"}
+		Throw("Intermediate Stop Model Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		AppendToLogFile(1, "Intermediate Stop Model Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Intermediate Stop Model Feedback Iter " + i2s(curiter) + " " + datentime)

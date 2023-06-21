@@ -78,7 +78,7 @@ volgroup_tab = CreateTable("volgroup_tab", Dir + "\\volgroup_tab.bin", "FFB", {{
 	goto quit
 		
 	badend: 
-	msg = msg + {"VolGroupStats:  Error - file " + badfile + " not found"}
+	Throw("VolGroupStats:  Error - file " + badfile + " not found")
 	AppendToLogFile(1, "VolGroupStats:  Error - file " + badfile + " not found")
 	atltripsOK = 0
 	goto quit 

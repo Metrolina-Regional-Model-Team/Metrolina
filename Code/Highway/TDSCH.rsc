@@ -136,13 +136,13 @@ Macro "TDSCH" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDsch, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDsch, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDsch,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDsch, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDsch, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDsch, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

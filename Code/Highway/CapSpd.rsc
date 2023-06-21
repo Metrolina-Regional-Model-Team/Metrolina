@@ -35,7 +35,7 @@ macro "CapSpd" (Args)
 		info = GetDBInfo(Dir + "\\"+netview+".dbd")
 		if info = null then do
 			Throw("CapSpd: " + netview + ".dbd does not exist in this directory")
-			// msg = msg + {"CapSpd: " + netview + ".dbd does not exist in this directory"}
+			// Throw("CapSpd: " + netview + ".dbd does not exist in this directory")
 			// AppendToLogFile(1, "CapSpd: " + netview + ".dbd does not exist in this directory")
 			// goto badquit
 			end
@@ -148,13 +148,13 @@ macro "CapSpd" (Args)
 		fatal =  '      24'
 		if fortrtn = severe then do 
 			Throw("Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
-			// msg = msg + {"Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt"}
+			// Throw("Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
 			// AppendToLogFile(1, "Severe error in fortran capspd program, see \\Report\\CapSpd_errorlog_.txt")
 			// goto badquit
 			end
 		if fortrtn = fatal then do 
 			Throw("Fortran Fatal error - CapSpd did not run")
-			// msg = msg + {"Fortran Fatal error - CapSpd did not run"}
+			// Throw("Fortran Fatal error - CapSpd did not run")
 			// AppendToLogFile(1, "Fortran Fatal error - CapSpd did not run")
 			// goto badquit
 			end

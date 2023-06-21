@@ -603,25 +603,25 @@ done:
 
 	badmerge:
 	Throw("Update_Drive_Skim_Mtx - Error merging matrices")
-     // msg = msg + {"Update_Drive_Skim_Mtx - Error merging matrices"}
+     // Throw("Update_Drive_Skim_Mtx - Error merging matrices")
 	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error merging matrices")
 	// goto badquit
 
 	badfill:
      Throw("Update_Drive_Skim_Mtx - Error filling matrices")
-	// msg = msg + {"Update_Drive_Skim_Mtx - Error filling matrices"}
+	// Throw("Update_Drive_Skim_Mtx - Error filling matrices")
 	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Error filling matrices")
 	// goto badquit
 
 	nofortran:
      Throw("Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
-	// msg = msg + {"Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing"}
+	// Throw("Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
 	// AppendToLogFile(2, "Update_Drive_Skim_Mtx - Program Update_Drive_Skims_Mtx missing")
 	// goto badquit
 
 	badfortran:
      Throw("Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
-	// msg = msg + {"Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !"}
+	// Throw("Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
 	// AppendToLogFile(2, "Update_Drive_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv2 !")
 	// goto badquit
 

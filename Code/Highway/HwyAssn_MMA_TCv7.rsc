@@ -287,30 +287,30 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 goto quit
 
 badtimeperiod:
-	msg = msg + {"Highway Assignment Time period error"}
+	Throw("Highway Assignment Time period error")
 	AppendToLogFile(1, "Highway Assignment: Error: - Time period error")
 	ShowItem(" Error/Warning messages ")
 	ShowItem("netmessageslist")
 	goto quit
 
 badnetbuild:
-	msg = msg + {"HwyAssn MMA - error building highway network"}
+	Throw("HwyAssn MMA - error building highway network")
 	AppendToLogFile(2, "HwyAssn MMA - error building highway network")
 	goto badquit
 
 badnetsettings:
-	msg = msg + {"HwyAssn MMA - error in highway network settings"}
+	Throw("HwyAssn MMA - error in highway network settings")
 	AppendToLogFile(2, "HwyAssn MMA - error in highway network settings")
 	goto badquit
 
 badassign:
-	msg = msg + {"HwyAssn MMA - error in highway MMA Assignment"}
+	Throw("HwyAssn MMA - error in highway MMA Assignment")
 	AppendToLogFile(2, "HwyAssn MMA - error in highway MMA Assignment")
 	goto badquit
 
 badquit:
 	HwyAssnOK = 0
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 
 	RunMacro("TCB Closing", ret_value, "TRUE" )

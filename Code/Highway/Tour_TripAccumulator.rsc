@@ -1154,7 +1154,7 @@ NT-NT	0.088	|*/
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Trip Accumulator: Error somewhere"}
+		Throw("Tour Trip Accumulator: Error somewhere")
 		AppendToLogFile(1, "Tour Trip Accumulator: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Trip Accumulator " + datentime)

@@ -145,7 +145,7 @@ CopyMatrixStructure({mc1}, {{"File Name", Dir + "\\tg\\tdeeh.mtx"},
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"XX Tours: Error somewhere"}
+		Throw("XX Tours: Error somewhere")
 		AppendToLogFile(1, "XX Tours: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "XX Tours " + datentime)

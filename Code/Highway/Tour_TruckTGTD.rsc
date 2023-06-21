@@ -828,7 +828,7 @@ vt_ar = {"COM", "MTK", "HTK"}
 goto quit
 
 badtranspose:
-	msg = msg + {"TOD2_COM_MTK_HTK - bad transpose"}
+	Throw("TOD2_COM_MTK_HTK - bad transpose")
     TOD2_COMMTKHTKOK = 0         
 
 
@@ -846,7 +846,7 @@ skiptoend:
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Truck Model: Error somewhere"}
+		Throw("Tour Truck Model: Error somewhere")
 		AppendToLogFile(1, "Tour Truck Model: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Truck Model " + datentime)

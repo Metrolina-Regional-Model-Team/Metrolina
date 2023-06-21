@@ -41,7 +41,7 @@ Macro "OPPrmW_Assign" (Args)
 	if runerr = 2
 		then do
 			Throw(rtnmsg)
-			// msg = msg + {rtnmsg}
+			// Throw(rtnmsg)
 			// AppendToLogFile(2, rtnmsg)
 		end
 
@@ -127,29 +127,29 @@ Macro "OPPrmW_Assign" (Args)
 	goto quit
 			
 	badbuildtrannet:
-	msg = msg + {"OPPrmW_Assign - Error return build transit network"}
+	Throw("OPPrmW_Assign - Error return build transit network")
 	AppendToLogFile(1, "OPPrmW_Assign - Error return build transit network") 
 	goto badquit
 
 	badtransettings:
-	msg = msg + {"OPPrmW_Assign - Error return from transit network settings"}
+	Throw("OPPrmW_Assign - Error return from transit network settings")
 	AppendToLogFile(1, "OPPrmW_Assign - Error return from transit network settings") 
 	goto badquit
 
 	badtranassn:
-	msg = msg + {"OPPrmW_Assign - Error return from transit network skims"}
+	Throw("OPPrmW_Assign - Error return from transit network skims")
 	AppendToLogFile(1, "OPPrmW_Assign - Error return from transit network skims")
 	goto badquit
 
 	badxpr_stopflags:
-	msg = msg + {rtnmsg}
+	Throw(rtnmsg)
 	AppendToLogFile(2, rtnmsg)
-	msg = msg + {"OPPrmW_Assign - Error return from XPR_StopFlags"}
+	Throw("OPPrmW_Assign - Error return from XPR_StopFlags")
 	AppendToLogFile(1, "OPPrmW_Assign - Error return from XPR_StopFlags")
 	goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 	RunMacro("TCB Closing", 0, "TRUE" ) 
 	OPPrmWAssnOK = 0

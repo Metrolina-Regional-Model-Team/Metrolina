@@ -379,25 +379,25 @@ goto quit
 
 	badmerge:
      Throw("Update_Dropoff_Skim_Mtx - Error merging matrices")
-	// msg = msg + {"Update_Dropoff_Skim_Mtx - Error merging matrices"}
+	// Throw("Update_Dropoff_Skim_Mtx - Error merging matrices")
 	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error merging matrices")
 	// goto badquit
 
 	badfill:
      Throw("Update_Dropoff_Skim_Mtx - Error filling matrices")
-	// msg = msg + {"Update_Dropoff_Skim_Mtx - Error filling matrices"}
+	// Throw("Update_Dropoff_Skim_Mtx - Error filling matrices")
 	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Error filling matrices")
 	// goto badquit
 
 	nofortran:
      Throw("Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
-	// msg = msg + {"Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing"}
+	// Throw("Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
 	// AppendToLogFile(2, "Update_Dropoff_Skim_Mtx - Program Update_Dropoff_Skims_Mtx missing")
 	// goto badquit
 
 	badfortran:
      Throw("Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
-	// msg = msg + {"Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !"}
+	// Throw("Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
 	// AppendToLogFile(2, "Update_Dropoff_Skims_Mtx - error return from \\ModeChoice\\UPD_DA_Dist_Time_Costv1 !")
 	// goto badquit
 

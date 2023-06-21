@@ -37,7 +37,7 @@ DBox "MRMUtilities" (Args) , top Title: "MRM Utilities"
 		goto quittranchhwy
 		tranchhwyerr:
 		on error default
-		msg = msg + {"MRM Utilities - Transit Change Hwy - ERROR!"}
+		Throw("MRM Utilities - Transit Change Hwy - ERROR!")
 		UtilitiesOK = 3
 		return({UtilitiesOK, msg})
 		quittranchhwy:
@@ -50,7 +50,7 @@ DBox "MRMUtilities" (Args) , top Title: "MRM Utilities"
 		exist = GetFileInfo(TAZFile)
 		if exist = null
 			then do
-				msg = msg + {"MRM Utilities ERROR! - TAZ file not found (create matrix template)"}
+				Throw("MRM Utilities ERROR! - TAZ file not found (create matrix template)")
 				UtilitiesOK = 3
 				return({UtilitiesOK, msg})
 			end
@@ -65,14 +65,14 @@ DBox "MRMUtilities" (Args) , top Title: "MRM Utilities"
 		exist = GetFileInfo(TAZFile)
 		if exist = null
 			then do
-				msg = msg + {"MRM Utilities ERROR! - TAZ file not found"}
+				Throw("MRM Utilities ERROR! - TAZ file not found")
 				UtilitiesOK = 3
 				return({UtilitiesOK, msg})
 			end
 		exist = GetFileInfo(LUFile)
 		if exist = null
 			then do
-				msg = msg + {"MRM Utilities ERROR! - Land Use file not found"}
+				Throw("MRM Utilities ERROR! - Land Use file not found")
 				UtilitiesOK = 3
 				return({UtilitiesOK, msg})
 			end

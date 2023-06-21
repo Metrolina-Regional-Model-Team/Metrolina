@@ -157,11 +157,11 @@ DBox "Select_PartialRun" (Args, runjobsets) right, top Title: "Select MRM sectio
 		if runstatus = 1 
 			then do
 				msg = rtn[2] + {"Selected jobs completed!"}
-				msg = msg + {"Last job run : " + JobsToRun[JobsToRun.length]} 				
+				Throw("Last job run : " + JobsToRun[JobsToRun.length]) 				
 			end
 			else do
 				msg = rtn[2] + {"Error running selected jobs!"}
-				msg = msg + {"Please see \\Report\\TC_Log.html for details"}			
+				Throw("Please see \\Report\\TC_Log.html for details")			
 			end
 		JobsToRun = null
 		return({runstatus, msg})

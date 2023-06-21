@@ -1846,7 +1846,7 @@ SetRandomSeed(3113)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Destination Choice: Error somewhere"}
+		Throw("Tour Destination Choice: Error somewhere")
 		AppendToLogFile(1, "Tour Destination Choice: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Destination Choice " + datentime)

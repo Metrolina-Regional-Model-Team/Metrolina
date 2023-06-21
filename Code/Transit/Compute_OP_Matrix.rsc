@@ -752,31 +752,31 @@ goto quit
 
 badaddfield:
     Throw("Compute_OP_Matrix - Error adding field to node layer")
-	// msg = msg + {"Compute_OP_Matrix - Error adding field to node layer"}
+	// Throw("Compute_OP_Matrix - Error adding field to node layer")
 	// AppendToLogFile(2, "Compute_OP_Matrix - Error adding field to node layer")
 	// goto badquit
 
 badfill:
     Throw("Compute_OP_Matrix - Error filling matrix")
-	// msg = msg + {"Compute_OP_Matrix - Error filling matrix"}
+	// Throw("Compute_OP_Matrix - Error filling matrix")
 	// AppendToLogFile(2, "Compute_OP_Matrix - Error filling matrix")
 	// goto badquit
 
 badhwynet:
     Throw("Compute_OP_Matrix - Error building highway network")
-	// msg = msg + {"Compute_OP_Matrix - Error building highway network"}
+	// Throw("Compute_OP_Matrix - Error building highway network")
 	// AppendToLogFile(2, "Compute_OP_Matrix - Error building highway network")
 	// goto badquit
 
 badhwysettings:
     Throw("Compute_OP_Matrix - Error in highway network settings")
-	// msg = msg + {"Compute_OP_Matrix - Error in highway network settings"}
+	// Throw("Compute_OP_Matrix - Error in highway network settings")
 	// AppendToLogFile(2, "Compute_OP_Matrix - Error in highway network settings")
 	// goto badquit
 
 badtcspmat:
     Throw("Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
-	// msg = msg + {"Compute_OP_Matrix - Error creating highway skim (TCSPMAT)"}
+	// Throw("Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
 	// AppendToLogFile(2, "Compute_OP_Matrix - Error creating highway skim (TCSPMAT)")
 	// goto badquit
 

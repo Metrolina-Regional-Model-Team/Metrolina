@@ -58,7 +58,7 @@ Macro "Build_Networks" (Args)
 
 	if AMPkHwyName = null 
 		then do
-			msg = msg + {"Error return from Build_HwyNet (AM Peak)"}
+			Throw("Error return from Build_HwyNet (AM Peak)")
 			AppendToLogFile(1, "Error return from Build_HwyNet (AM Peak)")
 			HwyOK = 0
 			goto didnotwork
@@ -80,7 +80,7 @@ Macro "Build_Networks" (Args)
 
 	if PMPkHwyName = null 
 		then do
-			msg = msg + {"Error return from Build_HwyNet (PM Peak)"}
+			Throw("Error return from Build_HwyNet (PM Peak)")
 			AppendToLogFile(1, "Error return from Build_HwyNet (PM Peak)")
 			HwyOK = 0
 			goto didnotwork
@@ -103,7 +103,7 @@ Macro "Build_Networks" (Args)
 
 	if OPHwyName = null 
 		then do
-			msg = msg + {"Error return from Build_HwyNet (Offpeak)"}
+			Throw("Error return from Build_HwyNet (Offpeak)")
 			AppendToLogFile(1, "Error return from Build_HwyNet (Offpeak)")
 			HwyOK = 0
 			goto didnotwork
@@ -113,7 +113,7 @@ Macro "Build_Networks" (Args)
 
 	badprjyear:
 	HwyOK = 0
-	msg = msg + {"Build_Networks: Error - prj_year array not created"}
+	Throw("Build_Networks: Error - prj_year array not created")
 	AppendToLogFile(1, "Build_Networks: Error: - prj_year array not created")
 	goto didnotwork
 	
@@ -321,7 +321,7 @@ enditem
 			end
 			else do
 				errcount = errcount + 1
-				msg = msg + {"Master Hwy file: " + MasterHwyFile + " not found"}
+				Throw("Master Hwy file: " + MasterHwyFile + " not found")
 				AppendToLogFile(1, "Master Hwy file: " + MasterHwyFile + " not found")
 				HideItem("mstrhwygood")
 				ShowItem("mstrhwyerror")
@@ -334,7 +334,7 @@ enditem
 				if ProgVersion > 5 and MasterVersion < 7
 					then do 	
 						errcount = errcount + 1
-						msg = msg + {"Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 7"}
+						Throw("Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 7")
 						AppendToLogFile(1, "Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 7")
 						HideItem("mstrhwygood")
 						ShowItem("mstrhwyerror")
@@ -342,7 +342,7 @@ enditem
 				if ProgVersion < 6 and MasterVersion > 5
 					then do 	
 						errcount = errcount + 1
-						msg = msg + {"Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 5"}
+						Throw("Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 5")
 						AppendToLogFile(1, "Master Hwy file: " + MasterHwyFile + " NOT suitable for TransCad version 5")
 						HideItem("mstrhwygood")
 						ShowItem("mstrhwyerror")
@@ -359,7 +359,7 @@ enditem
 			end	
 			else do
 				errcount = errcount + 1
-				msg = msg + {"Project file: " + ProjectFile + " not found"}
+				Throw("Project file: " + ProjectFile + " not found")
 				AppendToLogFile(1, "Project file: " + ProjectFile + " not found")
 				HideItem("prjfilegood")
 				ShowItem("prjfileerror")
@@ -375,7 +375,7 @@ enditem
 			end
 			else do
 				errcount = errcount + 1
-				msg = msg + {"Toll file: " + TollFile + " not found"}
+				Throw("Toll file: " + TollFile + " not found")
 				AppendToLogFile(1, "Toll file: " + TollFile + " not found")
 				HideItem("tollfilegood")
 				ShowItem("tollfileerror")
@@ -420,7 +420,7 @@ enditem
 //		checkedfiles:
 
 		if errcount > 0 then do		
-			msg = msg + {"Error setting files for build highway"}
+			Throw("Error setting files for build highway")
 			AppendToLogFile(1, "Error setting files for build highway")
 //			showarray(rtsmstrinfo)
 			HwyOK = 0
@@ -476,7 +476,7 @@ enditem
 
 		if AMPkHwyName = null 
 			then do
-				msg = msg + {"Error return from Build_HwyNet (AM Peak)"}
+				Throw("Error return from Build_HwyNet (AM Peak)")
 				AppendToLogFile(1, "Error return from Build_HwyNet (AM Peak)")
 				HwyOK = 0
 				goto didnotwork
@@ -498,7 +498,7 @@ enditem
 
 		if PMPkHwyName = null 
 			then do
-				msg = msg + {"Error return from Build_HwyNet (PM Peak)"}
+				Throw("Error return from Build_HwyNet (PM Peak)")
 				AppendToLogFile(1, "Error return from Build_HwyNet (PM Peak)")
 				HwyOK = 0
 				goto didnotwork
@@ -521,7 +521,7 @@ enditem
 
 		if OPHwyName = null 
 			then do
-				msg = msg + {"Error return from Build_HwyNet (Offpeak)"}
+				Throw("Error return from Build_HwyNet (Offpeak)")
 				AppendToLogFile(1, "Error return from Build_HwyNet (Offpeak)")
 				HwyOK = 0
 				goto didnotwork
@@ -531,7 +531,7 @@ enditem
 			
 		badprjyear:
 		HwyOK = 0
-		msg = msg + {"Build_Networks: Error - prj_year array not created"}
+		Throw("Build_Networks: Error - prj_year array not created")
 		AppendToLogFile(1, "Build_Networks: Error: - prj_year array not created")
 		goto didnotwork
 		

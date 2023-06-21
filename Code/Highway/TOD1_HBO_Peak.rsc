@@ -133,7 +133,7 @@ Macro "TOD1_HBO_Peak" (Args)
 
 	badfill:
 	TOD1OK = 0
-	msg = msg + {"TOD1_HBO_Peak - zero fill matrix failed"}
+	Throw("TOD1_HBO_Peak - zero fill matrix failed")
 	RunMacro("TCB Closing", ret_value, "TRUE" )
 	goto quit
 

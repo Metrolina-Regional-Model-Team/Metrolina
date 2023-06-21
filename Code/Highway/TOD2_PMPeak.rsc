@@ -288,7 +288,7 @@ Macro "TOD2_PMPeak" (Args)
 goto quit
 
 badtranspose:
-	msg = msg + {"TOD2_PMPeak - bad transpose"}
+	Throw("TOD2_PMPeak - bad transpose")
     TOD2_PMPeakOK = 0         
 
 

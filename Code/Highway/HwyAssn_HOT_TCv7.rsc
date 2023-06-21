@@ -497,7 +497,7 @@ new_mat = CopyMatrix(mc, {{"File Name", od_hot_matrix},
 		info = GetFileInfo(METDir + "\\HOT_Table.hot")
 		if info = null 
 			then do
-				msg = msg + {"HwyAssn_HOT - ERROR! - \\Metrolina\\HOT_Table.hot not found"}
+				Throw("HwyAssn_HOT - ERROR! - \\Metrolina\\HOT_Table.hot not found")
 				AppendToLogFile(2, "HwyAssn_HOT - ERROR! - \\Metrolina\\HOT_Table.hot not found")
 				HOTHwyAssnOK = 0
 				goto badHOTtable
@@ -1049,74 +1049,74 @@ new_mat = CopyMatrix(mc, {{"File Name", od_hot_matrix},
 	goto quit
 
 	badtimeperiod:
-	msg = msg + {"Highway HOT Assignment Time period error"}
+	Throw("Highway HOT Assignment Time period error")
 	AppendToLogFile(1, "Highway HOT Assignment: Error: - Time period error")
 	ShowItem(" Error/Warning messages ")
 	ShowItem("netmessageslist")
 	goto quit
 
 	badnetbuild:
-	msg = msg + {"HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields"}
+	Throw("HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR building highway network, check for HOTAB & HOTBA network fields")
 	HOTHwyAssnOK = 0
 	goto badquit
 	
 	badnetsettings:
-	msg = msg + {"HOT HwyAssn - ERROR in highway network settings"}
+	Throw("HOT HwyAssn - ERROR in highway network settings")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR in highway network settings")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badassign:
-	msg = msg + {"HOT HwyAssn - ERROR in highway assignment"}
+	Throw("HOT HwyAssn - ERROR in highway assignment")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR in highway assignment")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badskim:
-	msg = msg + {"HOT HwyAssn - ERROR in peak highway skim"}
+	Throw("HOT HwyAssn - ERROR in peak highway skim")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR in peak highway skim")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badroll:
-	msg = msg + {"HOT HwyAssn - ERROR, did not roll TTpeak Assign to TTPeak Prev"}
+	Throw("HOT HwyAssn - ERROR, did not roll TTpeak Assign to TTPeak Prev")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, did not roll TTpeak Assign to TTPeak Prev")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badtt:
-	msg = msg + {"HOT HwyAssn - ERROR, could not calculate new TTAssign"}
+	Throw("HOT HwyAssn - ERROR, could not calculate new TTAssign")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, could not calculate new TTAssign")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badimp:
-	msg = msg + {"HOT HwyAssn - ERROR, could not calculate new Imped"}
+	Throw("HOT HwyAssn - ERROR, could not calculate new Imped")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, could not calculate new Imped")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badfill:
-	msg = msg + {"HOT HwyAssn - ERROR, Did not fill HOT core with 0s"}
+	Throw("HOT HwyAssn - ERROR, Did not fill HOT core with 0s")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, Did not fill HOT core with 0s")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badHOTtable:
-	msg = msg + {"HOT HwyAssn - ERROR, HOT_Table.bin doesn't exist"}
+	Throw("HOT HwyAssn - ERROR, HOT_Table.bin doesn't exist")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, HOT_Table.bin doesn't exist")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badfill1:
-	msg = msg + {"HOT HwyAssn - ERROR, Did not fill TTSav"}
+	Throw("HOT HwyAssn - ERROR, Did not fill TTSav")
 	AppendToLogFile(2, "HOT HwyAssn - ERROR, Did not fill TTSav")
 	HOTHwyAssnOK = 0
 	goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
 	RunMacro("TCB Closing", ret_value, "TRUE" )
 	RunMacro("TCB Closing", ret_value, "TRUE" )
@@ -1124,13 +1124,13 @@ new_mat = CopyMatrix(mc, {{"File Name", od_hot_matrix},
 
 	TCError:
 	errmsg = GetLastError()
-	msg = msg + {"HOT HwyAssn - TC ERROR : "+ errmsg}
+	Throw("HOT HwyAssn - TC ERROR : "+ errmsg)
 	AppendToLogFile(2, "HOT HwyAssn - TC ERROR : "+ errmsg)
 	HOTHwyAssnOK = 0
 	goto quit
 
 	UserKill:
-	msg = msg + {"HOT HwyAssn - User killed job" }
+	Throw("HOT HwyAssn - User killed job" )
 	AppendToLogFile(2, "HOT HwyAssn - User killed job")
 	HOTHwyAssnOK = 0
 	goto quit

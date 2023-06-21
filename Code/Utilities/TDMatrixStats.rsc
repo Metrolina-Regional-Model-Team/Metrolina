@@ -110,7 +110,7 @@ macro "TDMatrixStats" (Args)
 		
 		
 	badmat: 
-	msg = msg + {"TDMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found"}
+	Throw("TDMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	AppendToLogFile(1, "TDMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	TDStatsOK = 0
 	goto quit 

@@ -319,7 +319,7 @@ skiptoend:
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Accessibility Calcs: Error somewhere"}
+		Throw("Accessibility Calcs: Error somewhere")
 		AppendToLogFile(1, "Accessibility Calcs: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Exit Accessibility Calcs " + datentime)

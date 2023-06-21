@@ -664,7 +664,7 @@ CloseView(hhdetail)
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
 		Throw("HHMET: Error somewhere")
-		// msg = msg + {"HHMET: Error somewhere"}
+		// Throw("HHMET: Error somewhere")
 		// AppendToLogFile(1, "HHMET: Error somewhere")
 		// datentime = GetDateandTime()
 		// AppendToLogFile(1, "Exit HHMET " + datentime)

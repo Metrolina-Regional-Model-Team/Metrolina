@@ -122,7 +122,7 @@ Macro "Reg_NonMotorized" (Args)
 
 	on error do
 		Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
-		// msg = msg + {"Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template"}
+		// Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
 		// AppendToLogFile(1, "Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
 	    // RegNonMotorizedOK = 0
 	end

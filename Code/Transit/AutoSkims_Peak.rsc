@@ -345,35 +345,35 @@ goto quit
 
 badpprmd:
 	Throw("AutoSkims_Peak - error creating spmat_pprmd")
-	// msg = msg + {"AutoSkims_Peak - error creating spmat_pprmd"}
+	// Throw("AutoSkims_Peak - error creating spmat_pprmd")
 	// AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pprmd")
 	// AutoSkimsPeakOK = 0
     // goto badquit
 
 badpxprd:
 	Throw("AutoSkims_Peak - error creating spmat_pxprd")
-	// msg = msg + {"AutoSkims_Peak - error creating spmat_pxprd"}
+	// Throw("AutoSkims_Peak - error creating spmat_pxprd")
 	// AppendToLogFile(1, "AutoSkims_Peak - error creating spmat_pxprd")
 	// AutoSkimsPeakOK = 0
     // goto badquit
 
 badhwybldhov:
 	Throw("AutoSkims_Peak - error building highway network - hov network")
-	// msg = msg + {"AutoSkims_Peak - error building highway network - hov network"}
+	// Throw("AutoSkims_Peak - error building highway network - hov network")
 	// AppendToLogFile(1, "AutoSkims_Peak - error building highway network - hov network")
 	// AutoSkimsPeakOK = 0
     // goto badquit
 
 badhwysethov:
 	Throw("AutoSkims_Peak - error highway network settings - hov network")
-	// msg = msg + {"AutoSkims_Peak - error highway network settings - hov network"}
+	// Throw("AutoSkims_Peak - error highway network settings - hov network")
 	// AppendToLogFile(1, "AutoSkims_Peak - error highway network settings - hov network")
 	// AutoSkimsPeakOK = 0
 	// goto badquit
 
 badspmathovpeak:
 	Throw("AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
-	// msg = msg + {"AutoSkims_Peak - error highway skims - peak speed - hov network, free speed"}
+	// Throw("AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
 	// AppendToLogFile(1, "AutoSkims_Peak - error highway skims - peak speed - hov network, free speed")
 	// AutoSkimsPeakOK = 0
     // goto badquit

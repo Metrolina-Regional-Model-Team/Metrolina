@@ -660,14 +660,14 @@ continue10:
 	goto quit
 
 	noroutesingroup:
-		msg = msg + {"Transit_Boardings: No routes selected in routes.dbf.GRPLIST"}
+		Throw("Transit_Boardings: No routes selected in routes.dbf.GRPLIST")
 		AppendToLogFile(2, "Transit_Boardings: No routes selected in routes.dbf.GRPLIST ")
 	skipALL:
 
 	goto quit
 	UserKill:
 		TransitBoardsOK = 0
-		msg = msg + {"Transit_Boarding_Summary: User stopped run"}
+		Throw("Transit_Boarding_Summary: User stopped run")
 		AppendToLogFile(2, "Transit_Boarding_Summary: User stopped run ")
 		goto quit
 

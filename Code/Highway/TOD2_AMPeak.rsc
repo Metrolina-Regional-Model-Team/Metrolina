@@ -299,7 +299,7 @@ goto quit
 
 badtranspose:
 
-	msg = msg + {"TOD2_AMPeak - bad transpose"}
+	Throw("TOD2_AMPeak - bad transpose")
     TOD2_AMPeakOK = 0         
 
 

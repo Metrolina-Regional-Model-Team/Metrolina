@@ -214,7 +214,7 @@ macro "Trip_Generation" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"Trip_Gen, ERROR-pgm=tgmet2015_171013 did not run!, \\TG\\Productions.asc date=" + RunOK[1]}
+	Throw("Trip_Gen, ERROR-pgm=tgmet2015_171013 did not run!, \\TG\\Productions.asc date=" + RunOK[1])
 	AppendToLogFile(1, "Trip_GenGen, ERROR-pgm=tgmet2015_171013 did not run!, \\TG\\Productions.asc date=" + RunOK[1])
 	TripGenOK = 0
 	goto quit

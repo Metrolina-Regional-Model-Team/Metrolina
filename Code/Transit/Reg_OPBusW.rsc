@@ -41,7 +41,7 @@ Macro "Reg_OPBusW" (Args)
 	if runerr = 2
 		then do
 			Throw(rtnmsg)
-			// msg = msg + {rtnmsg}
+			// Throw(rtnmsg)
 			// AppendToLogFile(2, rtnmsg)
 		end
 
@@ -403,38 +403,38 @@ goto quit
 
 	badbuildtrannet:
 	Throw("Reg_OPBusW - Error return build transit network")
-	// msg = msg + {"Reg_OPBusW - Error return build transit network"}
+	// Throw("Reg_OPBusW - Error return build transit network")
 	// AppendToLogFile(1, "Reg_OPBusW - Error return build transit network") 
 	// goto badquit
 
 	badtransettings:
 	Throw("Reg_OPBusW - Error return from transit network settings")
-	// msg = msg + {"Reg_OPBusW - Error return from transit network settings"}
+	// Throw("Reg_OPBusW - Error return from transit network settings")
 	// AppendToLogFile(1, "Reg_OPBusW - Error return from transit network settings") 
 	// goto badquit
 
 	badtranskim:
 	Throw("Reg_OPBusW - Error return from transit network skims")
-	// msg = msg + {"Reg_OPBusW - Error return from transit network skims"}
+	// Throw("Reg_OPBusW - Error return from transit network skims")
 	// AppendToLogFile(1, "Reg_OPBusW - Error return from transit network skims")
 	// goto badquit
 
 	badmatrixop:
 	Throw("Reg_OPBusW - Error in matrix operations")
-	// msg = msg + {"Reg_OPBusW - Error in matrix operations"}
+	// Throw("Reg_OPBusW - Error in matrix operations")
 	// AppendToLogFile(1, "Reg_OPBusW - Error in matrix operations")
 	// goto badquit
 
 	badxpr_stopflags:
 	Throw("Reg_PPrmW - Error return from XPR_StopFlags")
-	// msg = msg + {rtnmsg}
+	// Throw(rtnmsg)
 	// AppendToLogFile(2, rtnmsg)
-	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// Throw("Reg_PPrmW - Error return from XPR_StopFlags")
 	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
 	// goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
     RunMacro("TCB Closing", 0, "TRUE" ) 
 	RegOPBusWOK = 0

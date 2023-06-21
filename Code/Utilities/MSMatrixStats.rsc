@@ -55,7 +55,7 @@ macro "MSMatrixStats" (Args)
 	goto quit
 		
 	badmat: 
-	msg = msg + {"MSMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found"}
+	Throw("MSMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	AppendToLogFile(1, "MSMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	MSStatsOK = 0
 	goto quit 

@@ -41,7 +41,7 @@ Macro "Reg_OPBusDrop" (Args)
 	if runerr = 2
 		then do
 			Throw(rtnmsg)
-			// msg = msg + {rtnmsg}
+			// Throw(rtnmsg)
 			// AppendToLogFile(2, rtnmsg)
 		end
 
@@ -630,7 +630,7 @@ goto quit
 
 	badcomputeopmatrix:
 	Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
-	// msg = msg + {"Reg_OPBusDrop - Error return from Compute_OP_Matrix"}
+	// Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
 	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Compute_OP_Matrix") 
 	// goto badquit
 
@@ -648,38 +648,38 @@ goto quit
 		
 	badbuildtrannet:
 	Throw("Reg_OPBusDrop - Error return build transit network")
-	// msg = msg + {"Reg_OPBusDrop - Error return build transit network"}
+	// Throw("Reg_OPBusDrop - Error return build transit network")
 	// AppendToLogFile(1, "Reg_OPBusDrop - Error return build transit network") 
 	// goto badquit
 
 	badtransettings:
 	Throw("Reg_OPBusDrop - Error return from transit network settings")
-	// msg = msg + {"Reg_OPBusDrop - Error return from transit network settings"}
+	// Throw("Reg_OPBusDrop - Error return from transit network settings")
 	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network settings") 
 	// goto badquit
 
 	badtranskim:
 	Throw("Reg_OPBusDrop - Error return from transit network skims")
-	// msg = msg + {"Reg_OPBusDrop - Error return from transit network skims"}
+	// Throw("Reg_OPBusDrop - Error return from transit network skims")
 	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network skims")
 	// goto badquit
 
 	badmatrixop:
 	Throw("Reg_OPBusDrop - Error in matrix operations")
-	// msg = msg + {"Reg_OPBusDrop - Error in matrix operations"}
+	// Throw("Reg_OPBusDrop - Error in matrix operations")
 	// AppendToLogFile(1, "Reg_OPBusDrop - Error matrix operations")
 	// goto badquit
 
 	badxpr_stopflags:
 	Throw("Reg_PPrmW - Error return from XPR_StopFlags")
-	// msg = msg + {rtnmsg}
+	// Throw(rtnmsg)
 	// AppendToLogFile(2, rtnmsg)
-	// msg = msg + {"Reg_PPrmW - Error return from XPR_StopFlags"}
+	// Throw("Reg_PPrmW - Error return from XPR_StopFlags")
 	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
 	// goto badquit
 
 	badquit:
-	msg = msg + {"badquit: Last error message= " + GetLastError()}
+	Throw("badquit: Last error message= " + GetLastError())
 	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
     RunMacro("TCB Closing", 0, "TRUE" ) 
 	RegOPBusDropOK = 0
@@ -811,17 +811,17 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
 	goto quit
 	
 	nofortran:
-	msg = msg + {"Fortran program to compute parking flag is missing"}
+	Throw("Fortran program to compute parking flag is missing")
 	AppendToLogFile(2, "Fortran program to compute parking flag is missing")
 	goto badquit
 
 	badfortran:
-	msg = msg + {"Error return from fortran program KNR_LOC_Cat"}
+	Throw("Error return from fortran program KNR_LOC_Cat")
 	AppendToLogFile(2, "Error return from fortran program KNR_LOC_Cat")
 	goto badquit
 
 	badmatrixop:
-	msg = msg + {"Create OPBusDrop Parking Flags - Error merging matrices"}
+	Throw("Create OPBusDrop Parking Flags - Error merging matrices")
 	AppendToLogFile(1, "Create OPBusDrop Parking Flags - Error merging matrices")
 	goto badquit
 

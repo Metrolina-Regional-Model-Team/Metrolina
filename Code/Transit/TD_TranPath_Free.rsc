@@ -69,7 +69,7 @@ goto quit
 
 badquit:
 	ShowMessage(GetLastError({{"Reference Info", "True"}}))
-	msg = msg + {"TD_TranPath_Free - Error"}
+	Throw("TD_TranPath_Free - Error")
 	AppendToLogFile(1, "TD_TranPath_Free - Error")
 	TDPathOK = 0
 

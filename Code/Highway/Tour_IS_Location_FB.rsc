@@ -481,7 +481,7 @@ RandSeed = r2i((RandSeed / 3) + 131)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"IS Location Feedback Iter " + i2s(curiter) + ": Error somewhere"}
+		Throw("IS Location Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		AppendToLogFile(1, "Intermediate Stop Location Feedback Iter " + i2s(curiter) + ": Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "IS Location Feedback Iter " + i2s(curiter) + " " + datentime)

@@ -13,7 +13,7 @@ Macro "Matrix_template" (TAZFile)
 	if info = null 
 		then do
 			Throw("Matrix Template ERROR! - No TAZ file")
-			// msg = msg + {"Matrix Template ERROR! - No TAZ file"}
+			// Throw("Matrix Template ERROR! - No TAZ file")
 			// TemplateOK = 1
 			// return({TemplateOK,msg})
 		end
@@ -34,7 +34,7 @@ Macro "Matrix_template" (TAZFile)
 	if IntCount = 0 or ExtCount = 0 
 		then do
 			Throw("Matrix_template: ERROR!  Problem with TAZ file")
-			// msg = msg + {"Matrix_template: ERROR!  Problem with TAZ file"}
+			// Throw("Matrix_template: ERROR!  Problem with TAZ file")
 			// goto badtemplate
 		end	
 			
@@ -54,7 +54,7 @@ Macro "Matrix_template" (TAZFile)
 	// if NumTAZ = (IntCount + ExtCount) 
 	// 	then goto checktazid
 	// 	else do
-	// 		msg = msg + {"Matrix_Template: Warning - existing matrix template being replaced"}
+	// 		Throw("Matrix_Template: Warning - existing matrix template being replaced")
 	// 		TemplateOK = 2
 	// 	end
 		
@@ -94,7 +94,7 @@ Macro "Matrix_template" (TAZFile)
 	if numbad1 = 0 and numbad2 = 0 
 		then goto quit
 		else do
-			msg = msg + {"Matrix_Template: Warning - existing TAZID asc being replaced"}
+			Throw("Matrix_Template: Warning - existing TAZID asc being replaced")
 			TemplateOK = 2
 		end
 
@@ -106,7 +106,7 @@ Macro "Matrix_template" (TAZFile)
 	goto quit
 
 	badtemplate:
-	msg = msg + {"Matrix template: ERROR! - Template NOT created"}
+	Throw("Matrix template: ERROR! - Template NOT created")
 	TemplateOK = 1
 
 	quit:

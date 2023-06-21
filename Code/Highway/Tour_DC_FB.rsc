@@ -1091,7 +1091,7 @@ SetRandomSeed(43)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour DC Feedback Loop " + i2s(curiter) + ": Error somewhere"}
+		Throw("Tour DC Feedback Loop " + i2s(curiter) + ": Error somewhere")
 		AppendToLogFile(1, "Tour DC Feedback Loop " + i2s(curiter) + ": Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour DC Feedback Loop " + i2s(curiter) + " " + datentime)

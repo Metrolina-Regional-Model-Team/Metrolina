@@ -104,7 +104,7 @@ Macro "TOD2_COM_MTK_HTK" (Args)
 goto quit
 
 badtranspose:
-	msg = msg + {"TOD2_COM_MTK_HTK - bad transpose"}
+	Throw("TOD2_COM_MTK_HTK - bad transpose")
     TOD2_COMMTKHTKOK = 0         
 
 

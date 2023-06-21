@@ -72,7 +72,7 @@ macro "VMTAQ" (Args)
 	goto quit
 		
 	badend: 
-	msg = msg + {"VMTAQ:  Error - file " + badfile + " not found"}
+	Throw("VMTAQ:  Error - file " + badfile + " not found")
 	AppendToLogFile(1, "VMTAQ:  Error - file " + badfile + " not found")
 	VMTAQOK = 0
 	goto quit 

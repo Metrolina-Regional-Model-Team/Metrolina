@@ -231,7 +231,7 @@ Macro "Tour_TOD2_Night" (Args)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour TOD2_Night: Error somewhere"}
+		Throw("Tour TOD2_Night: Error somewhere")
 		AppendToLogFile(1, "Tour TOD2_Night: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour TOD2_Night " + datentime)

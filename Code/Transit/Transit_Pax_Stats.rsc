@@ -61,7 +61,7 @@ Macro "Transit_Pax_Stats" (Args)
 		goto nextpath1
 		
 		badpath1:
-		msg = msg + {"Transit_Pax_Stats-WARNING - Missing File " + PathArray[i] + "\\TASN_FLW.bin"}
+		Throw("Transit_Pax_Stats-WARNING - Missing File " + PathArray[i] + "\\TASN_FLW.bin")
 		AppendToLogFile(2, "Transit_Pax_Stats-WARNING - Missing File " + PathArray[i] + "\\TASN_FLW.bin")
 
 		nextpath1:
@@ -156,7 +156,7 @@ Macro "Transit_Pax_Stats" (Args)
 		goto nextpath2
 
 		badpath2:
-		msg = msg + {"Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin"}
+		Throw("Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin")
 		AppendToLogFile(2, "Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin")
 
 
@@ -285,7 +285,7 @@ Macro "Transit_Pax_Stats" (Args)
 		goto nextpath3
 
 		badpath3:
-		msg = msg + {"Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_ONO.bin"}
+		Throw("Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_ONO.bin")
 		AppendToLogFile(2, "Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_ONO.bin")
 
 		nextpath3:
@@ -322,7 +322,7 @@ Macro "Transit_Pax_Stats" (Args)
 		goto nextpath4
 
 		badpath4:
-		msg = msg + {"Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin"}
+		Throw("Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin")
 		AppendToLogFile(2, "Transit_Pax_Stats-WARNING - Missing File " + path + "\\TASN_FLW.bin")
 
 		nextpath4:
@@ -430,7 +430,7 @@ Macro "Transit_Pax_Stats" (Args)
 	
 	badfilltasnflow:
 		TransitPaxOK = 0
-		msg = msg + {"Transit_Pax Stats: ERROR filling PH / PM in Tasn_flow - path: " + path}
+		Throw("Transit_Pax Stats: ERROR filling PH / PM in Tasn_flow - path: " + path)
 		AppendToLogFile(2, "Transit_Pax Stats: ERROR filling PH / PM in Tasn_flow - path: " + path)
 		RunMacro("TCB Closing", ret_value, True )
 		goto quit

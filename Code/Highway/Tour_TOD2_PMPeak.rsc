@@ -230,7 +230,7 @@ Macro "Tour_TOD2_PMPeak" (Args)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour TOD2_PMPEAK: Error somewhere"}
+		Throw("Tour TOD2_PMPEAK: Error somewhere")
 		AppendToLogFile(1, "Tour TOD2_PMPEAK: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour TOD2_PMPEAK " + datentime)

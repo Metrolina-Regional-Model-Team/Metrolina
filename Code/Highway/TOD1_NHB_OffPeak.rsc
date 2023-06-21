@@ -70,7 +70,7 @@ Macro "TOD1_NHB_OffPeak" (Args)
 
 	badfill:
 	TOD1OK = 0
-	msg = msg + {"TOD1_NHB_OffPeak - zero fill matrix failed"}
+	Throw("TOD1_NHB_OffPeak - zero fill matrix failed")
 	RunMacro("TCB Closing", ret_value, "TRUE" )
 	goto quit
 

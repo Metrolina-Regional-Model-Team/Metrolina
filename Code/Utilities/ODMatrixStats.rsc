@@ -59,7 +59,7 @@ ShowArray(v)
 	goto quit
 		
 	badmat: 
-	msg = msg + {"ODMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found"}
+	Throw("ODMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	AppendToLogFile(1, "ODMatrixStats:  Error - matrix " + MatArray[mcnt] + " not found")
 	ODStatsOK = 0
 	goto quit 

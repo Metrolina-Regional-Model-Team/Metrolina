@@ -322,7 +322,7 @@ Macro "create_tnet" (time_period, transit_mode, access_mode, Dir)
 	Return(Opts)
 
 badquit:
-msg = msg + {"create_tnet - Error in tcb operation"}
+Throw("create_tnet - Error in tcb operation")
 
     RunMacro("TCB Closing", 0, "TRUE" ) 
 	RunMacro("G30 File Close All")

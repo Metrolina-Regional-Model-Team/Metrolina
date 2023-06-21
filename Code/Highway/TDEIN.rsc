@@ -136,13 +136,13 @@ Macro "TDEIN" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDein, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDein, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDein,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDein, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDein, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDein, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

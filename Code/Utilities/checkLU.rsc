@@ -30,7 +30,7 @@ Macro "checkLU" (LUFile, TAZFile)
 		badLUID = badLUID + zone + ", "
  		bad_rec = GetNextRecord ("JoinLUID|luid", null, {{"LU_in.TAZ", "Ascending"}})
 	end   // while bad_rec
-	msg = msg + {badLUID}
+	Throw(badLUID)
 	
 	checkIDLU:
 	CloseView(JoinLUID)
@@ -52,7 +52,7 @@ Macro "checkLU" (LUFile, TAZFile)
 		badIDLU = badIDLU + zone + ", "
  		bad_rec = GetNextRecord ("JoinIDLU|idlu", null, {{"TAZID.TAZ", "Ascending"}})
 	end   // while bad_rec
-	msg = msg + {badIDLU}
+	Throw(badIDLU)
 	
 	donecheck:
 	CloseView(JoinIDLU)

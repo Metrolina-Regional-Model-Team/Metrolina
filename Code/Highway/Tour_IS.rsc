@@ -1067,7 +1067,7 @@ SetRandomSeed(343)
 	badquit:
 		on error, notfound default
 		RunMacro("TCB Closing", ret_value, "TRUE" )
-		msg = msg + {"Tour Intermediate Stops: Error somewhere"}
+		Throw("Tour Intermediate Stops: Error somewhere")
 		AppendToLogFile(1, "Tour Intermediate Stops: Error somewhere")
 		datentime = GetDateandTime()
 		AppendToLogFile(1, "Tour Intermediate Stops " + datentime)

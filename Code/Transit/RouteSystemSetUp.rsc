@@ -53,7 +53,7 @@ Macro "RouteSystemSetUp" (Args)
 	if nottagged > 0 
 		then do
 			Throw("RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
-			// msg = msg + {"RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!"}
+			// Throw("RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
 			// AppendToLogFile(2, "RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
 			// goto badquit2
 		end	
@@ -67,9 +67,9 @@ Macro "RouteSystemSetUp" (Args)
 	return({1, msg})
 	
 	badquit:
-	msg = msg + {"error= " + GetLastError()}
+	Throw("error= " + GetLastError())
 	AppendToLogFile(2, "error= " + GetLastError())
-	msg = msg + {"RouteSystemSetUp - check for transys*.err"}
+	Throw("RouteSystemSetUp - check for transys*.err")
 
 	badquit2:
 	AppendToLogFile(1, "Exit RouteSystemSetUp:  " + datentime)

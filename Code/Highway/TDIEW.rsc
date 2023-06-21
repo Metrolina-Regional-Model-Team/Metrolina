@@ -138,13 +138,13 @@ Macro "TDIEW" (Args)
 	goto quit	
 
 	fortdidnotrun:
-	msg = msg + {"TDiew, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!"}
+	Throw("TDiew, ERROR - Fortran job tdmet_mtx (trip distribution) did not run!")
 	AppendToLogFile(1, "TDiew,  ERROR - Fortran tdmet_mtx (trip distribution) did not run!")
 	TripDistOK = 0
 	goto quit
 
 	fortbadrun:
-	msg = msg + {"TDiew, Fatal error in fortran program tdmet_mtx (trip distribution)"}
+	Throw("TDiew, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	AppendToLogFile(1, "TDiew, Fatal error in fortran program tdmet_mtx (trip distribution)")
 	TripDistOK = 0
 	goto quit

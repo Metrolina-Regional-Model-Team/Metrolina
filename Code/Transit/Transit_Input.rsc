@@ -19,21 +19,21 @@ Macro "Transit_Input" (Args)
 	
 		
 	on error do
-		msg = msg + {"Transit_Input: Transit Assign Walk Matrix was not found in this Directory"}
+		Throw("Transit_Input: Transit Assign Walk Matrix was not found in this Directory")
 		AppendToLogFile(2, "Transit_Input: Transit Assign Walk Matrix was not found in this Directory")
 		TranInputOK = 0
 	end
 	check = openmatrix(Dir + "\\TranAssn\\Transit Assign Walk.mtx", "True")
 
 	on error do
-		msg = msg + {"Transit_Input: Transit Assign Drive Matrix was not found in this Directory"}
+		Throw("Transit_Input: Transit Assign Drive Matrix was not found in this Directory")
 		AppendToLogFile(2, "Transit_Input: Transit Assign Drive Matrix was not found in this Directory")
 		TranInputOK = 0
 	end
 	check = openmatrix(Dir + "\\TranAssn\\Transit Assign Drive.mtx", "True")
 
 	on error do
-		msg = msg + {"Transit_Input: Transit Assign Dropoff Matrix was not found in this Directory"}
+		Throw("Transit_Input: Transit Assign Dropoff Matrix was not found in this Directory")
 		AppendToLogFile(2, "Transit_Input: Transit Assign Dropoff Matrix was not found in this Directory")
 		TranInputOK = 0
 	end

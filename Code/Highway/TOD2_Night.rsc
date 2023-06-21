@@ -281,7 +281,7 @@ Macro "TOD2_Night" (Args)
 goto quit
 
 badtranspose:
-	msg = msg + {"TOD2_Night - bad transpose"}
+	Throw("TOD2_Night - bad transpose")
     TOD2_NightOK = 0         
 
 

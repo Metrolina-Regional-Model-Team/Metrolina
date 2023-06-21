@@ -29,7 +29,7 @@ Macro "FillParkCost" (Args)
 	if exist = null
 		then do
             Throw("FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
-			// msg = msg + {"FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found"}
+			// Throw("FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
 			// AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\Parking_Cost_Base06.dbf not found")
 			// FillParkCostOK = 0
 			// goto badend
@@ -250,7 +250,7 @@ writecost:
 	if exist = null
 		then do
             Throw("FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
-			// msg = msg + {"FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found"}
+			// Throw("FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
 			// AppendToLogFile(2, "FillParkCost: ERROR! \\TAZ\\" + tazpath[3] + "_TAZID.asc not found")
 			// FillParkCostOK = 0
 			// goto badend
@@ -362,7 +362,7 @@ CopyMatrixStructure({templatecore}, {{"File Name", Dir + "\\Autoskims\\parkingco
     badquit:
         FillParkCostOK = 0
         Throw("FillParkCost:  Error in TCB Fill Matrices")
-        // msg = msg + {"FillParkCost:  Error in TCB Fill Matrices"}
+        // Throw("FillParkCost:  Error in TCB Fill Matrices")
 		// AppendToLogFile(1, "FillParkCost:  Error in TCB Fill Matrices")
         RunMacro("TCB Closing", ret_value, True )
         return({FillParkCostOK, msg})
