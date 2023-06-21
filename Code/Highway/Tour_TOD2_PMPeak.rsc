@@ -14,7 +14,7 @@ Macro "Tour_TOD2_PMPeak" (Args)
 	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	// net_file = Args.[Hwy Name].value
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour TOD2_PMPEAK: " + datentime)

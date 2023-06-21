@@ -6,7 +6,7 @@
 Macro "tdm" (Args)
 Body:
     // model = FlowChart( { StartNodes } , { EndNodes } , Description)
-    model = FlowChart({"Initial Processing"},{"Convergence"},)
+    model = FlowChart({"Initial Processing"},{"Post Feedback"},)
     //
     // Nodes
     //
@@ -20,6 +20,7 @@ Body:
     FlowChartNode(model,"Mode Split",,,)
     FlowChartNode(model,"Peak Highway Assignment",,,)
     FlowChartNode(model,"Convergence",,,)
+    FlowChartNode(model,"Post Feedback",,,)
     //
     // Links
     //
@@ -33,6 +34,7 @@ Body:
     FlowChartLink(model,"Mode Split","Peak Highway Assignment",True,,)
     FlowChartLink(model,"Peak Highway Assignment","Convergence",True,,)
     FlowChartLink(model,"Convergence","Skimming",True,,1)
+    FlowChartLink(model,"Convergence","Post Feedback",2,,)
     Return(model)
 EndMacro
 
@@ -98,6 +100,14 @@ Macro "Convergence" (Args,Result)
         {"Class", {"GISDK"}},
         {"Shape", "Decision"},
         {"MacroNames", {"Convergence"}}
+    }
+EndMacro
+
+
+Macro "Post Feedback" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Post Feedback"}}
     }
 EndMacro
 
