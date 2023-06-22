@@ -48,7 +48,8 @@ EndMacro
 Macro "Initial Processing" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Initial Processing"}}
+        {"MacroNames", {"Initial Processing"}},
+        {"Picture", "bmp\\plan_config_v3.bmp"}
     }
 EndMacro
 
@@ -56,7 +57,8 @@ EndMacro
 Macro "Skimming" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Skimming"}}
+        {"MacroNames", {"Skimming"}},
+        {"Picture", "bmp/planskim_v3.bmp"}
     }
 EndMacro
 
@@ -64,7 +66,8 @@ EndMacro
 Macro "Trip Generation" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Trip Generation"}}
+        {"MacroNames", {"Trip Generation"}},
+        {"Picture", "bmp\\planlanduse_v3.bmp"}
     }
 EndMacro
 
@@ -72,7 +75,8 @@ EndMacro
 Macro "Trip Distribution" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Trip Distribution"}}
+        {"MacroNames", {"Trip Distribution"}},
+        {"Picture", "bmp\\planmodesplit_v3.bmp"}
     }
 EndMacro
 
@@ -80,7 +84,8 @@ EndMacro
 Macro "Trucks" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Trucks"}}
+        {"MacroNames", {"Trucks"}},
+        {"Picture", "bmp\\planlanduse_v3.bmp"}
     }
 EndMacro
 
@@ -88,7 +93,8 @@ EndMacro
 Macro "Mode Split" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Mode Split"}}
+        {"MacroNames", {"Mode Split"}},
+        {"Picture", "bmp\\planmodesplit_v3.bmp"}
     }
 EndMacro
 
@@ -96,7 +102,8 @@ EndMacro
 Macro "Peak Highway Assignment" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Peak Highway Assignment"}}
+        {"MacroNames", {"Peak Highway Assignment"}},
+        {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro
 
@@ -113,7 +120,8 @@ EndMacro
 Macro "Post Feedback" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Post Feedback"}}
+        {"MacroNames", {"Post Feedback"}},
+        {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro
 
@@ -121,7 +129,8 @@ EndMacro
 Macro "Transit Assignment" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Transit Assignment"}}
+        {"MacroNames", {"Transit Assignment"}},
+        {"Picture", "bmp/planassignbus_v3.bmp"}
     }
 EndMacro
 
@@ -129,7 +138,8 @@ EndMacro
 Macro "HOT" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"HOT"}}
+        {"MacroNames", {"HOT"}},
+        {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro
 
@@ -137,7 +147,8 @@ EndMacro
 Macro "Summaries" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Summaries"}}
+        {"MacroNames", {"Summaries"}},
+        {"Picture", "bmp\\planmatrix_v3.bmp"}
     }
 EndMacro
 

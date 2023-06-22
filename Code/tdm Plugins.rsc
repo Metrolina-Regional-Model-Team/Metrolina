@@ -29,26 +29,21 @@ EndMacro
 
 Macro "Model.Step" (Args,Result)
     Attributes = {
-        {"FillColor",{127,191,255}},
-        {"FillColor2",{127,217,255}},
         {"FrameColor",{255,255,255}},
-        {"Height", 25},
-        {"TextFont", "Arial Narrow|10|700|000000|0"},
-        {"Width", 150}
+        {"Height", 30},
+        {"PicturePosition", "CenterRight"},
+        {"TextFont", "Calibri|12|400|000000|0"},
+        {"Width", 260}
     }
 EndMacro
 
 
 Macro "Model.Arrow" (Args,Result)
     Attributes = {
-        {"ArrowBase", "No Arrow Head"},
-        {"ArrowBaseSize", 1},
-        {"ArrowHead", "No Arrow Head"},
-        {"ArrowHeadSize", 1},
-        {"Color", "#808080"},
-        {"FillColor", "#808080"},
-        {"PenStyle", "Solid"},
-        {"PenWidth", 1}
+        {"ArrowHead", "Triangle"},
+        {"ArrowHeadSize", 8},
+        {"PenWidth", 1},
+        {"ArrowBaseSize", 10}
     }
 EndMacro
 
