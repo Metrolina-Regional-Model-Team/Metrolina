@@ -739,13 +739,18 @@ Macro "Get Travel Times" (ttimes_view, flow_view, peak_flag, group_list)
 	dim traveltime[100000]
 
 	SetView(flow_view)
-
 	rec = 0	
 	nrec = GetRecordCount(flow_view, null)
 	CreateProgressBar ("Processing " + String (nrec) + " Records", "True")   
 	record = GetFirstRecord (flow_view + "|", null)
 				
 	while (record <> null) do
+
+			rec = rec + 1
+			percent = r2i (rec * 100 / nrec)
+			cancel = UpdateProgressBar ("Processing " + String (rec) + " of " + String (nrec) + " Records", percent)
+				if cancel = "True" 
+					then goto UserKill
 
 			route_id = flow_view.ROUTE
 
@@ -765,6 +770,7 @@ Macro "Get Travel Times" (ttimes_view, flow_view, peak_flag, group_list)
 
 	if ( check_flag = 1) then do
 
+			SetView(flow_view)
 			select = "Select * where ROUTE = " + String(route_id)
 			stop_selection = SelectByQuery ("Stops", "Several", select, )
 
@@ -785,11 +791,6 @@ Macro "Get Travel Times" (ttimes_view, flow_view, peak_flag, group_list)
 
 			while stop_rec <> null do
 
-			rec = rec + 1
-			percent = r2i (rec * 100 / nrec)
-			cancel = UpdateProgressBar ("Processing " + String (rec) + " of " + String (nrec) + " Records", percent)
-				if cancel = "True" 
-					then goto UserKill
 				
 			 	current_rec = GetRecord()
 				rec_num = rec_num + 1
@@ -800,129 +801,128 @@ Macro "Get Travel Times" (ttimes_view, flow_view, peak_flag, group_list)
 
 //				if ( rec_num > 4) then	goto quitting	
 
-					if (rec_num = 1) then 
-						traveltime[rec_num] = flow_view.BaseIVTT
-					else
-						traveltime[rec_num] = traveltime[rec_num-1] + flow_view.BaseIVTT
+				if (rec_num = 1) then 
+					traveltime[rec_num] = flow_view.BaseIVTT
+				else
+					traveltime[rec_num] = traveltime[rec_num-1] + flow_view.BaseIVTT
 
-					milepost = flow_view.FROM_MP
+				milepost = flow_view.FROM_MP
 
-					// --- store the travel time between the last two stops
-						
-					if ( rec_num = num_stops) then 
-						last_tt = flow_view.BaseIVTT
+				// --- store the travel time between the last two stops
+					
+				if ( rec_num = num_stops) then 
+					last_tt = flow_view.BaseIVTT
 
-					if (peak_flag = 1) then do
+				if (peak_flag = 1) then do
 
-						SetView(ttimes_view)
-						selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(stop_id)
-						select = SelectByQuery ("Select Record", "Several", selection,)
-						num_select = GetRecordCount (ttimes_view, "Select Record")
-	
-						if (num_select = 0) then do
-						
-							if (rec_num = 1) then 
-								cumulative_ivtt = 0
-							else 
-								cumulative_ivtt = traveltime[rec_num-1]
+					SetView(ttimes_view)
+					selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(stop_id)
+					select = SelectByQuery ("Select Record", "Several", selection,)
+					num_select = GetRecordCount (ttimes_view, "Select Record")
+
+					if (num_select = 0) then do
+					
+						if (rec_num = 1) then 
+							cumulative_ivtt = 0
+						else 
+							cumulative_ivtt = traveltime[rec_num-1]
+
+						ttimes_value = {
+							{"Route_ID", route_id},		
+							{"STOP_ID", stop_id},		
+							{"MILEPOST", milepost},		
+							{"PEAK_IVTT", cumulative_ivtt},
+							{"OFPK_IVTT", 0.0}
+						}
+
+						AddRecord (ttimes_view, ttimes_value)
+
+						if (rec_num = num_stops) then do
+
+							stop_id = to_stop_id
+							milepost = to_MP
 
 							ttimes_value = {
 								{"Route_ID", route_id},		
 								{"STOP_ID", stop_id},		
 								{"MILEPOST", milepost},		
-								{"PEAK_IVTT", cumulative_ivtt},
+								{"PEAK_IVTT", cumulative_ivtt+last_tt},
 								{"OFPK_IVTT", 0.0}
 							}
 
 							AddRecord (ttimes_view, ttimes_value)
 
-							if (rec_num = num_stops) then do
+						end 
+					end
+				end else do
+					
+					SetView(ttimes_view)
 
-								stop_id = to_stop_id
-								milepost = to_MP
+					selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(stop_id)
+					select = SelectByQuery ("Select Record", "Several", selection,)
+					num_select = GetRecordCount (ttimes_view, "Select Record")
 
-								ttimes_value = {
-									{"Route_ID", route_id},		
-									{"STOP_ID", stop_id},		
-									{"MILEPOST", milepost},		
-									{"PEAK_IVTT", cumulative_ivtt+last_tt},
-									{"OFPK_IVTT", 0.0}
-								}
+					if (num_select = 0) then do
 
-								AddRecord (ttimes_view, ttimes_value)
-	
-							end 
-						end
-					end else do
-						
-						SetView(ttimes_view)
+					// --- The route runs only during off peak period
 
-						selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(stop_id)
-						select = SelectByQuery ("Select Record", "Several", selection,)
-						num_select = GetRecordCount (ttimes_view, "Select Record")
+						if (rec_num = 1) then 
+							cumulative_ivtt = 0
+						else 
+							cumulative_ivtt = traveltime[rec_num-1]
 
-						if (num_select = 0) then do
+						ttimes_value = {
+							{"Route_ID", route_id},		
+							{"STOP_ID", stop_id},		
+							{"MILEPOST", milepost},		
+							{"PEAK_IVTT", 0.0},
+							{"OFPK_IVTT", cumulative_ivtt}
+						}
 
-						// --- The route runs only during off peak period
+						AddRecord (ttimes_view, ttimes_value)
 
-							if (rec_num = 1) then 
-								cumulative_ivtt = 0
-							else 
-								cumulative_ivtt = traveltime[rec_num-1]
+						if (rec_num = num_stops) then do
+
+							stop_id = to_stop_id
+							milepost = to_MP
 
 							ttimes_value = {
 								{"Route_ID", route_id},		
 								{"STOP_ID", stop_id},		
 								{"MILEPOST", milepost},		
 								{"PEAK_IVTT", 0.0},
-								{"OFPK_IVTT", cumulative_ivtt}
+								{"OFPK_IVTT", cumulative_ivtt+last_tt}
 							}
 
 							AddRecord (ttimes_view, ttimes_value)
 
-							if (rec_num = num_stops) then do
+						end 
+					
+					end else do
 
-								stop_id = to_stop_id
-								milepost = to_MP
+						if (rec_num = 1) then 
+							cumulative_ivtt = 0
+						else 
+							cumulative_ivtt = traveltime[rec_num-1]
 
-								ttimes_value = {
-									{"Route_ID", route_id},		
-									{"STOP_ID", stop_id},		
-									{"MILEPOST", milepost},		
-									{"PEAK_IVTT", 0.0},
-									{"OFPK_IVTT", cumulative_ivtt+last_tt}
-								}
+						ttimes_record = GetFirstRecord (ttimes_view + "|Select Record", null)
+						ttimes_view.OFPK_IVTT = cumulative_ivtt
 
-								AddRecord (ttimes_view, ttimes_value)
-	
-							end 
-						
-						end else do
+						if (rec_num = num_stops) then 
+							cumulative_ivtt = cumulative_ivtt+last_tt
 
-							if (rec_num = 1) then 
-								cumulative_ivtt = 0
-							else 
-								cumulative_ivtt = traveltime[rec_num-1]
+						selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(to_stop_id)
+						select = SelectByQuery ("Select Record", "Several", selection,)
+						num_select = GetRecordCount (ttimes_view, "Select Record")
 
-							ttimes_record = GetFirstRecord (ttimes_view + "|Select Record", null)
-							ttimes_view.OFPK_IVTT = cumulative_ivtt
+						ttimes_record = GetFirstRecord (ttimes_view + "|Select Record", null)
+						ttimes_view.OFPK_IVTT = cumulative_ivtt
 
-							if (rec_num = num_stops) then 
-								cumulative_ivtt = cumulative_ivtt+last_tt
-
-							selection = "Select * where ROUTE_ID = " + String(route_id) + " and STOP_ID = " + String(to_stop_id)
-							select = SelectByQuery ("Select Record", "Several", selection,)
-							num_select = GetRecordCount (ttimes_view, "Select Record")
-
-							ttimes_record = GetFirstRecord (ttimes_view + "|Select Record", null)
-							ttimes_view.OFPK_IVTT = cumulative_ivtt
-
-						end
 					end
-
+				end
 
 				SetView(flow_view)
-				stop_rec = GetNextRecord (flow_view + "|Stops", null, {{"FROM_MP", "Ascending"}})
+				stop_rec = GetNextRecord (flow_view + "|Stops", stop_rec, {{"FROM_MP", "Ascending"}})
 
 			end
 	
@@ -931,7 +931,7 @@ Macro "Get Travel Times" (ttimes_view, flow_view, peak_flag, group_list)
 		end	// end of check flag
 
 		skiproute:
-		record = GetNextRecord (flow_view + "|", null, null)
+		record = GetNextRecord (flow_view + "|", record, null)
 
 	end
 
