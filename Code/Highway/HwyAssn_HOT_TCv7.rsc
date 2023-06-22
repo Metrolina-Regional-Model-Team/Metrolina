@@ -16,7 +16,7 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 //*********************************************************************************************************************
 
-	on error goto TCError
+	// on error goto TCError
 	on escape goto UserKill
 
 	// LogFile = Args.[Log File].value
@@ -30,11 +30,11 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	timeweight = Args.[TimeWeight]
 	distweight = Args.[DistWeight]
 	maxTTfac = Args.[MaxTravTimeFactor]
-	HOTAssnIterations = Args.[HOTAssn Iterations].value
+	HOTAssnIterations = Args.[HOTAssn Iterations]
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = Args.[HwyAssn Converge Feedback]
-	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final].value
-	hwyassnconvergefinal = Args.[HwyAssn Converge Final].value
+	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final]
+	hwyassnconvergefinal = Args.[HwyAssn Converge Final]
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"
@@ -52,7 +52,7 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	{, , netview, } = SplitPath(hwy_file)
 	end
 	else do
-		goto badtimeperiod
+		Throw("HwyAssn_HOT: Bad time period")
 	end
 
 	PERIOD = hwyassnarguments[1]
@@ -231,8 +231,7 @@ new_mat = CopyMatrix(mc, {{"File Name", od_hot_matrix},
     {"Label", "ODHwyVeh_"+PERIOD+"hot"},
     {"File Based", "Yes"}})
 
-
-		if GetView()<>netview then do
+		if Lower(GetView()) <> Lower(netview) then do
 
 			info = GetDBInfo(net_file)
 			scope = info[1]
