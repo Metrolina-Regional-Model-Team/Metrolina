@@ -62,7 +62,9 @@ macro "AvgTripLenTrips_tour" (Args)
 	free_tt_mc = CreateMatrixCurrency(free_tt_m, "TotalTT", "Rows", "Columns",)
 
 	//create a temporary matrix to do all the calculations on
-	fill_mat = CopyMatrixStructure({peak_dist_mc}, {{"File Name", "temp_fill_mat.mtx"}, {"Label", "Fill Matrix"}, {"Type", "float"}, {"Tables", {"AvgTripLen"}}})
+	temp_mtx_file = GetTempFileName(".mtx")
+	// fill_mat = CopyMatrixStructure({peak_dist_mc}, {{"File Name", "temp_fill_mat.mtx"}, {"Label", "Fill Matrix"}, {"Type", "float"}, {"Tables", {"AvgTripLen"}}})
+	fill_mat = CopyMatrixStructure({peak_dist_mc}, {{"File Name", temp_mtx_file}, {"Label", "Fill Matrix"}, {"Type", "float"}, {"Tables", {"AvgTripLen"}}})
 	fill_mc = CreateMatrixCurrency(fill_mat, "AvgTripLen", "Rows", "Columns",)
 
 

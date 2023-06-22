@@ -9,7 +9,7 @@ macro "VMTAQ" (Args)
 	// SetLogFileName(LogFile)
 
 	Dir = Args.[Run Directory]
-	MetDir = Args.[MET Directory]
+	METDir = Args.[MET Directory]
 	msg = null
 	VMTAQOK = 1
 
@@ -24,15 +24,17 @@ macro "VMTAQ" (Args)
 	hit = GetFileInfo(TotAssnFile)
 	if hit = null 
 		then do 
-			badfile = TotAssnFile	
-			goto badend
+			Throw("VMTAQ:  Error - file " + TotAssnFile + " not found")
+			// badfile = TotAssnFile	
+			// goto badend
 		end
 
 	hit = GetFileInfo(FunAQIDFile)
 	if hit = null 
 		then do 
-			badfile = FunAQIDFile	
-			goto badend
+			Throw("VMTAQ:  Error - file " + FunAQIDFile + " not found")
+			// badfile = FunAQIDFile	
+			// goto badend
 		end
 
 
