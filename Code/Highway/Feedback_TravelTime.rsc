@@ -238,7 +238,7 @@ quit:
 
 //  process iterations  
 	curiter = curiter + 1
-	Args.[Current Feedback Iter].value = curiter
+	// Args.[Current Feedback Iter].value = curiter
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Exit Feedback_TravelTime: " + datentime)
