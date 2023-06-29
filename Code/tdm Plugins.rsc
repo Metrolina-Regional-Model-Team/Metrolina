@@ -8,6 +8,7 @@ Macro "Model.Attributes" (Args,Result)
         {"ResizePicture", 1},
         {"HideBanner", 0},
         {"DebugMode", 1},
+        {"MaxProgressBars", 4},
         {"Layout", null},
         {"ExpandStages", "Side by Side"},
         {"MinItemSpacing", 5},
