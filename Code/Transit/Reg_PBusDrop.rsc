@@ -766,11 +766,12 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
 // replace backslash "\" in ctl file filenames with forward slash "/" - Manish had a 
 //  different method - but it won't work with longer file names , not sure why it needs it either, but it seems to. JWM - 11/2015
 
-    dirparse = parsestring(Dir, "\\")
-    DirSlash = dirparse[1]
-    for i = 2 to dirparse.length do
-        DirSlash = DirSlash + "//" + dirparse[i]
-    end
+    // dirparse = parsestring(Dir, "\\")
+    // DirSlash = dirparse[1]
+    // for i = 2 to dirparse.length do
+    //     DirSlash = DirSlash + "//" + dirparse[i]
+    // end
+    DirSlash = Dir
 /*
     ctl = OpenFile(ctlname, "w")
 
