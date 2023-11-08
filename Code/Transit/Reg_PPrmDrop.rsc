@@ -827,7 +827,7 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
     ctl = OpenFile(ctlname, "w")
 
     WriteLine(ctl, DirSlash + "//Skims//TR_PARK_PPrmDrop.mtx") 
-    WriteLine(ctl, DirSlash + "//skims//knr_cat.asc")
+    WriteLine(ctl, DirSlash + "//skims//KNR_CAT.asc")
     WriteLine(ctl, DirSlash + "//Skims//ParkFlag_PprmDrop.mtx")
     CloseFile(ctl)
 
@@ -846,7 +846,7 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
      status = RunProgram(batchname,{{"Maximize", "True"}})
     if (status <> 0) then Throw("Error return from fortran program KNR_LOC_Cat")
 */
-    ascfile = DirSlash + "//skims//knr_cat.asc"
+    ascfile = DirSlash + "//skims//KNR_CAT.asc"
     inmtx = DirSlash + "//Skims//TR_PARK_PPrmDrop.mtx"
     outmtx = DirSlash + "//Skims//ParkFlag_PprmDrop.mtx"
     RunMacro("Run KCAT", ascfile, inmtx, outmtx)
