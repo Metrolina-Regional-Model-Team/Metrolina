@@ -155,7 +155,7 @@ Opts = null
 
 //     status = RunProgram(batchname,{{"Maximize", "True"}})
 //  if (status <> 0) then goto badfortran
-     RunMacro("RunDADist2", odmtx, opmtx, pdmtx)
+     RunMacro("RunDADist1", odmtx, opmtx, pdmtx)
 
     input_matrix = updmtx
     if (transit_mode="premium") then do
@@ -433,14 +433,18 @@ macro "RunDADist1" (odmtx, opmtx, pdmtx)
     od = CreateObject("Matrix", odmtx)
     op = CreateObject("Matrix", opmtx)
     pd = CreateObject("Matrix", pdmtx)
+    opcores = op.GetCoreNames()
+    oplen = opcores[2]
+    optime = opcores[3]
+
     tmp1 = GetTempFileName("*.bin")
     od.ExportToTable({OutputMode: "Tables", FileName: tmp1, Cores: {"Park Node"}})
     odt = CreateObject("Table", tmp1)
     tmp2 = GetTempFileName("*.bin")
     op.ExportToTable({OutputMode: "Tables", FileName: tmp2})
     opt = CreateObject("Table", tmp2)
-    opt.RenameField({FieldName: "Length (Skim)", NewName: "OPLength"})
-    opt.RenameField({FieldName: "TTPkAssn* (Skim)", NewName: "OPTime"})
+    opt.RenameField({FieldName: oplen, NewName: "OPLength"})
+    opt.RenameField({FieldName: optime, NewName: "OPTime"})
     tmp3 = GetTempFileName("*.bin")
     pd.ExportToTable({OutputMode: "Tables", FileName: tmp3})
     pdt = CreateObject("Table", tmp3)

@@ -98,12 +98,12 @@ Opts = null
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // Write the control file and batch file
 
-    exist = GetFileInfo(METDir + "\\pgm\\ModeChoice\\UPD_DA_Dist_Time_Costv2.exe")
-    if (exist = null) then goto nofortran
+//    exist = GetFileInfo(METDir + "\\pgm\\ModeChoice\\UPD_DA_Dist_Time_Costv2.exe")
+//    if (exist = null) then goto nofortran
     
-    ctlname = Dir + "\\skims\\Test.ctl"
-    exist = GetFileInfo(ctlname)
-    if (exist <> null) then DeleteFile(ctlname)
+//    ctlname = Dir + "\\skims\\Test.ctl"
+//    exist = GetFileInfo(ctlname)
+//    if (exist <> null) then DeleteFile(ctlname)
  
 // replace backslash "\" in ctl file filenames with forward slash "/" - Manish had a 
 //  different method - but it won't work with longer file names , not sure why it needs it either, but it seems to. JWM - 11/2015
@@ -659,6 +659,9 @@ macro "RunDADist2" (odmtx, opmtx, pdmtx)
 //    pdmtx = folder + "skim_pnr2dest_peak_prm.mtx"
     od = CreateObject("Matrix", odmtx)
     op = CreateObject("Matrix", opmtx)
+    opcores = op.GetCoreNames()
+    oplen = opcores[2]
+    optime = opcores[3]
     pd = CreateObject("Matrix", pdmtx)
     tmp1 = GetTempFileName("*.bin")
     od.ExportToTable({OutputMode: "Tables", FileName: tmp1, Cores: "Park Node"})
@@ -666,8 +669,8 @@ macro "RunDADist2" (odmtx, opmtx, pdmtx)
     tmp2 = GetTempFileName("*.bin")
     op.ExportToTable({OutputMode: "Tables", FileName: tmp2})
     opt = CreateObject("Table", tmp2)
-    opt.RenameField({FieldName: "Length (Skim)", NewName: "OPLength"})
-    opt.RenameField({FieldName: "TTPkAssn* (Skim)", NewName: "OPTime"})
+    opt.RenameField({FieldName: oplen, NewName: "OPLength"})
+    opt.RenameField({FieldName: optime, NewName: "OPTime"})
     tmp3 = GetTempFileName("*.bin")
     pd.ExportToTable({OutputMode: "Tables", FileName: tmp3})
     pdt = CreateObject("Table", tmp3)
