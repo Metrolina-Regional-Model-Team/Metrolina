@@ -4,80 +4,80 @@ Macro "Reg_OPBusDrop" (Args)
 // Commented out pkzip for skim file and delete - (lines 542+)
 // 5/30/19, mk: There are now three distinct networks, use offpeak since was used to setup route system
 
-	// LogFile = Args.[Log File].value
-	// ReportFile = Args.[Report File].value
-	// SetLogFileName(LogFile)
-	// SetReportFileName(ReportFile)
+    // LogFile = Args.[Log File].value
+    // ReportFile = Args.[Report File].value
+    // SetLogFileName(LogFile)
+    // SetReportFileName(ReportFile)
 
-	METDir = Args.[MET Directory]
-	Dir = Args.[Run Directory]
-	taz_file = Args.[TAZ File]
-	theyear = Args.[Run Year]
-	hwy_file = Args.[Offpeak Hwy Name]
-	{, , netname, } = SplitPath(hwy_file)
-		
-	msg = null
-	RegOPBusDropOK = 1
-	datentime = GetDateandTime()
-	AppendToLogFile(1, "Enter Reg_OPBusDrop: " + datentime)
+    METDir = Args.[MET Directory]
+    Dir = Args.[Run Directory]
+    taz_file = Args.[TAZ File]
+    theyear = Args.[Run Year]
+    hwy_file = Args.[Offpeak Hwy Name]
+    {, , netname, } = SplitPath(hwy_file)
+        
+    msg = null
+    RegOPBusDropOK = 1
+    datentime = GetDateandTime()
+    AppendToLogFile(1, "Enter Reg_OPBusDrop: " + datentime)
 
-	shared route_file, routename, net_file, link_lyr, node_lyr, nodes_view
+    shared route_file, routename, net_file, link_lyr, node_lyr, nodes_view
 
-	yearnet = Substring(theyear, 3, 2)
-	analysis_year = yearnet
+    yearnet = Substring(theyear, 3, 2)
+    analysis_year = yearnet
 
-	//	Invoke "XPR_StopFlags" macro to flag express stops as board/alight only and premium stops
-	//	Enable stop access coding for modes 5 and 6 for use with TransCAD5, JainM, 07.20.08
-	//	Updated for TransCad7, McLelland 09.12.16
-	//	Returns 1 for clean run, 2 for warning about flags (run continues), 3 for fatal error 
+    //  Invoke "XPR_StopFlags" macro to flag express stops as board/alight only and premium stops
+    //  Enable stop access coding for modes 5 and 6 for use with TransCAD5, JainM, 07.20.08
+    //  Updated for TransCad7, McLelland 09.12.16
+    //  Returns 1 for clean run, 2 for warning about flags (run continues), 3 for fatal error 
 
     stopflagrtn = RunMacro("XPR_StopFlags", Args)
-	rtnerr = stopflagrtn[1]
-	rtnmsg = stopflagrtn[2]
-	
-	if runerr = 3 
-		then goto badxpr_stopflags
+    rtnerr = stopflagrtn[1]
+    rtnmsg = stopflagrtn[2]
+    
+    if runerr = 3 
+        then goto badxpr_stopflags
 
-	if runerr = 2
-		then do
-			Throw(rtnmsg)
-			// Throw(rtnmsg)
-			// AppendToLogFile(2, rtnmsg)
-		end
+    if runerr = 2
+        then do
+            Throw(rtnmsg)
+            // Throw(rtnmsg)
+            // AppendToLogFile(2, rtnmsg)
+        end
 
 
-	//-- Set up the network names
+    //-- Set up the network names
 
-	routename = "TranSys"
+    routename = "TranSys"
 
-	route_file = Dir + "\\"+routename+".rts"
-	net_file = Dir + "\\"+netname+".dbd"
+    route_file = Dir + "\\"+routename+".rts"
+    net_file = Dir + "\\"+netname+".dbd"
 
-	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
+    ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
+    ID = "Key"
 
-	// Get the scope of a geographic file
+    // Get the scope of a geographic file
 
-	info = GetDBInfo(net_file)
-	scope = info[1]
+    info = GetDBInfo(net_file)
+    scope = info[1]
 
-	// Create a map using this scope
-	CreateMap(net, {{"Scope", scope},{"Auto Project", "True"}})
-	layers = GetDBLayers(net_file)
-	node_lyr = addlayer(net, layers[1], net_file, layers[1])
-	link_lyr = addlayer(net, layers[2], net_file, layers[2])
-	rtelyr = AddRouteSystemLayer(net, "Vehicle Routes", route_file, )
-	RunMacro("Set Default RS Style", rtelyr, "TRUE", "TRUE")
-	SetLayerVisibility(node_lyr, "False")
-	SetIcon(node_lyr + "|", "Font Character", "Caliper Cartographic|4", 36)
-	SetIcon("Route Stops|", "Font Character", "Caliper Cartographic|4", 36)
-	SetLayerVisibility(link_lyr, "True")
-	solid = LineStyle({{{1, -1, 0}}})
-	SetLineStyle(link_lyr+"|", solid)
-	SetLineColor(link_lyr+"|", ColorRGB(0, 0, 32000))
-	SetLineWidth(link_lyr+"|", 0)
-	SetLayerVisibility("Route Stops", "False")
+    // Create a map using this scope
+    CreateMap(net, {{"Scope", scope},{"Auto Project", "True"}})
+    layers = GetDBLayers(net_file)
+    node_lyr = addlayer(net, layers[1], net_file, layers[1])
+    link_lyr = addlayer(net, layers[2], net_file, layers[2])
+    rtelyr = AddRouteSystemLayer(net, "Vehicle Routes", route_file, )
+    RunMacro("Set Default RS Style", rtelyr, "TRUE", "TRUE")
+    SetLayerVisibility(node_lyr, "False")
+    SetIcon(node_lyr + "|", "Font Character", "Caliper Cartographic|4", 36)
+    SetIcon("Route Stops|", "Font Character", "Caliper Cartographic|4", 36)
+    SetLayerVisibility(link_lyr, "True")
+    solid = LineStyle({{{1, -1, 0}}})
+    SetLineStyle(link_lyr+"|", solid)
+    SetLineColor(link_lyr+"|", ColorRGB(0, 0, 32000))
+    SetLineWidth(link_lyr+"|", 0)
+    SetLayerVisibility("Route Stops", "False")
 
 //--------------------------------- Joining Node Layer with Station Database-----------------------------------
 
@@ -100,34 +100,34 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 
-	RunMacro("TCB Init")
+    RunMacro("TCB Init")
 
-	Opts = RunMacro("create_tnet", "offpeak", "bus", "dropoff", Dir)
-	ret_value = RunMacro("TCB Run Operation", 1, "Build Transit Network", Opts) 
+    Opts = RunMacro("create_tnet", "offpeak", "bus", "dropoff", Dir)
+    ret_value = RunMacro("TCB Run Operation", 1, "Build Transit Network", Opts) 
 
-	if !ret_value then goto badbuildtrannet
+    if !ret_value then goto badbuildtrannet
 
 // Call macro Compute_OP_Matrix to create Origin-to-DropOff Node Time matrix
 // added by JainM March 07
 
-	rtn_OP = RunMacro("Compute_OP_Matrix", "offpeak", "bus", "dropoff", Args)
-	if rtn_OP[1] = 0
-		then do
+    rtn_OP = RunMacro("Compute_OP_Matrix", "offpeak", "bus", "dropoff", Args)
+    if rtn_OP[1] = 0
+        then do
             Throw(rtn_OP[2])
-			// msg = msg + rtn_OP[2]
-			// goto badcomputeopmatrix
-		end
+            // msg = msg + rtn_OP[2]
+            // goto badcomputeopmatrix
+        end
 
 //////
 // ----------------------------------- STEP 2: Transit Network Setting  -----------------------------------
 
 
-	Opts = RunMacro("set_tnet", "offpeak", "bus", "dropoff", Dir)
-	tnwOpts=Opts
+    Opts = RunMacro("set_tnet", "offpeak", "bus", "dropoff", Dir)
+    tnwOpts=Opts
 
         ret_value = RunMacro("TCB Run Operation", 2, "Transit Network Setting PF", Opts)
 
-	if !ret_value then goto badtransettings
+    if !ret_value then goto badtransettings
 
 // ----------------------------------- STEP 3a: Transit Skim Path Finder  -----------------------------------
 
@@ -157,7 +157,7 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
      tnwOpts.Input.[OP Time Currency] = {Dir + "\\skims\\skim_knr_offpeak_noCBD.mtx", "TTfree*", "Origin", "Destination"}
 
      ret_value = RunMacro("TCB Run Operation", 4, "Transit Network Setting PF", tnwOpts)
-	if !ret_value then goto badtransettings
+    if !ret_value then goto badtransettings
 
  
      Opts = null
@@ -174,7 +174,7 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
      Opts.Output.[Parking Matrix].[File Name] = Dir + "\\skims\\TR_PARK_OPBusDrop_NoCBD.mtx"
 
      ret_value = RunMacro("TCB Run Procedure", 5, "Transit Skim PF", Opts)
-	if !ret_value then goto badtranskim
+    if !ret_value then goto badtranskim
 
      zone_file=Dir+"\\TAZ_ATYPE.ASC"
     
@@ -186,10 +186,10 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 //     if (n_selected >0) then do
 //        dim cbd_zone[n_selected]
 //        i=0
-//	zone_rec = GetFirstRecord (CBD_set, null)
+//  zone_rec = GetFirstRecord (CBD_set, null)
         
-//	while zone_rec <> null do
-//	    i=i+1
+//  while zone_rec <> null do
+//      i=i+1
 //            cbd_zone[i]=s2i(zone_rec)
 //            zone_rec = GetNextRecord (CBD_set, null, null)
 //      end
@@ -240,20 +240,20 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
      closeview(zone_vw)
 // ----------------------------------- End STEP 3b ----------------------------------------------------------
 
-	// -- Post Process the Drop-Off Skims to split the drive leg and the transit legs.
+    // -- Post Process the Drop-Off Skims to split the drive leg and the transit legs.
 
 // --- Fill the Null Values in PARK matrix with Zeroes
 
 
-	park_matrix = Dir + "\\skims\\TR_PARK_OPBusDrop.mtx"
+    park_matrix = Dir + "\\skims\\TR_PARK_OPBusDrop.mtx"
 
-	OM = OpenMatrix(park_matrix, "True")
-	matcores = GetMatrixCoreNames(OM)
-	corepos = ArrayPosition(matcores, {"Parking"},)
-	if corepos = 0 then addmatrixcore(OM,"Parking")
-	c = CreateMatrixCurrency(OM, "Parking",,,)
-	c := 0
-	c = null
+    OM = OpenMatrix(park_matrix, "True")
+    matcores = GetMatrixCoreNames(OM)
+    corepos = ArrayPosition(matcores, {"Parking"},)
+    if corepos = 0 then addmatrixcore(OM,"Parking")
+    c = CreateMatrixCurrency(OM, "Parking",,,)
+    c := 0
+    c = null
 
      Opts = null
      Opts.Input.[Target Currency] = {park_matrix, "Parking", "RCIndex", "RCIndex"}
@@ -263,79 +263,79 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
      ret_value = RunMacro("TCB Run Operation", 7, "Merge Matrices", Opts)
      if !ret_value then goto badmatrixop
 
-//	om = OpenMatrix(Dir + "\\skims\\TR_PARK_opbusdrop.mtx", "True")
-//	CreateTableFromMatrix(om, Dir + "\\tranassn\\opbusdrop\\pnrnode_opbusdrop.asc", "FFA", {{"Complete", "Yes"}})
+//  om = OpenMatrix(Dir + "\\skims\\TR_PARK_opbusdrop.mtx", "True")
+//  CreateTableFromMatrix(om, Dir + "\\tranassn\\opbusdrop\\pnrnode_opbusdrop.asc", "FFA", {{"Complete", "Yes"}})
 
-	// -- Flag the dropoff stations as
+    // -- Flag the dropoff stations as
 
-	//   1. DropOffs at Park&Ride Nodes
-	//   2. Dropoffs inside the CBD
-	//   3. Pseudo DropOffs outside CBD
+    //   1. DropOffs at Park&Ride Nodes
+    //   2. Dropoffs inside the CBD
+    //   3. Pseudo DropOffs outside CBD
 
-	rtn_Pflags = RunMacro("Create OPbusDrop Parking Flags", Args)
-	if rtn_Pflags[1] = 0 then goto badparkflags
-
-
-	// Check for local matrix cores (JWM 16.09.16) - add if necessary and initialize to null (clear)
-	// 	matrix assignment ":=" please see help documentation for "Matrix Assignment Statement"
-
-	OM = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
-
-	matcores = GetMatrixCoreNames(OM)
-	corepos = ArrayPosition(matcores, {"Total Distance"},)
-	if corepos = 0 then addmatrixcore(OM,"Total Distance")
-	c = CreateMatrixCurrency(OM, "Total Distance",,,)
-	c := null
-
-	corepos = ArrayPosition(matcores, {"IVTT"},)
-	if corepos = 0 then addmatrixcore(OM,"IVTT")
-	c = CreateMatrixCurrency(OM, "IVTT",,,)
-	c := null
-
-	corepos = ArrayPosition(matcores, {"InVehGT5"},)
-	if corepos = 0 then addmatrixcore(OM,"InVehGT5")
-	c = CreateMatrixCurrency(OM, "InVehGT5",,,)
-	c := null
-
-	corepos = ArrayPosition(matcores, {"Approach"},)
-	if corepos = 0 then addmatrixcore(OM,"Approach")
-	c = CreateMatrixCurrency(OM, "Approach",,,)
-	c := null
-
-	corepos = ArrayPosition(matcores, {"Cost"},)
-	if corepos = 0 then addmatrixcore(OM,"Cost")
-	c = CreateMatrixCurrency(OM, "Cost",,,)
-	c := null
+    rtn_Pflags = RunMacro("Create OPbusDrop Parking Flags", Args)
+    if rtn_Pflags[1] = 0 then goto badparkflags
 
 
-	corepos = ArrayPosition(matcores, {"Highway Skim"},)
-	if corepos = 0 then addmatrixcore(OM,"Highway Skim")
-	c = CreateMatrixCurrency(OM, "Highway Skim",,,)
-	c := null
+    // Check for local matrix cores (JWM 16.09.16) - add if necessary and initialize to null (clear)
+    //  matrix assignment ":=" please see help documentation for "Matrix Assignment Statement"
 
-	corepos = ArrayPosition(matcores, {"Park_Flag"},)
-	if corepos = 0 then addmatrixcore(OM,"Park_Flag")
-	c = CreateMatrixCurrency(OM, "Park_Flag",,,)
-	c := null
+    OM = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
 
-	corepos = ArrayPosition(matcores, {"Walk Drop Flag"},)
-	if corepos = 0 then addmatrixcore(OM,"Walk Drop Flag")
-	c = CreateMatrixCurrency(OM, "Walk Drop Flag",,,)
-	c := null
+    matcores = GetMatrixCoreNames(OM)
+    corepos = ArrayPosition(matcores, {"Total Distance"},)
+    if corepos = 0 then addmatrixcore(OM,"Total Distance")
+    c = CreateMatrixCurrency(OM, "Total Distance",,,)
+    c := null
 
-	OM = null
-	c = null
+    corepos = ArrayPosition(matcores, {"IVTT"},)
+    if corepos = 0 then addmatrixcore(OM,"IVTT")
+    c = CreateMatrixCurrency(OM, "IVTT",,,)
+    c := null
+
+    corepos = ArrayPosition(matcores, {"InVehGT5"},)
+    if corepos = 0 then addmatrixcore(OM,"InVehGT5")
+    c = CreateMatrixCurrency(OM, "InVehGT5",,,)
+    c := null
+
+    corepos = ArrayPosition(matcores, {"Approach"},)
+    if corepos = 0 then addmatrixcore(OM,"Approach")
+    c = CreateMatrixCurrency(OM, "Approach",,,)
+    c := null
+
+    corepos = ArrayPosition(matcores, {"Cost"},)
+    if corepos = 0 then addmatrixcore(OM,"Cost")
+    c = CreateMatrixCurrency(OM, "Cost",,,)
+    c := null
+
+
+    corepos = ArrayPosition(matcores, {"Highway Skim"},)
+    if corepos = 0 then addmatrixcore(OM,"Highway Skim")
+    c = CreateMatrixCurrency(OM, "Highway Skim",,,)
+    c := null
+
+    corepos = ArrayPosition(matcores, {"Park_Flag"},)
+    if corepos = 0 then addmatrixcore(OM,"Park_Flag")
+    c = CreateMatrixCurrency(OM, "Park_Flag",,,)
+    c := null
+
+    corepos = ArrayPosition(matcores, {"Walk Drop Flag"},)
+    if corepos = 0 then addmatrixcore(OM,"Walk Drop Flag")
+    c = CreateMatrixCurrency(OM, "Walk Drop Flag",,,)
+    c := null
+
+    OM = null
+    c = null
 
  //--- include the highway skim matrix as a part of Transit Skim Matrices 
 
-	hwyskim_matrix = Dir + "\\AutoSkims\\SPMAT_free.mtx"
+    hwyskim_matrix = Dir + "\\AutoSkims\\SPMAT_free.mtx"
 
-	M1 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
-	M2 = OpenMatrix(hwyskim_matrix, "True")
+    M1 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    M2 = OpenMatrix(hwyskim_matrix, "True")
 
-	c1 = CreateMatrixCurrency(M2, "Non HOV Length", "Rows", "Columns",)
-	c2 = CreateMatrixCurrency(M1, "Highway Skim", "RCIndex", "RCIndex",)
-	MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
+    c1 = CreateMatrixCurrency(M2, "Non HOV Length", "Rows", "Columns",)
+    c2 = CreateMatrixCurrency(M1, "Highway Skim", "RCIndex", "RCIndex",)
+    MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
 
       c1 = null
       c2 = null
@@ -345,21 +345,21 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 
 // --- Update the Skim Matrix With the Park Flag
 
-	park_matrix = Dir + "\\Skims\\ParkFlag_OPbusDrop.mtx"
+    park_matrix = Dir + "\\Skims\\ParkFlag_OPbusDrop.mtx"
 
-	M1 = OpenMatrix(park_matrix, "True")
-	M2 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    M1 = OpenMatrix(park_matrix, "True")
+    M2 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
 
-	c1 = CreateMatrixCurrency(M1, "Parking_Flag", "Rows", "Columns",)
-	c2 = CreateMatrixCurrency(M2, "Park_Flag", "RCIndex", "RCIndex",)
-	MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
+    c1 = CreateMatrixCurrency(M1, "Parking_Flag", "Rows", "Columns",)
+    c2 = CreateMatrixCurrency(M2, "Park_Flag", "RCIndex", "RCIndex",)
+    MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
 
-	c1 = null
+    c1 = null
         c2 = null
         M1 = null
         M2 = null
 
-	M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
         c1 = CreateMatrixCurrency(M1, "Length (XCM)", "RCIndex", "RCIndex",)
         c2 = CreateMatrixCurrency(M1, "Length (XPR)", "RCIndex", "RCIndex",)
         c3 = CreateMatrixCurrency(M1, "Length (FDR)", "RCIndex", "RCIndex",)
@@ -386,24 +386,24 @@ if (theyear = "2009") then do
                                                   "RCIndex"}}}},
              {"Global",   {{"Method",            11},
                            {"Cell Range",        2},
-			   {"Matrix K",          {1,
-						  1}},
-			 {"Expression Text", "if ((nz([Length (XCM)])+nz([Length (XPR)])+ nz([Length (LOC)])+nz([Length (FDR)])+ nz([Length (SKS)]))> 0.0 and [Highway Skim] > 0.75) then [In-Vehicle Time]"},                     
-            	{"Force Missing",     "Yes"}}}}
+               {"Matrix K",          {1,
+                          1}},
+             {"Expression Text", "if ((nz([Length (XCM)])+nz([Length (XPR)])+ nz([Length (LOC)])+nz([Length (FDR)])+ nz([Length (SKS)]))> 0.0 and [Highway Skim] > 0.75) then [In-Vehicle Time]"},                     
+                {"Force Missing",     "Yes"}}}}
 
      if !RunMacro("TCB Run Operation", 15, "Fill Matrices", Opts) then goto badmatrixop
 
 
 //--- include the DropFlag from OPbusW as a part of Transit Skim Matrices 
 
-	opbusw_matrix = Dir + "\\skims\\TR_SKIM_opbusw.mtx"
+    opbusw_matrix = Dir + "\\skims\\TR_SKIM_opbusw.mtx"
 
-	M1 = OpenMatrix(opbusw_matrix, "True")
-	M2 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    M1 = OpenMatrix(opbusw_matrix, "True")
+    M2 = OpenMatrix(Dir+"\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
 
-	c1 = CreateMatrixCurrency(M1, "Drop Flag", "RCIndex", "RCIndex",)
-	c2 = CreateMatrixCurrency(M2, "Walk Drop Flag", "RCIndex", "RCIndex",)
-	MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
+    c1 = CreateMatrixCurrency(M1, "Drop Flag", "RCIndex", "RCIndex",)
+    c2 = CreateMatrixCurrency(M2, "Walk Drop Flag", "RCIndex", "RCIndex",)
+    MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
 
       c1 = null
       c2 = null
@@ -419,10 +419,10 @@ if (theyear = "2009") then do
                                                   "RCIndex"}}}},
              {"Global",   {{"Method",            11},
                            {"Cell Range",        2},
-			   {"Matrix K",          {1,
-						  1}},
-			 {"Expression Text", "if ([Walk Drop Flag] = null) then [InVehGT5]"},                     
-            	{"Force Missing",     "Yes"}}}}
+               {"Matrix K",          {1,
+                          1}},
+             {"Expression Text", "if ([Walk Drop Flag] = null) then [InVehGT5]"},                     
+                {"Force Missing",     "Yes"}}}}
 
      if !RunMacro("TCB Run Operation", 16, "Fill Matrices", Opts) then goto badmatrixop
 
@@ -436,18 +436,18 @@ end else do
                                                   "RCIndex"}}}},
              {"Global",   {{"Method",            11},
                            {"Cell Range",        2},
-			   {"Matrix K",          {1,
-						  1}},
-			 {"Expression Text", "if [Total Distance] > 0.0 and [Highway Skim] > 0.75 then [In-Vehicle Time]"},                     
-            	{"Force Missing",     "Yes"}}}}
+               {"Matrix K",          {1,
+                          1}},
+             {"Expression Text", "if [Total Distance] > 0.0 and [Highway Skim] > 0.75 then [In-Vehicle Time]"},                     
+                {"Force Missing",     "Yes"}}}}
 
      if !RunMacro("TCB Run Operation", 17, "Fill Matrices", Opts) then goto badmatrixop
 
 end
 
-	M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
-	c1 = CreateMatrixCurrency(M1, "InVehGT5", "RCIndex", "RCIndex",)
-	c2 = CreateMatrixCurrency(M1, "IVTT", "RCIndex", "RCIndex",)
+    M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    c1 = CreateMatrixCurrency(M1, "InVehGT5", "RCIndex", "RCIndex",)
+    c2 = CreateMatrixCurrency(M1, "IVTT", "RCIndex", "RCIndex",)
         MatrixOperations(c2, {c1}, {1},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
     c2 = null
     c3 = null
@@ -455,12 +455,12 @@ end
     M1 = null
 
 
-	M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
-//	c1 = CreateMatrixCurrency(M1, "Transfer Wait Time", "RCIndex", "RCIndex",)
-	c2 = CreateMatrixCurrency(M1, "Transfer Walk Time", "RCIndex", "RCIndex",)
-	c3 = CreateMatrixCurrency(M1, "Access Walk Time", "RCIndex", "RCIndex",)
-	c4 = CreateMatrixCurrency(M1, "Egress Walk Time", "RCIndex", "RCIndex",)
-	c5 = CreateMatrixCurrency(M1, "Approach", "RCIndex", "RCIndex",)
+    M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+//  c1 = CreateMatrixCurrency(M1, "Transfer Wait Time", "RCIndex", "RCIndex",)
+    c2 = CreateMatrixCurrency(M1, "Transfer Walk Time", "RCIndex", "RCIndex",)
+    c3 = CreateMatrixCurrency(M1, "Access Walk Time", "RCIndex", "RCIndex",)
+    c4 = CreateMatrixCurrency(M1, "Egress Walk Time", "RCIndex", "RCIndex",)
+    c5 = CreateMatrixCurrency(M1, "Approach", "RCIndex", "RCIndex",)
         MatrixOperations(c5, {c2, c3, c4}, {1, 1, 1},,, {{"Operation", "Add"}, {"Force Missing", "No"}})
     c1 = null
     c2 = null
@@ -471,9 +471,9 @@ end
     M1 = null
 
 
-	M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
+    M1 = OpenMatrix(Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx", "True")
         c1 = CreateMatrixCurrency(M1, "Fare", "RCIndex", "RCIndex",)
-	  c2 = CreateMatrixCurrency(M1, "Cost", "RCIndex", "RCIndex",)
+      c2 = CreateMatrixCurrency(M1, "Cost", "RCIndex", "RCIndex",)
         MatrixOperations(c2, {c1}, {100},,, {{"Operation", "Add"}, {"Force Missing", "Yes"}})
     c1 = null
     c2 = null
@@ -481,12 +481,12 @@ end
     M1 = null
 //continuefromhere:
 
-	// -- Populate the Skim Values in the Output Skim Matrix for use as an input to the Mode Split Model
+    // -- Populate the Skim Values in the Output Skim Matrix for use as an input to the Mode Split Model
 
-	input_matrix = Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx"
-	modesplit_matrix = Dir + "\\skims\\OFFPK_DROPTRAN_SKIMS.mtx"
+    input_matrix = Dir + "\\skims\\TR_SKIM_OPBusDrop.mtx"
+    modesplit_matrix = Dir + "\\skims\\OFFPK_DROPTRAN_SKIMS.mtx"
 
-	
+    
 
 Opts = null
 
@@ -495,7 +495,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 18, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 Opts = null
 
@@ -504,7 +504,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 19, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 
 Opts = null
@@ -514,7 +514,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 20, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 //Opts = null
 //
@@ -531,7 +531,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 21, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 
 Opts = null
@@ -541,7 +541,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 22, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 Opts = null
 
@@ -550,7 +550,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 23, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 Opts = null
 
@@ -559,7 +559,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 24, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 /*
 Opts = null
@@ -577,7 +577,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 25, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 Opts = null
 
@@ -586,7 +586,7 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 26, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 // Add skip-stop use flag, JainM, 01.08.09
 Opts = null
@@ -600,8 +600,8 @@ Opts = null
      Opts.Global.[Force Missing] = "No"
 
      ret_value = RunMacro("TCB Run Operation", 27, "Fill Matrices", Opts)
-	if !ret_value then goto badmatrixop
-	
+    if !ret_value then goto badmatrixop
+    
 // Add un-weighted total walk time, JainM, 09.20.11
 Opts = null
 
@@ -610,89 +610,89 @@ Opts = null
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
      ret_value = RunMacro("TCB Run Operation", 28, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
+    if !ret_value then goto badmatrixop
 
 ///////////////////////////////
 // Call macro Update_DropOff_Skims to update table Drive Access distance in the final skims
 // added by JainM March 07
 
        rtn_upskim = RunMacro("Update_DropOff_Skims_Mtx", "offpeak", "bus", "dropoff", Args)
-		if rtn_upskim[1] = 0 then goto badupskim
+        if rtn_upskim[1] = 0 then goto badupskim
 
 CloseMap()
 
 // -- archive the transit skim to save space 
 goto quit
-//	pkzip_program = METDir + "\\pgm\\pkzip25\\pkzip25.exe"
-//	status = RunProgram(pkzip_program + " " + Dir+"\\skims\\TR_SKIM_opbusdrop.zip " +Dir+"\\skims\\TR_Skim_opbusdrop.mtx -Add",{{"Minimize", "True"}})
+//  pkzip_program = METDir + "\\pgm\\pkzip25\\pkzip25.exe"
+//  status = RunProgram(pkzip_program + " " + Dir+"\\skims\\TR_SKIM_opbusdrop.zip " +Dir+"\\skims\\TR_Skim_opbusdrop.mtx -Add",{{"Minimize", "True"}})
 
-//	if status = 0 then DeleteFile(Dir+"\\skims\\TR_Skim_opbusdrop.mtx")
+//  if status = 0 then DeleteFile(Dir+"\\skims\\TR_Skim_opbusdrop.mtx")
 
-	badcomputeopmatrix:
-	Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
-	// Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Compute_OP_Matrix") 
-	// goto badquit
+    badcomputeopmatrix:
+    Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
+    // Throw("Reg_OPBusDrop - Error return from Compute_OP_Matrix")
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return from Compute_OP_Matrix") 
+    // goto badquit
 
-	badupskim:
-	Throw("Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx")
-	// msg = rtn_upskim[2] + {"Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
-	// goto badquit
-		
-	badparkflags:
-	Throw("Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags")
-	// msg = rtn_Pflags[2] + {"Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags"}
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags") 
-	// goto badquit
-		
-	badbuildtrannet:
-	Throw("Reg_OPBusDrop - Error return build transit network")
-	// Throw("Reg_OPBusDrop - Error return build transit network")
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return build transit network") 
-	// goto badquit
+    badupskim:
+    Throw("Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx")
+    // msg = rtn_upskim[2] + {"Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx"}
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return from Update_Dropoff_Skim_Mtx") 
+    // goto badquit
+        
+    badparkflags:
+    Throw("Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags")
+    // msg = rtn_Pflags[2] + {"Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags"}
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return from Create OPBusDrop Parking Flags") 
+    // goto badquit
+        
+    badbuildtrannet:
+    Throw("Reg_OPBusDrop - Error return build transit network")
+    // Throw("Reg_OPBusDrop - Error return build transit network")
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return build transit network") 
+    // goto badquit
 
-	badtransettings:
-	Throw("Reg_OPBusDrop - Error return from transit network settings")
-	// Throw("Reg_OPBusDrop - Error return from transit network settings")
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network settings") 
-	// goto badquit
+    badtransettings:
+    Throw("Reg_OPBusDrop - Error return from transit network settings")
+    // Throw("Reg_OPBusDrop - Error return from transit network settings")
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network settings") 
+    // goto badquit
 
-	badtranskim:
-	Throw("Reg_OPBusDrop - Error return from transit network skims")
-	// Throw("Reg_OPBusDrop - Error return from transit network skims")
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network skims")
-	// goto badquit
+    badtranskim:
+    Throw("Reg_OPBusDrop - Error return from transit network skims")
+    // Throw("Reg_OPBusDrop - Error return from transit network skims")
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error return from transit network skims")
+    // goto badquit
 
-	badmatrixop:
-	Throw("Reg_OPBusDrop - Error in matrix operations")
-	// Throw("Reg_OPBusDrop - Error in matrix operations")
-	// AppendToLogFile(1, "Reg_OPBusDrop - Error matrix operations")
-	// goto badquit
+    badmatrixop:
+    Throw("Reg_OPBusDrop - Error in matrix operations")
+    // Throw("Reg_OPBusDrop - Error in matrix operations")
+    // AppendToLogFile(1, "Reg_OPBusDrop - Error matrix operations")
+    // goto badquit
 
-	badxpr_stopflags:
-	Throw("Reg_PPrmW - Error return from XPR_StopFlags")
-	// Throw(rtnmsg)
-	// AppendToLogFile(2, rtnmsg)
-	// Throw("Reg_PPrmW - Error return from XPR_StopFlags")
-	// AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
-	// goto badquit
+    badxpr_stopflags:
+    Throw("Reg_PPrmW - Error return from XPR_StopFlags")
+    // Throw(rtnmsg)
+    // AppendToLogFile(2, rtnmsg)
+    // Throw("Reg_PPrmW - Error return from XPR_StopFlags")
+    // AppendToLogFile(1, "Reg_PPrmW - Error return from XPR_StopFlags")
+    // goto badquit
 
-	badquit:
-	Throw("badquit: Last error message= " + GetLastError())
-	AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
+    badquit:
+    Throw("badquit: Last error message= " + GetLastError())
+    AppendToLogFile(2, "badquit: Last error message= " + GetLastError())
     RunMacro("TCB Closing", 0, "TRUE" ) 
-	RegOPBusDropOK = 0
-	goto quit
- 	
+    RegOPBusDropOK = 0
+    goto quit
+    
 quit:
 
     RunMacro("close everything")
-	datentime = GetDateandTime()
-	AppendToLogFile(1, "Exit Reg_OPBusDrop: " + datentime)
-	AppendToLogFile(1, " ")
+    datentime = GetDateandTime()
+    AppendToLogFile(1, "Exit Reg_OPBusDrop: " + datentime)
+    AppendToLogFile(1, " ")
 
-	return({RegOPBusDropOK, msg})
+    return({RegOPBusDropOK, msg})
 
 
 endMacro
@@ -724,16 +724,16 @@ Macro "Create OPbusDrop Parking Flags" (Args)
 shared route_file, routename, net_file, link_lyr, node_lyr, parking_view, nodes_view
 
 
-	// LogFile = Args.[Log File].value
-	// SetLogFileName(LogFile)
+    // LogFile = Args.[Log File].value
+    // SetLogFileName(LogFile)
 
-	METDir = Args.[MET Directory]
-	Dir = Args.[Run Directory]
-		
-	msg = null
-	ParkFlagsOK = 1
-	datentime = GetDateandTime()
-	AppendToLogFile(2, "Enter Create OPBusDrop Parking Flags: " + datentime)
+    METDir = Args.[MET Directory]
+    Dir = Args.[Run Directory]
+        
+    msg = null
+    ParkFlagsOK = 1
+    datentime = GetDateandTime()
+    AppendToLogFile(2, "Enter Create OPBusDrop Parking Flags: " + datentime)
 
 
 m = OpenMatrix(Dir + "\\skims\\TR_PARK_OPBusDrop.mtx", )
@@ -748,58 +748,64 @@ CopyMatrixStructure({mc1,mc2}, {{"File Name", Dir + "\\skims\\ParkFlag_OPbusDrop
 
 
 //---- close open view ----
-	SetView(nodes_view)
-	query = "Select * where KNR > 0 and KNR <4"
-	n1=selectbyquery("knrcat","Several",query,)
-	
-	
+    SetView(nodes_view)
+    query = "Select * where KNR > 0 and KNR <4"
+    n1=selectbyquery("knrcat","Several",query,)
+    
+    
 ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
-	{"Node.ID", "KNR"},)
+    {"Node.ID", "KNR"},)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // Write the control file and batch file
 
-	exist = GetFileInfo(METDir + "\\pgm\\ModeChoice\\KNR_Loc_CAT.exe")
-	if (exist = null) then goto nofortran
-	
-	ctlname = Dir + "\\skims\\KNR_Loc_CAT.ctl"
-  	exist = GetFileInfo(ctlname)
-  	if (exist <> null) then DeleteFile(ctlname)
+    exist = GetFileInfo(METDir + "\\pgm\\ModeChoice\\KNR_Loc_CAT.exe")
+    if (exist = null) then goto nofortran
+    
+    ctlname = Dir + "\\skims\\KNR_Loc_CAT.ctl"
+    exist = GetFileInfo(ctlname)
+    if (exist <> null) then DeleteFile(ctlname)
 
 // replace backslash "\" in ctl file filenames with forward slash "/" - Manish had a 
 //  different method - but it won't work with longer file names , not sure why it needs it either, but it seems to. JWM - 11/2015
 
-	dirparse = parsestring(Dir, "\\")
-	DirSlash = dirparse[1]
-	for i = 2 to dirparse.length do
-		DirSlash = DirSlash + "//" + dirparse[i]
-	end
- 
-  	ctl = OpenFile(ctlname, "w")
+    // dirparse = parsestring(Dir, "\\")
+    // DirSlash = dirparse[1]
+    // for i = 2 to dirparse.length do
+    //     DirSlash = DirSlash + "//" + dirparse[i]
+    // end
+    DirSlash = Dir
+ /*
+    ctl = OpenFile(ctlname, "w")
 
-	WriteLine(ctl, DirSlash + "//Skims//TR_PARK_OPBusDrop.mtx")
-	WriteLine(ctl, DirSlash + "//skims//knr_cat.asc")
-	WriteLine(ctl, DirSlash + "//Skims//ParkFlag_OPbusDrop.mtx")
-	CloseFile(ctl)
+    WriteLine(ctl, DirSlash + "//Skims//TR_PARK_OPBusDrop.mtx")
+    WriteLine(ctl, DirSlash + "//skims//KNR_CAT.asc")
+    WriteLine(ctl, DirSlash + "//Skims//ParkFlag_OPbusDrop.mtx")
+    CloseFile(ctl)
 
-	batchname=Dir + "\\skims\\knrflag.bat"
-  	exist = GetFileInfo(batchname)
-  	if (exist <> null) then DeleteFile(batchname)
-  	bat = OpenFile(batchname, "w")
+    batchname=Dir + "\\skims\\knrflag.bat"
+    exist = GetFileInfo(batchname)
+    if (exist <> null) then DeleteFile(batchname)
+    bat = OpenFile(batchname, "w")
 
-	WriteLine(bat, METDir + "\\pgm\\ModeChoice\\KNR_Loc_CAT.exe " + ctlname)
-	CloseFile(bat)
+    WriteLine(bat, METDir + "\\pgm\\ModeChoice\\KNR_Loc_CAT.exe " + ctlname)
+    CloseFile(bat)
 
-	FortInfo = GetFileInfo(METDir + "\\Pgm\\ModeChoice\\KNR_Loc_CAT.exe")
-	TimeStamp = FortInfo[7] + " " + FortInfo[8]
-	AppendToLogFile(2, "Create OPBusDrop Parking Flags call to fortran: pgm=\\ModeChoice\\KNR_Loc_CAT.exe, timestamp: " + TimeStamp)
+    FortInfo = GetFileInfo(METDir + "\\Pgm\\ModeChoice\\KNR_Loc_CAT.exe")
+    TimeStamp = FortInfo[7] + " " + FortInfo[8]
+    AppendToLogFile(2, "Create OPBusDrop Parking Flags call to fortran: pgm=\\ModeChoice\\KNR_Loc_CAT.exe, timestamp: " + TimeStamp)
 
      status = RunProgram(batchname,{{"Maximize", "True"}})
-	if (status <> 0) then goto badfortran
+    if (status <> 0) then goto badfortran
+*/
+    ascfile = DirSlash + "//skims//KNR_CAT.asc"
+    inmtx = DirSlash + "//Skims//TR_PARK_OPBusDrop.mtx"
+    outmtx = DirSlash + "//Skims//ParkFlag_OPbusDrop.mtx"
+    RunMacro("Run KCAT", ascfile, inmtx, outmtx)
 
-	modesplit_matrix = Dir + "\\skims\\OFFPK_DROPTRAN_SKIMS.MTX"
-	input_matrix= Dir + "\\skims\\ParkFlag_OPbusDrop.mtx"
+    modesplit_matrix = Dir + "\\skims\\OFFPK_DROPTRAN_SKIMS.MTX"
+    input_matrix= Dir + "\\skims\\ParkFlag_OPbusDrop.mtx"
      Opts = null
 
      Opts.Input.[Target Currency] = { modesplit_matrix, "ParkFlag - Bus DropOff", "Rows", "Columns"}
@@ -807,35 +813,56 @@ ExportView(nodes_view+"|knrcat", "FFA", Dir+ "//skims//KNR_CAT.asc",
      Opts.Global.[Missing Option].[Force Missing] = "Yes"
 
     ret_value = RunMacro("TCB Run Operation", 1, "Merge Matrices", Opts) 
-	if !ret_value then goto badmatrixop
-	goto quit
-	
-	nofortran:
-	Throw("Fortran program to compute parking flag is missing")
-	AppendToLogFile(2, "Fortran program to compute parking flag is missing")
-	goto badquit
+    if !ret_value then goto badmatrixop
+    goto quit
+    
+    nofortran:
+    Throw("Fortran program to compute parking flag is missing")
+    AppendToLogFile(2, "Fortran program to compute parking flag is missing")
+    goto badquit
 
-	badfortran:
-	Throw("Error return from fortran program KNR_LOC_Cat")
-	AppendToLogFile(2, "Error return from fortran program KNR_LOC_Cat")
-	goto badquit
+    badfortran:
+    Throw("Error return from fortran program KNR_LOC_Cat")
+    AppendToLogFile(2, "Error return from fortran program KNR_LOC_Cat")
+    goto badquit
 
-	badmatrixop:
-	Throw("Create OPBusDrop Parking Flags - Error merging matrices")
-	AppendToLogFile(1, "Create OPBusDrop Parking Flags - Error merging matrices")
-	goto badquit
+    badmatrixop:
+    Throw("Create OPBusDrop Parking Flags - Error merging matrices")
+    AppendToLogFile(1, "Create OPBusDrop Parking Flags - Error merging matrices")
+    goto badquit
 
-	badquit:
+    badquit:
     RunMacro("TCB Closing", 0, "TRUE" ) 
-	ParkFlagsOK = 0
-	goto quit
- 	
+    ParkFlagsOK = 0
+    goto quit
+    
 quit:
-	datentime = GetDateandTime()
-	AppendToLogFile(2, "Exit Create OPBusDrop Parking Flags: " + datentime)
-	AppendToLogFile(1, " ")
+    datentime = GetDateandTime()
+    AppendToLogFile(2, "Exit Create OPBusDrop Parking Flags: " + datentime)
+    AppendToLogFile(1, " ")
 
-	return({ParkFlagsOK, msg})
+    return({ParkFlagsOK, msg})
 
 endMacro
 
+
+macro "Run KCAT" (ascfile, inmtx, outmtx)
+//    folder = "C:\\temp\\kmat\\exe\\"
+//    ascfile = folder + "knr_cat.asc"
+//    inmtx = folder + "TR_PARK_PBusDrop.mtx"
+//    outmtx = folder + "ParkFlag_PbusDrop.mtx"
+    inm = CreateObject("Matrix", inmtx)
+    outm = CreateObject("Matrix", outmtx)
+    mhandle = outm.GetMatrixHandle()
+    asc = OpenTable("asc", "FFA", {ascfile})
+    tmp = GetTempFileName("*.bin")
+    inm.ExportToTable({OutputMode: "Tables", FileName: tmp})
+    intab = CreateObject("Table", tmp)
+    invw = intab.GetView()
+    jv = JoinViews("jv", GetFieldFullSpec(invw, "Parking"), GetFieldFullSpec(asc, "ID"),)
+    UpdateMatrixFromView(mhandle, jv + "|", "RCIndex", "RCIndex:1", , {"KNR"}, "Replace",) // fill in class number in matrix
+    outm.Parking_Flag := if outm.Parking_Flag = 2 then outm.Parking_Flag else null
+    CloseView(jv)
+    CloseView(asc)
+
+endmacro
