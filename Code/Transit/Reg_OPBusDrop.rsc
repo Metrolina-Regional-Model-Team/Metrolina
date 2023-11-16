@@ -866,6 +866,9 @@ macro "Run KCAT" (ascfile, inmtx, outmtx)
     mhandle = od.GetMatrixHandle()
 
     UpdateMatrixFromView(mhandle, jvv + "|", flds[1], flds[2], , {"KNR"}, "Replace",) // fill in class number in matrix
+    mhandle = null
+    outm = null
+    outm = CreateObject("Matrix", outmtx)
     outm.Parking_Flag := if outm.Parking_Flag = 2 then outm.Parking_Flag else null
     CloseView(jvv)
     CloseView(jv)
