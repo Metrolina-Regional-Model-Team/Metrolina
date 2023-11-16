@@ -847,21 +847,27 @@ endMacro
 
 
 macro "Run KCAT" (ascfile, inmtx, outmtx)
-//    folder = "C:\\temp\\kmat\\exe\\"
-//    ascfile = folder + "knr_cat.asc"
-//    inmtx = folder + "TR_PARK_PBusDrop.mtx"
-//    outmtx = folder + "ParkFlag_PbusDrop.mtx"
-    inm = CreateObject("Matrix", inmtx)
-    outm = CreateObject("Matrix", outmtx)
-    mhandle = outm.GetMatrixHandle()
+
+    inm = CreateObject("Matrix", inmtx, {MemoryOnly: true})
+    outm = CreateObject("Matrix", outmtx, {MemoryOnly: true})
     asc = OpenTable("asc", "FFA", {ascfile})
     tmp = GetTempFileName("*.bin")
+
     inm.ExportToTable({OutputMode: "Tables", FileName: tmp})
     intab = CreateObject("Table", tmp)
-    invw = intab.GetView()
+    intabm = intab.Export()
+    invw = intabm.GetView()
     jv = JoinViews("jv", GetFieldFullSpec(invw, "Parking"), GetFieldFullSpec(asc, "ID"),)
-    UpdateMatrixFromView(mhandle, jv + "|", "RCIndex", "RCIndex:1", , {"KNR"}, "Replace",) // fill in class number in matrix
+    {flds,} = GetFields(jv, "All")
+    jvv = ExportView(jv+"|", "MEM", "InMem2",,)
+
+    od = null
+    od = CreateObject("Matrix", outmtx)
+    mhandle = od.GetMatrixHandle()
+
+    UpdateMatrixFromView(mhandle, jvv + "|", flds[1], flds[2], , {"KNR"}, "Replace",) // fill in class number in matrix
     outm.Parking_Flag := if outm.Parking_Flag = 2 then outm.Parking_Flag else null
+    CloseView(jvv)
     CloseView(jv)
     CloseView(asc)
 

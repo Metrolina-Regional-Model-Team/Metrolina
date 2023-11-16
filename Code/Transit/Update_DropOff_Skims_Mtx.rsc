@@ -426,13 +426,9 @@ quit:
 endMacro
 
 macro "RunDADist1" (odmtx, opmtx, pdmtx)
-//    folder = "C:\\temp\\dadist1\\"
-//    odmtx = folder + "peakbus_DODist.MTX"
-//    opmtx = folder + "skim_knr_peak.mtx"
-//    pdmtx = folder + "skim_knr2dest_peak.mtx"
-    od = CreateObject("Matrix", odmtx)
-    op = CreateObject("Matrix", opmtx)
-    pd = CreateObject("Matrix", pdmtx)
+    od = CreateObject("Matrix", odmtx, {MemoryOnly: true})
+    op = CreateObject("Matrix", opmtx, {MemoryOnly: true})
+    pd = CreateObject("Matrix", pdmtx, {MemoryOnly: true})
     opcores = op.GetCoreNames()
     oplen = opcores[2]
     optime = opcores[3]
@@ -440,21 +436,67 @@ macro "RunDADist1" (odmtx, opmtx, pdmtx)
     tmp1 = GetTempFileName("*.bin")
     od.ExportToTable({OutputMode: "Tables", FileName: tmp1, Cores: {"Park Node"}})
     odt = CreateObject("Table", tmp1)
+    odtx = odt.GetView()
+    export_opts = {{"Additional Fields",                                            // elseif (PrdHr_DEP<{BegPrd_PM_HWY})  RO.TRIP_MD   = 1
+            {{"ODP", "string", 16, , "false", },
+             {"OPD", "string", 16, , "false", }
+            }}}
+
+    odtm = ExportView(odtx+"|", "MEM", "InMem2",,export_opts)
+    {o,p,d} = GetDataVectors(odtm+"|", {"Rows", "Park Node", "Columns"},)
+    opstr = String(o) + ":" + String(R2I(p))
+    pdstr = String(R2I(p)) + ":" + String(d)
+    SetDataVector(odtm + "|", "ODP", opstr,)
+    SetDataVector(odtm + "|", "OPD", pdstr,)
     tmp2 = GetTempFileName("*.bin")
     op.ExportToTable({OutputMode: "Tables", FileName: tmp2})
     opt = CreateObject("Table", tmp2)
     opt.RenameField({FieldName: oplen, NewName: "OPLength"})
     opt.RenameField({FieldName: optime, NewName: "OPTime"})
+    optx = opt.GetView()
+    export_opts = {{"Additional Fields",                                            // elseif (PrdHr_DEP<{BegPrd_PM_HWY})  RO.TRIP_MD   = 1
+            {{"OP", "string", 16, , "false", }
+            }}}
+
+    optm = ExportView(optx+"|", "MEM", "InMem3",,export_opts)
+    {o,d} = GetDataVectors(optm+"|", {"Origin", "Destination"},)
+    odstr = String(o) + ":" + String(d)
+    SetDataVector(optm + "|", "OP", odstr,)
     tmp3 = GetTempFileName("*.bin")
     pd.ExportToTable({OutputMode: "Tables", FileName: tmp3})
     pdt = CreateObject("Table", tmp3)
     pdt.RenameField({FieldName: "Length (Skim)", NewName: "PDLength"})
-    jv1 = odt.Join({Table: opt, LeftFields: {"Rows", "Park Node"}, RightFields: {"Origin", "Destination"}})
-    jv2 = jv1.Join({Table: pdt, LeftFields: {"Park Node", "Columns"}, RightFields: {"Origin", "Destination"}})
-    jv = jv2.GetView()
+    pdtx = pdt.GetView()
+    export_opts = {{"Additional Fields",                                            // elseif (PrdHr_DEP<{BegPrd_PM_HWY})  RO.TRIP_MD   = 1
+            {{"PD", "string", 16, , "false", }
+            }}}
+
+    pdtm = ExportView(pdtx+"|", "MEM", "InMem4",,export_opts)
+    {o,d} = GetDataVectors(pdtm+"|", {"Origin", "Destination"},)
+    odstr = String(o) + ":" + String(d)
+    SetDataVector(pdtm + "|", "PD", odstr,)
+    jv1 = JoinViews("jv", odtm + ".ODP", optm + ".OP",)
+    jv1x = ExportView(jv1+"|", "MEM" , "InMem5",,)
+    jv2 = JoinViews("jv2", jv1x + ".OPD", pdtm + ".PD",)
+    jvtm = ExportView(jv2+"|", "MEM", "InMem6",,)
+    {jvflds,} = GetFields(jvtm, "All")
+    od = null
+    od = CreateObject("Matrix", odmtx)
+
     mhandle = od.GetMatrixHandle()
+    od = null
+    od = CreateObject("Matrix", odmtx)
+    mhandle = od.GetMatrixHandle()
+
     UpdateCores = {null, "OPLength", null, "OPTime", "PDLength", null}
-    UpdateMatrixFromView(mhandle, jv + "|", "Rows", "Columns", , UpdateCores, "Replace",) // fill in class number in matrix
+    UpdateMatrixFromView(mhandle, jvtm + "|", jvflds[1], jvflds[2], , UpdateCores, "Replace",) // fill in class number in matrix
     od.Cost := if od.Cost > 0 and od.[Drive Length] > 0 then 100 * od.Cost + 10 * od.[Drive Length] else null
+    CloseView(jvtm)
+    CloseView(jv2)
+    CloseView(jv1x)
+    CloseView(jv1)
+    CloseView(pdtm)
+    CloseView(optm)
+    CloseView(odtm)
 
 endmacro
