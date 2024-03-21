@@ -60,8 +60,8 @@ est_tbl <- hh %>%
     workers = as.numeric(workers),
     workers = ifelse(workers > 3, 3, workers)
   ) %>%
-  select(hh_id, HomeTAZ, size, workers, life_cycle, income) %>%
-  left_join(per %>% select(hh_id, contains("_tours")), by = "hh_id")
+  select(hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
+  filter(!is.na(HomeTAZ))
 
 # note on area type
 # AT 1: CBD
