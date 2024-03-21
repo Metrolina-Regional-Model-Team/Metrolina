@@ -213,9 +213,32 @@ mark_anchor <- id_tours %>%
   ) %>%
   select(-check)
 
+id_sub_tours <- mark_anchor %>%
+  mutate(
+    # need a location more accurate than TAZs, but round off 5th decimal so
+    # that we get a roughly 36' square grid points.
+    d_loc = paste(round(d_lon, 4), round(d_lat, 4), sep = "-"),
+    work_anchor = ifelse(anchor == 1 & d_purpose_linked == "W", paste0("w-", d_loc), NA),
+    work_anchor = first(work_anchor[!is.na(work_anchor)]),
+    check = ifelse(d_purpose_linked == "W", paste0("w-", d_loc), ""),
+    check = ifelse(check == work_anchor, 1, 0),
+    # # a handful of tours contain only trips ending at the same place for work.
+    # # don't consider these subtours.
+    sum = sum(check, na.rm = TRUE),
+    count = n(),
+    check = ifelse(sum == count, 0, check),
+    cume = cumsum(check),
+    subtour_id = cume - check,
+    max = max(subtour_id),
+    subtour_id = ifelse(subtour_id == max, NA, subtour_id),
+    subtour_id = ifelse(subtour_id <= 0, NA, subtour_id),
+    subtour_id = ifelse(!is.na(subtour_id), paste0(tour_id, "_", subtour_id), NA)
+  ) %>%
+  select(-c(d_loc:cume, max))
+
 # Identify primary and secondary modes. Primary is the highest-order mode on
 # trip. The secondary mode is the second highest order.
-id_tour_mode <- mark_anchor %>%
+id_tour_mode <- id_sub_tours %>%
   mutate(
     primary_mode = case_when(
       "d_rail" %in% linked_trip_mode ~ "d_rail",
@@ -268,6 +291,22 @@ tour_file <- id_tour_mode %>%
     HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
   ) %>%
   mutate(anchor_taz = ifelse(anchor_taz == -Inf, NA, anchor_taz))
+
+subtour_file <- id_tour_mode %>%
+  filter(!is.na(subtour_id)) %>%
+  group_by(subtour_id) %>%
+  summarize(
+    hh_id = first(hh_id),
+    person_id = first(person_id),
+    tour_type = first(tour_type),
+    num_trips = n(),
+    anchor_taz = max(anchor_taz, na.rm = TRUE),
+    primary_mode = first(primary_mode),
+    secondary_mode = first(secondary_mode),
+    HH_Members_Max = max(num_hh_travelers, na.rm = TRUE),
+    HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
+  )
+  
 ```
 
 ```{r}
@@ -293,7 +332,8 @@ stops_file <- id_tour_mode %>%
 
 
 ```{r}
-# Update household file with numbers of workers who took a work tour that day
+# Update household file with tour counts and numbers of workers who took a 
+# work tour that day
 tours_by_hh <- tour_file %>%
   group_by(hh_id, person_id, tour_type) %>%
   summarize(count = n()) %>%
@@ -305,11 +345,16 @@ tours_by_hh <- tour_file %>%
   group_by(hh_id) %>%
   summarize(across(other:WorkersThatDay, ~ sum(.x))) %>%
   rename_with(~ paste0(.x, "_tours"), other:school)
-  
+
+# Add subtours (at work tours)
+subtours_by_hh <- subtour_file %>%
+  group_by(hh_id) %>%
+  summarize(sub_tours = n())
 
 hh_add_tours <- hh_add_strct %>%
   left_join(tours_by_hh, by = "hh_id") %>%
-  mutate(across(other_tours:WorkersThatDay, ~ifelse(is.na(.x), 0, .x))) %>%
+  left_join(subtours_by_hh, by = "hh_id") %>%
+  mutate(across(other_tours:sub_tours, ~ifelse(is.na(.x), 0, .x))) %>%
   relocate(WorkersThatDay, .after = WAdults) %>%
   mutate(
     BasicPattern = paste0(
@@ -333,13 +378,19 @@ tours_by_per <- tour_file %>%
   ) %>%
   rename_with(~ paste0(.x, "_tours"), other:school)
 
+# Add subtours (at work tours)
+subtours_by_per <- subtour_file %>%
+  group_by(hh_id, person_id) %>%
+  summarize(sub_tours = n())
+
 per_add_tour_counts <- per_calc_ptypes %>%
   left_join(
     hh_with_tazs, by = "hh_id"
   ) %>%
   left_join(tours_by_per, by = c("hh_id", "person_id")) %>%
+  left_join(subtours_by_per, by = c("hh_id", "person_id")) %>%
   mutate(
-    across(other_tours:school_tours, ~ifelse(is.na(.), 0, .))
+    across(other_tours:sub_tours, ~ifelse(is.na(.), 0, .))
   )
 ```
 
