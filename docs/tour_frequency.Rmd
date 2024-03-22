@@ -33,7 +33,7 @@ retired <- per %>%
     retired = ifelse(employment == "Retired", 1, 0)
   ) %>%
   group_by(hh_id) %>%
-  summarize(retired = max(retired))
+  summarize(retired = max(retired, na.rm = TRUE))
 
 # bottom 10% income: $20k
 # 25%: $30k (closest breakpoint in the survey)
@@ -44,7 +44,7 @@ est_tbl <- hh %>%
   mutate(
     life_cycle = case_when(
       retired == 1 ~ 1,
-      num_kids > 0 ~ 2,
+      num_kids != "0 children" ~ 2,
       TRUE ~ 3
     ),
     income = case_when(
@@ -61,10 +61,15 @@ est_tbl <- hh %>%
     workers = ifelse(workers > 3, 3, workers)
   ) %>%
   select(hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
-  filter(!is.na(HomeTAZ))
-
-# note on area type
-# AT 1: CBD
+  filter(!is.na(HomeTAZ)) %>%
+  # cap tour counts to match model structure
+  mutate(
+    school_tours = ifelse(school_tours > 2, 2, school_tours),
+    univ_tours = ifelse(univ_tours > 1, 1, univ_tours),
+    work_tours = ifelse(work_tours > 2, 2, work_tours),
+    shop_tours = ifelse(shop_tours > 2, 2, shop_tours),
+    other_tours = ifelse(other_tours > 4, 4, other_tours)
+  )
 ```
 
 ```{r, eval=FALSE}
