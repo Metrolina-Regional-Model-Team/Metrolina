@@ -242,7 +242,9 @@ mark_anchor <- id_tours %>%
 id_sub_tours <- mark_anchor %>%
   mutate(
     subtour_id = cumsum(work_anchor),
-    subtour_id = lag(subtour_id)
+    subtour_id = lag(subtour_id),
+    subtour_id = ifelse(subtour_id == 0, NA, subtour_id),
+    subtour_id = ifelse(!is.na(subtour_id), paste0(tour_id, "_", subtour_id), NA)
   )
 
 # Identify primary and secondary modes. Primary is the highest-order mode on
@@ -312,8 +314,8 @@ subtour_file <- id_tour_mode %>%
     anchor_taz = max(anchor_taz, na.rm = TRUE),
     primary_mode = first(primary_mode),
     secondary_mode = first(secondary_mode),
-    HH_Members_Max = max(num_hh_travelers, na.rm = TRUE),
-    HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
+    # HH_Members_Max = max(num_hh_travelers, na.rm = TRUE),
+    # HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
   )
 
 # Add subtour counts back to the tour file
