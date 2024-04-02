@@ -528,3 +528,46 @@ write_csv(trip_add_skim, "data/_private/hh_survey/output/output_trips.csv", na =
 # write_csv(eda_df, "data/_private/hh_survey/output/eda.csv", na = "")
 ```
 
+```{r}
+rsg_tour <- read_csv("data/_private/hh_survey/input/tour.csv")
+translate_rsg_tour <- translate_table(rsg_tour)
+
+# do some basic processing on the tour table provided in the deliverable
+rsg_tour <- translate_rsg_tour %>%
+  filter(tour_weight > 0 & !(tour_purpose %in% c("H", "Missing"))) %>%
+  mutate(
+    tour_purpose = ifelse(tour_category == "At work subtour", "sub", tour_purpose),
+    # some households were surveyed over multiple days. treat them as separate
+    # household observations
+    hh_id2 = paste0(hh_id, "_", day_num)
+  ) %>%
+  # split school into school/univ
+  left_join(per_is_kid, by = "person_id") %>%
+  mutate(tour_purpose = ifelse(tour_purpose == "school" & Kid == 0, "univ", tour_purpose))
+
+# geocoding
+rsg_tour_with_tazs <- rsg_tour %>%
+  mutate(unique_id = paste(o_lon, o_lat, sep = "_")) %>%
+  left_join(geocoded_pts, by = "unique_id") %>%
+  rename(o_taz = TAZ) %>%
+  mutate(unique_id = paste(d_lon, d_lat, sep = "_")) %>%
+  left_join(geocoded_pts, by = "unique_id") %>%
+  rename(d_taz = TAZ) %>%
+  select(-unique_id)
+
+rsg_tours_by_hh <- rsg_tour %>%
+  group_by(hh_id, hh_id2, tour_purpose) %>%
+  summarize(count = n()) %>%
+  pivot_wider(
+    id_cols = hh_id:hh_id2, names_from = tour_purpose, 
+    values_from = count, values_fill = 0
+  ) %>%
+  rename_with(~ paste0(.x, "_tours"), other:school)
+
+hh_add_rsg_tours <- hh_add_strct %>%
+  left_join(rsg_tours_by_hh, by = "hh_id") %>%
+  mutate(across(other_tours:school_tours, ~ifelse(is.na(.x), 0, .x)))
+
+write_csv(rsg_tour_with_tazs, "data/_private/hh_survey/output/output_tours_rsg.csv", na = "")
+write_csv(hh_add_rsg_tours, "data/_private/hh_survey/output/output_households_rsg.csv", na = "")
+```
