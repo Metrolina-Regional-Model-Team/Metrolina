@@ -23,6 +23,7 @@ library(readxl)
 hh <- read_csv("data/_private/hh_survey/output/output_households.csv")
 per <- read_csv("data/_private/hh_survey/output/output_persons.csv")
 tours <- read_csv("data/_private/hh_survey/output/output_tours.csv")
+se <- read_csv("data/input/se_data/SE_2018.csv")
 ```
 
 # Create estimation dataset
@@ -70,9 +71,30 @@ est_tbl <- hh %>%
     shop_tours = ifelse(shop_tours > 2, 2, shop_tours),
     other_tours = ifelse(other_tours > 4, 4, other_tours)
   )
+
+# The atwork/subtour estimation data set is a bit different. Each HBW tour
+# makes the choice, so the rows must be HBW tours. To that, all the same
+# HH-level estimation data is added. In addition, the model uses the
+# density of the work/anchor zone, so add that.
+work_tours <- tours %>%
+  filter(tour_type == "work" & !is.na(anchor_taz)) %>%
+  left_join(est_tbl %>% select(-sub_tours), by = "hh_id")
+
+calc_dens <- se %>%
+  mutate(
+    area_acres = AREA * 640,
+    hh_dens = HH / area_acres
+  ) %>%
+  select(TAZ, hh_dens)
+
+est_subtour <- work_tours %>%
+  left_join(calc_dens, by = c("anchor_taz" = "TAZ")) %>%
+  filter(!is.na(HomeTAZ) & !is.na(hh_dens)) %>%
+  mutate(subtours = ifelse(subtours > 1, 1, subtours))
 ```
 
 ```{r, eval=FALSE}
-write_csv(est_tbl, "data/_private/hh_survey/output/tour_freq_est.csv")
+write_csv(est_tbl, "data/_private/hh_survey/output/tour_freq_est.csv", na = "")
+write_csv(est_subtour, "data/_private/hh_survey/output/subtour_freq_est.csv", na = "")
 ```
 
