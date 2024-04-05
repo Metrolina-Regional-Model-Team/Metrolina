@@ -16,7 +16,6 @@ library(knitr)
 library(scales)
 library(kableExtra)
 library(readxl)
-# source("R/eda.R")
 ```
 
 ```{r}
@@ -40,7 +39,7 @@ retired <- per %>%
 # 25%: $30k (closest breakpoint in the survey)
 # 50%: $40k
 
-est_tbl <- hh %>%
+est_tbl1 <- hh %>%
   left_join(retired, by = "hh_id") %>%
   mutate(
     life_cycle = case_when(
@@ -65,12 +64,42 @@ est_tbl <- hh %>%
   filter(!is.na(HomeTAZ)) %>%
   # cap tour counts to match model structure
   mutate(
+    school_tours_orig = school_tours,
+    univ_tours_orig = univ_tours,
+    work_tours_orig = work_tours,
+    shop_tours_orig = shop_tours,
+    other_tours_orig = other_tours,
     school_tours = ifelse(school_tours > 2, 2, school_tours),
     univ_tours = ifelse(univ_tours > 1, 1, univ_tours),
     work_tours = ifelse(work_tours > 2, 2, work_tours),
     shop_tours = ifelse(shop_tours > 2, 2, shop_tours),
     other_tours = ifelse(other_tours > 4, 4, other_tours)
   )
+
+max_share_tbl <- est_tbl1 %>%
+  select(school_tours_orig:other_tours_orig) %>%
+  rename_with(~ gsub("_tours_orig", "", .x), everything()) %>%
+  mutate(
+    school = ifelse(school >= 5, 5, school),
+    univ = ifelse(univ >= 3, 3, univ),
+    work = ifelse(work >= 5, 5, work),
+    shop = ifelse(shop >= 6, 6, shop),
+    other = ifelse(other >= 10, 5, other)
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "tour_type", values_to = "tour_count") %>%
+  filter(
+    (tour_type == "school" & tour_count >= 2) |
+    (tour_type == "univ" & tour_count >= 1) |
+    (tour_type == "work" & tour_count >= 2) |
+    (tour_type == "shop" & tour_count >= 2) |
+    (tour_type == "other" & tour_count >= 4)
+  ) %>%
+  group_by(tour_type, tour_count) %>%
+  summarize(samples = n()) %>%
+  mutate(pct = round(samples / sum(samples), 2))
+
+est_tbl <- est_tbl1 %>%
+  select(-c(school_tours_orig:other_tours_orig))
 
 # The atwork/subtour estimation data set is a bit different. Each HBW tour
 # makes the choice, so the rows must be HBW tours. To that, all the same
