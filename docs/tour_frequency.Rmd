@@ -96,7 +96,10 @@ max_share_tbl <- est_tbl1 %>%
   ) %>%
   group_by(tour_type, tour_count) %>%
   summarize(samples = n()) %>%
-  mutate(pct = round(samples / sum(samples), 2))
+  mutate(
+    pct = round(samples / sum(samples), 2),
+    cume = cumsum(pct)
+  )
 
 est_tbl <- est_tbl1 %>%
   select(-c(school_tours_orig:other_tours_orig))
