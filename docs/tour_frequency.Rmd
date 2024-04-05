@@ -60,7 +60,7 @@ est_tbl1 <- hh %>%
     workers = as.numeric(workers),
     workers = ifelse(workers > 3, 3, workers)
   ) %>%
-  select(hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
+  select(hh_id2, hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
   filter(!is.na(HomeTAZ)) %>%
   # cap tour counts to match model structure
   mutate(
@@ -126,7 +126,14 @@ est_subtour <- work_tours %>%
 ```
 
 ```{r, eval=FALSE}
-write_csv(est_tbl, "data/_private/hh_survey/output/tour_freq_est.csv", na = "")
+# my original workspace used integer hh_ids so convert these to numerics
+# to prevent having to rebuild the estimation workspace in TC
+est_tbl_temp <- est_tbl %>%
+  mutate(hh_id = as.numeric(gsub("_", "", hh_id2))) %>%
+  filter(!is.na(hh_id)) %>%
+  select(-hh_id2)
+
+write_csv(est_tbl_temp, "data/_private/hh_survey/output/tour_freq_est.csv", na = "")
 write_csv(est_subtour, "data/_private/hh_survey/output/subtour_freq_est.csv", na = "")
 ```
 

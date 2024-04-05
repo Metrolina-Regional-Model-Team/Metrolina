@@ -281,10 +281,14 @@ id_tour_mode <- id_sub_tours %>%
       TRUE ~ "other"
     )
   ) %>%
+  # some households were surveyed on multiple days.
+  # create and preserve a second hh_id to treat them as different households.
+  # otherwise some households look like they take way too many trips.
+  mutate(hh_id2 = paste0(hh_id, "_", day_num)) %>%
   select(-temp)
 
 tour_file <- id_tour_mode %>%
-  group_by(tour_id) %>%
+  group_by(hh_id2, tour_id) %>%
   summarize(
     hh_id = first(hh_id),
     person_id = first(person_id),
@@ -307,6 +311,7 @@ subtour_file <- id_tour_mode %>%
   filter(!is.na(subtour_id)) %>%
   group_by(subtour_id) %>%
   summarize(
+    hh_id2 = first(hh_id2),
     hh_id = first(hh_id),
     person_id = first(person_id),
     tour_type = first(tour_type),
@@ -355,25 +360,30 @@ stops_file <- id_tour_mode %>%
 # Update household file with tour counts and numbers of workers who took a 
 # work tour that day
 tours_by_hh <- tour_add_subtour %>%
-  group_by(hh_id, person_id, tour_type) %>%
+  group_by(hh_id, hh_id2, person_id, tour_type) %>%
   summarize(count = n()) %>%
   pivot_wider(
-    id_cols = c(hh_id, person_id), names_from = tour_type,
+    id_cols = c(hh_id:hh_id2, person_id), names_from = tour_type,
     values_from = count, values_fill = 0
   ) %>%
   mutate(WorkersThatDay = ifelse(work > 0, 1, 0)) %>%
-  group_by(hh_id) %>%
+  group_by(hh_id, hh_id2) %>%
   summarize(across(other:WorkersThatDay, ~ sum(.x))) %>%
-  rename_with(~ paste0(.x, "_tours"), other:school)
+  rename_with(~ paste0(.x, "_tours"), other:school) %>%
+  ungroup()
 
 # Add subtours (at work tours)
 subtours_by_hh <- subtour_file %>%
-  group_by(hh_id) %>%
-  summarize(sub_tours = n())
+  group_by(hh_id, hh_id2) %>%
+  summarize(sub_tours = n()) %>%
+  ungroup()
 
 hh_add_tours <- hh_add_strct %>%
   left_join(tours_by_hh, by = "hh_id") %>%
-  left_join(subtours_by_hh, by = "hh_id") %>%
+  left_join(subtours_by_hh %>% select(-hh_id), by = "hh_id2") %>%
+  # select(-hh_id2.y) %>%
+  # rename(hh_id2 = hh_id2.x) %>%
+  relocate(hh_id2, .before = hh_id) %>%
   mutate(across(other_tours:sub_tours, ~ifelse(is.na(.x), 0, .x))) %>%
   relocate(WorkersThatDay, .after = WAdults) %>%
   mutate(
@@ -382,7 +392,8 @@ hh_add_tours <- hh_add_strct %>%
       WorkersThatDay,
       WAdults + NWAdults - WorkersThatDay, # adults not working that day
       HHKids
-    )
+    ),
+    hh_id2 = ifelse(num_trips == 0, paste0(hh_id, "_0"), hh_id2)
   )
 ```
 
