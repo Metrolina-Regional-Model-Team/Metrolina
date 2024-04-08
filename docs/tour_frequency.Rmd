@@ -125,6 +125,29 @@ est_subtour <- work_tours %>%
   mutate(subtours = ifelse(subtours > 1, 1, subtours))
 ```
 
+# Calibration Targets
+
+```{r}
+# If a household was surveyed on multiple days, divide it's weight by the
+# number of days surveyed. This will prevent too many tours being counted
+# when expanded to household weight.
+weights <- hh %>%
+  select(hh_id, hh_id2, hh_weight) %>%
+  group_by(hh_id) %>%
+  summarize(n = n(), hh_weight = first(hh_weight)) %>%
+  mutate(hh_weight = hh_weight / n) %>%
+  select(hh_id, hh_weight)
+
+cal_tbl <- est_tbl %>%
+  pivot_longer(cols = ends_with("_tours"), names_to = "tour_type", values_to = "count") %>%
+  left_join(weights, by = "hh_id") %>%
+  group_by(tour_type, count) %>%
+  summarize(expanded_tours = sum(hh_weight, na.rm = TRUE)) %>%
+  filter(tour_type != "sub_tours") %>%
+  mutate(percent = round(expanded_tours / sum(expanded_tours) * 100, 1))
+```
+
+
 ```{r, eval=FALSE}
 # my original workspace used integer hh_ids so convert these to numerics
 # to prevent having to rebuild the estimation workspace in TC
