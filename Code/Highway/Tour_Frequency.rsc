@@ -128,8 +128,8 @@ end
   SetRandomSeed(667653)	
 
 //Alternative percentages: 0 tours = 75.7%, 1 tour = 11.7%, 2 tours = 9.1%, 3 tours = 2.8%, 4 tours = 0.6%, 5 tours = 0.1%
-	U1 = -1.692 + 0.65*lc2dum + 0.618*wkr3dum + 0.325*siz34dum + 0.329*inc1dum - 1.130*cbddum - 2.342*lc1dum
-	U2 = -1.08 + 0.318*lc2dum - 0.404*wkr3dum - 1.763*siz34dum - 0.417*inc1dum - 1.143*cbddum - 1.399*lc1dum - 3.907*siz2dum + 0.671*siz5dum
+	U1 = -1.692 + 0.65*lc2dum + 0.618*wkr3dum + 0.325*siz34dum + 0.329*inc1dum - 1.130*cbddum - 2.342*lc1dum - .51 - .16
+	U2 = -1.08 + 0.318*lc2dum - 0.404*wkr3dum - 1.763*siz34dum - 0.417*inc1dum - 1.143*cbddum - 1.399*lc1dum - 3.907*siz2dum + 0.671*siz5dum + .48 + .15
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = if (lc = 3 or size = 1) then 0 else exp(U1)				//LC=3 & Size=1 have no SCH tours
@@ -212,7 +212,7 @@ WriteArray(reportfile, pctwkr)
   SetRandomSeed(67653)	
 //Alternative percentages: 0 tours = 96.3%, 1 tour = 3.2%, 2 tours = 0.4%, 3 tours = 0.1%
 
-	U1 = -5.57 + 0.531*size - 0.107*school_v + 1.002*inc1dum + 0.817*at2dum + 0.329*siz3dum + 0.741*wkr3dum
+	U1 = -5.57 + 0.531*size - 0.107*school_v + 1.002*inc1dum + 0.817*at2dum + 0.329*siz3dum + 0.741*wkr3dum + .14 + .04
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours
@@ -354,8 +354,8 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 67.7%, 1 tour = 22.0%, 2 tours = 7.7%, 3 tours = 1.9%, 4 tours = 0.5%, 5 tours = 0.1%, 6 tours = 0.1%
 
-	U1 = -0.348 + 0.064*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.18*cbddum - 0.22*wkr1dum
-	U2 = -2.004 + 0.576*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.194*wrkr - 0.644*cbddum - 0.338*wkr1dum
+	U1 = -0.348 + 0.064*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.18*cbddum - 0.22*wkr1dum + .14 + .06
+	U2 = -2.004 + 0.576*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.194*wrkr - 0.644*cbddum - 0.338*wkr1dum - .02 + .02
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
@@ -426,10 +426,10 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 35.4%, 1 tour = 26.6%, 2 tours = 19.7%, 3 tours = 8.1%, 4 tours = 4.9%, 5 tours = 2.2%, 6 tours = 1.7%, 7 tours = 0.6%, 8 tours = 0.5%, 9 tours = 0.2%, 10 tours = 0.1%
 
-	U1 = -0.009 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 0.382*at5dum - 0.201*suburb
-	U2 = -0.245 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 1.051*siz1dum - 0.382*at5dum - 0.201*suburb
-	U3 = -2.068 + 0.612*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 0.793*siz1dum - 0.382*at5dum - 0.201*suburb
-	U4 = -3.337 + 1.129*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 1.234*siz1dum - 0.382*at5dum - 0.201*suburb
+	U1 = -0.009 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 0.382*at5dum - 0.201*suburb + .36 + .15
+	U2 = -0.245 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 1.051*siz1dum - 0.382*at5dum - 0.201*suburb + .14 + .10
+	U3 = -2.068 + 0.612*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 0.793*siz1dum - 0.382*at5dum - 0.201*suburb + .06 + .06
+	U4 = -3.337 + 1.129*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 1.234*siz1dum - 0.382*at5dum - 0.201*suburb - .4 - .08
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
