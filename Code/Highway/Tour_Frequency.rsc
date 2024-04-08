@@ -128,8 +128,8 @@ end
   SetRandomSeed(667653)	
 
 //Alternative percentages: 0 tours = 75.7%, 1 tour = 11.7%, 2 tours = 9.1%, 3 tours = 2.8%, 4 tours = 0.6%, 5 tours = 0.1%
-	U1 = -7.417 + 5.345*lc2dum + 0.7053*avgsize_v - 0.5759*wkr3dum + 0.8065*siz34dum + 0.15*inc1dum - 1.9*cbddum + 0.1*at2dum + 2.4*lc1dum - 0.2*siz2dum + 0.50*siz5dum
-	U2 = -9.370 + 5.796*lc2dum + 0.7053*avgsize_v - 1.5560*wkr3dum + 2.9150*siz45dum + 0.57*inc1dum - 8.0*cbddum - 0.2*at2dum + 1.1*lc1dum - 3.0*siz2dum + 0.35*siz5dum
+	U1 = -1.692 + 0.65*lc2dum + 0.618*wkr3dum + 0.325*siz34dum + 0.329*inc1dum - 1.130*cbddum - 2.342*lc1dum
+	U2 = -1.08 + 0.318*lc2dum - 0.404*wkr3dum - 1.763*siz34dum - 0.417*inc1dum - 1.143*cbddum - 1.399*lc1dum - 3.907*siz2dum + 0.671*siz5dum
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = if (lc = 3 or size = 1) then 0 else exp(U1)				//LC=3 & Size=1 have no SCH tours
@@ -149,10 +149,10 @@ end
 			if (rand_val < cumprob01[n]) then do
 				choice_v[n] = if (rand_val < prob0[n]) then 0 else 1
 			end
-			//The 2+ categories are 2 (71.0% of all 2+ tours), 3 (21.5%), 4 (5.5%) & 5 (2.0%)
+			//The 2+ categories are 2 (74% of all 2+ tours), 3 (20%), 4 (4%) & 5 (2%)
 			else do
 				rand_val = RandomNumber()
-				choice_v[n] = if (rand_val < 0.710) then 2 else if (rand_val < 0.925) then 3 else if (rand_val < 0.980) then 4 else 5
+				choice_v[n] = if (rand_val < 0.74) then 2 else if (rand_val < 0.94) then 3 else if (rand_val < 0.98) then 4 else 5
 			end
 		end
 	end
