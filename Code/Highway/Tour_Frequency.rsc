@@ -212,7 +212,7 @@ WriteArray(reportfile, pctwkr)
   SetRandomSeed(67653)	
 //Alternative percentages: 0 tours = 96.3%, 1 tour = 3.2%, 2 tours = 0.4%, 3 tours = 0.1%
 
-	U1 = -6.056 + 1.040*size - 0.7481*school_v - 1.0*lc1dum - 0.8*inc1dum + 0.08*inc2dum + 0.3*cbddum + 0.1*at2dum + 0.8*siz3dum - 0.3*at5dum  + 0.25*wkr0dum + 0.25*wkr3dum + 0.26
+	U1 = -5.57 + 0.531*size - 0.107*school_v + 1.002*inc1dum + 0.817*at2dum + 0.329*siz3dum + 0.741*wkr3dum
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours
@@ -228,10 +228,10 @@ WriteArray(reportfile, pctwkr)
 	for n = 1 to hhid.length do
 		rand_val = RandomNumber()
 		//if probability of 1 HBU tour is less than random number then 0 tours, else use 1+ fractions:
-		//The 1+ categories are 1 (88.0% of all 1+ tours), 2 (11.0%) & 3 (1.0%)
+		//The 1+ categories are 1 (90% of all 1+ tours), 2 (9%) & 3 (1.0%)
 		if (rand_val >= prob0[n]) then do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.880) then 1 else if (rand_val < 0.990) then 2 else 3
+			choice_v[n] = if (rand_val < 0.90) then 1 else if (rand_val < 0.99) then 2 else 3
 		end
 	end
 	hbu_v = choice_v
