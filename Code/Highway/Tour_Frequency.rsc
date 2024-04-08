@@ -426,10 +426,10 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 35.4%, 1 tour = 26.6%, 2 tours = 19.7%, 3 tours = 8.1%, 4 tours = 4.9%, 5 tours = 2.2%, 6 tours = 1.7%, 7 tours = 0.6%, 8 tours = 0.5%, 9 tours = 0.2%, 10 tours = 0.1%
 
-	U1 = -0.1911 + 0.8086*size + 0.3765*lc2dum - 0.2502*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.3254*inc4dum - 0.5*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U2 = -0.5274 + 0.8086*size + 0.3765*lc2dum - 0.2502*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.3254*inc4dum - 1.4*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U3 = -2.880 + 1.421*size + 0.3765*lc2dum - 0.5127*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.6236*inc4dum - 0.6706*inc1dum - 1.6*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U4 = -4.202 + 1.859*size + 0.3765*lc2dum - 0.5127*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.6085*inc4dum - 0.7486*inc1dum - 2.0*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
+	U1 = -0.009 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 0.382*at5dum - 0.201*suburb
+	U2 = -0.245 + 0.263*size + 0.388*lc2dum - 0.16*wrkr + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.371*inc4dum - 1.051*siz1dum - 0.382*at5dum - 0.201*suburb
+	U3 = -2.068 + 0.612*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 0.793*siz1dum - 0.382*at5dum - 0.201*suburb
+	U4 = -3.337 + 1.129*size + 0.388*lc2dum + 0.000002*medinc_v - 0.311*(school_v + hbu_v) - 1.348*hbw_v - 0.902*hbs_v + 0.821*inc4dum - 0.445*inc1dum - 1.234*siz1dum - 0.382*at5dum - 0.201*suburb
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
@@ -455,10 +455,10 @@ WriteArray(reportfile, pctwkr)
 		if (rand_val < cumprob03[n]) then do
 			choice_v[n] = if (rand_val < prob0[n]) then 0 else if (rand_val < cumprob01[n]) then 1 else if (rand_val < cumprob02[n]) then 2 else 3
 		end
-		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (23.0%), 6 (15.0%), 7 (7.0%), 8 (3.5%), 9 (1.5%) & 10 (3.0%)
+		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (27.0%), 6 (14.0%), 7 (8.0%), 8 (3.0%), 9 (2%)
 		else do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.470) then 4 else if (rand_val < 0.700) then 5 else if (rand_val < 0.850) then 6 else if (rand_val < 0.920) then 7 else if (rand_val < 0.955) then 8 else if (rand_val < 0.970) then 9 else 10
+			choice_v[n] = if (rand_val < 0.47) then 4 else if (rand_val < 0.74) then 5 else if (rand_val < 0.88) then 6 else if (rand_val < 0.96) then 7 else if (rand_val < 0.99) then 8 else 9
 		end
 	end
 	
