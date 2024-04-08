@@ -122,7 +122,8 @@ calc_dens <- se %>%
 est_subtour <- work_tours %>%
   left_join(calc_dens, by = c("anchor_taz" = "TAZ")) %>%
   filter(!is.na(HomeTAZ) & !is.na(hh_dens)) %>%
-  mutate(subtours = ifelse(subtours > 1, 1, subtours))
+  mutate(subtours = ifelse(subtours > 1, 1, subtours)) %>%
+  rename(hh_id2 = hh_id2.x)
 ```
 
 # Calibration Targets
@@ -155,8 +156,10 @@ est_tbl_temp <- est_tbl %>%
   mutate(hh_id = as.numeric(gsub("_", "", hh_id2))) %>%
   filter(!is.na(hh_id)) %>%
   select(-hh_id2)
-
 write_csv(est_tbl_temp, "data/_private/hh_survey/output/tour_freq_est.csv", na = "")
-write_csv(est_subtour, "data/_private/hh_survey/output/subtour_freq_est.csv", na = "")
+
+est_subtour_temp <- est_subtour %>%
+  mutate(hh_id = as.numeric(gsub("_", "", hh_id2)))
+write_csv(est_subtour_temp, "data/_private/hh_survey/output/subtour_freq_est.csv", na = "")
 ```
 
