@@ -88,8 +88,19 @@ Macro "Reg_NonMotorized" (Args)
                                                   Dir + "\\Skims\\TR_Walk.mtx"}}}}}}
 
      ret_value = RunMacro("TCB Run Procedure", 1, "TCSPMAT", Opts)
-
      if !ret_value then goto badquit
+
+	// Fill IZ times
+	mW = OpenMatrix(Dir + "\\Skims\\TR_Walk.mtx",)
+	mc = creatematrixcurrency(mW, "TTWalk*",,,)
+	obj = CreateObject("Distribution.Intrazonal")
+	obj.SetMatrix(mc)
+	obj.OperationType = "Replace"
+	obj.TreatMissingAsZero = true
+	obj.Neighbours = 3
+	obj.Factor = 0.5
+	ok = obj.Run()
+	mW = null
 
 // STEP 2: Bike Skims
 
@@ -114,8 +125,19 @@ Macro "Reg_NonMotorized" (Args)
                                                   Dir + "\\Skims\\TR_Bike.mtx"}}}}}}
 
      ret_value = RunMacro("TCB Run Procedure", 2, "TCSPMAT", Opts)
-
      if !ret_value then goto badquit
+
+	// Fill IZ times
+	mB = OpenMatrix(Dir + "\\Skims\\TR_Bike.mtx",)
+	mc = creatematrixcurrency(mB, "TTBike*",,,)
+	obj = CreateObject("Distribution.Intrazonal")
+	obj.SetMatrix(mc)
+	obj.OperationType = "Replace"
+	obj.TreatMissingAsZero = true
+	obj.Neighbours = 3
+	obj.Factor = 0.5
+	ok = obj.Run()
+	mB = null
 
 // STEP 3: Combine Matrix Files
   
