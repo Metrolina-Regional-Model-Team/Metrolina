@@ -140,7 +140,7 @@ Macro "Evaluate MC Models"(Args, spec, outputModels)
         end
 
         // Make appropriate selection set (only for Mandatory mode choice models)
-        finalFilter = printf("PAper = '%u'", {j})
+        finalFilter = printf("PAper = %u", {j})
         
         SetView(spec.ToursView)
         n = SelectByQuery("___Selection", "several", "Select * where " + finalFilter,)
