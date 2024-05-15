@@ -14,7 +14,7 @@ Macro "Calibrate Tour MCs"(Args)
         spec.RandomSeed = 99999*i
         spec.TAZView = vwTAZ
         spec.ToursView = objT.GetView()
-        RunMacro("Calibrate Tour MC", spec)
+        RunMacro("Calibrate Tour MC", Args, spec)
     end
     objT = null
     CloseView(vwTAZ)
@@ -43,7 +43,7 @@ endMacro
     D. Calculate the ASC adjustments
     E. Update ASCs of all three models
 */ 
-Macro "Calibrate MC ASCs"(Args, mSpec, calibrationFile)
+Macro "Calibrate MC ASCs"(Args, spec, calibrationFile)
     periods = {"PK", "OffPK"}
 
     // Get initial ASCs, create calibration file
@@ -80,7 +80,7 @@ Macro "Calibrate MC ASCs"(Args, mSpec, calibrationFile)
     pbar = CreateObject("G30 Progress Bar", "Calibration Iterations...", true, max_iters)
     while convergence = 0 and iters <= max_iters do
         // Run Model
-        outFiles = RunMacro("Evaluate MC Models", Args, mSpec, outputModels)
+        outFiles = RunMacro("Evaluate MC Models", Args, spec, outputModels)
         if outFiles = null then
             Throw("Evaluating models for calibration failed")
             
@@ -126,7 +126,7 @@ Macro "Evaluate MC Models"(Args, spec, outputModels)
 
     // Evaluate each period model, one at a time
     outFiles = null
-    for p in periods do
+    for j = 1 to periods.length do
         p = periods[j]
         
         // Get Model details
