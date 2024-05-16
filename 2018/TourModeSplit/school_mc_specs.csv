@@ -1,0 +1,25 @@
+Alternative,Expression,Filter,Coefficient,Description
+sov,Constant,,3.57,SOV ASC
+sov,AutoSkim.[Non HOV TermTT],,-0.00677,Auto Skim with terminal time
+pool2,Constant,,5.05,Pool2 ASC
+pool2,AutoSkim.[HOV TermTT],,-0.00677,Auto Skim with terminal time
+pool3,Constant,,5.35,Pool3 ASC
+pool3,AutoSkim.[HOV TermTT],,-0.00677,Auto Skim with terminal time
+schoolbus,Constant,,5.3,SchoolBus ASC
+schoolbus,AutoSkim.[Non HOV TermTT],,-0.0304,Auto Time (SchoolBus)
+walk,Constant,,2.23,Walk ASC
+walk,NMSkim.[TTWalk*],,-0.00677,Walk Time
+walk,Tours.ORIG_TAZ = Tours.DEST_TAZ,,1.93,Intrazonal Trip : Walk
+bike,NMSkim.[TTBike*],,-0.00677,Bike Time
+bike,Tours.ORIG_TAZ = Tours.DEST_TAZ,,3.46,Intrazonal Trip : Bike
+w_bus,Constant,,3.23,Walk Bus ASC
+w_bus,WalkTransitSkim.[IVTT - Bus Walk],,-0.00677,IVTT - Walk Bus
+w_bus,WalkTransitSkim.[Initial Wait - Bus Walk],,-0.114,Initial Wait - Walk Bus
+w_bus,Tours.INCOME <= 2,,2.03,Low Income Dummy - Walk Bus
+sov,Constant,,-1.578884,Additional Calibration Constant
+pool2,Constant,,0.111744,Additional Calibration Constant
+pool3,Constant,,0.83771,Additional Calibration Constant
+walk,Constant,,-1.741717,Additional Calibration Constant
+bike,Constant,,-5.879923,Additional Calibration Constant
+w_bus,Constant,,-2.37822,Additional Calibration Constant
+schoolbus,Constant,,0.479926,Additional Calibration Constant
