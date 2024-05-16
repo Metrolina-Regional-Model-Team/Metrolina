@@ -24,7 +24,6 @@ Body:
     FlowChartNode(model,"Transit Assignment",,,)
     FlowChartNode(model,"HOT",,,)
     FlowChartNode(model,"Summaries",,,)
-    FlowChartNode(model,"Calibrate MC",,,)
     //
     // Links
     //
@@ -151,14 +150,5 @@ Macro "Summaries" (Args,Result)
         {"MacroNames", {"Summaries"}},
         {"Picture", "bmp\\planmatrix_v3.bmp"}
     }
-EndMacro
-
-
-Macro "Calibrate MC" (Args,Result)
-    Attributes = {
-        {"Class", {"GISDK"}},
-        {"MacroNames", {"Calibrate Tour MCs"}}
-    }
-    Return(True)
 EndMacro
 
