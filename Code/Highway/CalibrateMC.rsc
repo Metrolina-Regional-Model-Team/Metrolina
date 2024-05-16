@@ -1,9 +1,6 @@
 Macro "Calibrate Tour MCs"(Args)
-    purps = {"Work", "Shop", "Other", "School", "Univ", "SubTour"}
+    purps = {"work", "shop", "other", "school", "univ", "subtour"}
     files = {"dcHBW", "dcHBS", "dcHBO", "dcSch", "dcHBU", "dcATW"}
-    
-    purps = {"Work"}
-    files = {"dcHBW"}
     vwTAZ = OpenTable("TAZ", "FFA", {Args.[Run Directory] + "\\LandUse\\TAZ_AreaType.asc"})
     for i = 1 to purps.length do
         dcFile = Args.[Run Directory] + "\\TD\\" + files[i] + ".bin"
@@ -18,6 +15,7 @@ Macro "Calibrate Tour MCs"(Args)
     end
     objT = null
     CloseView(vwTAZ)
+    Return(1)
 endMacro
 
 
@@ -109,12 +107,14 @@ Macro "Calibrate MC ASCs"(Args, spec, calibrationFile)
     finalAscs = RunMacro("GetASCs", outputModels[1][2], alts)
 
     csvFile = Args.[Run Directory] + "\\TourModeSplit\\" + spec.Purpose + "_mc_specs.csv"
-    RunMacro("Update MC CSV Spec File", Args, csvFile, altNames, initialASCs, finalASCs)
+    RunMacro("Update MC CSV Spec File", Args, csvFile, alts, initialAscs, finalAscs)
 
     if convergence = 0 then
-        ShowMessage("ASC Adjustment did not converge after " + i2s(max_iters) + " iterations")
+        msg = "ASC Adjustment did not converge after " + i2s(max_iters) + " iterations"
     else
-        ShowMessage("ASC Adjustment converged after " + i2s(iters) + " iterations")
+        msg = "ASC Adjustment converged after " + i2s(iters) + " iterations"
+    
+    AppendToReportFile(1, msg)
 endMacro
  
 
