@@ -1,0 +1,37 @@
+Alternative,Expression,Filter,Coefficient,Description
+sov,Constant,,1.77,SOV ASC
+sov,AutoSkim.[Non HOV TermTT],,-0.124,Auto Skim with terminal time
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 1,-0.018507,Parking Cost: Income 1
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 2,-0.009288,Parking Cost: Income 2
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 3,-0.005012,Parking Cost: Income 3
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 4,-0.003943,Parking Cost: Income 4
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 1,-0.18507,Auto Operating Cost: Income 1
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 2,-0.09288,Auto Operating Cost: Income 2
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 3,-0.05012,Auto Operating Cost: Income 3
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 4,-0.03943,Auto Operating Cost: Income 4
+pool2,Constant,,0.531,Pool2 ASC
+pool2,AutoSkim.[HOV TermTT],,-0.124,Auto Skim with terminal time
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 1,-0.018507,Parking Cost: Income 1
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 2,-0.009288,Parking Cost: Income 2
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 3,-0.005012,Parking Cost: Income 3
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 4,-0.003943,Parking Cost: Income 4
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 1,-0.18507,Auto Operating Cost: Income 1
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 2,-0.09288,Auto Operating Cost: Income 2
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 3,-0.05012,Auto Operating Cost: Income 3
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 4,-0.03943,Auto Operating Cost: Income 4
+pool3,AutoSkim.[HOV TermTT],,-0.124,Auto Skim with terminal time
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 1,-0.018507,Parking Cost: Income 1
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 2,-0.009288,Parking Cost: Income 2
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 3,-0.005012,Parking Cost: Income 3
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 4,-0.003943,Parking Cost: Income 4
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 1,-0.18507,Auto Operating Cost: Income 1
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 2,-0.09288,Auto Operating Cost: Income 2
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 3,-0.05012,Auto Operating Cost: Income 3
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 4,-0.03943,Auto Operating Cost: Income 4
+walk,Constant,,2.29,Walk ASC
+walk,NMSkim.[TTWalk*],,-0.124,Walk Time
+walk,Tours.ORIG_TAZ = Tours.DEST_TAZ,,0.627,Intrazonal: Walk
+sov,Constant,,-0.313226,Additional Calibration Constant
+pool2,Constant,,-0.724911,Additional Calibration Constant
+pool3,Constant,,-1.319745,Additional Calibration Constant
+walk,Constant,,1.779488,Additional Calibration Constant

@@ -1,0 +1,5 @@
+Parent,Alternatives,ParentNestCoeff
+Root,"auto, nonmotorized, w_bus, schoolbus",1
+auto,"sov, hov",0.7
+hov,"pool2, pool3",0.5
+nonmotorized,"walk, bike",0.7

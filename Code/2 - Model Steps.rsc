@@ -94,6 +94,9 @@ Macro "Mode Split" (Args)
     end
     RunMacro("MS_RunPeak", Args)
     RunMacro("Tour_TOD2_AMPeak", Args)
+
+    if Args.TourMCFlag then
+        RunMacro("Tour Mode Split", Args)
     return(1)
 endmacro
 
