@@ -361,13 +361,16 @@ SetRandomSeed(8)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		if tourtazset[n] = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
 			goto skipprobhbw
 		end
 		htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
-		U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
-		U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
+		//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
+		//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
+		U1 = -0.00378*htime + 3.25*intraco + 0.295*cbddum + 0.00135*empdens + 0.932*log(totemp) + 3.73*intrazonal  //calculate probability array -- U1 for Inc 1-3
+		U2 = -0.00378*htime + 2.54*intraco + 0.837*cbddum + 0.00135*empdens + 0.932*log(totemp) + 2.67*intrazonal  //U2 for INC4
 		fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
 		eU1 = if (totemp = 0) then 0 else exp(U1) * fac
 		eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
@@ -1020,9 +1023,11 @@ SetRandomSeed(43)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1 
 		ctime = GetMatrixVector(compfreecur4, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the free speed matrix
-		U = -0.3148*ctime - 0.3274*atype - 0.00000001045*accE15cfr + log(nret + 4.5676*ret + 0.1475*pop) - 0.58*intrazonal  - 0.33*cbddum - 0.80*intraco	
+		//U = -0.3148*ctime - 0.3274*atype - 0.00000001045*accE15cfr + log(nret + 4.5676*ret + 0.1475*pop) - 0.58*intrazonal  - 0.33*cbddum - 0.80*intraco	
+		U = -0.00342*ctime - 0.00369*empdens + 0.896*log(nret + 8.166*ret + 0.0488*pop) + 3.98*intrazonal  + 0.952*cbddum + 4.37*intraco	
 		fac = if (atwattr > 0) then max((remain_v / atwattr), 0.01) else 0	//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone 
 		eU = exp(U) * fac
 		sumeU = VectorStatistic(eU, "Sum",)
