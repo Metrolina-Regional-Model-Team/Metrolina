@@ -99,7 +99,7 @@ Macro "Tour_DestinationChoice" (Args)
 	retemp = retail + hwy
 	dens = if (area * totemp * hh > 0) then 100 * log((1000 * totemp + 1900 * hh) / area) else 0		//density is in square miles
 	empdens = totemp / (area * 640)		//employment per acre (area in sq. miles in SE file)
-
+	retempdens = retemp / (area * 640)		//employment per acre (area in sq. miles in SE file)
 
 	dst2extsta = GetDataVector(distExtsta_vw+"|", "Len", {{"Sort Order", {{"From","Ascending"}}}}) 
 	dst2cbd = GetDataVector(distCBD_vw+"|", "Len", {{"Sort Order", {{"From","Ascending"}}}}) 
@@ -372,7 +372,8 @@ SetRandomSeed(737)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		for i = 1 to hbwtoursset[n] do
 			rand_val = RandomNumber()
 			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
@@ -387,8 +388,10 @@ SetRandomSeed(737)
 					goto skipprobhbw
 				end
 				htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
-				U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
+				//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
+				//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
+				U1 = -0.00378*htime + 3.25*intraco + 0.295*cbddum + 0.00135*empdens + 0.932*log(totemp) + 3.73*intrazonal  //calculate probability array -- U1 for Inc 1-3
+				U2 = -0.00378*htime + 2.54*intraco + 0.837*cbddum + 0.00135*empdens + 0.932*log(totemp) + 2.67*intrazonal  //U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
 				fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -396,7 +399,7 @@ SetRandomSeed(737)
 				sumeU1 = VectorStatistic(eU1, "Sum",)
 				sumeU2 = VectorStatistic(eU2, "Sum",)
 				prob1 = eU1 / sumeU1
-				prob2 = eU2 / sumeU2
+				prob2 = eU2 / sumeU2  
 				vecs1 = {prob1, taz, tazseq}
 				cumprob1 = CumulativeVector(vecs1[1])		//cumulative sum of probabilities, not sorted
 				cumprob1[U1.length] = 1
@@ -544,7 +547,8 @@ SetRandomSeed(744)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.4 else if (thisAT = 2) then 0.3 else if (thisAT < 5) then -1.0 else 0.0	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.4 else if (thisAT = 2) then 0.3 else if (thisAT < 5) then -1.0 else 0.0	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		for i = 1 to schtoursset[n] do
 			rand_val = RandomNumber()
 			//add increased (90%) external probability for zones in Catawba Co (6500-6999), since there are no school zones in region
@@ -571,7 +575,8 @@ SetRandomSeed(744)
 					goto skipprobsch
 				end
 				htime = GetMatrixVector(autofreeintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak speed matrix
-				U1 = -0.3418 * htime + 1.681 * intraco + log(k12enr) + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
+				//U1 = -0.3418 * htime + 1.681 * intraco + log(k12enr) + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
+				U1 = -0.0443*htime + 4.34*intraco + 0.812*log(k12enr) + 2.95*intrazonal
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (schattr > 0) then max((remain[2] / schattr), 0.01) else 0 //[2] = SCH
 				eU1 = if (k12enr = 0) then 0 else exp(U1) * fac
@@ -704,7 +709,8 @@ SetRandomSeed(991)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		for i = 1 to hbutoursset[n] do
 			rand_val = RandomNumber()
 			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
@@ -718,7 +724,8 @@ SetRandomSeed(991)
 					goto skipprobhbu
 				end
 				htime = GetMatrixVector(autofreeintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak speed matrix
-				U1 = -0.1635 * htime + log(stucu) + 0.47 * intraco + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
+				//U1 = -0.1635 * htime + log(stucu) + 0.47 * intraco + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
+				U1 = -0.0258 * htime + log(stucu) + 3.61 * intraco
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hbuattr > 0) then max((remain[3] / hbuattr), 0.01) else 0	//([3] = HBS)
 				eU1 = if (stucu = 0) then 0 else exp(U1) * fac
@@ -849,8 +856,9 @@ SetRandomSeed(72)
 		thistazseq = tourtazseqset[n]
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
-//		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		intraco = if (stcnty = thiscnty) then 1 else 0
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		for i = 1 to hbstoursset[n] do
 			rand_val = RandomNumber()
 			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
@@ -865,8 +873,10 @@ SetRandomSeed(72)
 				end
 				ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
 				timeSq = ctime * ctime
-				U1 = -0.3782*ctime - 0.1907*atype - 2.1877*cbddum + log(retemp + 0.003874*pop) - 0.8*intrazonal + 0.0011*timeSq		//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.3175*ctime - 0.2576*atype - 1.5588*cbddum + 0.0000000468*accH15cfr + log(retemp + 0.003135*pop) - 0.5*intrazonal + 0.0011*timeSq	//U2 for INC4
+				//U1 = -0.3782*ctime - 0.1907*atype - 2.1877*cbddum + log(retemp + 0.003874*pop) - 0.8*intrazonal + 0.0011*timeSq		//calculate probability array -- U1 for Inc 1-3
+				//U2 = -0.3175*ctime - 0.2576*atype - 1.5588*cbddum + 0.0000000468*accH15cfr + log(retemp + 0.003135*pop) - 0.5*intrazonal + 0.0011*timeSq	//U2 for INC4
+				U1 = -0.0293*ctime  - 0.786*cbddum - 0.000011*accH15cfr + log(retemp) + 3.43*intrazonal + 0.0343*retempdens	+ 4*intraco	//calculate probability array -- U1 for Inc 1-3
+				U2 = -0.0308*ctime - 0.306*cbddum - 0.00000782*accH15cfr + log(retemp) + 3.02*intrazonal + 0.0343*retempdens + 3.26*intraco	//U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hbsattr > 0) then max((remain[4] / hbsattr), 0.01) else 0	//([4] = HBS)
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -1013,7 +1023,8 @@ SetRandomSeed(953)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		sameAT = if (atype = thisAT) then 1 else 0		//create a dummy same area type vector 
 		for i = 1 to hbotoursset[n] do
 			rand_val = RandomNumber()
@@ -1030,8 +1041,10 @@ SetRandomSeed(953)
 				ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
 				dist2extsta = a2v(dist2extsta_ar)
 				dist2cbd = a2v(dist2cbd_ar)
-				U1 = -0.2201*ctime - 0.4972*atype + 0.1709*sameAT + 0.03015*dist2cbd - 0.00000002033*accE15cfr + 0.4836*pct4 + log(totemp + 0.192242*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.2453*ctime - 0.4178*atype + 0.2998*sameAT + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//U2 for INC4
+				//U1 = -0.2201*ctime - 0.4972*atype + 0.1709*sameAT + 0.03015*dist2cbd - 0.00000002033*accE15cfr + 0.4836*pct4 + log(totemp + 0.192242*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//calculate probability array -- U1 for Inc 1-3
+				//U2 = -0.2453*ctime - 0.4178*atype + 0.2998*sameAT + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//U2 for INC4
+				U1 = -0.00943*ctime + 0.00315*empdens - 0.00000386*accE15cfr + 0.768*log(totemp + 0.076536*pop) + 0.0584*cbddum + 3.18*intraco + 4.3*intrazonal	//calculate probability array -- U1 for Inc 1-3
+				U2 = -0.0160*ctime + 0.00315*empdens - 0.00000135*accE15cfr + 0.768*log(totemp + 0.076536*pop) + 0.0584*cbddum + 3.18*intraco + 3.82*intrazonal	//U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hboattr > 0) then max((remain[5] / hboattr), 0.01) else 0	//([5] = HBO)
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -1768,9 +1781,11 @@ SetRandomSeed(3113)
 		thiscnty = stcnty[thistazseq]
 		thisAT = atype[thistazseq]
 		intraco = if (stcnty = thiscnty) then 1 else 0
-		intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
+		intrazonal = if (taz <> thistaz) then 0 else 1
 		ctime = GetMatrixVector(compintcurarray[4], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the free speed matrix
-		U = -0.3148*ctime - 0.3274*atype - 0.00000001045*accE15cfr + log(nret + 4.5676*ret + 0.1475*pop) - 0.58*intrazonal  - 0.33*cbddum - 0.80*intraco	
+		//U = -0.3148*ctime - 0.3274*atype - 0.00000001045*accE15cfr + log(nret + 4.5676*ret + 0.1475*pop) - 0.58*intrazonal  - 0.33*cbddum - 0.80*intraco
+		U = -0.00342*ctime - 0.00369*empdens + 0.896*log(nret + 8.166*ret + 0.0488*pop) + 3.98*intrazonal  + 0.952*cbddum + 4.37*intraco	
 		//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 		fac = if (atwattr > 0) then max((remain_v / atwattr), 0.01) else 0	 
 		eU = exp(U) * fac
