@@ -241,11 +241,13 @@ mark_anchor <- id_tours %>%
 
 id_sub_tours <- mark_anchor %>%
   mutate(
-    subtour_id = cumsum(work_anchor),
-    subtour_id = lag(subtour_id),
-    subtour_id = ifelse(subtour_id == 0, NA, subtour_id),
-    subtour_id = ifelse(!is.na(subtour_id), paste0(tour_id, "_", subtour_id), NA)
-  )
+    subtour_id1 = cumsum(work_anchor),
+    subtour_id2 = ifelse(max(subtour_id1, na.rm = TRUE) == 1, NA, subtour_id1),
+    subtour_id3 = lag(subtour_id2),
+    subtour_id4 = ifelse(subtour_id3 == 0, NA, subtour_id3),
+    subtour_id = ifelse(!is.na(subtour_id4), paste0(tour_id, "_", subtour_id4), NA)
+  ) %>%
+  select(-c(subtour_id1:subtour_id4))
 
 # Identify primary and secondary modes. Primary is the highest-order mode on
 # trip. The secondary mode is the second highest order.
@@ -584,3 +586,4 @@ hh_add_rsg_tours <- hh_add_strct %>%
 write_csv(rsg_tour_with_tazs, "data/_private/hh_survey/output/output_tours_rsg.csv", na = "")
 write_csv(hh_add_rsg_tours, "data/_private/hh_survey/output/output_households_rsg.csv", na = "")
 ```
+
