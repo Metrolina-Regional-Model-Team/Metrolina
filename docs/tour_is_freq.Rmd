@@ -90,8 +90,15 @@ hh_data <- hh %>%
 est_tbl <- tours %>%
   mutate(total_is = int_stop_fwd + int_stop_ret) %>%
   left_join(hh_data %>% select(-hh_id), by = "hh_id2") %>%
+  filter(!is.na(HomeTAZ)) %>%
   left_join(ret30_orig, by = c("HomeTAZ" = "TAZ")) %>%
-  left_join(ret30_dest, by = c("anchor_taz" = "TAZ"))
+  left_join(ret30_dest, by = c("anchor_taz" = "TAZ")) %>%
+  mutate(
+    int_stop_fwd_cap = ifelse(int_stop_fwd > 2, 2, int_stop_fwd),
+    int_stop_ret_cap = ifelse(int_stop_ret > 2, 2, int_stop_ret)
+  ) %>%
+  relocate(int_stop_fwd_cap, .after = int_stop_fwd) %>%
+  relocate(int_stop_ret_cap, .after = int_stop_ret)
 ```
 
 ```{r, eval=FALSE}
