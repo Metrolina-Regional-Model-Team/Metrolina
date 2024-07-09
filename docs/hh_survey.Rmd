@@ -17,6 +17,7 @@ library(scales)
 library(kableExtra)
 library(readxl)
 library(geosphere)
+library(lubridate)
 # source("R/eda.R")
 ```
 
@@ -137,7 +138,13 @@ trip_with_taz <- translate_trip %>%
     per_with_taz %>%
       select(person_id, work_lon, work_lat, WorkTAZ),
     by = "person_id"
-  )
+  ) %>%
+  # filter out weekends
+  mutate(
+    temp = ymd(depart_date),
+    dow = wday(temp, label = TRUE)
+  ) %>%
+  filter(!(dow %in% c("Sun", "Sat")))
 ```
 
 ## Calculate HHStructure
@@ -242,12 +249,14 @@ mark_anchor <- id_tours %>%
 id_sub_tours <- mark_anchor %>%
   mutate(
     subtour_id1 = cumsum(work_anchor),
-    subtour_id2 = ifelse(max(subtour_id1, na.rm = TRUE) == 1, NA, subtour_id1),
-    subtour_id3 = lag(subtour_id2),
-    subtour_id4 = ifelse(subtour_id3 == 0, NA, subtour_id3),
-    subtour_id = ifelse(!is.na(subtour_id4), paste0(tour_id, "_", subtour_id4), NA)
+    work_first = ifelse(first(o_purpose_linked) == "W", 1, 0),
+    subtour_id2 = subtour_id1 + work_first,
+    subtour_id3 = ifelse(max(subtour_id2, na.rm = TRUE) == 1, NA, subtour_id2),
+    subtour_id4 = lag(subtour_id3),
+    subtour_id5 = ifelse(subtour_id4 == 0, NA, subtour_id4),
+    subtour_id = ifelse(!is.na(subtour_id5), paste0(tour_id, "_", subtour_id5), NA)
   ) %>%
-  select(-c(subtour_id1:subtour_id4))
+  select(-c(subtour_id1:subtour_id5))
 
 # Identify primary and secondary modes. Primary is the highest-order mode on
 # trip. The secondary mode is the second highest order.
