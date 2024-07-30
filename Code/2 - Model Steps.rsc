@@ -64,10 +64,27 @@ Macro "Trip Distribution" (Args)
     RunMacro("TD_TranPath_Free", Args)
     if first_iter then do
         RunMacro("Tour_DestinationChoice", Args)
+    end else do
+        RunMacro("Tour_DC_FB", Args)
+    end
+    return(1)
+endmacro
+
+Macro "Mode Split" (Args)
+   if Args.TourMCFlag then
+        RunMacro("Tour Mode Split", Args)
+    return(1)
+endmacro
+
+Macro "Intermediate Stops" (Args)
+
+    first_iter = if Args.[Current Feedback Iter] = 1
+        then "true"
+        else "false"
+    if first_iter then do
         RunMacro("Tour_IS", Args)
         RunMacro("Tour_IS_Location", Args)
     end else do
-        RunMacro("Tour_DC_FB", Args)
         RunMacro("Tour_IS_FB", Args)
         RunMacro("Tour_IS_Location_FB", Args)
     end
@@ -79,8 +96,8 @@ Macro "Trucks" (Args)
     return(1)
 endmacro
 
-Macro "Mode Split" (Args)
-
+Macro "Time of Day" (Args)
+    
     first_iter = if Args.[Current Feedback Iter] = 1
         then "true"
         else "false"
@@ -94,11 +111,8 @@ Macro "Mode Split" (Args)
     end
     RunMacro("MS_RunPeak", Args)
     RunMacro("Tour_TOD2_AMPeak", Args)
-
-    if Args.TourMCFlag then
-        RunMacro("Tour Mode Split", Args)
-    return(1)
 endmacro
+
 
 Macro "Peak Highway Assignment" (Args)
     RunMacro("HwyAssn_RunAMPeak", Args)    
