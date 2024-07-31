@@ -586,7 +586,9 @@ SetRandomSeed(9543)
 	tourdesttazseq = tour_vectors[18]
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc1dum = if (tourincome = 1) then 1 else 0
+	tourinc12dum = if (tourincome = 1 or tourincome = 2) then 1 else 0
 	intraz = if (tourorigtazseq = tourdesttazseq) then 1 else 0
+	tourlc1dum = if tourlc = 1 then 1 else 0
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
@@ -606,6 +608,7 @@ SetRandomSeed(1548)
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
 		cbddum_dest[n] = cbddum[dtazseq]
+		atype12dum_orig = atype12dum[otazseq]
 		rural_dest[n] = rural[dtazseq]
 		rural_orig[n] = rural[otazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
@@ -621,9 +624,10 @@ SetRandomSeed(1548)
 	end
 
 //Apply the PA model
-	U1 = -0.947 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig 			- 0.4 * origAT - 0.1 * tours
-	U2 = -3.849 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.1026 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
-	U3 = -4.435 + 0.03097 * htime - 0.62 * intraz - 2.2354 * cbddum_dest + 0.9526 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
+// TODO create the hovdum vector
+	U1 = -3.7008 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2021 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
+	U2 = -4.7065 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2572 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
+	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -639,14 +643,14 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (50.0% of all 3+ is), 4 (27.8%), 5 (11.1%), 6 (5.5%) & 7 (5.6%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.778) then 4 else if (rand_v2 < 0.889) then 5 else if (rand_v2 < 0.944) then 6 else 7
+//The 3+ categories are 3 (50.0% of all 3+ is), 4 (17%), 5 (17%), 6 (17%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.67) then 4 else if (rand_v2 < 0.84) then 5 else 6
 	SetDataVector(tour_files[5]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -1.555 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
-	U2 = -2.745 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
-	U3 = -3.134 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
+	U1 = -2.3955 + 0.3442 * choice_v + 0.0372 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
+	U2 = -3.5287 + 0.3631 * choice_v + 0.0420 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
+	U3 = -4.4799 + 0.9418 * choice_v + 0.0519 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -662,8 +666,8 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (59.4% of all 3+ is), 4 (23.9%), 5 (9.6%), 6 (1.1%) & 7 (4.8%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.606) then 3 else if (rand_v4 < 0.845) then 4 else if (rand_v4 < 0.941) then 5 else if (rand_v4 < 0.952) then 6 else 7
+//The 3+ categories are 3 (48% of all 3+ is), 4 (25%), 5 (20%), 6 (7%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else if (rand_v4 < 0.73) then 4 else if (rand_v4 < 0.73) then 5 else 6
 	SetDataVector(tour_files[5]+"|", "IS_AP", choice_v,)
     	CloseView(tour_files[5])	
 

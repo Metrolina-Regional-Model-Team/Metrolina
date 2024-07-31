@@ -103,9 +103,15 @@ est_tbl <- tours %>%
 
 ```{r}
 # Calculate the percentage distribution of IS above the cap of 2
+cap3 <- c("shop", "other")
+
 fwd_pcts <- est_tbl %>%
-  filter((tour_type == "shop" & int_stop_fwd >= 3) | (tour_type != "shop" & int_stop_fwd >= 2)) %>%
-  mutate(int_stop_fwd = ifelse(int_stop_fwd > 5, 5, int_stop_fwd)) %>%
+  filter((tour_type %in% cap3 & int_stop_fwd >= 3) | (!(tour_type %in% cap3) & int_stop_fwd >= 2)) %>%
+  mutate(int_stop_fwd = case_when(
+    tour_type == "other" & int_stop_fwd > 7 ~ 7,
+    int_stop_fwd > 5 ~ 5,
+    TRUE ~ int_stop_fwd
+  )) %>%
   group_by(tour_type, int_stop_fwd) %>%
   summarize(count = n()) %>%
   mutate(
@@ -114,8 +120,12 @@ fwd_pcts <- est_tbl %>%
   )
   
 ret_pcts <- est_tbl %>%
-  filter((tour_type == "shop" & int_stop_ret >= 3) | (tour_type != "shop" & int_stop_ret >= 2)) %>%
-  mutate(int_stop_ret = ifelse(int_stop_ret > 5, 5, int_stop_ret)) %>%
+  filter((tour_type %in% cap3 & int_stop_ret >= 3) | (!(tour_type %in% cap3) & int_stop_ret >= 2)) %>%
+  mutate(int_stop_ret = case_when(
+    tour_type == "other" & int_stop_ret > 7 ~ 7,
+    int_stop_ret > 5 ~ 5,
+    TRUE ~ int_stop_ret
+  )) %>%
   group_by(tour_type, int_stop_ret) %>%
   summarize(count = n()) %>%
   mutate(
