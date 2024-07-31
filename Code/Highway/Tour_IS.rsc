@@ -87,6 +87,7 @@ Macro "Tour_IS" (Args)
 	atype = GetDataVector(areatype+"|", "AREATYPE", {{"Sort Order", {{"TAZ","Ascending"}}}}) 
 	atype1dum = if (atype = 1) then 1 else 0
 	atype5dum = if (atype = 5) then 1 else 0
+	atype12dum = if (atype = 1 or atype = 2) then 1 else 0
 	rural = if (atype = 5) then 1 else 0
 
 	autofree = OpenMatrix(Dir + "\\Skims\\TThwy_free.mtx", "False")			//open as memory-based
@@ -370,6 +371,8 @@ SetRandomSeed(894)
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
 	at5dum = Vector(tourtaz.length, "short", ) 
+	at1dum_origin = Vector(tourtaz.length, "short", ) 
+	at12dum_dest = Vector(tourtaz.length, "short", ) // AT 1 or 2
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-2 tour selection
 //	rand_v2 = Vector(tourtaz.length, "float", ) 	// no 2+ stops
 	rand_v3 = Vector(tourtaz.length, "float", ) 	//for AP, 0-1+ tour selection
@@ -381,6 +384,8 @@ SetRandomSeed(7844)
 		dtazseq = tourdesttazseq[n]
 		ret30_dest[n] = ret30[dtazseq]
 		at5dum[n] = atype5dum[dtazseq]
+		at1dum_origin[n] = atype1dum[otazseq]
+		at12dum_dest[n] = atype12dum[dtazseq]
 		rand_val = RandomNumber()
 		rand_v1[n] = rand_val
 //		rand_val = RandomNumber()
@@ -392,8 +397,9 @@ SetRandomSeed(7844)
 	end
 
 //Apply the PA model
-	U1 = -2.790 - 1.154 * tourinc4dum + 0.1311 * tours - 0.4 * at5dum
-	U2 = -3.835 - 1.154 * tourinc4dum + 0.1311 * tours - 0.4 * at5dum
+// TODO create the hovdum vector
+	U1 = -3.0845 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
+	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -410,8 +416,9 @@ SetRandomSeed(7844)
 	SetDataVector(tour_files[3]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -1.280 + 0.5613 * choice_v + 0.00004232 * ret30_dest - 0.1311 * tours
-	U2 = -1.979 + 0.5613 * choice_v + 0.00004232 * ret30_dest - 0.1311 * tours
+// TODO: create the hovdum vector.
+	U1 = -3.0845 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
+	U2 = -3.4900 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -425,6 +432,7 @@ SetRandomSeed(7844)
 	prob2c = prob1c + prob2
 
 //The 2+ categories are 2 (63.2% of all 2+ is), 3 (27.8%) & 4 (9.0%)
+// kyle: not updated with new survey. Too few samples and too high % of 5+ stops.
 	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else if (rand_v4 < 0.910) then 3 else 4
 	SetDataVector(tour_files[3]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[3])	
