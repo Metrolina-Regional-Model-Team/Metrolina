@@ -723,6 +723,7 @@ SetRandomSeed(40880)
 		otazseq = tourorigtazseq[n]
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
+		ret30_dest[n] = ret30[dtazseq]
 		cbddum_dest[n] = cbddum[dtazseq]
 		rural_dest[n] = rural[dtazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
@@ -737,7 +738,8 @@ SetRandomSeed(40880)
 	end
 
 //Apply the PA model
-	U1 = -3.566 + 0.05033 * htime + 1.559 * rural_dest + 0.1313 * tours_vec
+// TODO: create sovdum vector
+	U1 = -2.1350 + 0.0557 * htime - 0.00003 * ret30_dest + 0.8166 * sovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
@@ -750,8 +752,8 @@ SetRandomSeed(40880)
 	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v2 < 0.776) then 1 else if (rand_v2 < 0.866) then 2 else if (rand_v2 < 0.950) then 3 else 4
 	SetDataVector(tour_files[6]+"|", "IS_PA", choice_v,)
 
-//Repeat above logic for AP direction
-	U1 = -2.209 + 1.161 * choice_v + 0.04672 * htime  + 1.525 * cbddum_dest - 0.00008081 * ret30_orig
+// AP direction set to 0
+	U1 = -999
 
 	E2U0 = 1
 	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
@@ -760,8 +762,8 @@ SetRandomSeed(40880)
 	prob0 = E2U0 / E2U_cum
 	prob1 = E2U1 / E2U_cum
 
-//The 1+ categories are 1 (62.3% of all 3+ is), 2 (25.4%), 3 (10.3%) & 4 (2.0%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v4 < 0.623) then 1 else if (rand_v4 < 0.877) then 2 else if (rand_v4 < 0.980) then 3 else 4
+// this ensures that the choice is always 0
+	choice_v = if (rand_v3 < prob0) then 0 else 0
 	SetDataVector(tour_files[6]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[6])	
 
