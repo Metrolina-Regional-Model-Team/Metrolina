@@ -101,6 +101,21 @@ est_tbl <- tours %>%
   relocate(int_stop_ret_cap, .after = int_stop_ret)
 ```
 
+```{r}
+# Calculate the percentage distribution of IS above the cap of 2
+fwd_pcts <- est_tbl %>%
+  filter(int_stop_fwd >= 2) %>%
+  mutate(int_stop_fwd = ifelse(int_stop_fwd > 5, 5, int_stop_fwd)) %>%
+  group_by(tour_type, int_stop_fwd) %>%
+  summarize(count = n()) %>%
+  mutate(
+    pct = round(count / sum(count) * 100, 0),
+    cumesum = cumsum(pct)
+  )
+  
+```
+
+
 ```{r, eval=FALSE}
 write_csv(est_tbl, "data/_private/hh_survey/output/tour_is_freq_est.csv", na = "")
 ```

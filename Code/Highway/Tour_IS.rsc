@@ -95,15 +95,20 @@ Macro "Tour_IS" (Args)
 	zonedist_m = OpenMatrix(DirOutDC + "\\zonedist.mtx", "False")	
 	zonedist_mc = CreateMatrixCurrency(zonedist_m, "Miles", "Origin-Destination", "Origin-Destination", )	
 	ret30_m = CreateMatrix({se_vw+"|", "TAZ","Row Index"}, {se_vw+"|", "TAZ","Column Index"},
-					{{"File Name", DirOutDC + "\\ret30.mtx"}, {"Label", "retail emp within 3 miles"},{"Type", "Long"}, {"Tables", {"ret30"}}})	//,{"File Based", "No"}
+					{{"File Name", DirOutDC + "\\ret30.mtx"}, {"Label", "retail emp within 3 miles"},{"Type", "Long"}, {"Tables", {"ret30", "ret15"}}})	//,{"File Based", "No"}
 	ret30_mc = CreateMatrixCurrency(ret30_m, "ret30", "Row Index", "Column Index", )
+	ret15_mc = CreateMatrixCurrency(ret30_m, "ret15", "Row Index", "Column Index", )
 
 	influence_area = 3		//influence area for production/attractions zones is 3 miles; do for production (Row) and attraction (Column) zones.
+	influence_area15 = 1.5	
 	ret30_mc := if (zonedist_mc > influence_area) then 0 else (retail)	//zeros out zones that are outside the influence area (3 miles); retail + hwy employment within the influence area of each zone
+	ret15_mc := if (zonedist_mc > influence_area15) then 0 else (retail)	
 //	ind30_mc := if (zonedist_mc > influence_area) then 0 else (loind + hiind)	//zeros out zones that are outside the influence area (3 miles); retail + hwy employment within the influence area of each zone
   
  	ret30_ar = GetMatrixMarginals(ret30_mc, "Sum", "row")
+ 	ret15_ar = GetMatrixMarginals(ret15_mc, "Sum", "row")
 	ret30 = a2v(ret30_ar)							//this is total retail within each zone's influence area
+	ret15 = a2v(ret15_ar)				
  
 	tour_files = {"hbwdestii", "schdestii", "hbudestii", "hbsdestii", "hbodestii", "atwdestii", "extdest", "xiw", "xin"}
 
@@ -158,7 +163,9 @@ end
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
+	ret15_orig = Vector(tourtaz.length, "float", ) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
+	ret15_dest = Vector(tourtaz.length, "float", ) 
 	AT_dest = Vector(tourtaz.length, "short", ) 
 	at1dumP = Vector(tourtaz.length, "short", ) 
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-1+ tour selection
@@ -172,7 +179,9 @@ SetRandomSeed(454)
 		otazseq = tourorigtazseq[n]
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
+		ret15_orig[n] = ret15[otazseq]
 		ret30_dest[n] = ret30[dtazseq]
+		ret15_dest[n] = ret15[dtazseq]
 		AT_dest[n] = atype[dtazseq]
 		at1dumP[n] = atype1dum[otazseq]
 		rand_val = RandomNumber()
@@ -186,8 +195,9 @@ SetRandomSeed(454)
 	end
 
 //Apply the PA model
-	U1 = -1.182  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.2817 * hbwtours - 0.5 * AT_dest
-	U2 = -2.552  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.3017 * hbwtours - 0.5 * AT_dest
+// TODO: create the hovdum vector.
+	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum
+	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -200,13 +210,13 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (66.0% of all 2+ is), 3 (20.0%), 4 (8.0%) & 5 (6.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.660) then 2 else if (rand_v2 < 0.860) then 3 else if (rand_v2 < 0.940) then 4 else 5
+//The 2+ categories are 2 (62.0% of all 2+ is), 3 (22.0%), 4 (6.0%) & 5 (10.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) then 2 else if (rand_v2 < 0.84) then 3 else if (rand_v2 < 0.90) then 4 else 5
 	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -2.114  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
-	U2 = -2.744  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
+	U1 = -4.8103  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.1838 * hbwtours + 1.1778 * hovdum
+	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -219,8 +229,8 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (70.5% of all 2+ is), 3 (19.1%), 4 (4.8%), 5 (3.4%), 6 (1.1%) & 7 (1.1%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.705) then 2 else if (rand_v4 < 0.896) then 3 else if (rand_v4 < 0.944) then 4 else if (rand_v4 < 0.978) then 5 else if (rand_v4 < 0.989) then 6 else 7
+//The 2+ categories are 2 (57% of all 2+ is), 3 (24%), 4 (11%), 5 (8%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else if (rand_v4 < 0.81) then 3 else if (rand_v4 < 0.92) then 4 else 5
 	SetDataVector(tour_files[1]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[1])	
 
