@@ -109,6 +109,7 @@ fwd_pcts <- est_tbl %>%
   filter((tour_type %in% cap3 & int_stop_fwd >= 3) | (!(tour_type %in% cap3) & int_stop_fwd >= 2)) %>%
   mutate(int_stop_fwd = case_when(
     tour_type == "other" & int_stop_fwd > 7 ~ 7,
+    tour_type == "shop" & int_stop_fwd > 6 ~ 6,
     int_stop_fwd > 5 ~ 5,
     TRUE ~ int_stop_fwd
   )) %>%
@@ -123,6 +124,7 @@ ret_pcts <- est_tbl %>%
   filter((tour_type %in% cap3 & int_stop_ret >= 3) | (!(tour_type %in% cap3) & int_stop_ret >= 2)) %>%
   mutate(int_stop_ret = case_when(
     tour_type == "other" & int_stop_ret > 7 ~ 7,
+    tour_type == "shop" & int_stop_ret > 6 ~ 6,
     int_stop_ret > 5 ~ 5,
     TRUE ~ int_stop_ret
   )) %>%
