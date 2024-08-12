@@ -16,7 +16,7 @@ Macro "Tour Mode Split"(Args)
         spec.RandomSeed = 99999*i
         spec.TAZView = vwTAZ
         spec.ToursView = objT.GetView()
-        RunMacro("Eval Tour MC Model", spec)
+        RunMacro("Eval Tour MC Model", Args, spec)
     end
     objT = null
 endMacro
