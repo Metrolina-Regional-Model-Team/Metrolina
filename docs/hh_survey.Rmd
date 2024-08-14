@@ -16,6 +16,8 @@ library(knitr)
 library(scales)
 library(kableExtra)
 library(readxl)
+library(geosphere)
+library(lubridate)
 # source("R/eda.R")
 ```
 
@@ -129,7 +131,20 @@ trip_with_taz <- translate_trip %>%
   mutate(unique_id = paste(d_lon, d_lat, sep = "_")) %>%
   left_join(geocoded_pts, by = "unique_id") %>%
   rename(d_taz = TAZ) %>%
-  select(-unique_id)
+  select(-unique_id) %>%
+  # add person's work location lon/lat/taz which will be used later
+  # for at-work tour determination
+  left_join(
+    per_with_taz %>%
+      select(person_id, work_lon, work_lat, WorkTAZ),
+    by = "person_id"
+  ) %>%
+  # filter out weekends
+  mutate(
+    temp = ymd(depart_date),
+    dow = wday(temp, label = TRUE)
+  ) %>%
+  filter(!(dow %in% c("Sun", "Sat")))
 ```
 
 ## Calculate HHStructure
@@ -177,26 +192,44 @@ id_tours <- trip_with_taz %>%
       "W" %in% d_purpose_linked ~ "work",
       "Univ" %in% d_purpose_linked ~ "univ",
       "Sch" %in% d_purpose_linked ~ "school",
-      any(grepl("Esc", d_purpose_linked)) ~ "escort",
-      # "Shp" %in% d_purpose_linked ~ "shop",
-      TRUE ~ "nm"
+      # any(grepl("Esc", d_purpose_linked)) ~ "escort",
+      "Shp" %in% d_purpose_linked ~ "shop",
+      TRUE ~ "other"
     )
   )
 
-# determine tour anchor place using the max duration, but break ties by
+# For work tours, anchor is the first location that matches person's work location (within 1000').
+# For non-work, determine tour anchor place using the max duration, but break ties by
 # purpose. For any remaining ties (same purpose and duration) just make the
 # first one the anchor.
 mark_anchor <- id_tours %>%
   group_by(tour_id) %>%
   mutate(
-    anchor = ifelse(duration_minutes == max(duration_minutes), 100, 0),
-    anchor = case_when(
-      d_purpose_linked == "W" ~ anchor + 3,
-      d_purpose_linked == "Univ" ~ anchor + 2,
-      d_purpose_linked == "Sch" ~ anchor + 1,
-      TRUE ~ anchor,
+    dist_from_work = map2_dbl(
+      .x = map2(d_lon, d_lat, c),
+      .y = map2(work_lon, work_lat, c),
+      .f = ~distHaversine(.x, .y)
     ),
-    anchor = ifelse(anchor == max(anchor), 1, 0),
+    # mark trip destination that can be anchor candidates
+    anchor_candidate = case_when(
+      d_purpose_linked == "H" ~ 0,
+      tour_type == "work" & d_purpose_linked != "W" ~ 0,
+      tour_type == "work" & dist_from_work > 1000 ~ 0,
+      TRUE ~ 1
+    ),
+    # Create a new duration field that is only >0 for anchor candidates
+    temp_duration = duration_minutes * anchor_candidate,
+    max_duration = max(temp_duration),
+    # determine anchors
+    anchor = case_when(
+      # for work tours, every candidate is an anchor.
+      tour_type == "work" ~ anchor_candidate,
+      temp_duration == max_duration ~ 1,
+      TRUE ~ 0
+    ),
+    # preserve all anchors for work tours in a separate field
+    work_anchor = ifelse(tour_type == "work", anchor, 0),
+    # only allow one primary anchor for each tour type
     check = cumsum(anchor),
     anchor = ifelse(check > 1, 0, anchor),
     anchor_taz = ifelse(anchor == 1, d_taz, NA),
@@ -211,11 +244,23 @@ mark_anchor <- id_tours %>%
     int_stop_fwd = ifelse(check == 0, int_stop, 0), # before anchor
     int_stop_ret = ifelse(check >= 1, int_stop, 0)  # after anchor
   ) %>%
-  select(-check)
+  select(-c(anchor_candidate:max_duration, check))
+
+id_sub_tours <- mark_anchor %>%
+  mutate(
+    subtour_id1 = cumsum(work_anchor),
+    work_first = ifelse(first(o_purpose_linked) == "W", 1, 0),
+    subtour_id2 = subtour_id1 + work_first,
+    subtour_id3 = ifelse(max(subtour_id2, na.rm = TRUE) == 1, NA, subtour_id2),
+    subtour_id4 = lag(subtour_id3),
+    subtour_id5 = ifelse(subtour_id4 == 0, NA, subtour_id4),
+    subtour_id = ifelse(!is.na(subtour_id5), paste0(tour_id, "_", subtour_id5), NA)
+  ) %>%
+  select(-c(subtour_id1:subtour_id5))
 
 # Identify primary and secondary modes. Primary is the highest-order mode on
 # trip. The secondary mode is the second highest order.
-id_tour_mode <- mark_anchor %>%
+id_tour_mode <- id_sub_tours %>%
   mutate(
     primary_mode = case_when(
       "d_rail" %in% linked_trip_mode ~ "d_rail",
@@ -247,10 +292,14 @@ id_tour_mode <- mark_anchor %>%
       TRUE ~ "other"
     )
   ) %>%
+  # some households were surveyed on multiple days.
+  # create and preserve a second hh_id to treat them as different households.
+  # otherwise some households look like they take way too many trips.
+  mutate(hh_id2 = paste0(hh_id, "_", day_num)) %>%
   select(-temp)
 
 tour_file <- id_tour_mode %>%
-  group_by(tour_id) %>%
+  group_by(hh_id2, tour_id) %>%
   summarize(
     hh_id = first(hh_id),
     person_id = first(person_id),
@@ -268,6 +317,33 @@ tour_file <- id_tour_mode %>%
     HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
   ) %>%
   mutate(anchor_taz = ifelse(anchor_taz == -Inf, NA, anchor_taz))
+
+subtour_file <- id_tour_mode %>%
+  filter(!is.na(subtour_id)) %>%
+  group_by(subtour_id) %>%
+  summarize(
+    hh_id2 = first(hh_id2),
+    hh_id = first(hh_id),
+    person_id = first(person_id),
+    tour_type = first(tour_type),
+    num_trips = n(),
+    anchor_taz = max(anchor_taz, na.rm = TRUE),
+    primary_mode = first(primary_mode),
+    secondary_mode = first(secondary_mode),
+    # HH_Members_Max = max(num_hh_travelers, na.rm = TRUE),
+    # HH_Members_Min = min(num_hh_travelers, na.rm = TRUE)
+  )
+
+# Add subtour counts back to the tour file
+subtours_by_tour <- subtour_file %>%
+  separate(col = subtour_id, into = c("tour_id", "subtour_num")) %>%
+  mutate(tour_id = as.numeric(tour_id)) %>%
+  group_by(tour_id) %>%
+  summarize(subtours = n())
+
+tour_add_subtour <- tour_file %>%
+  left_join(subtours_by_tour, by = "tour_id") %>%
+  mutate(subtours = ifelse(is.na(subtours), 0, subtours))
 ```
 
 ```{r}
@@ -291,25 +367,35 @@ stops_file <- id_tour_mode %>%
   relocate(stop_id, .after = tour_id)
 ```
 
-
 ```{r}
-# Update household file with numbers of workers who took a work tour that day
-tours_by_hh <- tour_file %>%
-  group_by(hh_id, person_id, tour_type) %>%
+# Update household file with tour counts and numbers of workers who took a 
+# work tour that day
+tours_by_hh <- tour_add_subtour %>%
+  group_by(hh_id, hh_id2, person_id, tour_type) %>%
   summarize(count = n()) %>%
   pivot_wider(
-    id_cols = c(hh_id, person_id), names_from = tour_type, 
+    id_cols = c(hh_id:hh_id2, person_id), names_from = tour_type,
     values_from = count, values_fill = 0
   ) %>%
   mutate(WorkersThatDay = ifelse(work > 0, 1, 0)) %>%
-  group_by(hh_id) %>%
-  summarize(across(escort:WorkersThatDay, ~ sum(.x))) %>%
-  rename_with(~ paste0(.x, "_tours"), escort:school)
-  
+  group_by(hh_id, hh_id2) %>%
+  summarize(across(other:WorkersThatDay, ~ sum(.x))) %>%
+  rename_with(~ paste0(.x, "_tours"), other:school) %>%
+  ungroup()
+
+# Add subtours (at work tours)
+subtours_by_hh <- subtour_file %>%
+  group_by(hh_id, hh_id2) %>%
+  summarize(sub_tours = n()) %>%
+  ungroup()
 
 hh_add_tours <- hh_add_strct %>%
   left_join(tours_by_hh, by = "hh_id") %>%
-  mutate(across(escort_tours:WorkersThatDay, ~ifelse(is.na(.x), 0, .x))) %>%
+  left_join(subtours_by_hh %>% select(-hh_id), by = "hh_id2") %>%
+  # select(-hh_id2.y) %>%
+  # rename(hh_id2 = hh_id2.x) %>%
+  relocate(hh_id2, .before = hh_id) %>%
+  mutate(across(other_tours:sub_tours, ~ifelse(is.na(.x), 0, .x))) %>%
   relocate(WorkersThatDay, .after = WAdults) %>%
   mutate(
     BasicPattern = paste0(
@@ -317,29 +403,36 @@ hh_add_tours <- hh_add_strct %>%
       WorkersThatDay,
       WAdults + NWAdults - WorkersThatDay, # adults not working that day
       HHKids
-    )
+    ),
+    hh_id2 = ifelse(num_trips == 0, paste0(hh_id, "_0"), hh_id2)
   )
 ```
 
 ## Add tour summary to person file
 
 ```{r}
-tours_by_per <- tour_file %>%
+tours_by_per <- tour_add_subtour %>%
   group_by(hh_id, person_id, tour_type) %>%
   summarize(count = n()) %>%
   pivot_wider(
     id_cols = hh_id:person_id, names_from = tour_type, 
     values_from = count, values_fill = 0
   ) %>%
-  rename_with(~ paste0(.x, "_tours"), escort:school)
+  rename_with(~ paste0(.x, "_tours"), other:school)
+
+# Add subtours (at work tours)
+subtours_by_per <- subtour_file %>%
+  group_by(hh_id, person_id) %>%
+  summarize(sub_tours = n())
 
 per_add_tour_counts <- per_calc_ptypes %>%
   left_join(
     hh_with_tazs, by = "hh_id"
   ) %>%
   left_join(tours_by_per, by = c("hh_id", "person_id")) %>%
+  left_join(subtours_by_per, by = c("hh_id", "person_id")) %>%
   mutate(
-    across(escort_tours:school_tours, ~ifelse(is.na(.), 0, .))
+    across(other_tours:sub_tours, ~ifelse(is.na(.), 0, .))
   )
 ```
 
@@ -449,14 +542,57 @@ trip_add_skim <- trip_add_purp %>%
 ```
 
 
-
 ```{r}
 write_csv(per_calc_iz, "data/_private/hh_survey/output/output_persons.csv", na = "")
 write_csv(hh_add_tours, "data/_private/hh_survey/output/output_households.csv", na = "")
 
-write_csv(tour_file, "data/_private/hh_survey/output/output_tours.csv", na = "")
+write_csv(tour_add_subtour, "data/_private/hh_survey/output/output_tours.csv", na = "")
 write_csv(stops_file, "data/_private/hh_survey/output/output_stops.csv", na = "")
 write_csv(trip_add_skim, "data/_private/hh_survey/output/output_trips.csv", na = "")
 # write_csv(eda_df, "data/_private/hh_survey/output/eda.csv", na = "")
+```
+
+```{r}
+rsg_tour <- read_csv("data/_private/hh_survey/input/tour.csv")
+translate_rsg_tour <- translate_table(rsg_tour)
+
+# do some basic processing on the tour table provided in the deliverable
+rsg_tour <- translate_rsg_tour %>%
+  filter(tour_weight > 0 & !(tour_purpose %in% c("H", "Missing"))) %>%
+  mutate(
+    tour_purpose = ifelse(tour_category == "At work subtour", "sub", tour_purpose),
+    # some households were surveyed over multiple days. treat them as separate
+    # household observations
+    hh_id2 = paste0(hh_id, "_", day_num)
+  ) %>%
+  # split school into school/univ
+  left_join(per_is_kid, by = "person_id") %>%
+  mutate(tour_purpose = ifelse(tour_purpose == "school" & Kid == 0, "univ", tour_purpose))
+
+# geocoding
+rsg_tour_with_tazs <- rsg_tour %>%
+  mutate(unique_id = paste(o_lon, o_lat, sep = "_")) %>%
+  left_join(geocoded_pts, by = "unique_id") %>%
+  rename(o_taz = TAZ) %>%
+  mutate(unique_id = paste(d_lon, d_lat, sep = "_")) %>%
+  left_join(geocoded_pts, by = "unique_id") %>%
+  rename(d_taz = TAZ) %>%
+  select(-unique_id)
+
+rsg_tours_by_hh <- rsg_tour %>%
+  group_by(hh_id, hh_id2, tour_purpose) %>%
+  summarize(count = n()) %>%
+  pivot_wider(
+    id_cols = hh_id:hh_id2, names_from = tour_purpose, 
+    values_from = count, values_fill = 0
+  ) %>%
+  rename_with(~ paste0(.x, "_tours"), other:school)
+
+hh_add_rsg_tours <- hh_add_strct %>%
+  left_join(rsg_tours_by_hh, by = "hh_id") %>%
+  mutate(across(other_tours:school_tours, ~ifelse(is.na(.x), 0, .x)))
+
+write_csv(rsg_tour_with_tazs, "data/_private/hh_survey/output/output_tours_rsg.csv", na = "")
+write_csv(hh_add_rsg_tours, "data/_private/hh_survey/output/output_households_rsg.csv", na = "")
 ```
 

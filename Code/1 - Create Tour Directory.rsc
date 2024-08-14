@@ -291,6 +291,7 @@ Macro "CreateDir" (Args)
 
     RunDirSubDir = 
         {"\\AutoSkims", "\\Ext", "\\HwyAssn", "\\LandUse", "\\ModeSplit", "\\Report", "\\Skims", "\\TD", "\\TG", "\\TOD2",
+            "\\TourModeSplit",
             "\\TranAssn", "\\TripTables", "\\HwyAssn\\HOT",
             "\\TranAssn\\PPrmW", "\\TranAssn\\PPrmD", "\\TranAssn\\PPrmDrop", "\\TranAssn\\OPPrmW", "\\TranAssn\\OPPrmD",
             "\\TranAssn\\OPPrmDrop", "\\TranAssn\\PBusW", "\\TranAssn\\PBusD", "\\TranAssn\\PBusDrop", "\\TranAssn\\OPBusW", 
@@ -362,6 +363,19 @@ Macro "CreateDir" (Args)
                 // DirSignalStatus = 2
             end
     end // for i
+
+    // TourModeSplit
+    MRMpath = MRMUser + "\\TourModeSplit\\"
+    MRMInfo = GetDirectoryInfo(MRMpath + "*.*", "File")
+    if MRMInfo <> null 
+        then do
+            for i = 1 to MRMInfo.length do
+                WriteLine(batchhandle, "copy " + MRMpath + MRMInfo[i][1] + " " + DirUser + "\\TourModeSplit\\" + MRMInfo[i][1])
+            end
+        end	
+        else do
+            Throw(MRMPath + " files missing, not copied")
+        end
 
     //Everything in landuse subdirectory
     MRMpath = MRMUser + "\\" + YearUser + "\\LandUse\\"

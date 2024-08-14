@@ -128,8 +128,8 @@ end
   SetRandomSeed(667653)	
 
 //Alternative percentages: 0 tours = 75.7%, 1 tour = 11.7%, 2 tours = 9.1%, 3 tours = 2.8%, 4 tours = 0.6%, 5 tours = 0.1%
-	U1 = -7.417 + 5.345*lc2dum + 0.7053*avgsize_v - 0.5759*wkr3dum + 0.8065*siz34dum + 0.15*inc1dum - 1.9*cbddum + 0.1*at2dum + 2.4*lc1dum - 0.2*siz2dum + 0.50*siz5dum
-	U2 = -9.370 + 5.796*lc2dum + 0.7053*avgsize_v - 1.5560*wkr3dum + 2.9150*siz45dum + 0.57*inc1dum - 8.0*cbddum - 0.2*at2dum + 1.1*lc1dum - 3.0*siz2dum + 0.35*siz5dum
+	U1 = -1.692 + 0.65*lc2dum + 0.618*wkr3dum + 0.325*siz34dum + 0.329*inc1dum - 1.130*cbddum - 2.342*lc1dum - .51 - .16
+	U2 = -1.08 + 0.318*lc2dum - 0.404*wkr3dum - 1.763*siz34dum - 0.417*inc1dum - 1.143*cbddum - 1.399*lc1dum - 3.907*siz2dum + 0.671*siz5dum + .48 + .15
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = if (lc = 3 or size = 1) then 0 else exp(U1)				//LC=3 & Size=1 have no SCH tours
@@ -149,10 +149,10 @@ end
 			if (rand_val < cumprob01[n]) then do
 				choice_v[n] = if (rand_val < prob0[n]) then 0 else 1
 			end
-			//The 2+ categories are 2 (71.0% of all 2+ tours), 3 (21.5%), 4 (5.5%) & 5 (2.0%)
+			//The 2+ categories are 2 (74% of all 2+ tours), 3 (20%), 4 (4%) & 5 (2%)
 			else do
 				rand_val = RandomNumber()
-				choice_v[n] = if (rand_val < 0.710) then 2 else if (rand_val < 0.925) then 3 else if (rand_val < 0.980) then 4 else 5
+				choice_v[n] = if (rand_val < 0.74) then 2 else if (rand_val < 0.94) then 3 else if (rand_val < 0.98) then 4 else 5
 			end
 		end
 	end
@@ -212,7 +212,7 @@ WriteArray(reportfile, pctwkr)
   SetRandomSeed(67653)	
 //Alternative percentages: 0 tours = 96.3%, 1 tour = 3.2%, 2 tours = 0.4%, 3 tours = 0.1%
 
-	U1 = -6.056 + 1.040*size - 0.7481*school_v - 1.0*lc1dum - 0.8*inc1dum + 0.08*inc2dum + 0.3*cbddum + 0.1*at2dum + 0.8*siz3dum - 0.3*at5dum  + 0.25*wkr0dum + 0.25*wkr3dum + 0.26
+	U1 = -5.57 + 0.531*size - 0.107*school_v + 1.002*inc1dum + 0.817*at2dum + 0.329*siz3dum + 0.741*wkr3dum + .14 + .04
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours
@@ -228,10 +228,10 @@ WriteArray(reportfile, pctwkr)
 	for n = 1 to hhid.length do
 		rand_val = RandomNumber()
 		//if probability of 1 HBU tour is less than random number then 0 tours, else use 1+ fractions:
-		//The 1+ categories are 1 (88.0% of all 1+ tours), 2 (11.0%) & 3 (1.0%)
+		//The 1+ categories are 1 (90% of all 1+ tours), 2 (9%) & 3 (1.0%)
 		if (rand_val >= prob0[n]) then do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.880) then 1 else if (rand_val < 0.990) then 2 else 3
+			choice_v[n] = if (rand_val < 0.90) then 1 else if (rand_val < 0.99) then 2 else 3
 		end
 	end
 	hbu_v = choice_v
@@ -280,8 +280,8 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 51.9%, 1 tour = 29.2%, 2 tours = 15.0%, 3 tours = 3.1%, 4 tours = 0.7%, 5 tours = 0.1%
 
-	U1 = -2.781 + 2.543*wrkr + 0.1779*siz345dum + 0.1346*school_v + 0.5*inc1dum + 1.0*wkr1dum - 1.1*cbddum + 1.0*urbdum - 0.3*at5dum - 0.76 + 0.9*suburb
-	U2 = -7.242 + 4.809*wrkr + 0.1779*siz345dum + 0.1346*school_v + 1.0*urbdum - 0.3*at5dum - 0.76 + 0.9*suburb
+	U1 = -1.29 + .387*wrkr + 0.652*school_v - 0.385*lc2dum - 1.1*cbddum + 1.0*urbdum - 0.209*at5dum + 0.158*siz1dum
+	U2 = -2.57 + .819*wrkr + 0.652*school_v - 0.385*lc2dum - 0.385*inc1dum - 0.768*wkr1dum - 0.398*at5dum + 0.565*siz1dum
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = if (wrkr = 0) then 0 else exp(U1)			//if wrkr = 0, then can be no work tours
@@ -301,10 +301,10 @@ WriteArray(reportfile, pctwkr)
 			if (rand_val < cumprob01[n]) then do
 				choice_v[n] = if (rand_val < prob0[n]) then 0 else 1
 			end
-			//The 2+ categories are 2 (78.0% of all 2+ tours), 3 (17.8%), 4 (3.7%) & 5 (0.5%)
+			//The 2+ categories are 2 (79.0% of all 2+ tours), 3 (16%), 4 (4%) & 5 (1%)
 			else do
 				rand_val = RandomNumber()
-				choice_v[n] = if (rand_val < 0.780) then 2 else if (rand_val < 0.958) then 3 else if (rand_val < 0.995) then 4 else 5
+				choice_v[n] = if (rand_val < 0.79) then 2 else if (rand_val < 0.95) then 3 else if (rand_val < 0.99) then 4 else 5
 			end
 		end
 	end
@@ -354,8 +354,8 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 67.7%, 1 tour = 22.0%, 2 tours = 7.7%, 3 tours = 1.9%, 4 tours = 0.5%, 5 tours = 0.1%, 6 tours = 0.1%
 
-	U1 = -1.606 + 0.3866*size - 0.5960*lc2dum + 1.05*suburb - 0.2518*(school_v + hbu_v) - 0.5492*hbw_v - 0.25*cbddum + 0.2*wkr1dum + 0.48
-	U2 = -3.464 + 0.9283*size - 0.5960*lc2dum + 1.05*suburb - 0.2518*(school_v + hbu_v) - 0.5492*hbw_v - 0.1883*wrkr - 0.9*cbddum - 0.3*wkr1dum + 0.48
+	U1 = -0.348 + 0.064*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.18*cbddum - 0.22*wkr1dum + .14 + .06
+	U2 = -2.004 + 0.576*size + 0.073*suburb - 0.379*(school_v + hbu_v) - 0.995*hbw_v - 0.194*wrkr - 0.644*cbddum - 0.338*wkr1dum - .02 + .02
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
@@ -374,10 +374,10 @@ WriteArray(reportfile, pctwkr)
 		if (rand_val < cumprob01[n]) then do
 			choice_v[n] = if (rand_val < prob0[n]) then 0 else 1
 		end
-		//The 2+ categories are 2 (74.8% of all 2+ tours), 3 (18.4%), 4 (4.9%), 5 (1.0%) & 6 (1.0%)
+		//The 2+ categories are 2 (74% of all 2+ tours), 3 (16%), 4 (7%), 5 (2.0%) & 6 (1.0%)
 		else do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.750) then 2 else if (rand_val < 0.925) then 3 else if (rand_val < 0.975) then 4 else if (rand_val < 0.978) then 5 else if (rand_val < 0.986) then 6 else 7
+			choice_v[n] = if (rand_val < 0.74) then 2 else if (rand_val < 0.90) then 3 else if (rand_val < 0.97) then 4 else if (rand_val < 0.99) then 5 else 6
 		end
 	end
 	
@@ -426,10 +426,10 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 35.4%, 1 tour = 26.6%, 2 tours = 19.7%, 3 tours = 8.1%, 4 tours = 4.9%, 5 tours = 2.2%, 6 tours = 1.7%, 7 tours = 0.6%, 8 tours = 0.5%, 9 tours = 0.2%, 10 tours = 0.1%
 
-	U1 = -0.1911 + 0.8086*size + 0.3765*lc2dum - 0.2502*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.3254*inc4dum - 0.5*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U2 = -0.5274 + 0.8086*size + 0.3765*lc2dum - 0.2502*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.3254*inc4dum - 1.4*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U3 = -2.880 + 1.421*size + 0.3765*lc2dum - 0.5127*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.6236*inc4dum - 0.6706*inc1dum - 1.6*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
-	U4 = -4.202 + 1.859*size + 0.3765*lc2dum - 0.5127*wrkr - 0.12369*atype_v + 0.000005842*medinc_v - 0.6965*(school_v + hbu_v) - 1.035*hbw_v - 0.8163*hbs_v + 0.6085*inc4dum - 0.7486*inc1dum - 2.0*siz1dum + 1.5*urbdum - 0.3*at5dum + 0.94 + 0.9*suburb
+	U1 = 0.114 + 0.251*size + 0.401*lc2dum - 0.166*wrkr + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.296*inc4dum - 0.379*at5dum - 0.196*suburb + .36 + .15
+	U2 = -0.124 + 0.251*size + 0.401*lc2dum - 0.166*wrkr + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.296*inc4dum - 1.047*siz1dum - 0.379*at5dum - 0.196*suburb + .14 + .10
+	U3 = -1.807 + 0.604*size + 0.401*lc2dum + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.635*inc4dum - 0.630*inc1dum - 0.758*siz1dum - 0.379*at5dum - 0.196*suburb + .06 + .06
+	U4 = -3.079 + 1.122*size + 0.401*lc2dum + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.635*inc4dum - 0.630*inc1dum - 1.197*siz1dum - 0.379*at5dum - 0.196*suburb - .4 - .08
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
@@ -455,10 +455,10 @@ WriteArray(reportfile, pctwkr)
 		if (rand_val < cumprob03[n]) then do
 			choice_v[n] = if (rand_val < prob0[n]) then 0 else if (rand_val < cumprob01[n]) then 1 else if (rand_val < cumprob02[n]) then 2 else 3
 		end
-		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (23.0%), 6 (15.0%), 7 (7.0%), 8 (3.5%), 9 (1.5%) & 10 (3.0%)
+		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (27.0%), 6 (14.0%), 7 (8.0%), 8 (3.0%), 9 (2%)
 		else do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.470) then 4 else if (rand_val < 0.700) then 5 else if (rand_val < 0.850) then 6 else if (rand_val < 0.920) then 7 else if (rand_val < 0.955) then 8 else if (rand_val < 0.970) then 9 else 10
+			choice_v[n] = if (rand_val < 0.47) then 4 else if (rand_val < 0.74) then 5 else if (rand_val < 0.88) then 6 else if (rand_val < 0.96) then 7 else if (rand_val < 0.99) then 8 else 9
 		end
 	end
 	

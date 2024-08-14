@@ -1,0 +1,204 @@
+---
+title: "Tour Frequency"
+output: html_document
+date: "2024-03-21"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(dplyr.summarise.inform = FALSE)
+options(scipen = 999)
+
+library(tidyverse)
+library(knitr)
+library(scales)
+library(kableExtra)
+library(readxl)
+```
+
+```{r}
+hh <- read_csv("data/_private/hh_survey/output/output_households.csv")
+per <- read_csv("data/_private/hh_survey/output/output_persons.csv")
+tours <- read_csv("data/_private/hh_survey/output/output_tours.csv")
+se <- read_csv("data/input/se_data/SE_2018.csv")
+```
+
+# Create estimation dataset
+
+```{r}
+retired <- per %>%
+  mutate(
+    retired = ifelse(employment == "Retired", 1, 0)
+  ) %>%
+  group_by(hh_id) %>%
+  summarize(retired = max(retired, na.rm = TRUE))
+
+# bottom 10% income: $20k
+# 25%: $30k (closest breakpoint in the survey)
+# 50%: $40k
+
+est_tbl1 <- hh %>%
+  left_join(retired, by = "hh_id") %>%
+  mutate(
+    life_cycle = case_when(
+      retired == 1 ~ 1,
+      num_kids != "0 children" ~ 2,
+      TRUE ~ 3
+    ),
+    income = case_when(
+      income_broad == "Under $20,000" ~ 1,
+      income_detailed %in% c("$20,000-$29,999", "$30,000-$39,999") ~ 2,
+      income_detailed %in% c("$40,000-$49,999", "$50,000-$74,999") ~ 3,
+      TRUE ~ 4
+    ),
+    size = gsub("(?:\\sperson|\\speople)", "", num_people),
+    size = as.numeric(size),
+    size = ifelse(size > 5, 5, size),
+    workers = gsub("(?:\\sworker|\\sworkers)", "", num_workers),
+    workers = as.numeric(workers),
+    workers = ifelse(workers > 3, 3, workers)
+  ) %>%
+  select(hh_id2, hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
+  filter(!is.na(HomeTAZ)) %>%
+  # cap tour counts to match model structure
+  mutate(
+    school_tours_orig = school_tours,
+    univ_tours_orig = univ_tours,
+    work_tours_orig = work_tours,
+    shop_tours_orig = shop_tours,
+    other_tours_orig = other_tours,
+    school_tours = ifelse(school_tours > 2, 2, school_tours),
+    univ_tours = ifelse(univ_tours > 1, 1, univ_tours),
+    work_tours = ifelse(work_tours > 2, 2, work_tours),
+    shop_tours = ifelse(shop_tours > 2, 2, shop_tours),
+    other_tours = ifelse(other_tours > 4, 4, other_tours)
+  )
+
+max_share_tbl <- est_tbl1 %>%
+  select(school_tours_orig:other_tours_orig) %>%
+  rename_with(~ gsub("_tours_orig", "", .x), everything()) %>%
+  mutate(
+    school = ifelse(school >= 5, 5, school),
+    univ = ifelse(univ >= 3, 3, univ),
+    work = ifelse(work >= 5, 5, work),
+    shop = ifelse(shop >= 6, 6, shop),
+    other = ifelse(other >= 10, 5, other)
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "tour_type", values_to = "tour_count") %>%
+  filter(
+    (tour_type == "school" & tour_count >= 2) |
+    (tour_type == "univ" & tour_count >= 1) |
+    (tour_type == "work" & tour_count >= 2) |
+    (tour_type == "shop" & tour_count >= 2) |
+    (tour_type == "other" & tour_count >= 4)
+  ) %>%
+  group_by(tour_type, tour_count) %>%
+  summarize(samples = n()) %>%
+  mutate(
+    pct = round(samples / sum(samples), 2),
+    cume = cumsum(pct)
+  )
+
+est_tbl <- est_tbl1 %>%
+  select(-c(school_tours_orig:other_tours_orig))
+
+# The atwork/subtour estimation data set is a bit different. Each HBW tour
+# makes the choice, so the rows must be HBW tours. To that, all the same
+# HH-level estimation data is added. In addition, the model uses the
+# density of the work/anchor zone, so add that.
+work_tours <- tours %>%
+  filter(tour_type == "work" & !is.na(anchor_taz)) %>%
+  left_join(est_tbl %>% select(-sub_tours), by = "hh_id")
+
+calc_dens <- se %>%
+  mutate(
+    area_acres = AREA * 640,
+    hh_dens = HH / area_acres
+  ) %>%
+  select(TAZ, hh_dens)
+
+est_subtour <- work_tours %>%
+  left_join(calc_dens, by = c("anchor_taz" = "TAZ")) %>%
+  filter(!is.na(HomeTAZ) & !is.na(hh_dens)) %>%
+  mutate(subtours = ifelse(subtours > 1, 1, subtours)) %>%
+  rename(hh_id2 = hh_id2.x)
+```
+
+# Calibration Targets
+
+```{r}
+model_tours <- read_csv("data/input/tour_freq/model_results.csv")
+
+model_shares <- model_tours %>%
+  select(SCH:HBO) %>%
+  # Apply the same capping/choice set creation as the survey
+  mutate(
+    SCH = ifelse(SCH > 2, 2, SCH),
+    HBU = ifelse(HBU > 1, 1, HBU),
+    HBW = ifelse(HBW > 2, 2, HBW),
+    HBS = ifelse(HBS > 2, 2, HBS),
+    HBO = ifelse(HBO > 4, 4, HBO)
+  ) %>%
+  pivot_longer(cols = SCH:HBO, names_to = "tour_type", values_to = "count") %>%
+  group_by(tour_type, count) %>%
+  summarize(n = n()) %>%
+  mutate(
+    model_pct = round(n / sum(n, na.rm = TRUE) * 100, 2),
+    tour_type = case_when(
+      tour_type == "HBO" ~ "other_tours",
+      tour_type == "SCH" ~ "school_tours",
+      tour_type == "HBW" ~ "work_tours",
+      tour_type == "HBU" ~ "univ_tours",
+      tour_type == "HBS" ~ "shop_tours",
+    )
+  )
+```
+
+
+```{r}
+# If a household was surveyed on multiple days, divide it's weight by the
+# number of days surveyed. This will prevent too many tours being counted
+# when expanded to household weight.
+weights <- hh %>%
+  select(hh_id, hh_id2, hh_weight) %>%
+  group_by(hh_id) %>%
+  summarize(n = n(), hh_weight = first(hh_weight)) %>%
+  mutate(hh_weight = hh_weight / n) %>%
+  select(hh_id, hh_weight)
+
+# tours %>%
+#   left_join(weights, by = "hh_id") %>%
+#   group_by(tour_type) %>%
+#   summarize(total = sum(hh_weight))
+
+cal_tbl <- est_tbl %>%
+  pivot_longer(cols = ends_with("_tours"), names_to = "tour_type", values_to = "count") %>%
+  left_join(weights, by = "hh_id") %>%
+  group_by(tour_type, count) %>%
+  summarize(expanded_tours = sum(hh_weight, na.rm = TRUE)) %>%
+  filter(tour_type != "sub_tours") %>%
+  mutate(survey_pct = round(expanded_tours / sum(expanded_tours) * 100, 1)) %>%
+  left_join(
+    model_shares %>% select(-n), by = c("tour_type", "count")
+  ) %>%
+  select(-expanded_tours) %>%
+  mutate(constant = round(log(survey_pct/model_pct) * .8, 2))
+```
+
+
+```{r, eval=FALSE}
+# my original workspace used integer hh_ids so convert these to numerics
+# to prevent having to rebuild the estimation workspace in TC
+est_tbl_temp <- est_tbl %>%
+  mutate(hh_id = as.numeric(gsub("_", "", hh_id2))) %>%
+  filter(!is.na(hh_id)) %>%
+  select(-hh_id2)
+write_csv(est_tbl_temp, "data/_private/hh_survey/output/tour_freq_est.csv", na = "")
+
+est_subtour_temp <- est_subtour %>%
+  mutate(hh_id = as.numeric(gsub("_", "", hh_id2)))
+write_csv(est_subtour_temp, "data/_private/hh_survey/output/subtour_freq_est.csv", na = "")
+```
+

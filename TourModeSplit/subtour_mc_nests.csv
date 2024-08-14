@@ -1,0 +1,4 @@
+Parent,Alternatives,ParentNestCoeff
+Root,"auto, walk",1
+auto,"sov, hov",0.7
+hov,"pool2, pool3",0.5

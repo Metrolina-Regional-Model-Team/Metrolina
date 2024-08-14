@@ -37,7 +37,7 @@
             }
         Args.InputFolder = {
                 "Type": "Folder",
-                "Value": "%Run Directory%Input"
+                "Value": "%Run Directory%\\Input"
             }
         Args.[MRM TAZ File] = {
                 "Type": "file",
@@ -82,6 +82,91 @@
                 "Value": "%Run Directory%\\RegNet_OffPeak.dbd"
             }
     
+    Section = "Mode Split"
+        Args.TourMCFlag = {
+                "Type": "boolean",
+                "Caption": "Run Tour Mode Choice?",
+                "Value": 1
+            }
+
+    Section = "Mode Split#WorkTours"
+        Args.[Work Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\work_mc_specs.csv"
+            }
+
+        Args.[Work Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\work_mc_nests.csv"
+            }
+
+    Section = "Mode Split#ShopTours"
+        Args.[Shop Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\shop_mc_specs.csv"
+            }
+
+        Args.[Shop Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\shop_mc_nests.csv"
+            }
+
+    Section = "Mode Split#OtherTours"
+        Args.[Other Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\other_mc_specs.csv"
+            }
+
+        Args.[Other Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\other_mc_nests.csv"
+            }
+
+    Section = "Mode Split#SchoolTours"
+        Args.[School Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\school_mc_specs.csv"
+            }
+
+        Args.[School Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\school_mc_nests.csv"
+            }
+
+    Section = "Mode Split#UniversityTours"
+        Args.[Univ Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\univ_mc_specs.csv"
+            }
+
+        Args.[Univ Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\univ_mc_nests.csv"
+            }
+
+    Section = "Mode Split#SubTours"
+        Args.[Sub Tour Mode Spec] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Utility specification file",
+                "Value": "%Run Directory%\\TourModeSplit\\subtour_mc_specs.csv"
+            }
+
+        Args.[Sub Tour Mode Nests] = {
+                "Type": "file",
+                "Caption": "Work Tour Mode Nest structure file",
+                "Value": "%Run Directory%\\TourModeSplit\\subtour_mc_nests.csv"
+            }
+
     Section = "Numeric Values"
 
         Args.[TimeWeight] = {
