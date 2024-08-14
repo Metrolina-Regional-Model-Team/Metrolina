@@ -54,6 +54,7 @@ EndMacro
   You can use it to change the value for some particular parameters.
 **/
 Macro "Model.OnModelReady" (Args,Result)
+Body:
     Return({"Base Folder": "%Model Folder%"})
 EndMacro
 
