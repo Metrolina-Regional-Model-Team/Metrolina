@@ -1,0 +1,15 @@
+
+31
+"Service",I,1,4,0,10,0,,"","Unique ID identifying a set of dates when service is available",,"Sum",
+"#Trips",I,5,4,0,10,0,,"","Number of scheduled trips",,"Sum",
+"Start Date",I,9,4,0,10,0,,"","Starting date for the service (YYYYMMDD)",,"Sum",
+"End Date",I,13,4,0,10,0,,"","Ending date for the service (YYYYMMDD)",,"Sum",
+"Monday",C,17,1,0,1,0,,"","Whether service is valid for all Mondays",,"Copy",
+"Tuesday",C,18,1,0,1,0,,"","Whether service is valid for all Tuesdays",,"Copy",
+"Wednesday",C,19,1,0,1,0,,"","Whether service is valid for all Wednesdays",,"Copy",
+"Thursday",C,20,1,0,1,0,,"","Whether service is valid for all Thursdays",,"Copy",
+"Friday",C,21,1,0,1,0,,"","Whether service is valid for all Fridays",,"Copy",
+"Saturday",C,22,1,0,1,0,,"","Whether service is valid for all Saturdays",,"Copy",
+"Sunday",C,23,1,0,1,0,,"","Whether service is valid for all Sundays",,"Copy",
+"#Additions",I,24,4,0,10,0,,"","Number of exceptions where this service is used",,"Sum",
+"#Deletions",I,28,4,0,10,0,,"","Number of exceptions where this service is omitted",,"Sum",
