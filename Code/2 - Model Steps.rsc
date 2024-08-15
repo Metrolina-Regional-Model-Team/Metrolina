@@ -79,10 +79,6 @@ Macro "Mode Split" (Args)
     
     RunMacro("Tour Mode Split", Args)
 
-    // The following does PA2OD and we have to fit this in later
-    // It also adds IE/EI trips, so they have to be handled as well
-    // Likely move to the new 'Create OD' macro
-    //RunMacro("Tour_TOD2_AMPeak", Args)
     return(1)
 endmacro
 
@@ -100,6 +96,11 @@ Macro "Intermediate Stops"(Args)
 endmacro
 
 Macro "Create OD"(Args)
+    // Call macro to create OD matrix for the AM Peak period
+
+    // Then uncomment code below
+    // RunMacro("Tour_TOD2_AMPeak", Args)
+
     return(1)
 endMacro
 

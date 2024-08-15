@@ -167,6 +167,18 @@
                 "Value": "%Run Directory%\\TourModeSplit\\subtour_mc_nests.csv"
             }
 
+    Section = "Commerical and Truck|TOD Factors"
+        Args.[Com and Truck TOD Factors] = {
+                "Type": "array",
+                "Value": {{"AMPeak", 0.125, 0.25},
+                          {"Midday", 0.15, 0.30},
+                          {"PMPeak", 0.125, 0.25},
+                          {"Night", 0.1, 0.2}},
+                "Caption": "Commerical and Truck TOD factors",
+                "Description":"Com and Truck TOD Factors",
+                "Style":"TODFactors"
+            }
+
     Section = "Numeric Values"
 
         Args.[TimeWeight] = {
