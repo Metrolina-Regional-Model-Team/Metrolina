@@ -212,7 +212,7 @@ WriteArray(reportfile, pctwkr)
   SetRandomSeed(67653)	
 //Alternative percentages: 0 tours = 96.3%, 1 tour = 3.2%, 2 tours = 0.4%, 3 tours = 0.1%
 
-	U1 = -5.57 + 0.531*size - 0.107*school_v + 1.002*inc1dum + 0.817*at2dum + 0.329*siz3dum + 0.741*wkr3dum + .14 + .04
+	U1 = -5.492 + 0.567*size - 0.247*school_v + 0.987*inc1dum + 0.859*at2dum + 0.335*siz3dum + 0.701*wkr3dum
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours
