@@ -128,8 +128,8 @@ end
   SetRandomSeed(667653)	
 
 //Alternative percentages: 0 tours = 75.7%, 1 tour = 11.7%, 2 tours = 9.1%, 3 tours = 2.8%, 4 tours = 0.6%, 5 tours = 0.1%
-	U1 = -1.692 + 0.65*lc2dum + 0.618*wkr3dum + 0.325*siz34dum + 0.329*inc1dum - 1.130*cbddum - 2.342*lc1dum - .51 - .16
-	U2 = -1.08 + 0.318*lc2dum - 0.404*wkr3dum - 1.763*siz34dum - 0.417*inc1dum - 1.143*cbddum - 1.399*lc1dum - 3.907*siz2dum + 0.671*siz5dum + .48 + .15
+	U1 = -1.54 + 0.817*lc2dum + 0.557*wkr3dum + 0.284*siz34dum + 0.225*inc1dum - 1.122*cbddum -2.358*lc1dum
+	U2 = -0.92 + 0.502*lc2dum - 0.486*wkr3dum - 1.831*siz34dum - 0.516*inc1dum - 1.163*cbddum - 1.419*lc1dum - 3.935*siz2dum + 0.633*siz5dum
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = if (lc = 3 or size = 1) then 0 else exp(U1)				//LC=3 & Size=1 have no SCH tours
