@@ -533,9 +533,9 @@ SetRandomSeed(9543)
 //Repeat above logic for AP direction
 	stop4dum = if (choice_v > 4) then 1 else 0
 
-	U1 = -0.8276 - 0.2403 * choice_v + 0.0552 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 *  + 0.5523 * hovdum
-	U2 = -1.9793 - 0.3747 * choice_v + 0.0788 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 *  + 0.5523 * hovdum
-	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 *  + 0.5523 * hovdum
+	U1 = -0.8276 - 0.2403 * choice_v + 0.0552 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
+	U2 = -1.9793 - 0.3747 * choice_v + 0.0788 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
+	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
