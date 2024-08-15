@@ -426,10 +426,10 @@ WriteArray(reportfile, pctwkr)
 
 //Alternative percentages: 0 tours = 35.4%, 1 tour = 26.6%, 2 tours = 19.7%, 3 tours = 8.1%, 4 tours = 4.9%, 5 tours = 2.2%, 6 tours = 1.7%, 7 tours = 0.6%, 8 tours = 0.5%, 9 tours = 0.2%, 10 tours = 0.1%
 
-	U1 = 0.114 + 0.251*size + 0.401*lc2dum - 0.166*wrkr + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.296*inc4dum - 0.379*at5dum - 0.196*suburb + .36 + .15
-	U2 = -0.124 + 0.251*size + 0.401*lc2dum - 0.166*wrkr + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.296*inc4dum - 1.047*siz1dum - 0.379*at5dum - 0.196*suburb + .14 + .10
-	U3 = -1.807 + 0.604*size + 0.401*lc2dum + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.635*inc4dum - 0.630*inc1dum - 0.758*siz1dum - 0.379*at5dum - 0.196*suburb + .06 + .06
-	U4 = -3.079 + 1.122*size + 0.401*lc2dum + 0.0000017*medinc_v - 0.319*(school_v + hbu_v) - 1.338*hbw_v - 0.896*hbs_v + 0.635*inc4dum - 0.630*inc1dum - 1.197*siz1dum - 0.379*at5dum - 0.196*suburb - .4 - .08
+	U1 = -0.084 + 0.271*size + 0.44*lc2dum - 0.169*wrkr + 0.00000142*medinc_v - -0.316*(school_v + hbu_v) - -1.248*hbw_v - -0.798*hbs_v + 0.29*inc4dum - -0.34*at5dum - -0.148*suburb + .36 + .15
+	U2 = -0.382 + 0.271*size + 0.44*lc2dum - 0.169*wrkr + 0.00000142*medinc_v - -0.316*(school_v + hbu_v) - -1.248*hbw_v - -0.798*hbs_v + 0.29*inc4dum - -1.034*siz1dum - -0.34*at5dum - -0.148*suburb + .14 + .10
+	U3 = -2.156 + 0.646*size + 0.401*lc2dum + 0.00000142*medinc_v - -0.316*(school_v + hbu_v) - -1.248*hbw_v - -0.798*hbs_v + 0.606*inc4dum - -0.579*inc1dum - -0.561*siz1dum - -0.34*at5dum - -0.148*suburb + .06 + .06
+	U4 = -3.322 + 1.125*size + 0.401*lc2dum + 0.00000142*medinc_v - -0.316*(school_v + hbu_v) - -1.248*hbw_v - -0.798*hbs_v + 0.606*inc4dum - -0.579*inc1dum - -1.194*siz1dum - -0.34*at5dum - -0.148*suburb - .4 - .08
 
 	E2U0 = Vector(hhid.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)
@@ -455,10 +455,10 @@ WriteArray(reportfile, pctwkr)
 		if (rand_val < cumprob03[n]) then do
 			choice_v[n] = if (rand_val < prob0[n]) then 0 else if (rand_val < cumprob01[n]) then 1 else if (rand_val < cumprob02[n]) then 2 else 3
 		end
-		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (27.0%), 6 (14.0%), 7 (8.0%), 8 (3.0%), 9 (2%)
+		//The 4+ categories are 4 (47.0% of all 4+ tours), 5 (27.0%), 6 (13.0%), 7 (8.0%), 8 (3.0%), 9 (2%)
 		else do
 			rand_val = RandomNumber()
-			choice_v[n] = if (rand_val < 0.47) then 4 else if (rand_val < 0.74) then 5 else if (rand_val < 0.88) then 6 else if (rand_val < 0.96) then 7 else if (rand_val < 0.99) then 8 else 9
+			choice_v[n] = if (rand_val < 0.47) then 4 else if (rand_val < 0.74) then 5 else if (rand_val < 0.87) then 6 else if (rand_val < 0.95) then 7 else if (rand_val < 0.98) then 8 else 9
 		end
 	end
 	
