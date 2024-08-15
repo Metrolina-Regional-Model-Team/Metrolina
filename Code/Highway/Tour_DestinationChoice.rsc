@@ -1160,7 +1160,7 @@ hbwdestii = OpenTable("hbwdestii", "FFB", {DirOutDC + "\\dcHBW.bin",})
 	hhdenshbwout = hhhbwout / (areahbwout * 640)		//SE file has area in SqMiles, needs to be in acres
 //	accE15cfr_v = a2v(accE15cfr_ar)
 	
-	U1 = -2.659 - 0.3166 * wkrhbwout + 0.000003801 * medinchbwout + 0.7615 * inc4hbwout + 0.03204 * hhdenshbwout
+	U1 = -1.484 + 0.0000012 * medinchbwout
 
 	E2U0 = Vector(idhbwout.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours
