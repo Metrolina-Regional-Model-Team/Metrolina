@@ -178,7 +178,7 @@ Macro "CreateDir" (Args)
         {"\\ExtSta", 
             {"thrubase_auto.asc", "thrubase_auto.dct", "thrubase_com.asc", "thrubase_com.dct",
             "thrubase_mtk.asc",  "thrubase_mtk.dct",  "thrubase_htk.asc", "thrubase_htk.dct",
-            "bvthru.asc", "bvthru.dct", "extstavol18_base.asc", "extstavol18_base.dct"}},
+            "bvthru.asc", "bvthru.dct", "extstavol.asc", "extstavol.dct"}},
 
         {"",
             {"ATFUN_ID.dbf", "COATFUN_ID.dbf", "County_ATFun.bin","County_ATFun.dcb","County_ATFunID.bin", 
