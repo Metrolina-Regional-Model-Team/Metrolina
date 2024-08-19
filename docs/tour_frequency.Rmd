@@ -129,7 +129,7 @@ est_subtour <- work_tours %>%
 # Calibration Targets
 
 ```{r}
-model_tours <- read_csv("data/input/tour_freq/model_results.csv")
+model_tours <- read_csv("data/input/tour_freq/TourRecords.csv")
 
 model_shares <- model_tours %>%
   select(SCH:HBO) %>%

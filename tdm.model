@@ -25,6 +25,8 @@ Body:
     FlowChartNode(model,"Transit Assignment",,,)
     FlowChartNode(model,"HOT",,,)
     FlowChartNode(model,"Summaries",,,)
+    FlowChartNode(model,"Intermediate Stops",,,)
+    FlowChartNode(model,"Time of Day",,,)
     //
     // Links
     //
@@ -43,6 +45,11 @@ Body:
     FlowChartLink(model,"Post Feedback","Transit Assignment",True,,)
     FlowChartLink(model,"Transit Assignment","HOT",True,,)
     FlowChartLink(model,"HOT","Summaries",True,,)
+    FlowChartLink(model,"Trip Distribution","Mode Split",True,,)
+    FlowChartLink(model,"Mode Split","Intermediate Stops",True,,)
+    FlowChartLink(model,"Intermediate Stops","Trucks",True,,)
+    FlowChartLink(model,"Trucks","Time of Day",True,,)
+    FlowChartLink(model,"Time of Day","Peak Highway Assignment",True,,)
     Return(model)
 EndMacro
 
@@ -160,6 +167,24 @@ Macro "Summaries" (Args,Result)
         {"Class", {"GISDK"}},
         {"MacroNames", {"Summaries"}},
         {"Picture", "bmp\\planmatrix_v3.bmp"}
+    }
+EndMacro
+
+
+Macro "Intermediate Stops" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Intermediate Stops"}},
+        {"Picture", "bmp\\planmodesplit_v3.bmp"}
+    }
+EndMacro
+
+
+Macro "Time of Day" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Time of Day"}},
+        {"Picture", "bmp\\planlanduse_v3.bmp"}
     }
 EndMacro
 
