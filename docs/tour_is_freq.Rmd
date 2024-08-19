@@ -101,6 +101,42 @@ est_tbl <- tours %>%
   relocate(int_stop_ret_cap, .after = int_stop_ret)
 ```
 
+```{r}
+# Calculate the percentage distribution of IS above the cap of 2
+cap3 <- c("shop", "other")
+
+fwd_pcts <- est_tbl %>%
+  filter((tour_type %in% cap3 & int_stop_fwd >= 3) | (!(tour_type %in% cap3) & int_stop_fwd >= 2)) %>%
+  mutate(int_stop_fwd = case_when(
+    tour_type == "other" & int_stop_fwd > 7 ~ 7,
+    tour_type == "shop" & int_stop_fwd > 6 ~ 6,
+    int_stop_fwd > 5 ~ 5,
+    TRUE ~ int_stop_fwd
+  )) %>%
+  group_by(tour_type, int_stop_fwd) %>%
+  summarize(count = n()) %>%
+  mutate(
+    pct = round(count / sum(count) * 100, 0),
+    cumesum = cumsum(pct)
+  )
+  
+ret_pcts <- est_tbl %>%
+  filter((tour_type %in% cap3 & int_stop_ret >= 3) | (!(tour_type %in% cap3) & int_stop_ret >= 2)) %>%
+  mutate(int_stop_ret = case_when(
+    tour_type == "other" & int_stop_ret > 7 ~ 7,
+    tour_type == "shop" & int_stop_ret > 6 ~ 6,
+    int_stop_ret > 5 ~ 5,
+    TRUE ~ int_stop_ret
+  )) %>%
+  group_by(tour_type, int_stop_ret) %>%
+  summarize(count = n()) %>%
+  mutate(
+    pct = round(count / sum(count) * 100, 0),
+    cumesum = cumsum(pct)
+  )
+```
+
+
 ```{r, eval=FALSE}
 write_csv(est_tbl, "data/_private/hh_survey/output/tour_is_freq_est.csv", na = "")
 ```
