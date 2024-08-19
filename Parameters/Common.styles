@@ -4,6 +4,12 @@
                                           ,{Name:"Gamma", Type:"float",  "Fixed":"false"}
                               }})
 
+    Styles.TODFactors = Pme.Table({Height: 5, Autosize: "True", Values: "Indexed Option Arrays",
+                                                Columns:    {{Name: "Period", Type: "string",  Fixed: "true", Width: "40%"},
+                                                             {Name: "IETrips",  Type: "real", "Decimals":"3", Width: "30%"},
+                                                             {Name: "EETrips",  Type: "real", "Decimals":"3"}}
+                                    })
+
     Styles.MatrixOptionList = Pme.DropList({ Options: {".MTX",".OMX"} })
 
     Styles.SimpleTable = Pme.Table({ 

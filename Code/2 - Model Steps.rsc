@@ -43,8 +43,8 @@ Macro "Skimming" (Args)
 endmacro
 
 Macro "Trip Generation" (Args)
-    
-    if Args.[Current Feedback Iter] > 1 then return(1)
+    if Args.[Current Feedback Iter] > 1 then 
+        return(1)
     
     RunMacro("ExtStaforTripGen", Args)
     RunMacro("HHMET", Args)
@@ -55,39 +55,14 @@ Macro "Trip Generation" (Args)
 endmacro
 
 Macro "Trip Distribution" (Args)
-
-    first_iter = if Args.[Current Feedback Iter] = 1
-        then "true"
-        else "false"
-
     RunMacro("TD_TranPath_Peak", Args)
     RunMacro("TD_TranPath_Free", Args)
-    if first_iter then do
+    
+    if Args.[Current Feedback Iter] = 1 then
         RunMacro("Tour_DestinationChoice", Args)
-    end else do
+    else
         RunMacro("Tour_DC_FB", Args)
-    end
-    return(1)
-endmacro
-
-Macro "Mode Split" (Args)
-   if Args.TourMCFlag then
-        RunMacro("Tour Mode Split", Args)
-    return(1)
-endmacro
-
-Macro "Intermediate Stops" (Args)
-
-    first_iter = if Args.[Current Feedback Iter] = 1
-        then "true"
-        else "false"
-    if first_iter then do
-        RunMacro("Tour_IS", Args)
-        RunMacro("Tour_IS_Location", Args)
-    end else do
-        RunMacro("Tour_IS_FB", Args)
-        RunMacro("Tour_IS_Location_FB", Args)
-    end
+    
     return(1)
 endmacro
 
@@ -96,23 +71,38 @@ Macro "Trucks" (Args)
     return(1)
 endmacro
 
-Macro "Time of Day" (Args)
-    
-    first_iter = if Args.[Current Feedback Iter] = 1
-        then "true"
-        else "false"
-
-    if first_iter then do
+Macro "Mode Split" (Args)
+    if Args.[Current Feedback Iter] then
         RunMacro("Tour_ToD1", Args)
-        RunMacro("Tour_TripAccumulator", Args)
-    end else do
+    else
         RunMacro("Tour_ToD1_FB", Args)
-        RunMacro("Tour_TripAccumulator_FB", Args)
-    end
-    RunMacro("MS_RunPeak", Args)
-    RunMacro("Tour_TOD2_AMPeak", Args)
+    
+    RunMacro("Tour Mode Split", Args)
+
+    return(1)
 endmacro
 
+Macro "Intermediate Stops"(Args)
+    return(1)
+    if Args.[Current Feedback Iter] = 1 then do
+        RunMacro("Tour_IS", Args)
+        RunMacro("Tour_IS_Location", Args)
+    end
+    else do
+        RunMacro("Tour_IS_FB", Args)
+        RunMacro("Tour_IS_Location_FB", Args)
+    end
+    return(1)
+endmacro
+
+Macro "Create OD"(Args)
+    // Call macro to create OD matrix for the AM Peak period
+
+    // Then uncomment code below
+    // RunMacro("Tour_TOD2_AMPeak", Args)
+
+    return(1)
+endMacro
 
 Macro "Peak Highway Assignment" (Args)
     RunMacro("HwyAssn_RunAMPeak", Args)    
