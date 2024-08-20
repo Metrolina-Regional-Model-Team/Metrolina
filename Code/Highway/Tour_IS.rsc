@@ -162,6 +162,7 @@ end
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -199,7 +200,6 @@ SetRandomSeed(454)
 	end
 
 //Apply the PA model
-// TODO: create the hovdum vector.
 	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum
 	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum
 
@@ -268,6 +268,7 @@ SetRandomSeed(454)
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 //	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -304,7 +305,6 @@ SetRandomSeed(894)
 	end
 
 //Apply the PA model
-// TODO create the hovdum vector
 	U1 = -4.3588 + 0.00005 * ret30_orig + 1.1172 * hovdum
 	U2 = -5.7802 + 0.00005 * ret30_orig + 1.1172 * hovdum
 
@@ -373,6 +373,7 @@ SetRandomSeed(894)
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 
@@ -405,7 +406,6 @@ SetRandomSeed(7844)
 	end
 
 //Apply the PA model
-// TODO create the hovdum vector
 	U1 = -3.0845 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
 	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
 
@@ -424,7 +424,6 @@ SetRandomSeed(7844)
 	SetDataVector(tour_files[3]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-// TODO: create the hovdum vector.
 	U1 = -3.0845 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
 	U2 = -3.4900 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
 
@@ -474,6 +473,7 @@ SetRandomSeed(7844)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
+	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours
 	tourinc1dum = if (tourincome = 1) then 1 else 0
@@ -517,7 +517,6 @@ SetRandomSeed(9543)
 
 
 //Apply the PA model
-// TODO create the hovdum vector
 	U1 = -3.2957 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
 	U2 = -3.9736 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
 	U3 = -4.2104 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
@@ -595,6 +594,7 @@ SetRandomSeed(9543)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
+	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc1dum = if (tourincome = 1) then 1 else 0
@@ -636,7 +636,6 @@ SetRandomSeed(1548)
 	end
 
 //Apply the PA model
-// TODO create the hovdum vector
 	U1 = -3.7008 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2021 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
 	U2 = -4.7065 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2572 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
 	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
@@ -713,6 +712,7 @@ SetRandomSeed(1548)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
+	sovdum = if Lower(tourmode) = "sov" then 1 else 0
 	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours, excluding ATW (HBW+SCH+HBU+HBS+HBO)
 	//the non-resident ATW tours don't have records of the number of tours, so set those = 3.56:
@@ -753,7 +753,6 @@ SetRandomSeed(40880)
 	end
 
 //Apply the PA model
-// TODO: create sovdum vector
 	U1 = -2.1350 + 0.0557 * htime - 0.00003 * ret30_dest + 0.8166 * sovdum
 
 	E2U0 = 1
