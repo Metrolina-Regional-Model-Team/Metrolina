@@ -151,7 +151,7 @@ end
 	ModifyTable(tour_files[1], strct)
 
 	tour_vectors = GetDataVectors(tour_files[1]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	tourincome = tour_vectors[5]
 	tourlc = tour_vectors[6]
@@ -160,6 +160,8 @@ end
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -201,9 +203,10 @@ SetRandomSeed(454)
 	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum
 	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum
 
+	//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -249,7 +252,7 @@ SetRandomSeed(454)
 	strct = strct + {{"IS_AP", "Integer", 2,,,,,,,,,}}
 	ModifyTable(tour_files[2], strct)
 	tour_vectors = GetDataVectors(tour_files[2]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 //	tourincome = tour_vectors[5]
@@ -263,6 +266,8 @@ SetRandomSeed(454)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 //	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -304,8 +309,8 @@ SetRandomSeed(894)
 	U2 = -5.7802 + 0.00005 * ret30_orig + 1.1172 * hovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -352,7 +357,7 @@ SetRandomSeed(894)
 	ModifyTable(tour_files[3], strct)
 
 	tour_vectors = GetDataVectors(tour_files[3]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 //	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -366,6 +371,8 @@ SetRandomSeed(894)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 
@@ -403,8 +410,8 @@ SetRandomSeed(7844)
 	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -452,7 +459,7 @@ SetRandomSeed(7844)
 	ModifyTable(tour_files[4], strct)
 
 	tour_vectors = GetDataVectors(tour_files[4]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 //	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -466,6 +473,8 @@ SetRandomSeed(7844)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours
 	tourinc1dum = if (tourincome = 1) then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
@@ -514,9 +523,9 @@ SetRandomSeed(9543)
 	U3 = -4.2104 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -571,7 +580,7 @@ SetRandomSeed(9543)
 	ModifyTable(tour_files[5], strct)
 
 	tour_vectors = GetDataVectors(tour_files[5]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -585,6 +594,8 @@ SetRandomSeed(9543)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc1dum = if (tourincome = 1) then 1 else 0
 	tourinc12dum = if (tourincome = 1 or tourincome = 2) then 1 else 0
@@ -631,9 +642,9 @@ SetRandomSeed(1548)
 	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -686,7 +697,7 @@ SetRandomSeed(1548)
 	ModifyTable(tour_files[6], strct)
 
 	tour_vectors = GetDataVectors(tour_files[6]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -701,6 +712,8 @@ SetRandomSeed(1548)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours, excluding ATW (HBW+SCH+HBU+HBS+HBO)
 	//the non-resident ATW tours don't have records of the number of tours, so set those = 3.56:
 	tours = if (tours = null) then 3.56 else tours
@@ -744,7 +757,7 @@ SetRandomSeed(40880)
 	U1 = -2.1350 + 0.0557 * htime - 0.00003 * ret30_dest + 0.8166 * sovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
+	E2U1 = if is_transit then 0 else exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
 	E2U_cum = E2U0 + E2U1
 
 	prob0 = E2U0 / E2U_cum
@@ -783,7 +796,7 @@ skip2ix:
 	ModifyTable(tour_files[7], strct)
 
 	tour_vectors = GetDataVectors(tour_files[7]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	tourincome = tour_vectors[5]
 	tourlc = tour_vectors[6]
@@ -804,6 +817,8 @@ skip2ix:
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourpurp = tour_vectors[19]
+	tourmode = tour_vectors[20]
+	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 	NWdum = if (tourpurp <> "HBW") then 1 else 0
@@ -841,8 +856,8 @@ SetRandomSeed(3450)
 	U2 = -2.736 + 1.250 * NWdum + 0.9095 * tourinc4dum - 0.263 * rural_orig - 0.2136 * tourlc2dum + 0.0001245 * ret30_orig - 0.3 * tours
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ I/X Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ I/X Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
