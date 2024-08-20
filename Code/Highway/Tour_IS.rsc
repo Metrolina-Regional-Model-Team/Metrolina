@@ -161,8 +161,9 @@ end
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
-	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -267,8 +268,9 @@ SetRandomSeed(454)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
-	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 //	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -372,8 +374,9 @@ SetRandomSeed(894)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
-	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 
@@ -473,8 +476,9 @@ SetRandomSeed(7844)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours
 	tourinc1dum = if (tourincome = 1) then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
@@ -594,8 +598,9 @@ SetRandomSeed(9543)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	hovdum = if Lower(tourmode) contains "pool" then 1 else 0
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc1dum = if (tourincome = 1) then 1 else 0
 	tourinc12dum = if (tourincome = 1 or tourincome = 2) then 1 else 0
@@ -712,8 +717,9 @@ SetRandomSeed(1548)
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourmode = tour_vectors[20]
-	sovdum = if Lower(tourmode) = "sov" then 1 else 0
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	sovdum = if Position(Lower(tourmode), "sov") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours, excluding ATW (HBW+SCH+HBU+HBS+HBO)
 	//the non-resident ATW tours don't have records of the number of tours, so set those = 3.56:
 	tours = if (tours = null) then 3.56 else tours
@@ -817,7 +823,8 @@ skip2ix:
 	tourdesttazseq = tour_vectors[18]
 	tourpurp = tour_vectors[19]
 	tourmode = tour_vectors[20]
-	is_transit = if Lower(tourmode) contains "bus" or Lower(tourmode) contains "prem" then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 	NWdum = if (tourpurp <> "HBW") then 1 else 0
