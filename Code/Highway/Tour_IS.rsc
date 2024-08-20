@@ -475,6 +475,7 @@ SetRandomSeed(7844)
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ddensp_orig = Vector(tourtaz.length, "float", ) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
+	ret30_orig = Vector(tourtaz.length, "float", ) 
 	htime = Vector(tourtaz.length, "float", ) 
 	at1dumP = Vector(tourtaz.length, "short", ) 
 	at1dumA = Vector(tourtaz.length, "short", ) 
@@ -709,6 +710,7 @@ SetRandomSeed(1548)
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
+	ret30_dest = Vector(tourtaz.length, "float", ) 
 	cbddum_dest = Vector(tourtaz.length, "short", ) 
 	rural_dest = Vector(tourtaz.length, "short", ) 
 	rural_orig = Vector(tourtaz.length, "short", ) 
@@ -1049,7 +1051,7 @@ SetRandomSeed(343)
 	end
 
 //Apply the PA model (same as the HBO PA model)
-	U1 = -0.997 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig 			- 0.4 * origAT - 0.1 * tours
+	U1 = -0.997 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig - 0.4 * origAT - 0.1 * tours
 	U2 = -3.899 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.1026 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
 	U3 = -4.485 + 0.03097 * htime - 0.62 * intraz - 2.2354 * cbddum_dest + 0.9526 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
 

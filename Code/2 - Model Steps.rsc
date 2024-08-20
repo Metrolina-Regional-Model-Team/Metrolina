@@ -83,7 +83,6 @@ Macro "Mode Split" (Args)
 endmacro
 
 Macro "Intermediate Stops"(Args)
-    return(1)
     if Args.[Current Feedback Iter] = 1 then do
         RunMacro("Tour_IS", Args)
         RunMacro("Tour_IS_Location", Args)
