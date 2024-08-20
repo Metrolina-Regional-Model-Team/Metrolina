@@ -801,7 +801,7 @@ skip2ix:
 	ModifyTable(tour_files[7], strct)
 
 	tour_vectors = GetDataVectors(tour_files[7]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	tourincome = tour_vectors[5]
 	tourlc = tour_vectors[6]
@@ -822,9 +822,6 @@ skip2ix:
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
 	tourpurp = tour_vectors[19]
-	tourmode = tour_vectors[20]
-	is_transit = if Position(Lower(tourmode), "bus") > 0 
-		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 	NWdum = if (tourpurp <> "HBW") then 1 else 0
@@ -862,8 +859,8 @@ SetRandomSeed(3450)
 	U2 = -2.736 + 1.250 * NWdum + 0.9095 * tourinc4dum - 0.263 * rural_orig - 0.2136 * tourlc2dum + 0.0001245 * ret30_orig - 0.3 * tours
 
 	E2U0 = 1
-	E2U1 = if is_transit then 0 else exp(U1)				
-	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ I/X Intermediate stops
+	E2U1 = exp(U1)				
+	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ I/X Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
