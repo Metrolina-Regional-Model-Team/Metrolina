@@ -95,8 +95,9 @@ Macro "Intermediate Stops"(Args)
     return(1)
 endmacro
 
-Macro "Create OD"(Args)
-    // Call macro to create OD matrix for the AM Peak period
+Macro "Create AM OD"(Args)
+    // First expand the tour file into trips
+    RunMacro("Create Highway OD", Args, "AM")
 
     // Then uncomment code below
     // RunMacro("Tour_TOD2_AMPeak", Args)
