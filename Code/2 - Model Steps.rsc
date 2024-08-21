@@ -94,8 +94,9 @@ Macro "Intermediate Stops"(Args)
     return(1)
 endmacro
 
-Macro "Create AM OD"(Args)
+Macro "Create OD"(Args)
     // First expand the tour file into trips
+    RunMacro("Create Trip File", Args)
     RunMacro("Create Highway OD", Args, "AM")
 
     // Then uncomment code below
