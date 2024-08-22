@@ -97,7 +97,7 @@ endmacro
 Macro "Create OD"(Args)
     // First expand the tour file into trips
     RunMacro("Create Trip File", Args)
-    RunMacro("Create Highway OD", Args, "AM")
+    // RunMacro("Create Highway OD", Args, "AM")
 
     // Then uncomment code below
     // RunMacro("Tour_TOD2_AMPeak", Args)

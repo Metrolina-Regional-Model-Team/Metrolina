@@ -37,6 +37,7 @@ Macro "Create Trip File" (Args)
         fields_add_return = fields + {"return_orig"}
 
         // Rename fields before pivot to preserve order
+        ordered_fields = null
         for i = 1 to fields_add_return.length do
             field = fields_add_return[i]
             num = 100 + i
@@ -148,9 +149,13 @@ Macro "Create Trip File" (Args)
             })
             RenameMatrix(mtx.GetMatrixHandle(), purp + " " + period)
         end
+
+        // Clean up
+        tbl = null
+        pivot = null
+        export = null
+        final = null
     end
-
-
 endmacro
 
 /*
