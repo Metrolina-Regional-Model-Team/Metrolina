@@ -122,11 +122,32 @@ Macro "Create Trip File" (Args)
         final.RenameField({FieldName: "ID", NewName: "TourID"})
         final.RenameField({FieldName: "TourMode", NewName: "Mode"})
 
-        // // Create OD matrices for peak and off-peak periods
-        // skim_mtx = offpk_hwyskim.mtx
-        // modes = final.Mode
-        // modes = SortVector(modes, {Unique: true})
-
+        // Create OD matrices for peak and off-peak periods
+        final.AddField("one")
+        v = Vector(final.GetRecordCount(), "integer", {Constant: 1})
+        final.one = v
+        modes = final.Mode
+        modes = V2A(SortVector(modes, {Unique: true}))
+        skim_mtx = Args.[Run Directory] + "\\Skims\\offpk_hwyskim.mtx"
+        periods = {"OP", "PK"}
+        for i = 1 to periods.length do
+            period = periods[i]
+            mtx_file = out_dir + "\\" + purp + "_" + period + ".mtx"
+            CopyFile(skim_mtx, mtx_file)
+            mtx = CreateObject("Matrix", mtx_file)
+            cores_to_drop = mtx.GetCoreNames()
+            mtx.AddCores(modes)
+            mtx.DropCores(cores_to_drop)
+            mtx.UpdateFromTable({
+                Table: final,
+                Filter: "TOD = " + String(i),
+                RowIDField: "TripOrigTAZ",
+                ColumnIDField: "TripDestTAZ",
+                CoreNameField: "Mode",
+                ValueField: "one"
+            })
+            RenameMatrix(mtx.GetMatrixHandle(), purp + " " + period)
+        end
     end
 
 
