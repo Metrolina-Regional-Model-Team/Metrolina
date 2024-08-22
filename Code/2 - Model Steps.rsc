@@ -83,7 +83,6 @@ Macro "Mode Split" (Args)
 endmacro
 
 Macro "Intermediate Stops"(Args)
-    return(1)
     if Args.[Current Feedback Iter] = 1 then do
         RunMacro("Tour_IS", Args)
         RunMacro("Tour_IS_Location", Args)
@@ -96,7 +95,9 @@ Macro "Intermediate Stops"(Args)
 endmacro
 
 Macro "Create OD"(Args)
-    // Call macro to create OD matrix for the AM Peak period
+    // First expand the tour file into trips
+    RunMacro("Create Trip File", Args)
+    // RunMacro("Create Highway OD", Args, "AM")
 
     // Then uncomment code below
     // RunMacro("Tour_TOD2_AMPeak", Args)
