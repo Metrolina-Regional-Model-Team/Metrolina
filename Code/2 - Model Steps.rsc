@@ -94,21 +94,33 @@ Macro "Intermediate Stops"(Args)
     return(1)
 endmacro
 
+
 Macro "Create OD"(Args)
-    // First expand the tour file into trips
-    RunMacro("Create Trip File", Args)
-    // RunMacro("Create Highway OD", Args, "AM")
+    // Assign forward and return TOD (AM, MD, PM, NT) to each tour
+    ret = RunMacro("Tour TOD Combinations", Args)
+    if !ret then goto quit
 
-    // Then uncomment code below
-    // RunMacro("Tour_TOD2_AMPeak", Args)
+    // Create purpose specific trip file and purpose specific TOD (AM, MD, PM, NT) matrices
+    ret = RunMacro("Create Trips", Args)
+    if !ret then goto quit
 
-    return(1)
+    // Create IX/XI matrices by time period directly from dc tour file(s)
+    ret = RunMacro("Create IE EI OD", Args)
+    if !ret then goto quit
+
+    // Combine all purposes, IE/EI, Truck and Commercial data to create OD for time period
+    ret = RunMacro("Create Highway OD", Args, "AMPEAK")
+
+   quit:
+    return(ret)
 endMacro
+
 
 Macro "Peak Highway Assignment" (Args)
     RunMacro("HwyAssn_RunAMPeak", Args)    
     return(1)
 endmacro
+
 
 Macro "Convergence" (Args)
     curiter = Args.[Current Feedback Iter]
@@ -121,17 +133,26 @@ Macro "Convergence" (Args)
     return(converged + 1)
 endmacro
 
+
 Macro "Post Feedback" (Args)
-    RunMacro("MS_RunOffPeak", Args)
-    RunMacro("MSMatrixStats", Args)
-    RunMacro("Tour_TOD2_PMPeak", Args)
-    RunMacro("Tour_TOD2_Midday", Args)
-    RunMacro("Tour_TOD2_Night", Args)
+    //RunMacro("MS_RunOffPeak", Args)
+    //RunMacro("MSMatrixStats", Args)
+    ret = RunMacro("Create Highway OD", Args, "PMPEAK")
+    if !ret then goto quit
     RunMacro("HwyAssn_RunPMPeak", Args)
+    
+    ret = RunMacro("Create Highway OD", Args, "Midday")
+    if !ret then goto quit
     RunMacro("HwyAssn_RunMidday", Args)
+
+    ret = RunMacro("Create Highway OD", Args, "Night")
+    if !ret then goto quit
     RunMacro("HwyAssn_RunNight", Args)
-    return(1)
+   
+   quit: 
+    return(ret)
 endmacro
+
 
 Macro "Transit Assignment" (Args)
     RunMacro("Transit_Input", Args)
