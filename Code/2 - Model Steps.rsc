@@ -108,8 +108,8 @@ Macro "Create OD"(Args)
     ret = RunMacro("Create IE EI OD", Args)
     if !ret then goto quit
 
-    // Combine all purposes, IE/EI, Truck and Commercial data to create OD for time period
-    ret = RunMacro("Create Highway OD", Args, "AMPEAK")
+    // Combine all purposes, IE/EI, Truck and Commercial data to create OD for AMPeak time period
+    ret = RunMacro("Create Highway OD", Args, "AM")
 
    quit:
     return(ret)
@@ -137,15 +137,15 @@ endmacro
 Macro "Post Feedback" (Args)
     //RunMacro("MS_RunOffPeak", Args)
     //RunMacro("MSMatrixStats", Args)
-    ret = RunMacro("Create Highway OD", Args, "PMPEAK")
+    ret = RunMacro("Create Highway OD", Args, "PM")
     if !ret then goto quit
     RunMacro("HwyAssn_RunPMPeak", Args)
     
-    ret = RunMacro("Create Highway OD", Args, "Midday")
+    ret = RunMacro("Create Highway OD", Args, "MD")
     if !ret then goto quit
     RunMacro("HwyAssn_RunMidday", Args)
 
-    ret = RunMacro("Create Highway OD", Args, "Night")
+    ret = RunMacro("Create Highway OD", Args, "NT")
     if !ret then goto quit
     RunMacro("HwyAssn_RunNight", Args)
    
