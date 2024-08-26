@@ -33,7 +33,7 @@ Macro "Tour TOD Combinations"(Args)
                 
                 n = tour.SelectByQuery({
                     SetName: "Selection",
-                    Query: "PAper = " + i + " AND APper = " + j
+                    Query: printf("PAper = %lu and APper = %lu", {i,j})
                 })
 
                 if n > 0 then do
@@ -130,7 +130,7 @@ Macro "Create Trips" (Args)
         })
         pivot.AddFields({Fields: {
             {FieldName: "TripDestTAZ", Type: "integer"},
-            {FieldName: "TOD", Type: "integer"}
+            {FieldName: "TOD", Type: "string", Width: 3}
         }})
         
         flds = {"ID", "HHID", "SIZE", "INCOME", "LIFE", "WRKRS", "Purp", "PATOD", "APTOD",
@@ -189,7 +189,7 @@ Macro "Create Trips" (Args)
         v = Vector(final.GetRecordCount(), "integer", {Constant: 1})
         final.one = v
         modes = final.Mode
-        modes = V2A(SortVector(modes, {Unique: true}))
+        modes = SortArray(v2a(modes), {Unique: 'True'})
         skim_mtx = Args.[Run Directory] + "\\Skims\\offpk_hwyskim.mtx"
         periods = {"AM", "MD", "PM", "NT"}
         for period in periods do
@@ -827,37 +827,12 @@ Macro "Create IE EI OD"(Args)
 endMacro
 
 
-Macro "Create AMPeak OD" (Args)
-    ret_value = RunMacro("Create Highway OD", Args, "AMPeak")
-    return(ret_value)
-endmacro
-
-
-Macro "Create PMPeak OD" (Args)
-    ret_value = RunMacro("Create Highway OD", Args, "PMPeak")
-    return(ret_value)
-endmacro
-
-
-Macro "Create Midday OD" (Args)
-    ret_value = RunMacro("Create Highway OD", Args, "Midday")
-    return(ret_value)
-endmacro
-
-
-Macro "Create Night OD" (Args)
-    ret_value = RunMacro("Create Highway OD", Args, "Night")
-    return(ret_value)
-endmacro
-
-
 /*
     Create OD Highway matrix for a particualr time period
     Use AM/MD/PM/NT matrices for the HBW, HBU, HBShop, HBO, ATW, IE/EI purposes
     Use the commercial and truck matrix
     Logic similar to previous macro 'Tour_Tod2<period>'
 */
-
 Macro "Create Highway OD" (Args, period)
     on error, notfound do
         ret_value = 0
@@ -867,7 +842,7 @@ Macro "Create Highway OD" (Args, period)
     datentime = GetDateandTime()
     AppendToLogFile(1, "Enter Create Highway OD " + datentime)
     out_dir = Args.[Run Directory] + "\\TripTables"
-    newCodes = {AM: 'AMPEAK', PM: 'PMPEAK', MD: 'Midday', NT: 'Night'}
+    newCodes = {AM: 'AMPeak', PM: 'PMPeak', MD: 'Midday', NT: 'Night'}
     assnPeriod = newCodes.(period)
 
     od_matrix = Args.[Run Directory] + "\\tod2\\ODHwyVeh_" + assnPeriod + ".mtx"
@@ -899,8 +874,8 @@ Macro "Create Highway OD" (Args, period)
         if cores.Position("tnc") > 0 then
             mtx.POOL2 := nz(mtx.POOL2) + nz(mtxP.tnc)
     end
-
-    ret_value = RunMacro("Add Commerical and Truck OD", Args, assnPeriod)
+    
+	ret_value = RunMacro("Add Commerical and Truck OD", Args, assnPeriod)
 
  quit:
     on error, notfound default
@@ -960,15 +935,15 @@ Macro "Add Commerical and Truck OD" (Args, period)
     factors = Args.[Com and Truck TOD Factors]
     factor1 = factors.(period).IETrips
     factor2 = factors.(period).EETrips
-    OD.SOV := OD.SOV + factor2*EEA.Trips
-    OD.COM := factor1*COM.Trips + factor1*EIC.Trips + factor1*IEC.Trips + factor2*EEC.Trips + factor1*TCMH.TransposeCOM 
-    OD.MTK := factor1*MTK.Trips + factor1*EIM.Trips + factor1*IEM.Trips + factor2*EEM.Trips + factor1*TCMH.TransposeMTK
-    OD.HTK := factor1*HTK.Trips + factor1*EIH.Trips + factor1*IEH.Trips + factor2*EEH.Trips + factor1*TCMH.TransposeHTK
+    OD.SOV := nz(OD.SOV) + factor2*nz(EEA.Trips)
+    OD.COM := factor1*nz(COM.Trips) + factor1*nz(EIC.Trips) + factor1*nz(IEC.Trips) + factor2*nz(EEC.Trips) + factor1*nz(TCMH.TransposeCOM) 
+    OD.MTK := factor1*nz(MTK.Trips) + factor1*nz(EIM.Trips) + factor1*nz(IEM.Trips) + factor2*nz(EEM.Trips) + factor1*nz(TCMH.TransposeMTK)
+    OD.HTK := factor1*nz(HTK.Trips) + factor1*nz(EIH.Trips) + factor1*nz(IEH.Trips) + factor2*nz(EEH.Trips) + factor1*nz(TCMH.TransposeHTK)
 
 	ret_value = 1
 quit:
     on error, notfound default
     datentime = GetDateandTime()
     AppendToLogFile(1, "Tour TOD2_ " + period + ": " + datentime)
-    return({ret_value})
+    return(ret_value)
 endmacro
