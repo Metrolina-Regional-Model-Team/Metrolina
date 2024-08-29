@@ -1,7 +1,7 @@
 
 Macro "Model.Attributes" (Args,Result)
     Attributes = {
-        {"BackgroundColor", null},
+        {"BackgroundColor", {255,255,255}},
         {"BannerPicture", null},
         {"BannerHeight", 80},
         {"BannerWidth", 2000},
@@ -11,8 +11,7 @@ Macro "Model.Attributes" (Args,Result)
         {"MaxProgressBars", 4},
         {"Layout", null},
         {"ExpandStages", "Side by Side"},
-        {"MinItemSpacing", 5},
-        {"MaxProgressBars", 2},
+        {"MinItemSpacing", 10},
         {"CodeUI", "Code\\ui.dbd"},
         {"Base Scenario Name", "Base"},
         {"ClearLogFiles", 1},

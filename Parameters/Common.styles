@@ -4,10 +4,25 @@
                                           ,{Name:"Gamma", Type:"float",  "Fixed":"false"}
                               }})
 
+    Styles.TODCombFactors = Pme.Table({Height: 5, Autosize: "True", Values: "Columns",
+                                                Columns:    {{Name: "TOD Combination", Type: "string",  Fixed: "true", Width: "15%"},
+                                                             {Name: "HBW",  Type: "real", "Decimals":"3"},
+                                                             {Name: "SCH",  Type: "real", "Decimals":"3"},
+                                                             {Name: "HBU",  Type: "real", "Decimals":"3"},
+                                                             {Name: "HBO",  Type: "real", "Decimals":"3"},
+                                                             {Name: "HBS",  Type: "real", "Decimals":"3"},
+                                                             {Name: "ATW",  Type: "real", "Decimals":"3"}}
+                                    })
+
     Styles.TODFactors = Pme.Table({Height: 5, Autosize: "True", Values: "Indexed Option Arrays",
                                                 Columns:    {{Name: "Period", Type: "string",  Fixed: "true", Width: "40%"},
                                                              {Name: "IETrips",  Type: "real", "Decimals":"3", Width: "30%"},
                                                              {Name: "EETrips",  Type: "real", "Decimals":"3"}}
+                                    })
+
+    Styles.Occs = Pme.Table({Height: 8, Autosize: "True", Values: "Indexed Option Arrays",
+                                                Columns:    {{Name: "Purpose", Type: "string",  Fixed: "true", Width: "60%"},
+                                                             {Name: "Value",  Type: "real", "Decimals":"3"}}
                                     })
 
     Styles.MatrixOptionList = Pme.DropList({ Options: {".MTX",".OMX"} })

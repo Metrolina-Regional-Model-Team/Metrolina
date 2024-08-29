@@ -301,6 +301,7 @@ end
 	numrec = GetDataVector(hbwdestii+"|", "ID", )
 	origtaz = GetDataVector(hbwdestii+"|", "ORIG_TAZ", )
 	emp_v = Vector(numrec.length, "Short", )
+	nullString_v = Vector(numrec.length, "String", )
 	SetDataVectors(hbwdestii+"|", {{"DEST_TAZ", emp_v}, {"DEST_SEQ", emp_v}, {"OD_Time", emp_v}, {"DO_Time", emp_v}}, )	//clear out previous destinations and times
 
 	fields_ar = GetFields("hbwdestii", null)
@@ -309,9 +310,15 @@ end
 	for i = 1 to num do
 		fieldnames[i] = fields_ar[1][i]
 	end
-	if num > 21 then do
+	if num > 21 then do // Not advisable code. Will not work as intended if more fields are added to the trip files upfront.
+		vecsSet = null
 		for i = 22 to fieldnames.length do
-			SetDataVector(hbwdestii+"|", fieldnames[i], emp_v, )  //clear out all the other non-origin fields
+			type = GetFieldType(GetFieldFullSpec(hbwdestii, fieldnames[i]))
+			if type = "String" then
+				vecsSet.(fieldnames[i]) = nullString_v
+			else
+				vecsSet.(fieldnames[i]) = emp_v
+			SetDataVectors(hbwdestii+"|", vecsSet, )  //clear out all the other non-origin fields
 		end
 	end
 

@@ -211,7 +211,7 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 	Opts.Field.[Fixed Toll Fields] = {"[TollAB / TollBA]", "[TollAB / TollBA]", "[TollAB / TollBA]", "[TollAB / TollBA]", "[TollAB / TollBA]", "[TollAB / TollBA]"}
 	Opts.Field.[PCE Fields] = {"None", "None", "None", "None", "None", "None"}
 	Opts.Global.[Number of Classes] = 6
-	Opts.Global.[Load Method] = "UE"
+	Opts.Global.[Load Method] = "CUE"
 	Opts.Global.[Loading Multiplier] = 1
 	Opts.Global.[Time Minimum] = 0.01
 	Opts.Global.[Class PCEs] = {1, 1, 1, 1, 1.5, 2.5}
