@@ -157,8 +157,8 @@ Macro "CreateDir" (Args)
             "UPD_DA_Dist_Time_Costv1.exe","UPD_DA_Dist_Time_Costv2.exe"}},
 
         {"\\Pgm\\CapspdFactors", 
-            {"capspd_factors.prn", "capspd_nodeerrors.asc", "capspd_nodeerrors.dct", "guideway20.prn"}},
-
+            {"capspd_guideway.asc", "capspd_guideway.dct", "CapSpd_lookup.csv", "CapSpd_lookup.dcc"}},
+            // {"capspd_factors.prn", "capspd_nodeerrors.asc", "capspd_nodeerrors.dct", "guideway20.prn", "CapSpd_lookup.csv","capspd_guideway.asc"}},
         // {"\\Pgm\\FrictionFactors\\Trip",  
         //     {"ffhbw1.prn", "ffhbw2.prn", "ffhbw3.prn", "ffhbw4.prn", 
         //     "ffhbo1.prn", "ffhbo2.prn", "ffhbo3.prn", "ffhbo4.prn",
