@@ -53,15 +53,15 @@
         }
         Args.[AM Peak Hwy Name] = {
             "Type":"file",
-            "Value":"%Run Directory%\\RegNet_AMPeak.dbd"
+            "Value":"%Run Directory%\\RegNet_AMpeak.dbd"
         }
         Args.[PM Peak Hwy Name] = {
             "Type":"file",
-            "Value":"%Run Directory%\\RegNet_PMPeak.dbd"
+            "Value":"%Run Directory%\\RegNet_PMpeak.dbd"
         }
         Args.[Offpeak Hwy Name] = {
             "Type":"file",
-            "Value":"%Run Directory%\\RegNet_OffPeak.dbd"
+            "Value":"%Run Directory%\\RegNet_Offpeak.dbd"
         }
 	
 	Section = "Mode Split"
