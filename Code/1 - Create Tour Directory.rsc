@@ -221,8 +221,8 @@ Macro "CreateDir" (Args)
             MRMdatestamp = null
             METdatestamp = null
             MRMInfo = GetFileInfo(MRMUser + MRMSubDir + "\\" + METFiles[i][2][j])
-            if MRMInfo = null then Throw("CreateDir Warning! MRM! " + MRMUser + MRMSubSir + "\\" +  METFiles[i][2][j] + " not found")
-                // then Message = Message + {"CreateDir Warning! MRM! " + MRMUser + MRMSubSir + "\\" +  METFiles[i][2][j] + " not found"}
+            if MRMInfo = null then Throw("CreateDir Warning! MRM! " + MRMUser + MRMSubDir + "\\" +  METFiles[i][2][j] + " not found")
+                // then Message = Message + {"CreateDir Warning! MRM! " + MRMUser + MRMSubDir + "\\" +  METFiles[i][2][j] + " not found"}
             MRMdatestamp = MRMInfo[7] + " " + MRMInfo[8]
 
             if GetDirectoryInfo(METUser + METSubDir, "All") = null then CreateDirectory(METUser + METSubDir)
