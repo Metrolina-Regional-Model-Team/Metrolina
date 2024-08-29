@@ -12,7 +12,6 @@ Macro "Model.Attributes" (Args,Result)
         {"Layout", null},
         {"ExpandStages", "Side by Side"},
         {"MinItemSpacing", 10},
-        {"MaxProgressBars", 2},
         {"CodeUI", "Code\\ui.dbd"},
         {"Base Scenario Name", "Base"},
         {"ClearLogFiles", 1},
