@@ -5,6 +5,8 @@
 // Create tour directory
 Macro "Create Tour Dir" (Args)
     
+    pbar = CreateObject("G30 Progress Bar", "Creating Directory", True, )
+
     run_dir = Args.[Run Directory]
     mrm_dir = Args.[MRM Directory]
     year = Args.[Run Year]
@@ -312,7 +314,11 @@ Macro "CreateDir" (Args)
     MRMpath = MRMUser + "\\" + YearUser + "\\"
     dm = CreateObject("DataManager")
     dm.AddDataSource("rts", {FileName: MRMpath + "transys.rts", DataType: "RS"})
-    dm.CopyRouteSystem("rts", {TargetRS: DirUser + "\\" + "transys.rts"})
+    route_file = DirUser + "\\" + "transys.rts"
+    dm.CopyRouteSystem("rts", {TargetRS: route_file})
+    net_file = Args.[Offpeak Hwy Name]
+    {, , netname, } = SplitPath(net_file)
+    ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
     // need to add year onto extsta vol files	
 
