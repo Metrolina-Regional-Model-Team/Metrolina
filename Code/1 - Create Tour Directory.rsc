@@ -308,15 +308,22 @@ Macro "CreateDir" (Args)
     if (exist <> null) then DeleteFile(batchname)
     batchhandle = OpenFile(batchname, "w")
 
+    // Copy route system
+    MRMpath = MRMUser + "\\" + YearUser + "\\"
+    dm = CreateObject("DataManager")
+    dm.AddDataSource("rts", {FileName: MRMpath + "transys.rts", DataType: "RS"})
+    dm.CopyRouteSystem("rts", {TargetRS: DirUser + "\\" + "transys.rts"})
+
     // need to add year onto extsta vol files	
-    
+
     YearTwo = Right(YearUser,2)
     rundir_files = 
-        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf", 
-            "transys.rtg", "transys.rts","transysc.bin", "transysc.BX", "transysc.DCB", "transysL.bin",
-            "transysL.BX", "transysL.DCB", "transysR.bin", "transysR.BX", "transysR.DCB", "transysS.bin",
-            "transysS.BX", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
-            "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"}
+        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf"
+            // "transys.rtg", "transys.rts","transysc.bin", "transysc.BX", "transysc.DCB", "transysL.bin",
+            // "transysL.BX", "transysL.DCB", "transysR.bin", "transysR.BX", "transysR.DCB", "transysS.bin",
+            // "transysS.BX", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
+            // "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"
+            }
     rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}   
 
     //Standard runyear files

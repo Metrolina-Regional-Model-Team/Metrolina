@@ -12,9 +12,9 @@ Macro "RouteSystemSetUp" (Args)
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Enter RouteSystemSetUp:  " + datentime)
 
-	msg = null
+	// msg = null
 
-	on error, notfound goto badquit
+	// on error, notfound goto badquit
 
 	routename = "transys"
 	route_file = Dir + "\\"+routename+".rts"
@@ -26,25 +26,27 @@ Macro "RouteSystemSetUp" (Args)
 
 	// Get the scope of a geographic file
 
-	info = GetDBInfo(net_file)
-	scope = info[1]
+	// info = GetDBInfo(net_file)
+	// scope = info[1]
 
 	// Create a map using this scope
-	CreateMap(net, {{"Scope", scope},{"Auto Project", "True"}})
-	layers = GetDBLayers(net_file)
-	node_lyr = addlayer(net, layers[1], net_file, layers[1])
-	link_lyr = addlayer(net, layers[2], net_file, layers[2])
-	rtelyr = AddRouteSystemLayer(net, "Vehicle Routes", route_file, )
-	RunMacro("Set Default RS Style", rtelyr, "TRUE", "TRUE")
-	SetLayerVisibility(node_lyr, "False")
-	SetIcon(node_lyr + "|", "Font Character", "Caliper Cartographic|4", 36)
-	SetIcon("Route Stops|", "Font Character", "Caliper Cartographic|4", 36)
-	SetLayerVisibility(link_lyr, "True")
-	solid = LineStyle({{{1, -1, 0}}})
-	SetLineStyle(link_lyr+"|", solid)
-	SetLineColor(link_lyr+"|", ColorRGB(0, 0, 32000))
-	SetLineWidth(link_lyr+"|", 0)
-	SetLayerVisibility("Route Stops", "False")
+	// CreateMap(net, {{"Scope", scope},{"Auto Project", "True"}})
+	// layers = GetDBLayers(net_file)
+	// node_lyr = addlayer(net, layers[1], net_file, layers[1])
+	// link_lyr = addlayer(net, layers[2], net_file, layers[2])
+	// rtelyr = AddRouteSystemLayer(net, "Vehicle Routes", route_file, )
+	// RunMacro("Set Default RS Style", rtelyr, "TRUE", "TRUE")
+	// SetLayerVisibility(node_lyr, "False")
+	// SetIcon(node_lyr + "|", "Font Character", "Caliper Cartographic|4", 36)
+	// SetIcon("Route Stops|", "Font Character", "Caliper Cartographic|4", 36)
+	// SetLayerVisibility(link_lyr, "True")
+	// solid = LineStyle({{{1, -1, 0}}})
+	// SetLineStyle(link_lyr+"|", solid)
+	// SetLineColor(link_lyr+"|", ColorRGB(0, 0, 32000))
+	// SetLineWidth(link_lyr+"|", 0)
+	// SetLayerVisibility("Route Stops", "False")
+	route_file = "D:\\GitHub\\Metrolina\\2022\\transys.rts"
+	map = CreateMap("Map", {FileName: route_file})
 
 
 	ReloadRouteSystem(route_file)
