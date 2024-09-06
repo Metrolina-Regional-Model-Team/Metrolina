@@ -136,6 +136,7 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
 
      Opts = null
      Opts.Input.Database = net_file 
+     Opts.Input.[Transit RS] = route_file
      Opts.Input.Network = Dir + "\\PBusDrop.tnw"
      Opts.Input.[Origin Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids","Select * where centroid = 1 or [External Station] = 1"}
      Opts.Input.[Destination Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids"}
@@ -164,6 +165,7 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
  
      Opts = null
      Opts.Input.Database = net_file 
+     Opts.Input.[Transit RS] = route_file
      Opts.Input.Network = Dir + "\\PBusDrop.tnw"
      Opts.Input.[Origin Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids","Select * where centroid = 1 or [External Station] = 1"}
      Opts.Input.[Destination Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids"}
