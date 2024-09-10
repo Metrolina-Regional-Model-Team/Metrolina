@@ -3,7 +3,7 @@ Macro "Tour_TruckTGTD" (Args)
 // 1/19, mk: This model replicates the current (MRM18v1.1) trip model for commercial vehicles (COM, MTK, HTK) up to TOD2.
 //		Includes trip generation, EE trips, trip distribution, and transposing TD files for TOD2.
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

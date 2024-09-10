@@ -3,7 +3,7 @@ Macro "Tour_TripAccumulator_FB" (Args)
 //Feedback trip accumulator macro.  Since School tours don't go through mode choice and thus none of their tour legs go into the NHB matrices, this step is left out in this feedback macro.  
 // 1/17, mk: changed from .dbf to .bin
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

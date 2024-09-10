@@ -30,7 +30,7 @@ Macro "Market_Segment" (Args)
 
 // Copy TAZ_AtYPE to new file so columns can be added without screwing up mode split .def file call to TAZ_ATYPE
 
-	on error goto notaz_atype
+	// on error goto notaz_atype
 		CopyFile(Dir+"\\TAZ_ATYPE.ASC", Dir + "\\TranAssn\\TAZ_ATYPE_TranAssn_Market_Segment.ASC")
 		CopyFile(Dir+"\\TAZ_ATYPE.DCT", Dir + "\\TranAssn\\TAZ_ATYPE_TranAssn_Market_Segment.DCT")
 	on error default

@@ -1017,7 +1017,7 @@ Dbox "MasterDBox" center, top  Title: "Metrolina Regional Model: MRM22v1.0 (May 
 	Macro "GetArguments" do
 	// Read arguments 
 		keepgoing = "Yes"
-		on error goto badfile
+		// on error goto badfile
 		on notfound goto nofile
 		Args = LoadArray(DirUser + "\\Arguments.args")
 
@@ -1657,7 +1657,7 @@ Dbox "MasterDBox" center, top  Title: "Metrolina Regional Model: MRM22v1.0 (May 
 	// Macro to identify TAZ file, copy from MRM if necessary
 		keepgoing = "Yes"
 		TAZSignalStatus = 3
-		on error goto notaz
+		// on error goto notaz
 
 		// Pull TAZ from Arguments
 		if TAZUser = null and TAZArgs <> null
@@ -1767,7 +1767,7 @@ Dbox "MasterDBox" center, top  Title: "Metrolina Regional Model: MRM22v1.0 (May 
 			
 		// Get land use file
 		getLU:
-		on error goto getLU
+		// on error goto getLU
 		on escape goto noLU
 		LUUser = ChooseFile({{"DBASE","*.dbf"}},"Choose the Land Use File",{{"Initial Directory", DirUser + "\\LandUse"}})
 		LUInfo = GetFileInfo(LUUser)

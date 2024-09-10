@@ -7,7 +7,7 @@ Macro "Tour_IS" (Args)
 // 5/30/19, mk: There are now three distinct networks; can use offpeak here (doesn't really matter, just uses to get distances)
 // 7/20/20, mk: fixed accessibility variables (was short, which caused null values for dense area; changed to float)
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

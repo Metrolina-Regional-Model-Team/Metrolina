@@ -1015,7 +1015,7 @@ Dbox "MasterDBox" center, center Title: "Metrolina Regional Model: MRM2001 (May,
 	Macro "GetArguments" do
 	// Read arguments 
 		keepgoing = "Yes"
-		on error goto badfile
+		// on error goto badfile
 		on notfound goto nofile
 		Args = LoadArray(DirUser + "\\Arguments.args")
 

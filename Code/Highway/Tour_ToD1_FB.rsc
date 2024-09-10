@@ -5,7 +5,7 @@ Macro "Tour_ToD1_FB" (Args)
 // 9/20/18, mk: fixed accessibility error, plus fixed to match pre-feedback
 // 10/23/18, mk: changed HBW & SCH coefficients per Bill's 10/23/18 email
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

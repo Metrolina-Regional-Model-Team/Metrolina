@@ -28,7 +28,7 @@ Macro "TD_TranPath_Peak" (Args)
 	TemplateMat = null
 	templatecore = null
 
-	on error goto badquit
+	// on error goto badquit
 
 	TemplateMat = OpenMatrix(METDir + "\\TAZ\\matrix_template.mtx", "True")
 	templatecore = CreateMatrixCurrency(TemplateMat, "Table", "Rows", "Columns", )

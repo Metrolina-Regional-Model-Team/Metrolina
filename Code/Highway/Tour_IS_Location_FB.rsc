@@ -7,7 +7,7 @@ Macro "Tour_IS_Location_FB" (Args)
 // 8/26/19, mk: reset random number seed for each iteration
 // 10/7/20, mk: removed tfac from time-to-last-stop vector(line 398), changed vector to float
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

@@ -16,7 +16,7 @@ macro "ScenarioPlanning_2050MTP_CAV_ML" (Args, hwyassnarguments, timeperiod)
 
 //*********************************************************************************************************************
 
-	on error goto TCError
+	// on error goto TCError
 	on escape goto UserKill
 
 	// LogFile = Args.[Log File].value

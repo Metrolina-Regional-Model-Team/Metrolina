@@ -49,10 +49,10 @@ endmacro
 //---------------------------------------------------------------------
 Macro "Create Transit Skims Output Matrices" (alt_dir, alt_name, METDir)
 	msg = null
-	on error do
-		msg = "Create Transit Skims Outut Matrices - missing \\taz\\matrix_template.mtx"
-		goto badquit
-		end
+	// on error do
+	// 	msg = "Create Transit Skims Outut Matrices - missing \\taz\\matrix_template.mtx"
+	// 	goto badquit
+	// 	end
 
 	OM = OpenMatrix(METDir + "\\TAZ\\matrix_template.mtx", "True")
 	mc1 = CreateMatrixCurrency(OM, "Table", "Rows", "Columns", )
@@ -147,10 +147,10 @@ endMacro
 
 Macro "Create Transit Assignment Matrices" (alt_dir, alt_name, METDir)
 	msg = null
-	on error do
-		msg = "Create Transit Assignment Matrices - missing \\taz\\matrix_template.mtx"
-		goto badquit
-		end
+	// on error do
+	// 	msg = "Create Transit Assignment Matrices - missing \\taz\\matrix_template.mtx"
+	// 	goto badquit
+	// 	end
 
 	// --- Create From Template Matrix, Output Matrices to store Transit Skims
 	OM = OpenMatrix(METDir + "\\TAZ\\matrix_template.mtx", "True")

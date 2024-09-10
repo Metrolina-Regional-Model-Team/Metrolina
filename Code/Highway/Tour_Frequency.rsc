@@ -9,7 +9,7 @@ Macro "Tour_Frequency" (Args)
 // 5/29/18, mk: coefficient changes per BA's 5/11/18 email
 // 2/25/19, mk: change 2+ breakdown for HBS per Bill's 2/25/19 email
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
