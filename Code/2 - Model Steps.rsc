@@ -133,20 +133,14 @@ endmacro
 Macro "Post Feedback" (Args)
     //RunMacro("MS_RunOffPeak", Args)
     //RunMacro("MSMatrixStats", Args)
-    ret = RunMacro("Create Highway OD", Args, "PM")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "PM")
     RunMacro("HwyAssn_RunPMPeak", Args)
     
-    ret = RunMacro("Create Highway OD", Args, "MD")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "MD")
     RunMacro("HwyAssn_RunMidday", Args)
 
-    ret = RunMacro("Create Highway OD", Args, "NT")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "NT")
     RunMacro("HwyAssn_RunNight", Args)
-   
-   quit: 
-    return(ret)
 endmacro
 
 
