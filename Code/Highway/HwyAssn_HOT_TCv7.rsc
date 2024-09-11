@@ -32,9 +32,9 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	maxTTfac = Args.[MaxTravTimeFactor]
 	HOTAssnIterations = Args.[HOTAssn Iterations]
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
-	hwyassnconverge = Args.[HwyAssn Converge Feedback]
+	hwyassnconverge = .01
 	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final]
-	hwyassnconvergefinal = Args.[HwyAssn Converge Final]
+	hwyassnconvergefinal = Args.[HwyAssn Converge]
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"

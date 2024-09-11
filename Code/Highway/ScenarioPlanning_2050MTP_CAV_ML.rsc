@@ -32,9 +32,9 @@ macro "ScenarioPlanning_2050MTP_CAV_ML" (Args, hwyassnarguments, timeperiod)
 	maxTTfac = Args.[MaxTravTimeFactor]
 	HOTAssnIterations = Args.[HOTAssn Iterations].value
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
-	hwyassnconverge = Args.[HwyAssn Converge Feedback]
+	hwyassnconverge = Args.[HwyAssn Converge]
 	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final].value
-	hwyassnconvergefinal = Args.[HwyAssn Converge Final].value
+	hwyassnconvergefinal = Args.[HwyAssn Converge].value
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"

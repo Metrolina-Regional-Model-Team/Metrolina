@@ -28,9 +28,9 @@
 // 	Args.[Current Feedback Iter] = As("integer",{1},"Current iteration in peak speed feedback")
 // 	Args.[HOTAssn Iterations] = As("integer",{5},"Number of iterations for HOT lanes assignment")
 // 	Args.[HwyAssn Max Iter Feedback] = As("integer",{250},"TransCad MMA assignment - max. number of iterations for all but final assignment")
-// 	Args.[HwyAssn Converge Feedback] = As("double",{0.01},"TransCad MMA assignment - convergence criteria for all but final assignment")
+// 	Args.[HwyAssn Converge] = As("double",{0.01},"TransCad MMA assignment - convergence criteria for all but final assignment")
 // 	Args.[HwyAssn Max Iter Final] = As("integer",{25000},"TransCad MMA assignment - max. number of iterations for all but final assignment")
-// 	Args.[HwyAssn Converge Final] = As("double",{0.0001},"TransCad MMA assignment - convergence criteria for all but final assignment")
+// 	Args.[HwyAssn Converge] = As("double",{0.0001},"TransCad MMA assignment - convergence criteria for all but final assignment")
 
 // 	return(Args)
 // endmacro
