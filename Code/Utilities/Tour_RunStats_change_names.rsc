@@ -7,7 +7,7 @@ Macro "Tour_RunStats" (Args)
 //Creates DC_output, ODtime_dist & StopsDistr files
 //Creates TOD1 output files
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

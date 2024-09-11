@@ -160,7 +160,7 @@ CloseView(incdist_vw)
 //  2010-PUMA data is available, but not enough to use yet).  See hhmet.txt for list of PUMAs
 	siseed_vw = OpenTable("siseed_vw", "FFB", {DirArray + "\\SISEED.bin",})
 	SetView(siseed_vw)
-	dim siseedar[15,5,4]
+	dim siseedar[17,5,4]
 
 	siseedptr = GetFirstRecord(siseed_vw+"|",)
     	while siseedptr <> null do

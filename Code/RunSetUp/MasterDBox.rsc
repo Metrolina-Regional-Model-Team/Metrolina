@@ -292,7 +292,7 @@ Dbox "MasterDBox" center, center Title: "Metrolina Regional Model: MRM19v1.0"
 			{"\\ExtSta", 
 			 {"thrubase_auto.asc", "thrubase_auto.dct", "thrubase_com.asc", "thrubase_com.dct",
 			  "thrubase_mtk.asc",  "thrubase_mtk.dct",  "thrubase_htk.asc", "thrubase_htk.dct",
-			  "bvthru.asc", "bvthru.dct", "extstavol18_base.asc", "extstavol18_base.dct"}},
+			  "bvthru.asc", "bvthru.dct", "extstavol.asc", "extstavol.dct"}},
 
 			{"\\",
 			 {"ATFUN_ID.dbf", "COATFUN_ID.dbf", "County_ATFun.bin","County_ATFun.dcb","County_ATFunID.bin", 
@@ -1013,7 +1013,7 @@ Dbox "MasterDBox" center, center Title: "Metrolina Regional Model: MRM19v1.0"
 	Macro "GetArguments" do
 	// Read arguments 
 		keepgoing = "Yes"
-		on error goto badfile
+		// on error goto badfile
 		on notfound goto nofile
 		Args = LoadArray(DirUser + "\\Arguments.args")
 
@@ -1653,7 +1653,7 @@ Dbox "MasterDBox" center, center Title: "Metrolina Regional Model: MRM19v1.0"
 	// Macro to identify TAZ file, copy from MRM if necessary
 		keepgoing = "Yes"
 		TAZSignalStatus = 3
-		on error goto notaz
+		// on error goto notaz
 
 		// Pull TAZ from Arguments
 		if TAZUser = null and TAZArgs <> null
@@ -1763,7 +1763,7 @@ Dbox "MasterDBox" center, center Title: "Metrolina Regional Model: MRM19v1.0"
 			
 		// Get land use file
 		getLU:
-		on error goto getLU
+		// on error goto getLU
 		on escape goto noLU
 		LUUser = ChooseFile({{"DBASE","*.dbf"}},"Choose the Land Use File",{{"Initial Directory", DirUser + "\\LandUse"}})
 		LUInfo = GetFileInfo(LUUser)

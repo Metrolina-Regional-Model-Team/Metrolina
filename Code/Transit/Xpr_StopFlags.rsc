@@ -131,7 +131,7 @@ Macro "XPR_StopFlags"  (Args)
 
 
 	// Initialize fields XPR_FLAG & PRM_FLAG to zero
-	on error, notfound goto badinitialize
+	// on error, notfound goto badinitialize
 	SetRecordsValues(stop_layer + "|", {{"XPR_FLAG"}, null}, "Value", {0},)
 	SetRecordsValues(stop_layer + "|", {{"PRM_FLAG"}, null}, "Value", {0},)
 	on error, notfound default

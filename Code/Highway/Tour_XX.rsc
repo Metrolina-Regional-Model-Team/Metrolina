@@ -5,7 +5,7 @@ macro "Tour_XX" (Args)
 //Creates & fills EEA, EEC, EEM, & EEH matrices
 // 1/17, mk: changed from .dbf to .bin
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
@@ -65,7 +65,7 @@ CopyMatrixStructure({mc1}, {{"File Name", Dir + "\\tg\\tdeeh.mtx"},
 
 //______Open tables, etc______
 
-	xvolbase_table = OpenTable("xvolbase_table", "FFA", {MetDir + "\\extsta\\extstavol18_base.asc",})
+	xvolbase_table = OpenTable("xvolbase_table", "FFA", {MetDir + "\\extsta\\extstavol.asc",})
 	extstavol_table = OpenTable("extstavol_table", "FFA", {Dir + "\\ext\\extstavol" + yr_str + ".asc",})
 	vt_extstavol_ar = {"TOT_AUTO", "TOT_CV", "TOT_MT", "TOT_HT"}
 

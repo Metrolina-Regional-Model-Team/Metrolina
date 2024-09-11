@@ -7,7 +7,7 @@ Macro "Tour_IS" (Args)
 // 5/30/19, mk: There are now three distinct networks; can use offpeak here (doesn't really matter, just uses to get distances)
 // 7/20/20, mk: fixed accessibility variables (was short, which caused null values for dense area; changed to float)
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
@@ -87,6 +87,8 @@ Macro "Tour_IS" (Args)
 	atype = GetDataVector(areatype+"|", "AREATYPE", {{"Sort Order", {{"TAZ","Ascending"}}}}) 
 	atype1dum = if (atype = 1) then 1 else 0
 	atype5dum = if (atype = 5) then 1 else 0
+	atype12dum = if (atype = 1 or atype = 2) then 1 else 0
+	atype34dum = if (atype = 3 or atype = 4) then 1 else 0
 	rural = if (atype = 5) then 1 else 0
 
 	autofree = OpenMatrix(Dir + "\\Skims\\TThwy_free.mtx", "False")			//open as memory-based
@@ -95,15 +97,20 @@ Macro "Tour_IS" (Args)
 	zonedist_m = OpenMatrix(DirOutDC + "\\zonedist.mtx", "False")	
 	zonedist_mc = CreateMatrixCurrency(zonedist_m, "Miles", "Origin-Destination", "Origin-Destination", )	
 	ret30_m = CreateMatrix({se_vw+"|", "TAZ","Row Index"}, {se_vw+"|", "TAZ","Column Index"},
-					{{"File Name", DirOutDC + "\\ret30.mtx"}, {"Label", "retail emp within 3 miles"},{"Type", "Long"}, {"Tables", {"ret30"}}})	//,{"File Based", "No"}
+					{{"File Name", DirOutDC + "\\ret30.mtx"}, {"Label", "retail emp within 3 miles"},{"Type", "Long"}, {"Tables", {"ret30", "ret15"}}})	//,{"File Based", "No"}
 	ret30_mc = CreateMatrixCurrency(ret30_m, "ret30", "Row Index", "Column Index", )
+	ret15_mc = CreateMatrixCurrency(ret30_m, "ret15", "Row Index", "Column Index", )
 
 	influence_area = 3		//influence area for production/attractions zones is 3 miles; do for production (Row) and attraction (Column) zones.
+	influence_area15 = 1.5	
 	ret30_mc := if (zonedist_mc > influence_area) then 0 else (retail)	//zeros out zones that are outside the influence area (3 miles); retail + hwy employment within the influence area of each zone
+	ret15_mc := if (zonedist_mc > influence_area15) then 0 else (retail)	
 //	ind30_mc := if (zonedist_mc > influence_area) then 0 else (loind + hiind)	//zeros out zones that are outside the influence area (3 miles); retail + hwy employment within the influence area of each zone
   
  	ret30_ar = GetMatrixMarginals(ret30_mc, "Sum", "row")
+ 	ret15_ar = GetMatrixMarginals(ret15_mc, "Sum", "row")
 	ret30 = a2v(ret30_ar)							//this is total retail within each zone's influence area
+	ret15 = a2v(ret15_ar)				
  
 	tour_files = {"hbwdestii", "schdestii", "hbudestii", "hbsdestii", "hbodestii", "atwdestii", "extdest", "xiw", "xin"}
 
@@ -144,7 +151,7 @@ end
 	ModifyTable(tour_files[1], strct)
 
 	tour_vectors = GetDataVectors(tour_files[1]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	tourincome = tour_vectors[5]
 	tourlc = tour_vectors[6]
@@ -153,12 +160,18 @@ end
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 	tourlc2dum = if (tourlc = 2) then 1 else 0
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
+	ret15_orig = Vector(tourtaz.length, "float", ) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
+	ret15_dest = Vector(tourtaz.length, "float", ) 
 	AT_dest = Vector(tourtaz.length, "short", ) 
 	at1dumP = Vector(tourtaz.length, "short", ) 
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-1+ tour selection
@@ -172,7 +185,9 @@ SetRandomSeed(454)
 		otazseq = tourorigtazseq[n]
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
+		ret15_orig[n] = ret15[otazseq]
 		ret30_dest[n] = ret30[dtazseq]
+		ret15_dest[n] = ret15[dtazseq]
 		AT_dest[n] = atype[dtazseq]
 		at1dumP[n] = atype1dum[otazseq]
 		rand_val = RandomNumber()
@@ -186,12 +201,13 @@ SetRandomSeed(454)
 	end
 
 //Apply the PA model
-	U1 = -1.182  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.2817 * hbwtours - 0.5 * AT_dest
-	U2 = -2.552  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.3017 * hbwtours - 0.5 * AT_dest
+	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum
+	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum
 
+	//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -200,13 +216,13 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (66.0% of all 2+ is), 3 (20.0%), 4 (8.0%) & 5 (6.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.660) then 2 else if (rand_v2 < 0.860) then 3 else if (rand_v2 < 0.940) then 4 else 5
+//The 2+ categories are 2 (62.0% of all 2+ is), 3 (22.0%), 4 (6.0%) & 5 (10.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) then 2 else if (rand_v2 < 0.84) then 3 else if (rand_v2 < 0.90) then 4 else 5
 	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -2.114  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
-	U2 = -2.744  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
+	U1 = -4.8103  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.1838 * hbwtours + 1.1778 * hovdum
+	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -219,8 +235,8 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (70.5% of all 2+ is), 3 (19.1%), 4 (4.8%), 5 (3.4%), 6 (1.1%) & 7 (1.1%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.705) then 2 else if (rand_v4 < 0.896) then 3 else if (rand_v4 < 0.944) then 4 else if (rand_v4 < 0.978) then 5 else if (rand_v4 < 0.989) then 6 else 7
+//The 2+ categories are 2 (57% of all 2+ is), 3 (24%), 4 (11%), 5 (8%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else if (rand_v4 < 0.81) then 3 else if (rand_v4 < 0.92) then 4 else 5
 	SetDataVector(tour_files[1]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[1])	
 
@@ -237,7 +253,7 @@ SetRandomSeed(454)
 	strct = strct + {{"IS_AP", "Integer", 2,,,,,,,,,}}
 	ModifyTable(tour_files[2], strct)
 	tour_vectors = GetDataVectors(tour_files[2]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 //	tourincome = tour_vectors[5]
@@ -251,6 +267,10 @@ SetRandomSeed(454)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 //	tourlc2dum = if (tourlc = 2) then 1 else 0
 
@@ -260,6 +280,7 @@ SetRandomSeed(454)
 	rural_dest = Vector(tourtaz.length, "short", ) 
 	htime = Vector(tourtaz.length, "float", ) 
 	atype_orig = Vector(tourtaz.length, "short", ) 
+	at5dum_origin = Vector(tourtaz.length, "short", ) 
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-1+ tour selection
 	rand_v2 = Vector(tourtaz.length, "float", ) 	//for PA, 2-3 tour selection
 	rand_v3 = Vector(tourtaz.length, "float", ) 	//for AP, 0-1+ tour selection
@@ -274,6 +295,7 @@ SetRandomSeed(894)
 		rural_dest[n] = rural[dtazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
 		atype_orig[n] = atype[otazseq]
+		at5dum_origin[n] = atype5dum[otazseq]
 		rand_val = RandomNumber()
 		rand_v1[n] = rand_val
 		rand_val = RandomNumber()
@@ -285,12 +307,12 @@ SetRandomSeed(894)
 	end
 
 //Apply the PA model
-	U1 = -3.705 + 0.0253 * htime + 0.7772 * rural_dest + 0.0000429 * ret30_orig + 0.1217 * tours + 0.2 * cbddum_dest
-	U2 = -6.030 + 0.0253 * htime + 0.3872 * rural_dest + 0.0000429 * ret30_orig + 0.1217 * tours + 3.5 * cbddum_dest
+	U1 = -4.3588 + 0.00005 * ret30_orig + 1.1172 * hovdum
+	U2 = -5.7802 + 0.00005 * ret30_orig + 1.1172 * hovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -299,13 +321,13 @@ SetRandomSeed(894)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (82.0% of all 2+ is) & 3 (18.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.820) then 2 else 3
+//The 2+ categories are 2 (60.0% of all 2+ is) & 3 (40.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.60) then 2 else 3
 	SetDataVector(tour_files[2]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -3.416 + 0.9709 * choice_v + 0.02292 * htime - 0.1922 * toursize + 0.2626 * atype_orig + 0.00006084 * ret30_orig + 0.11723 * tours
-	U2 = -4.189 + 0.9709 * choice_v + 0.02292 * htime - 0.1922 * toursize + 0.2626 * atype_orig + 0.00006084 * ret30_orig + 0.11723 * tours
+	U1 = -3.1221 + 0.0493 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum
+	U2 = -3.8661 + 0.0380 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -318,8 +340,8 @@ SetRandomSeed(894)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (72.8% of all 2+ is), 3 (19.2%), 4 (1.5%), 5 (3.5%) & 6 (3.0%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.728) then 2 else if (rand_v4 < 0.920) then 3 else if (rand_v4 < 0.935) then 4 else if (rand_v4 < 0.970) then 5 else 6
+//The 2+ categories are 2 (61% of all 2+ is), 3 (32%), 4 (6%), 5 (1%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.61) then 2 else if (rand_v4 < 0.93) then 3 else if (rand_v4 < 0.99) then 4 else 5
 	SetDataVector(tour_files[2]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[2])	
 
@@ -337,7 +359,7 @@ SetRandomSeed(894)
 	ModifyTable(tour_files[3], strct)
 
 	tour_vectors = GetDataVectors(tour_files[3]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 //	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -351,12 +373,18 @@ SetRandomSeed(894)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc4dum = if (tourincome = 4) then 1 else 0
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
 	at5dum = Vector(tourtaz.length, "short", ) 
+	at1dum_origin = Vector(tourtaz.length, "short", ) 
+	at12dum_dest = Vector(tourtaz.length, "short", ) // AT 1 or 2
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-2 tour selection
 //	rand_v2 = Vector(tourtaz.length, "float", ) 	// no 2+ stops
 	rand_v3 = Vector(tourtaz.length, "float", ) 	//for AP, 0-1+ tour selection
@@ -368,6 +396,8 @@ SetRandomSeed(7844)
 		dtazseq = tourdesttazseq[n]
 		ret30_dest[n] = ret30[dtazseq]
 		at5dum[n] = atype5dum[dtazseq]
+		at1dum_origin[n] = atype1dum[otazseq]
+		at12dum_dest[n] = atype12dum[dtazseq]
 		rand_val = RandomNumber()
 		rand_v1[n] = rand_val
 //		rand_val = RandomNumber()
@@ -379,12 +409,12 @@ SetRandomSeed(7844)
 	end
 
 //Apply the PA model
-	U1 = -2.790 - 1.154 * tourinc4dum + 0.1311 * tours - 0.4 * at5dum
-	U2 = -3.835 - 1.154 * tourinc4dum + 0.1311 * tours - 0.4 * at5dum
+	U1 = -3.0845 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
+	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -397,8 +427,8 @@ SetRandomSeed(7844)
 	SetDataVector(tour_files[3]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -1.280 + 0.5613 * choice_v + 0.00004232 * ret30_dest - 0.1311 * tours
-	U2 = -1.979 + 0.5613 * choice_v + 0.00004232 * ret30_dest - 0.1311 * tours
+	U1 = -3.0845 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
+	U2 = -3.4900 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -412,6 +442,7 @@ SetRandomSeed(7844)
 	prob2c = prob1c + prob2
 
 //The 2+ categories are 2 (63.2% of all 2+ is), 3 (27.8%) & 4 (9.0%)
+// kyle: not updated with new survey. Too few samples and too high % of 5+ stops.
 	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else if (rand_v4 < 0.910) then 3 else 4
 	SetDataVector(tour_files[3]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[3])	
@@ -430,11 +461,11 @@ SetRandomSeed(7844)
 	ModifyTable(tour_files[4], strct)
 
 	tour_vectors = GetDataVectors(tour_files[4]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 //	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
-//	tourlc = tour_vectors[6]
+	tourlc = tour_vectors[6]
 	hbwtours = tour_vectors[10]
 	schtours = tour_vectors[8]
 	hbutours = tour_vectors[9]
@@ -444,16 +475,24 @@ SetRandomSeed(7844)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
-//	tours = hbwtours + schtours + hbutours + hbstours + hbotours
+	tourmode = tour_vectors[20]
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
+	tours = hbwtours + schtours + hbutours + hbstours + hbotours
 	tourinc1dum = if (tourincome = 1) then 1 else 0
 	tourinc4dum = if (tourincome = 4) then 1 else 0
+	tourinc12dum = if (tourincome = 1 or tourincome = 2) then 1 else 0
+	tourlc1dum = if (tourlc = 1) then 1 else 0
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ddensp_orig = Vector(tourtaz.length, "float", ) 
 	ret30_dest = Vector(tourtaz.length, "float", ) 
+	ret30_orig = Vector(tourtaz.length, "float", ) 
 	htime = Vector(tourtaz.length, "float", ) 
 	at1dumP = Vector(tourtaz.length, "short", ) 
 	at1dumA = Vector(tourtaz.length, "short", ) 
+	at34dum_origin = Vector(tourtaz.length, "short", ) 
 	rand_v1 = Vector(tourtaz.length, "float", ) 	//for PA, 0-2+ tour selection
 	rand_v2 = Vector(tourtaz.length, "float", ) 	//for PA, 3-6 tour selection
 	rand_v3 = Vector(tourtaz.length, "float", ) 	//for AP, 0-2+ tour selection
@@ -465,9 +504,11 @@ SetRandomSeed(9543)
 		dtazseq = tourdesttazseq[n]
 		ddensp_orig[n] = ddensp[otazseq]
 		ret30_dest[n] = ret30[dtazseq]
+		ret30_orig[n] = ret30[otazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
 		at1dumP[n] = atype1dum[otazseq]
 		at1dumA[n] = atype1dum[dtazseq]
+		at34dum_origin[n] = atype34dum[otazseq]
 		rand_val = RandomNumber()
 		rand_v1[n] = rand_val
 		rand_val = RandomNumber()
@@ -480,14 +521,14 @@ SetRandomSeed(9543)
 
 
 //Apply the PA model
-	U1 = -1.855 + 0.03799 * htime - 0.6824 * tourinc1dum + 0.0000362 * ddensp_orig - 0.1139 * hbstours + 0.13 * tourinc4dum
-	U2 = -2.867 + 0.03799 * htime - 0.7324 * tourinc1dum + 0.0000362 * ddensp_orig - 0.1139 * hbstours + 0.30 * tourinc4dum - 1.0 * at1dumP - 1.0 * at1dumA
-	U3 = -3.478 + 0.03799 * htime - 0.7124 * tourinc1dum + 0.0000362 * ddensp_orig - 0.1139 * hbstours + 0.20 * tourinc4dum - 1.0 * at1dumP - 1.0 * at1dumA
+	U1 = -3.2957 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
+	U2 = -3.9736 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
+	U3 = -4.2104 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -498,16 +539,16 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (75.0% of all 3+ is), 4 (20.4%), 5 (2.6%) & 6 (2.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.750) then 3 else if (rand_v2 < 0.954) then 4 else if (rand_v2 < 0.980) then 5 else 6
+//The 3+ categories are 3 (41.0% of all 3+ is), 4 (24%), 5 (23%), 6 (13%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.41) then 3 else if (rand_v2 < 0.65) then 4 else if (rand_v2 < 0.88) then 5 else 6
 	SetDataVector(tour_files[4]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
 	stop4dum = if (choice_v > 4) then 1 else 0
 
-	U1 = -1.768 + 0.2972 * choice_v + 0.01944 * htime - 0.5592 * tourinc1dum + 0.00004218 * ret30_dest - 0.1683 * hbstours - 2.0 * stop4dum
-	U2 = -3.105 + 0.2972 * choice_v + 0.01944 * htime - 0.5592 * tourinc1dum + 0.00004218 * ret30_dest - 0.1683 * hbstours - 2.0 * stop4dum
-	U3 = -3.755 + 0.2972 * choice_v + 0.01944 * htime - 0.5592 * tourinc1dum + 0.00004218 * ret30_dest - 0.1683 * hbstours - 2.0 * stop4dum
+	U1 = -0.8276 - 0.2403 * choice_v + 0.0552 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
+	U2 = -1.9793 - 0.3747 * choice_v + 0.0788 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
+	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -523,8 +564,8 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (64.0% of all 3+ is), 4 (28.0%), 5 (6.0%) & 6 (2.0%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.640) then 3 else if (rand_v4 < 0.920) then 4 else if (rand_v4 < 0.980) then 5 else 6
+//The 3+ categories are 3 (43.0% of all 3+ is), 4 (28.0%), 5 (18.0%), 6 (11%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.43) then 3 else if (rand_v4 < 0.71) then 4 else if (rand_v4 < 0.89) then 5 else 6
 	SetDataVector(tour_files[4]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[4])	
 
@@ -542,7 +583,7 @@ SetRandomSeed(9543)
 	ModifyTable(tour_files[5], strct)
 
 	tour_vectors = GetDataVectors(tour_files[5]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -556,9 +597,15 @@ SetRandomSeed(9543)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	hovdum = if Position(Lower(tourmode), "pool") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours (HBW+SCH+HBU+HBS+HBO)
 	tourinc1dum = if (tourincome = 1) then 1 else 0
+	tourinc12dum = if (tourincome = 1 or tourincome = 2) then 1 else 0
 	intraz = if (tourorigtazseq = tourdesttazseq) then 1 else 0
+	tourlc1dum = if tourlc = 1 then 1 else 0
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
@@ -578,6 +625,7 @@ SetRandomSeed(1548)
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
 		cbddum_dest[n] = cbddum[dtazseq]
+		atype12dum_orig = atype12dum[otazseq]
 		rural_dest[n] = rural[dtazseq]
 		rural_orig[n] = rural[otazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
@@ -593,14 +641,14 @@ SetRandomSeed(1548)
 	end
 
 //Apply the PA model
-	U1 = -0.947 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig 			- 0.4 * origAT - 0.1 * tours
-	U2 = -3.849 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.1026 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
-	U3 = -4.435 + 0.03097 * htime - 0.62 * intraz - 2.2354 * cbddum_dest + 0.9526 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
+	U1 = -3.7008 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2021 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
+	U2 = -4.7065 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2572 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
+	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -611,14 +659,14 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (50.0% of all 3+ is), 4 (27.8%), 5 (11.1%), 6 (5.5%) & 7 (5.6%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.778) then 4 else if (rand_v2 < 0.889) then 5 else if (rand_v2 < 0.944) then 6 else 7
+//The 3+ categories are 3 (50.0% of all 3+ is), 4 (17%), 5 (17%), 6 (17%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.67) then 4 else if (rand_v2 < 0.84) then 5 else 6
 	SetDataVector(tour_files[5]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -1.555 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
-	U2 = -2.745 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
-	U3 = -3.134 + 0.3102 * choice_v + 0.02345 * htime - 0.4550 * intraz - 0.3154 * tourinc1dum - 0.2879 * rural_orig - 0.06909 * tours
+	U1 = -2.3955 + 0.3442 * choice_v + 0.0372 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
+	U2 = -3.5287 + 0.3631 * choice_v + 0.0420 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
+	U3 = -4.4799 + 0.9418 * choice_v + 0.0519 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -634,8 +682,8 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (59.4% of all 3+ is), 4 (23.9%), 5 (9.6%), 6 (1.1%) & 7 (4.8%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.606) then 3 else if (rand_v4 < 0.845) then 4 else if (rand_v4 < 0.941) then 5 else if (rand_v4 < 0.952) then 6 else 7
+//The 3+ categories are 3 (48% of all 3+ is), 4 (25%), 5 (20%), 6 (7%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else if (rand_v4 < 0.73) then 4 else if (rand_v4 < 0.73) then 5 else 6
 	SetDataVector(tour_files[5]+"|", "IS_AP", choice_v,)
     	CloseView(tour_files[5])	
 
@@ -653,7 +701,7 @@ SetRandomSeed(1548)
 	ModifyTable(tour_files[6], strct)
 
 	tour_vectors = GetDataVectors(tour_files[6]+"|", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", 
-						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP"},{{"Sort Order", {{"ID","Ascending"}}}})
+						"HBO", "ATW", "HHID", "ORIG_TAZ", "ORIG_SEQ", "DEST_TAZ", "DEST_SEQ", "PURP", "TourMode"},{{"Sort Order", {{"ID","Ascending"}}}})
 	tourtaz = tour_vectors[2]
 	toursize = tour_vectors[4]
 	tourincome = tour_vectors[5]
@@ -668,6 +716,10 @@ SetRandomSeed(1548)
 	tourorigtazseq = tour_vectors[16]
 	tourdesttaz = tour_vectors[17]
 	tourdesttazseq = tour_vectors[18]
+	tourmode = tour_vectors[20]
+	sovdum = if Position(Lower(tourmode), "sov") > 0 then 1 else 0
+	is_transit = if Position(Lower(tourmode), "bus") > 0 
+		or Position(Lower(tourmode), "prem") > 0 then 1 else 0
 	tours = hbwtours + schtours + hbutours + hbstours + hbotours	//TOURS = all tours, excluding ATW (HBW+SCH+HBU+HBS+HBO)
 	//the non-resident ATW tours don't have records of the number of tours, so set those = 3.56:
 	tours = if (tours = null) then 3.56 else tours
@@ -677,6 +729,7 @@ SetRandomSeed(1548)
 
 	choice_v = Vector(tourtaz.length, "short", {{"Constant", 0}}) 
 	ret30_orig = Vector(tourtaz.length, "float", ) 
+	ret30_dest = Vector(tourtaz.length, "float", ) 
 	cbddum_dest = Vector(tourtaz.length, "short", ) 
 	rural_dest = Vector(tourtaz.length, "short", ) 
 	rural_orig = Vector(tourtaz.length, "short", ) 
@@ -691,6 +744,7 @@ SetRandomSeed(40880)
 		otazseq = tourorigtazseq[n]
 		dtazseq = tourdesttazseq[n]
 		ret30_orig[n] = ret30[otazseq]
+		ret30_dest[n] = ret30[dtazseq]
 		cbddum_dest[n] = cbddum[dtazseq]
 		rural_dest[n] = rural[dtazseq]
 		htime[n] = GetMatrixValue(autofreecur, i2s(tourorigtaz[n]), i2s(tourdesttaz[n]))
@@ -705,10 +759,10 @@ SetRandomSeed(40880)
 	end
 
 //Apply the PA model
-	U1 = -3.566 + 0.05033 * htime + 1.559 * rural_dest + 0.1313 * tours_vec
+	U1 = -2.1350 + 0.0557 * htime - 0.00003 * ret30_dest + 0.8166 * sovdum
 
 	E2U0 = 1
-	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
+	E2U1 = if is_transit then 0 else exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
 	E2U_cum = E2U0 + E2U1
 
 	prob0 = E2U0 / E2U_cum
@@ -718,8 +772,8 @@ SetRandomSeed(40880)
 	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v2 < 0.776) then 1 else if (rand_v2 < 0.866) then 2 else if (rand_v2 < 0.950) then 3 else 4
 	SetDataVector(tour_files[6]+"|", "IS_PA", choice_v,)
 
-//Repeat above logic for AP direction
-	U1 = -2.209 + 1.161 * choice_v + 0.04672 * htime  + 1.525 * cbddum_dest - 0.00008081 * ret30_orig
+// AP direction set to 0
+	U1 = -999
 
 	E2U0 = 1
 	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
@@ -728,8 +782,8 @@ SetRandomSeed(40880)
 	prob0 = E2U0 / E2U_cum
 	prob1 = E2U1 / E2U_cum
 
-//The 1+ categories are 1 (62.3% of all 3+ is), 2 (25.4%), 3 (10.3%) & 4 (2.0%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v4 < 0.623) then 1 else if (rand_v4 < 0.877) then 2 else if (rand_v4 < 0.980) then 3 else 4
+// this ensures that the choice is always 0
+	choice_v = if (rand_v3 < prob0) then 0 else 0
 	SetDataVector(tour_files[6]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[6])	
 
@@ -1015,7 +1069,7 @@ SetRandomSeed(343)
 	end
 
 //Apply the PA model (same as the HBO PA model)
-	U1 = -0.997 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig 			- 0.4 * origAT - 0.1 * tours
+	U1 = -0.997 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.5026 * rural_dest + 0.00003275 * ret30_orig - 0.4 * origAT - 0.1 * tours
 	U2 = -3.899 + 0.03097 * htime - 0.62 * intraz - 1.3354 * cbddum_dest + 0.1026 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
 	U3 = -4.485 + 0.03097 * htime - 0.62 * intraz - 2.2354 * cbddum_dest + 0.9526 * rural_dest + 0.00003275 * ret30_orig + 0.5 * tourincome - 0.4 * origAT - 0.1 * tours
 

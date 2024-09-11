@@ -14,7 +14,7 @@ instead of dividing the OD tables into HOT/non-HOT, the tables are divided into 
 */
 //********************************************************************************************************************
 
-	on error goto TCError
+	// on error goto TCError
 	on escape goto UserKill
 
 	METDir = "C:\\1ScenarioPlanning\\Metrolina"				//   NEED to HARD CODE  

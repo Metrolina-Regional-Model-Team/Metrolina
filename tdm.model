@@ -18,6 +18,7 @@ Body:
     FlowChartNode(model,"Trip Distribution",,,)
     FlowChartNode(model,"Trucks",,,)
     FlowChartNode(model,"Mode Split",,,)
+    FlowChartNode(model,"Intermediate Stops",,,)
     FlowChartNode(model,"Peak Highway Assignment",,,)
     FlowChartNode(model,"Convergence",,,)
     FlowChartNode(model,"Post Feedback",,,)
@@ -34,7 +35,8 @@ Body:
     FlowChartLink(model,"Trip Generation","Trip Distribution",True,,)
     FlowChartLink(model,"Trip Distribution","Trucks",True,,)
     FlowChartLink(model,"Trucks","Mode Split",True,,)
-    FlowChartLink(model,"Mode Split","Peak Highway Assignment",True,,)
+    FlowChartLink(model,"Mode Split","Intermediate Stops",True,,)
+    FlowChartLink(model,"Intermediate Stops","Peak Highway Assignment",True,,)
     FlowChartLink(model,"Peak Highway Assignment","Convergence",True,,)
     FlowChartLink(model,"Convergence","Skimming",True,,1)
     FlowChartLink(model,"Convergence","Post Feedback",2,,)
@@ -99,10 +101,19 @@ Macro "Mode Split" (Args,Result)
 EndMacro
 
 
+Macro "Intermediate Stops" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Intermediate Stops"}},
+        {"Picture", "bmp\\planstop_v3.bmp"}
+    }
+EndMacro
+
+
 Macro "Peak Highway Assignment" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Peak Highway Assignment"}},
+        {"MacroNames", {"Create OD", "Peak Highway Assignment"}},
         {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro

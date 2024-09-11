@@ -1,7 +1,7 @@
 
 Macro "Model.Attributes" (Args,Result)
     Attributes = {
-        {"BackgroundColor", null},
+        {"BackgroundColor",{255,255,255}},
         {"BannerPicture", null},
         {"BannerHeight", 80},
         {"BannerWidth", 2000},
@@ -10,12 +10,15 @@ Macro "Model.Attributes" (Args,Result)
         {"DebugMode", 1},
         {"MaxProgressBars", 4},
         {"Layout", null},
+        {"Requires",
+            {{"Program", "TransCAD"},
+            {"Version", 10},
+            {"Build", 40615}}},
         {"ExpandStages", "Side by Side"},
-        {"MinItemSpacing", 5},
-        {"MaxProgressBars", 2},
+        {"MinItemSpacing", 10},
         {"CodeUI", "Code\\ui.dbd"},
         {"Base Scenario Name", "Base"},
-        {"ClearLogFiles", 1},
+        {"ClearLogFiles", 0},
         {"CloseOpenFiles", 1},
         {"Output Folder Format", "Output Folder\\Scenario Name"},
         {"Output Folder Parameter", "Output Folder"},
@@ -54,7 +57,6 @@ EndMacro
   You can use it to change the value for some particular parameters.
 **/
 Macro "Model.OnModelReady" (Args,Result)
-Body:
     Return({"Base Folder": "%Model Folder%"})
 EndMacro
 

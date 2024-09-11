@@ -16,7 +16,7 @@ Macro "Tour_DC_FB" (Args)
 // 9/12/18, mk: fixed ATW DC error (tourset name)
 // 2/25/19, mk: change HBW coeffs to match DCapp5 per Bill's 2/25/19 email
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
@@ -301,6 +301,7 @@ end
 	numrec = GetDataVector(hbwdestii+"|", "ID", )
 	origtaz = GetDataVector(hbwdestii+"|", "ORIG_TAZ", )
 	emp_v = Vector(numrec.length, "Short", )
+	nullString_v = Vector(numrec.length, "String", )
 	SetDataVectors(hbwdestii+"|", {{"DEST_TAZ", emp_v}, {"DEST_SEQ", emp_v}, {"OD_Time", emp_v}, {"DO_Time", emp_v}}, )	//clear out previous destinations and times
 
 	fields_ar = GetFields("hbwdestii", null)
@@ -309,9 +310,15 @@ end
 	for i = 1 to num do
 		fieldnames[i] = fields_ar[1][i]
 	end
-	if num > 21 then do
+	if num > 21 then do // Not advisable code. Will not work as intended if more fields are added to the trip files upfront.
+		vecsSet = null
 		for i = 22 to fieldnames.length do
-			SetDataVector(hbwdestii+"|", fieldnames[i], emp_v, )  //clear out all the other non-origin fields
+			type = GetFieldType(GetFieldFullSpec(hbwdestii, fieldnames[i]))
+			if type = "String" then
+				vecsSet.(fieldnames[i]) = nullString_v
+			else
+				vecsSet.(fieldnames[i]) = emp_v
+			SetDataVectors(hbwdestii+"|", vecsSet, )  //clear out all the other non-origin fields
 		end
 	end
 
@@ -496,7 +503,7 @@ hbwdestii = OpenTable("hbwdestii", "FFB", {DirOutDC + "\\dcHBW.bin",})
 	hhdenshbwout = hhhbwout / (areahbwout * 640)		//SE file has area in SqMiles, needs to be in acres
 	accE15cfr_v = a2v(accE15cfr_ar)
 	
-	U1 = 1.25 + 0.000002 * medinchbwout
+	U1 = -1.484 + 0.0000012 * medinchbwout
 
 	E2U0 = Vector(idhbwout.length, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ HBU tours

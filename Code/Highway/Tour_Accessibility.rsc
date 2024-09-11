@@ -24,7 +24,7 @@ Macro "Tour_Accessibility" (Args)
   		(off-peak)
 
 */
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

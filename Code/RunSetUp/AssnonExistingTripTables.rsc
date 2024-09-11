@@ -668,7 +668,7 @@ AppendToLogFile(0, " Offpeak Network name sent to BuildNetwork = " + Args.[Offpe
 			end // altsubdir = null
 
 		// check assignment subdir, create if necessary
-		on error, notfound goto badcreate
+		// on error, notfound goto badcreate
 		dirinfo = GetDirectoryInfo(Dir + "\\" + AltSubDir + "\\HwyAssn", "Directory")
 		if dirinfo = null then CreateDirectory(Dir + "\\" + AltSubDir + "\\HwyAssn")
 		dirinfo = GetDirectoryInfo(Dir + "\\" + AltSubDir + "\\HwyAssn\\HOT", "Directory")

@@ -42,10 +42,6 @@ Highway\\Tour_IS_Location
 Highway\\Tour_TruckTGTD
 Highway\\Tour_ToD1
 Highway\\Tour_TripAccumulator
-Highway\\Tour_TOD2_AMPeak
-Highway\\Tour_TOD2_PMPeak
-Highway\\Tour_TOD2_Midday
-Highway\\Tour_TOD2_Night
 Highway\\Tour_DC_FB
 Highway\\Tour_IS_FB
 Highway\\Tour_IS_Location_FB
@@ -53,7 +49,7 @@ Highway\\Tour_ToD1_FB
 Highway\\Tour_TripAccumulator_FB
 Highway\\Tour_ModeSplit
 Highway\CalibrateMC.rsc
-
+Highway\Create_Highway_OD.rsc
 Highway\\TDHBW1
 Highway\\TDHBW2
 Highway\\TDHBW3

@@ -114,7 +114,8 @@ view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.K
  
      Opts = null
      Opts.Input.Database = net_file 
-     Opts.Input.Network = Dir + "\\PprmW.tnw"
+	 Opts.Input.[Transit RS] = route_file
+	 Opts.Input.Network = Dir + "\\PprmW.tnw"
      Opts.Input.[Origin Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids","Select * where centroid = 1 or [External Station] = 1"}
      Opts.Input.[Destination Set] = {net_file + "|" + node_lyr, node_lyr,"Centroids"}
      Opts.Global.[Skim Var] = {"Generalized Cost", "Fare", "In-Vehicle Time", "Initial Wait Time", "Transfer Wait Time", "Transfer Penalty Time", "Transfer Walk Time", "Access Walk Time", "Egress Walk Time", "Dwelling Time", "Number of Transfers", "In-Vehicle Distance", "Length", "BRT_Flag", "TTPkLoc*", "TTWalk*"}
