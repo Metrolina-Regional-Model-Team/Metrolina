@@ -16,7 +16,7 @@ Macro "Tour_DC_FB" (Args)
 // 9/12/18, mk: fixed ATW DC error (tourset name)
 // 2/25/19, mk: change HBW coeffs to match DCapp5 per Bill's 2/25/19 email
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

@@ -11,10 +11,7 @@ Use simplified logic from previous version of the model
         - These factors vary by purpose, computed from the surveyh
 */
 Macro "Tour TOD Combinations"(Args)
-    on error, notfound do
-        ret_value = 0
-        goto quit
-    end
+
     datentime = GetDateandTime()
     AppendToLogFile(1, "Enter Tour TOD Combinations " + datentime)
 
@@ -55,12 +52,6 @@ Macro "Tour TOD Combinations"(Args)
     end // purpose loop
 
     ret_value = 1
- quit:
-    on error, notfound default
-    tour = null
-    datentime = GetDateandTime()
-    AppendToLogFile(1, "Exit Tour TOD Combinations " + datentime)
-    return(ret_value)
 endmacro
 
 
@@ -69,10 +60,6 @@ Expands the tour files into trip files and creates matrices by period for each t
 */
 
 Macro "Create Trips" (Args)
-    on error, notfound do
-        ret_value = 0
-        goto quit
-    end
     
     datentime = GetDateandTime()
     AppendToLogFile(1, "Enter Create Trip File " + datentime)
@@ -218,11 +205,6 @@ Macro "Create Trips" (Args)
     end
     
     ret_value = 1
- quit:
-    on error, notfound default
-    datentime = GetDateandTime()
-    AppendToLogFile(1, "Exit Create Trip File " + datentime)
-    return(ret_value)
 endmacro
 
 
@@ -233,10 +215,6 @@ endmacro
 */
 Macro "Create IE EI OD"(Args)
     //************************************************************************************************************************************************************************
-    on error, notfound do
-        ret_value = 0
-        goto quit
-    end
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour Trip Accumulator: " + datentime)
@@ -819,11 +797,6 @@ Macro "Create IE EI OD"(Args)
 	end
         
     ret_value = 1
- quit:
-    on error, notfound default
-    datentime = GetDateandTime()
-    AppendToLogFile(1, "Exit IE EI OD Creation " + datentime)
-    return(ret_value)
 endMacro
 
 
@@ -834,10 +807,6 @@ endMacro
     Logic similar to previous macro 'Tour_Tod2<period>'
 */
 Macro "Create Highway OD" (Args, period)
-    on error, notfound do
-        ret_value = 0
-        goto quit
-    end
     
     datentime = GetDateandTime()
     AppendToLogFile(1, "Enter Create Highway OD " + datentime)
@@ -877,11 +846,6 @@ Macro "Create Highway OD" (Args, period)
     
 	ret_value = RunMacro("Add Commerical and Truck OD", Args, assnPeriod)
 
- quit:
-    on error, notfound default
-    datentime = GetDateandTime()
-    AppendToLogFile(1, "Exit Create Highway OD " + datentime)
-    return(ret_value)
 endmacro
 
 
@@ -898,10 +862,7 @@ Macro "Add Commerical and Truck OD" (Args, period)
 	// PA-AP fractions updated 10/2/13; 3+ occupancy rates derived from 2012 HHTS
 	// 1/16/18, mk: this version uses the Trip model for commercial vehicles (rewritten in GISDK in the Truck_Trip_for_Tour.rsc macro).  The outputs are identical to the trip model for CVs.
 	*/
-    on error, notfound do
-        ret_value = 0
-        goto quit
-    end
+
     datentime = GetDateandTime()
     AppendToLogFile(1, "Tour TOD2_ " + period + ": " + datentime)
 
@@ -941,9 +902,4 @@ Macro "Add Commerical and Truck OD" (Args, period)
     OD.HTK := factor1*nz(HTK.Trips) + factor1*nz(EIH.Trips) + factor1*nz(IEH.Trips) + factor2*nz(EEH.Trips) + factor1*nz(TCMH.TransposeHTK)
 
 	ret_value = 1
-quit:
-    on error, notfound default
-    datentime = GetDateandTime()
-    AppendToLogFile(1, "Tour TOD2_ " + period + ": " + datentime)
-    return(ret_value)
 endmacro

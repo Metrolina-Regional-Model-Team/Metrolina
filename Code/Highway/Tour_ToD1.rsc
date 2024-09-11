@@ -7,7 +7,7 @@ Macro "Tour_ToD1" (Args)
 // 2/25/19, mk: changed             per Bill's 2/25/19 email
 // 8/26/19, mk: reset random number seed for each iteration
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

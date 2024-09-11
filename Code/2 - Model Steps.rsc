@@ -97,22 +97,18 @@ endmacro
 
 Macro "Create OD"(Args)
     // Assign forward and return TOD (AM, MD, PM, NT) to each tour
-    ret = RunMacro("Tour TOD Combinations", Args)
-    if !ret then goto quit
+    RunMacro("Tour TOD Combinations", Args)
 
     // Create purpose specific trip file and purpose specific TOD (AM, MD, PM, NT) matrices
-    ret = RunMacro("Create Trips", Args)
-    if !ret then goto quit
+    RunMacro("Create Trips", Args)
 
     // Create IX/XI matrices by time period directly from dc tour file(s)
-    ret = RunMacro("Create IE EI OD", Args)
-    if !ret then goto quit
+    RunMacro("Create IE EI OD", Args)
 
     // Combine all purposes, IE/EI, Truck and Commercial data to create OD for AMPeak time period
-    ret = RunMacro("Create Highway OD", Args, "AM")
+    RunMacro("Create Highway OD", Args, "AM")
 
-   quit:
-    return(ret)
+    return(1)
 endMacro
 
 
@@ -135,22 +131,15 @@ endmacro
 
 
 Macro "Post Feedback" (Args)
-    //RunMacro("MS_RunOffPeak", Args)
-    //RunMacro("MSMatrixStats", Args)
-    ret = RunMacro("Create Highway OD", Args, "PM")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "PM")
     RunMacro("HwyAssn_RunPMPeak", Args)
     
-    ret = RunMacro("Create Highway OD", Args, "MD")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "MD")
     RunMacro("HwyAssn_RunMidday", Args)
 
-    ret = RunMacro("Create Highway OD", Args, "NT")
-    if !ret then goto quit
+    RunMacro("Create Highway OD", Args, "NT")
     RunMacro("HwyAssn_RunNight", Args)
-   
-   quit: 
-    return(ret)
+    return(1)
 endmacro
 
 

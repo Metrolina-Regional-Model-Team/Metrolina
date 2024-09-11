@@ -3,7 +3,7 @@ Macro "Tour_TruckTGTD" (Args)
 // 1/19, mk: This model replicates the current (MRM18v1.1) trip model for commercial vehicles (COM, MTK, HTK) up to TOD2.
 //		Includes trip generation, EE trips, trip distribution, and transposing TD files for TOD2.
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
@@ -35,7 +35,7 @@ Macro "Tour_TruckTGTD" (Args)
 	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
 	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
-	basvol_vw = OpenTable("basvol", "FFA", {MetDir + "\\ExtSta\\extstavol18_base.asc",})
+	basvol_vw = OpenTable("basvol", "FFA", {MetDir + "\\ExtSta\\extstavol.asc",})
 	bthruv_vw = OpenTable("bthruv", "FFA", {MetDir + "\\ExtSta\\bvthru.asc",})
 	stavol_vw = OpenTable("stavol", "FFA", {Dir + "\\ext\\extstavol" + yr_str + ".asc",})
 //	distCBD_vw = OpenTable("distcbd", "FFA", {Dir + "\\LandUse\\Dist_to_CBD.asc",})  //(no longer used)

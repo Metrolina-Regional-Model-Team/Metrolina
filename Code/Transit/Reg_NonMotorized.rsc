@@ -142,12 +142,12 @@ Macro "Reg_NonMotorized" (Args)
 // STEP 3: Combine Matrix Files
   
 
-	on error do
-		Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
-		// Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
-		// AppendToLogFile(1, "Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
-	    // RegNonMotorizedOK = 0
-	end
+	// on error do
+	// 	Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
+	// 	// Throw("Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
+	// 	// AppendToLogFile(1, "Reg_NonMotorized: taz\\matrix_template.mtx not found.  Please run Create Matrix Template")
+	//     // RegNonMotorizedOK = 0
+	// end
 
 // --- Copy TR_NonMotorized Matrix from the Template Directory
 
