@@ -1,5 +1,6 @@
 Macro "Other Summaries" (Args)
     RunMacro("Load Link Layer", Args)
+    RunMacro("Calculate Daily Fields", Args)
 endmacro
 
 /*
@@ -59,6 +60,90 @@ Macro "Load Link Layer" (Args)
         hwy_tbl = null
     end
 endmacro
+
+/*
+This macro summarize fields across time period and direction.
+
+The loaded network table will have a volume field for each class that looks like
+"AB_Flow_auto_AM". It will also have fields aggregated across classes that look
+like "BA_Flow_PM" and "AB_VMT_MD". Direction (AB/BA) and time period (e.g. AM)
+will be looped over. Create an array of the rest of the field names to
+summarize. e.g. {"Flow_auto", "Flow", "VMT"}.
+*/
+
+Macro "Calculate Daily Fields" (Args)
+
+  a_periods = {"AM", "MD", "PM", "NT"}
+  hwy_dbd = Args.[AM Peak Hwy Name]
+  a_dir = {"AB", "BA"}
+  modes = {
+    "SOV", "Pool2", "Pool3", "COM", "MTK", "HTK",
+    "HOTSOV", "HOTPool2", "HOTPool3", "HOTCOM"
+  }
+
+  hwy_tbl = CreateObject("Table", {FileName: hwy_dbd, LayerType: "line"})
+
+  // Sum up the flow fields
+  for mode in modes do
+
+    for dir in a_dir do
+      out_field = dir + "_" + mode + "_Flow_Daily"
+      fields_to_add = fields_to_add + {{FieldName: out_field, Description: "Daily " + dir + " " + mode + " Flow"}}
+      v_output = null
+
+      // For this direction and mode, sum every period
+      for period in a_periods do
+        input_field = dir + "_Flow_" + mode + "_" + period
+        v_add = hwy_tbl.(input_field)
+        v_output = nz(v_output) + nz(v_add)
+      end
+
+      output.(out_field) = v_output
+      output.(dir + "_Flow_Daily") = nz(output.(dir + "_Flow_Daily")) + v_output
+      output.Total_Flow_Daily = nz(output.Total_Flow_Daily) + v_output
+    end
+  end
+  fields_to_add = fields_to_add + {
+    {FieldName: "AB_Flow_Daily", Description: "AB Daily Flow"},
+    {FieldName: "BA_Flow_Daily", Description: "BA Daily Flow"},
+    {FieldName: "Total_Flow_Daily", Description: "Daily Flow in both direction"}
+  }
+
+  // Other fields to sum
+  a_fields = {"VMT", "VHT", "Delay"}
+  for field in a_fields do
+    for dir in a_dir do
+      v_output = null
+      out_field = dir + "_" + field + "_Daily"
+      fields_to_add = fields_to_add + {{FieldName: out_field, Description: "Daily " + dir + " " + field}}
+      for period in a_periods do
+        input_field = dir + "_" + field + "_" + period
+        v_add = hwy_tbl.(input_field)
+        v_output = nz(v_output) + nz(v_add)
+      end
+      output.(out_field) = v_output
+      output.("Total_" + field + "_Daily") = nz(output.("Total_" + field + "_Daily")) + v_output
+    end
+
+	description = "Daily " + field + " in both directions"
+	if field = "Delay" then description = description + " (hours)"
+    fields_to_add = fields_to_add + {{FieldName: "Total_" + field + "_Daily", Description: description}}
+  end
+
+  // The assignment files don't have total delay by period. Create those.
+  for period in a_periods do
+    out_field = "Tot_Delay_" + period
+    fields_to_add = fields_to_add + {{FieldName: out_field, Description: period + " Total Delay"}}
+    data = hwy_tbl.GetDataVectors({FieldNames: {"AB_Delay_" + period, "BA_Delay_" + period}})
+    v_ab = data.("AB_Delay_" + period)
+    v_ba = data.("BA_Delay_" + period)
+    v_output = nz(v_ab) + nz(v_ba)
+    output.(out_field) = v_output
+  end
+
+  hwy_tbl.AddFields({Fields: fields_to_add})
+  hwy_tbl.SetDataVectors({FieldData: output})
+EndMacro
 
 /*
 An alternative to to the JoinTableToLayer() GISDK function, which replaces
