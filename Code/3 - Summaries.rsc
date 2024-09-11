@@ -2,6 +2,7 @@ Macro "Other Summaries" (Args)
     RunMacro("Load Link Layer", Args)
     RunMacro("Calculate Daily Fields", Args)
     RunMacro("Create Count Difference Map", Args)
+    RunMacro("Count PRMSEs", Args)
 endmacro
 
 /*
@@ -436,6 +437,291 @@ Macro "Count Difference Map" (macro_opts)
     map.View()
     map.Save(output_file)
     map = null
+EndMacro
+
+/*
+Creates tables with %RMSE and volume % diff by facility type and volume group
+*/
+
+Macro "Count PRMSEs" (Args)
+    hwy_dbd = Args.[AM Peak Hwy Name]
+    scen_dir = Args.[Run Directory]
+    output_dir = scen_dir + "\\Report\\validation"
+    if GetDirectoryInfo(output_dir, "All") = null then CreateDirectory(output_dir)
+
+    opts.hwy_bin = Substitute(hwy_dbd, ".dbd", ".bin", )
+    opts.volume_field = "Volume"
+    opts.count_id_field = "CountID"
+    opts.count_field = "Count"
+    opts.class_field = "factype"
+    opts.area_field = "areatp"
+    //   opts.median_field = "HCMMedian"
+    opts.screenline_field = "Scrln"
+    opts.volume_breaks = {10000, 25000, 50000, 100000}
+    opts.out_dir = output_dir
+    RunMacro("Roadway Count Comparison Tables", opts)
+endmacro
+
+/*
+
+*/
+
+Macro "Roadway Count Comparison Tables" (MacroOpts)
+
+  hwy_bin = MacroOpts.hwy_bin
+  volume_field = MacroOpts.volume_field
+  count_id_field = MacroOpts.count_id_field
+  count_field = MacroOpts.count_field
+  class_field = MacroOpts.class_field
+  area_field = MacroOpts.area_field
+  screenline_field = MacroOpts.screenline_field
+  volume_breaks = MacroOpts.volume_breaks
+  out_dir = MacroOpts.out_dir
+
+  if volume_breaks = null
+    then volume_breaks = {0, 10000, 25000, 50000, 100000, 1000000}
+    else do
+      if volume_breaks[1] <> 0 then volume_breaks = {0} + volume_breaks
+      volume_breaks = volume_breaks + {1000000}
+    end
+
+  if GetDirectoryInfo(out_dir, "All") = null then CreateDirectory(out_dir)
+
+  tbl = CreateObject("Table", hwy_bin)
+  n = tbl.SelectByQuery({
+    SetName: "count_set",
+    Query: "Select * where nz(" + count_field + ") > 0"
+  })
+  if n = 0 then Throw("No links with counts found.")
+
+  // Counts split across paired 1-way links are duplicated. Keep only 1.
+  tbl = tbl.Aggregate({
+    GroupBy: {count_id_field, class_field, area_field, screenline_field},
+    FieldStats: {
+      (count_field): "max",
+      (volume_field): "max"
+    }
+  })
+  tbl.RenameField({FieldName: "max_" + volume_field, NewName: volume_field})
+  tbl.RenameField({FieldName: "max_" + count_field, NewName: count_field})
+
+  // overall/total fields
+  v_count = tbl.(count_field)
+  v_volume = tbl.(volume_field)
+  v_class = tbl.(class_field)
+
+  n = v_count.length
+  total_count = VectorStatistic(v_count, "Sum", )
+  total_volume = VectorStatistic(v_volume, "Sum", )
+  total_pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+  {, total_prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+  total_prmse = round(total_prmse, 2)
+  total_line = {
+    "All," + String(n) + "," + String(total_count) + "," + String(total_volume) + 
+    "," + String(total_pct_diff) + "," + String(total_prmse)
+  }
+  area_total_line = {
+    "All,All," + String(n) + "," + String(total_count) + "," + String(total_volume) + 
+    "," + String(total_pct_diff) + "," + String(total_prmse)
+  }
+
+  // Facility type table
+  lines = null
+  v_class = SortVector(v_class, {Unique: "true"})
+  for class_name in v_class do
+    class_set = "class"
+    if TypeOf(class_name) <> "string" then class_name = String(class_name)
+    query = "Select * where " + class_field + " = '" + class_name + "'"
+    n = tbl.SelectByQuery({SetName: class_set, Query: query})
+    if n = 0 then continue
+    v_count = tbl.(count_field)
+    v_volume = tbl.(volume_field)
+    total_count = VectorStatistic(v_count, "Sum", )
+    total_volume = VectorStatistic(v_volume, "Sum", )
+    pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+    {rmse, prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+    prmse = round(prmse, 2)
+    lines = lines + {
+      class_name + "," + String(n) + "," + String(total_count) + "," + String(total_volume) + 
+      "," + String(pct_diff) + "," + String(prmse)
+    }
+  end
+  file = out_dir + "/count_comparison_by_fac_type.csv"
+  lines = {"HCMType,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+  lines = lines + total_line
+  RunMacro("Write CSV by Line", file, lines)
+
+  // Facility type and area type table
+  if area_field <> null then do
+    lines = null
+    v_area = tbl.(area_field)
+    v_area = SortVector(v_area, {Unique: "true"})
+    for class_name in v_class do
+      for area in v_area do
+        set_name = "class_area"
+        if TypeOf(class_name) <> "string" then class_name = String(class_name)
+        if TypeOf(area) <> "string" then area = String(area)
+        query = "Select * where " + class_field + " = '" + class_name + "' and " + area_field + " = " + area
+        n = tbl.SelectByQuery({SetName: set_name, Query: query})
+        if n = 0 then continue
+        v_count = tbl.(count_field)
+        v_volume = tbl.(volume_field)
+        total_count = VectorStatistic(v_count, "Sum", )
+        total_volume = VectorStatistic(v_volume, "Sum", )
+        pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+        {rmse, prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+        prmse = round(prmse, 2)
+        lines = lines + {
+          class_name + "," + area + "," + String(n) + "," + String(total_count) + "," +
+          String(total_volume) + "," + String(pct_diff) + "," + String(prmse)
+        }
+      end
+    end
+    lines = {"HCMType,AreaType,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+    lines = lines + area_total_line
+    file = out_dir + "/count_comparison_by_ft_and_at.csv"
+    RunMacro("Write CSV by Line", file, lines)
+  end
+
+  // Add median
+  if median_field <> null then do
+    lines = null
+    v_median = tbl.(median_field)
+    v_median = SortVector(v_median, {Unique: "true"})
+    for class_name in v_class do
+      for area in v_area do
+        for med in v_median do
+          set_name = "class_area_med"
+          if TypeOf(class_name) <> "string" then class_name = String(class_name)
+          if TypeOf(area) <> "string" then area = String(area)
+          if TypeOf(med) <> "string" then med = String(med)
+          query = "Select * where " + class_field + " = '" + class_name + "' and " + 
+            area_field + " = '" + area + "' and " + 
+            median_field + " = '" + med + "'"
+          n = tbl.SelectByQuery({SetName: set_name, Query: query})
+          if n = 0 then continue
+          v_count = tbl.(count_field)
+          v_volume = tbl.(volume_field)
+          total_count = VectorStatistic(v_count, "Sum", )
+          total_volume = VectorStatistic(v_volume, "Sum", )
+          pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+          {rmse, prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+          prmse = round(prmse, 2)
+          lines = lines + {
+            class_name + "," + area + "," + med + "," + String(n) + "," + String(total_count) + "," +
+            String(total_volume) + "," + String(pct_diff) + "," + String(prmse)
+          }
+        end
+      end
+    end
+    lines = {"HCMType,AreaType,Median,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+    lines = lines + area_total_line
+    file = out_dir + "/count_comparison_by_ft_and_at_and_med.csv"
+    RunMacro("Write CSV by Line", file, lines)
+  end
+
+  // Volume group table
+  lines = null
+  for i = 2 to volume_breaks.length do
+    low_vol = volume_breaks[i - 1]
+    high_vol = volume_breaks[i]
+
+    vol_set = "class"
+    query = "Select * where " + count_field + " > " + String(low_vol) + 
+      " and " + count_field + " <= " + String(high_vol)
+    n = tbl.SelectByQuery({SetName: vol_set, Query: query})
+    if n = 0 then continue
+    v_count = tbl.(count_field)
+    v_volume = tbl.(volume_field)
+    total_count = VectorStatistic(v_count, "Sum", )
+    total_volume = VectorStatistic(v_volume, "Sum", )
+    pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+    {rmse, prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+    prmse = round(prmse, 2)
+    if i = volume_breaks.length
+      then label = String(low_vol) + "+"
+      else label = String(high_vol)
+    lines = lines + {
+      label + "," + String(n) + "," + String(total_count) + "," + String(total_volume) + 
+      "," + String(pct_diff) + "," + String(prmse)
+    }
+  end
+  file = out_dir + "/count_comparison_by_vol_group.csv"
+  lines = {"VolumeGroup,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+  lines = lines + total_line
+  RunMacro("Write CSV by Line", file, lines)
+
+  // Screenline table
+  lines = null
+  v_screenline = tbl.(screenline_field)
+  v_screenline = SortVector(v_screenline, {Unique: "true"})
+  for screenline in v_screenline do
+    if screenline = null then continue
+    sl_set = "screenline"
+    query = "Select * where " + screenline_field + " = " + String(screenline)
+    n = tbl.SelectByQuery({SetName: sl_set, Query: query})
+    if n = 0 then continue
+    v_count = tbl.(count_field)
+    v_volume = tbl.(volume_field)
+    total_count = VectorStatistic(v_count, "Sum", )
+    total_volume = VectorStatistic(v_volume, "Sum", )
+    pct_diff = round((total_volume - total_count) / total_count * 100, 2)
+    {rmse, prmse} = RunMacro("Calculate Vector RMSE", v_count, v_volume)
+    prmse = round(prmse, 2)
+    lines = lines + {
+      String(screenline) + "," + String(n) + "," + String(total_count) + "," + String(total_volume) + 
+      "," + String(pct_diff) + "," + String(prmse)
+    }
+  end
+  file = out_dir + "/count_comparison_by_screenline.csv"
+  lines = {"Screenline,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+  RunMacro("Write CSV by Line", file, lines)
+endmacro
+
+Macro "Write CSV by Line" (file, lines)
+    f = OpenFile(file, "w")
+    for line in lines do
+        WriteLine(f, line)
+    end
+    CloseFile(f)
+endmacro
+
+/*
+Calculates the RMSE and %RMSE of two vectors.
+
+Inputs
+  * v_target
+    * Vector
+    * First vector to use in calculation.
+  * v_compare
+    * Vector
+    * Second vector to use in calculation.
+    
+Returns
+  * Array in form of {RMSE, %RMSE}
+*/
+
+Macro "Calculate Vector RMSE" (v_target, v_compare)
+
+  // Argument check
+  if v_target.length = null then Throw("Missing 'v_target'")
+  if v_compare.length = null then Throw("Missing 'v_compare'")
+  if TypeOf(v_target) = "array" then v_target = A2V(v_target)
+  if TypeOf(v_compare) = "array" then v_target = A2V(v_compare)
+  if TypeOf(v_target) <> "vector" then Throw("'v_target' must be vector or array")
+  if TypeOf(v_compare) <> "vector" then Throw("'v_compare' must be vector or array")
+  if v_target.length <> v_compare.length then Throw("Vectors must be the same length")
+
+  n = v_target.length
+  tot_target = VectorStatistic(v_target, "Sum", )
+  tot_result = VectorStatistic(v_compare, "Sum", )
+
+  // RMSE and Percent RMSE
+  diff_sq = Pow(v_target - v_compare, 2)
+  sum_sq = VectorStatistic(diff_sq, "Sum", )
+  rmse = sqrt(sum_sq / n)
+  pct_rmse = 100 * rmse / (tot_target / n)
+  return({rmse, pct_rmse})
 EndMacro
 
 /*
