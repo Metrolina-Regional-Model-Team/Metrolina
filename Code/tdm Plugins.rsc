@@ -1,7 +1,7 @@
 
 Macro "Model.Attributes" (Args,Result)
     Attributes = {
-        {"BackgroundColor", {255,255,255}},
+        {"BackgroundColor",{255,255,255}},
         {"BannerPicture", null},
         {"BannerHeight", 80},
         {"BannerWidth", 2000},
@@ -18,7 +18,7 @@ Macro "Model.Attributes" (Args,Result)
         {"MinItemSpacing", 10},
         {"CodeUI", "Code\\ui.dbd"},
         {"Base Scenario Name", "Base"},
-        {"ClearLogFiles", 1},
+        {"ClearLogFiles", 0},
         {"CloseOpenFiles", 1},
         {"Output Folder Format", "Output Folder\\Scenario Name"},
         {"Output Folder Parameter", "Output Folder"},
@@ -57,7 +57,6 @@ EndMacro
   You can use it to change the value for some particular parameters.
 **/
 Macro "Model.OnModelReady" (Args,Result)
-Body:
     Return({"Base Folder": "%Model Folder%"})
 EndMacro
 
