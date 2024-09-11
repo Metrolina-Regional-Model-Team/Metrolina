@@ -178,5 +178,6 @@ Macro "Summaries" (Args)
     RunMacro("VMTAQ", Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("Tour_RunStats", Args)
+    RunMacro("Other Summaries", Args)
     return(1)
 endmacro
