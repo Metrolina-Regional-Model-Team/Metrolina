@@ -86,7 +86,7 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 						WarnBox = WarnBox + "Change number of HOT Highway assignment iterations to: " + i2s(argsiterhot) + "?" + "\n"
 						chgiterhot = 1
 					end	
-				if Args.[HwyAssn Converge Feedback].value <> argsbasehwyconverge
+				if Args.[HwyAssn Converge].value <> argsbasehwyconverge
 					then do
 						WarnBox = WarnBox + "Change highway assignment convergence for intermediate steps to: "  
 							+ r2s(argsbasehwyconverge) + "?" + "\n"
@@ -98,7 +98,7 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 							 + i2s(argsbasehwyiter) + "?" + "\n"
 						chgbasehwyiter = 1	
 					end
-				if Args.[HwyAssn Converge Final].value <> argsfinalhwyconverge
+				if Args.[HwyAssn Converge].value <> argsfinalhwyconverge
 					then do
 						WarnBox = WarnBox + "Change highway assignment convergence for final assignment to: "
 							 + r2s(argsfinalhwyconverge) + "?" + "\n"
@@ -159,8 +159,8 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 						end
 						if chgbasehwyconverge = 1 then do	
 							msg = msg + {"ShowArgs: Convergence for intermediate highway assignment changed from " 
-								+ r2s(Args.[HwyAssn Converge Feedback].Value) + " to " + r2s(argsbasehwyconverge)}
-							Args.[HwyAssn Converge Feedback].value = argsbasehwyconverge
+								+ r2s(Args.[HwyAssn Converge].Value) + " to " + r2s(argsbasehwyconverge)}
+							Args.[HwyAssn Converge].value = argsbasehwyconverge
 						end
 						if chgbasehwyiter = 1 then do	
 							msg = msg + {"ShowArgs: Maximum iterations for intermediate highway assignment changed from " 
@@ -169,8 +169,8 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 						end
 						if chgfinalhwyconverge = 1 then do	
 							msg = msg + {"ShowArgs: Convergence for final highway assignment changed from "
-								 + r2s(Args.[HwyAssn Converge Final].Value) + " to " + r2s(argsfinalhwyconverge)}
-							Args.[HwyAssn Converge Final].value = argsfinalhwyconverge
+								 + r2s(Args.[HwyAssn Converge].Value) + " to " + r2s(argsfinalhwyconverge)}
+							Args.[HwyAssn Converge].value = argsfinalhwyconverge
 						end
 						if chgfinalhwyiter = 1 then do	
 							msg = msg + {"ShowArgs: Maximum iterations for final highway assignment changed from " 
@@ -220,9 +220,9 @@ dbox "showargs"  (Args) left,top ToolBox Title: "Arguments File"
 		argsitertot = Args.[Feedback Iterations].Value
 		argsitercur = Args.[Current Feedback Iter].Value
 		argsiterhot =  Args.[HOTAssn Iterations].Value
-		argsbasehwyconverge = Args.[HwyAssn Converge Feedback].value
+		argsbasehwyconverge = Args.[HwyAssn Converge].value
 		argsbasehwyiter = Args.[HwyAssn Max Iter Feedback].value
-		argsfinalhwyconverge = Args.[HwyAssn Converge Final].value
+		argsfinalhwyconverge = Args.[HwyAssn Converge].value
 		argsfinalhwyiter = Args.[HwyAssn Max Iter Final].value
 	enditem
 	
