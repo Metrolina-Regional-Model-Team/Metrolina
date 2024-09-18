@@ -227,12 +227,12 @@
 	
         Args.TimeWeight = {
             "Type":"double",
-            "Description":"Minimum path weight on travel time (minutes)",
+            "Description":"Minimum path weight on travel time (minutes) when calculating impedance",
             "Value":1
         }
         Args.DistWeight = {
             "Type":"double",
-            "Description":"Minimum path weight on distance (miles)",
+            "Description":"Minimum path weight on distance (miles) when calculating impedance",
             "Value":0
         }
         Args.MaxTravTimeFactor = {

@@ -26,8 +26,8 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	timeweight = Args.[TimeWeight]
-	distweight = Args.[DistWeight]
+	timeweight = Args.TimeWeight
+	distweight = Args.DistWeight
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = Args.[HwyAssn Converge]
 

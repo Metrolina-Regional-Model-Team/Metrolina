@@ -27,9 +27,9 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
 //	netview = Args.[Hwy Name].value
-	timeweight = Args.[TimeWeight]
-	distweight = Args.[DistWeight]
-	maxTTfac = Args.[MaxTravTimeFactor]
+	timeweight = Args.TimeWeight
+	distweight = Args.DistWeight
+	maxTTfac = Args.MaxTravTimeFactor
 	HOTAssnIterations = Args.[HOTAssn Iterations]
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = .01

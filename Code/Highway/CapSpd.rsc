@@ -132,8 +132,8 @@ Macro "CapSpd" (Args)
 	CapSpdLookUpFile = METDir + "\\Pgm\\Capspdfactors\\CapSpd_lookup.csv"
 	GuidewayFile = METDir + "\\Pgm\\Capspdfactors\\capspd_guideway.asc"
 
-	timeweight = Args.[TimeWeight]
-	distweight = Args.[DistWeight]
+	timeweight = Args.TimeWeight
+	distweight = Args.DistWeight
 
 	LogFile = Args.[Log File]
 	ReportFile = Args.[Report File]
