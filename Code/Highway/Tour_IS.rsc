@@ -216,8 +216,8 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (62.0% of all 2+ is), 3 (22.0%), 4 (6.0%) & 5 (10.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) then 2 else if (rand_v2 < 0.84) then 3 else if (rand_v2 < 0.90) then 4 else 5
+//The 2+ categories are 2 (62.0% of all 2+ is) & 3 (38.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) else 3
 	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
@@ -235,8 +235,8 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (57% of all 2+ is), 3 (24%), 4 (11%), 5 (8%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else if (rand_v4 < 0.81) then 3 else if (rand_v4 < 0.92) then 4 else 5
+//The 2+ categories are 2 (57% of all 2+ is) & 3 (43%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else 3
 	SetDataVector(tour_files[1]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[1])	
 
@@ -340,8 +340,8 @@ SetRandomSeed(894)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (61% of all 2+ is), 3 (32%), 4 (6%), 5 (1%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.61) then 2 else if (rand_v4 < 0.93) then 3 else if (rand_v4 < 0.99) then 4 else 5
+//The 2+ categories are 2 (61% of all 2+ is) & 3 (39%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.61) then 2 else 3
 	SetDataVector(tour_files[2]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[2])	
 
@@ -441,9 +441,9 @@ SetRandomSeed(7844)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (63.2% of all 2+ is), 3 (27.8%) & 4 (9.0%)
+//The 2+ categories are 2 (63.2% of all 2+ is)
 // kyle: not updated with new survey. Too few samples and too high % of 5+ stops.
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else if (rand_v4 < 0.910) then 3 else 4
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else 3
 	SetDataVector(tour_files[3]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[3])	
 
@@ -539,8 +539,8 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (41.0% of all 3+ is), 4 (24%), 5 (23%), 6 (13%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.41) then 3 else if (rand_v2 < 0.65) then 4 else if (rand_v2 < 0.88) then 5 else 6
+//The 3+ categories are 3 (41.0% of all 3+ is)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.41) then 3 else 4
 	SetDataVector(tour_files[4]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
@@ -564,8 +564,8 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (43.0% of all 3+ is), 4 (28.0%), 5 (18.0%), 6 (11%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.43) then 3 else if (rand_v4 < 0.71) then 4 else if (rand_v4 < 0.89) then 5 else 6
+//The 3+ categories are 3 (43.0% of all 3+ is)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.43) then 3 else 4
 	SetDataVector(tour_files[4]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[4])	
 
@@ -659,8 +659,8 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (50.0% of all 3+ is), 4 (17%), 5 (17%), 6 (17%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.67) then 4 else if (rand_v2 < 0.84) then 5 else 6
+//The 3+ categories are 3 (50.0% of all 3+ is)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else 4
 	SetDataVector(tour_files[5]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
@@ -683,7 +683,7 @@ SetRandomSeed(1548)
 	prob3c = prob2c + prob3
 
 //The 3+ categories are 3 (48% of all 3+ is), 4 (25%), 5 (20%), 6 (7%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else if (rand_v4 < 0.73) then 4 else if (rand_v4 < 0.73) then 5 else 6
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else 4
 	SetDataVector(tour_files[5]+"|", "IS_AP", choice_v,)
     	CloseView(tour_files[5])	
 
