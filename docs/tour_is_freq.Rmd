@@ -94,8 +94,16 @@ est_tbl <- tours %>%
   left_join(ret30_orig, by = c("HomeTAZ" = "TAZ")) %>%
   left_join(ret30_dest, by = c("anchor_taz" = "TAZ")) %>%
   mutate(
-    int_stop_fwd_cap = ifelse(int_stop_fwd > 2, 2, int_stop_fwd),
-    int_stop_ret_cap = ifelse(int_stop_ret > 2, 2, int_stop_ret)
+    int_stop_fwd_cap = case_when(
+      tour_type %in% c("shop", "other") & int_stop_fwd > 3 ~ 3,
+      int_stop_fwd > 2 ~ 2,
+      TRUE ~ int_stop_fwd
+    ),
+    int_stop_ret_cap = case_when(
+      tour_type %in% c("shop", "other") & int_stop_ret > 3 ~ 3,
+      int_stop_ret > 2 ~ 2,
+      TRUE ~ int_stop_ret
+    )
   ) %>%
   relocate(int_stop_fwd_cap, .after = int_stop_fwd) %>%
   relocate(int_stop_ret_cap, .after = int_stop_ret)
@@ -134,6 +142,41 @@ ret_pcts <- est_tbl %>%
     pct = round(count / sum(count) * 100, 0),
     cumesum = cumsum(pct)
   )
+```
+
+# Calibration
+
+```{r}
+# model data
+tbl <- read_excel("data/input/intermediate_stops/model_results.xlsx")
+
+model <- tbl %>%
+  mutate(
+    stops = case_when(
+      tour_type %in% c("shop", "other") & stops > 3 ~ 3,
+      stops > 2 ~ 2,
+      TRUE ~ stops
+    )
+  ) %>%
+  group_by(tour_type, PA_AP, stops) %>%
+  summarize(tour_count = sum(tour_count, na.rm = TRUE)) %>%
+  mutate(model_pct = tour_count / sum(tour_count, na.rm = TRUE)) %>%
+  select(-tour_count)
+
+# survey data
+survey <- est_tbl %>%
+  select(tour_type, PA = int_stop_fwd_cap, AP = int_stop_ret_cap, hh_id) %>%
+  left_join(hh %>% select(hh_id, hh_weight), by = "hh_id") %>%
+  select(-hh_id) %>%
+  pivot_longer(cols = PA:AP, names_to = "PA_AP", values_to = "stops") %>%
+  group_by(tour_type, PA_AP, stops) %>%
+  summarize(tour_count = sum(hh_weight, na.rm = TRUE)) %>%
+  mutate(survey_pct = tour_count / sum(tour_count, na.rm = TRUE)) %>%
+  select(-tour_count)
+
+calib_tbl <- survey %>%
+  left_join(model, by = c("tour_type", "PA_AP", "stops")) %>%
+  mutate(factor = log(survey_pct / model_pct))
 ```
 
 

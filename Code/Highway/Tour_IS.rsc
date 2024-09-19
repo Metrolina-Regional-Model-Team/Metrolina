@@ -201,8 +201,8 @@ SetRandomSeed(454)
 	end
 
 //Apply the PA model
-	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum
-	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum
+	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum + 0.7356
+	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum + 0.9527
 
 	//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
 	E2U0 = 1
@@ -216,13 +216,13 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (62.0% of all 2+ is), 3 (22.0%), 4 (6.0%) & 5 (10.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) then 2 else if (rand_v2 < 0.84) then 3 else if (rand_v2 < 0.90) then 4 else 5
+//The 2+ categories are 2 (62.0% of all 2+ is) & 3 (38.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) else 3
 	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -4.8103  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.1838 * hbwtours + 1.1778 * hovdum
-	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum
+	U1 = -0.9629  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.1838 * hbwtours + 1.1778 * hovdum
+	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum + 0.1398
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -235,8 +235,8 @@ SetRandomSeed(454)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (57% of all 2+ is), 3 (24%), 4 (11%), 5 (8%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else if (rand_v4 < 0.81) then 3 else if (rand_v4 < 0.92) then 4 else 5
+//The 2+ categories are 2 (57% of all 2+ is) & 3 (43%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else 3
 	SetDataVector(tour_files[1]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[1])	
 
@@ -307,8 +307,8 @@ SetRandomSeed(894)
 	end
 
 //Apply the PA model
-	U1 = -4.3588 + 0.00005 * ret30_orig + 1.1172 * hovdum
-	U2 = -5.7802 + 0.00005 * ret30_orig + 1.1172 * hovdum
+	U1 = -4.3588 + 0.00005 * ret30_orig + 1.1172 * hovdum + 0.627
+	U2 = -5.7802 + 0.00005 * ret30_orig + 1.1172 * hovdum - 0.123
 
 	E2U0 = 1
 	E2U1 = if is_transit then 0 else exp(U1)				
@@ -326,8 +326,8 @@ SetRandomSeed(894)
 	SetDataVector(tour_files[2]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -3.1221 + 0.0493 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum
-	U2 = -3.8661 + 0.0380 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum
+	U1 = -3.1221 + 0.0493 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum - 0.2813
+	U2 = -3.8661 + 0.0380 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum + 0.1913
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -340,8 +340,8 @@ SetRandomSeed(894)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (61% of all 2+ is), 3 (32%), 4 (6%), 5 (1%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.61) then 2 else if (rand_v4 < 0.93) then 3 else if (rand_v4 < 0.99) then 4 else 5
+//The 2+ categories are 2 (61% of all 2+ is) & 3 (39%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.61) then 2 else 3
 	SetDataVector(tour_files[2]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[2])	
 
@@ -409,8 +409,8 @@ SetRandomSeed(7844)
 	end
 
 //Apply the PA model
-	U1 = -3.0845 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
-	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin
+	U1 = -3.0845 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin - 0.3066
+	U2 = -3.4900 - 1.2568 * tourinc4dum + 1.1708 * hovdum + 2.3702 * at1dum_origin + 1.6194
 
 	E2U0 = 1
 	E2U1 = if is_transit then 0 else exp(U1)				
@@ -427,8 +427,8 @@ SetRandomSeed(7844)
 	SetDataVector(tour_files[3]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -3.0845 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
-	U2 = -3.4900 + 1.4932 * hovdum - 0.2831 * tours + 2.3702 * at12dum_dest
+	U1 = -1.0025 + 1.4932 * hovdum - 0.2831 * tours - 1.0455 * at12dum_dest + 0.3015
+	U2 = -1.0402 + 1.4932 * hovdum - 0.2831 * tours - 1.0455 * at12dum_dest + 0.4461
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -441,9 +441,9 @@ SetRandomSeed(7844)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (63.2% of all 2+ is), 3 (27.8%) & 4 (9.0%)
+//The 2+ categories are 2 (63.2% of all 2+ is)
 // kyle: not updated with new survey. Too few samples and too high % of 5+ stops.
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else if (rand_v4 < 0.910) then 3 else 4
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.632) then 2 else 3
 	SetDataVector(tour_files[3]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[3])	
 
@@ -521,9 +521,9 @@ SetRandomSeed(9543)
 
 
 //Apply the PA model
-	U1 = -3.2957 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
-	U2 = -3.9736 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
-	U3 = -4.2104 + 0.0285 * htime - 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + .5029 * at34dum_origin
+	U1 = -3.2957 + 0.0285 * htime + 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + 0.5029 * at34dum_origin - 1.1169
+	U2 = -3.9736 + 0.0285 * htime + 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + 0.5029 * at34dum_origin - 0.9203
+	U3 = -4.2104 + 0.0285 * htime + 0.5139 * tourinc12dum + 0.00024 * ret30_orig - 0.1328 * tours + 0.3878 * hovdum + 0.5029 * at34dum_origin - 0.5057
 
 	E2U0 = 1
 	E2U1 = if is_transit then 0 else exp(U1)				
@@ -539,16 +539,16 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (41.0% of all 3+ is), 4 (24%), 5 (23%), 6 (13%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.41) then 3 else if (rand_v2 < 0.65) then 4 else if (rand_v2 < 0.88) then 5 else 6
+//The 3+ categories are 3 (41.0% of all 3+ is)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.41) then 3 else 4
 	SetDataVector(tour_files[4]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
 	stop4dum = if (choice_v > 4) then 1 else 0
 
-	U1 = -0.8276 - 0.2403 * choice_v + 0.0552 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
-	U2 = -1.9793 - 0.3747 * choice_v + 0.0788 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
-	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum
+	U1 = -0.8276 - 0.2403 * choice_v + 0.0552 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum + 0.0649
+	U2 = -1.9793 - 0.3747 * choice_v + 0.0788 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum - 0.3183
+	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum + 0.054
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -564,8 +564,8 @@ SetRandomSeed(9543)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (43.0% of all 3+ is), 4 (28.0%), 5 (18.0%), 6 (11%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.43) then 3 else if (rand_v4 < 0.71) then 4 else if (rand_v4 < 0.89) then 5 else 6
+//The 3+ categories are 3 (43.0% of all 3+ is)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.43) then 3 else 4
 	SetDataVector(tour_files[4]+"|", "IS_AP", choice_v,)
 	CloseView(tour_files[4])	
 
@@ -641,9 +641,9 @@ SetRandomSeed(1548)
 	end
 
 //Apply the PA model
-	U1 = -3.7008 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2021 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
-	U2 = -4.7065 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2572 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
-	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum
+	U1 = -3.7008 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2021 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum - 0.4442
+	U2 = -4.7065 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.2572 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum - 0.0617
+	U3 = -4.4069 + 0.0278 * htime - 1.1655 * cbddum_dest - 0.3693 * tours + 0.4254 * tourinc12dum + 0.2956 * atype12dum_orig + 0.6926 * hovdum + 0.1836
 
 	E2U0 = 1
 	E2U1 = if is_transit then 0 else exp(U1)				
@@ -659,14 +659,14 @@ SetRandomSeed(1548)
 	prob2c = prob1c + prob2
 	prob3c = prob2c + prob3
 
-//The 3+ categories are 3 (50.0% of all 3+ is), 4 (17%), 5 (17%), 6 (17%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else if (rand_v2 < 0.67) then 4 else if (rand_v2 < 0.84) then 5 else 6
+//The 3+ categories are 3 (50.0% of all 3+ is)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v1 < prob2c) then 2 else if (rand_v2 < 0.500) then 3 else 4
 	SetDataVector(tour_files[5]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -2.3955 + 0.3442 * choice_v + 0.0372 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
-	U2 = -3.5287 + 0.3631 * choice_v + 0.0420 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
-	U3 = -4.4799 + 0.9418 * choice_v + 0.0519 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum
+	U1 = -2.3955 + 0.3442 * choice_v + 0.0372 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum - 0.3687
+	U2 = -3.5287 + 0.3631 * choice_v + 0.0420 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum - 0.3343
+	U3 = -4.4799 + 0.9418 * choice_v + 0.0519 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum + 0.0653
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -683,7 +683,7 @@ SetRandomSeed(1548)
 	prob3c = prob2c + prob3
 
 //The 3+ categories are 3 (48% of all 3+ is), 4 (25%), 5 (20%), 6 (7%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else if (rand_v4 < 0.73) then 4 else if (rand_v4 < 0.73) then 5 else 6
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v3 < prob2c) then 2 else if (rand_v4 < 0.48) then 3 else 4
 	SetDataVector(tour_files[5]+"|", "IS_AP", choice_v,)
     	CloseView(tour_files[5])	
 
