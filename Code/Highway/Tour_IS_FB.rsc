@@ -127,8 +127,8 @@ SetRandomSeed(16618)
 	end
 
 //Apply the PA model
-	U1 = -1.182  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.2817 * hbwtours - 0.5 * AT_dest
-	U2 = -2.552  + 0.2392 * tourinc4dum + 0.9609 * tourlc2dum + 0.00004341 * ret30_orig + 0.00001594 * ret30_dest - 0.3017 * hbwtours - 0.5 * AT_dest
+	U1 = -3.5508  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.2392 * hovdum + 0.7356
+	U2 = -4.8103  - 0.5484 * tourinc4dum + 0.4681 * tourlc2dum + 0.000054 * ret15_orig + 1.6034 * hovdum + 0.9527
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -141,13 +141,13 @@ SetRandomSeed(16618)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (66.0% of all 2+ is), 3 (20.0%), 4 (8.0%) & 5 (6.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.660) then 2 else if (rand_v2 < 0.860) then 3 else if (rand_v2 < 0.940) then 4 else 5
-	SetDataVector("hbwdestii|", "IS_PA", choice_v,)
+//The 2+ categories are 2 (62.0% of all 2+ is) & 3 (38.0%)
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) else 3
+	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
-	U1 = -2.114  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
-	U2 = -2.744  + 0.4851 * choice_v + 0.3553 * tourinc4dum + 0.00003103 * ret30_orig + 1.0 * at1dumP
+	U1 = -0.9629  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.1838 * hbwtours + 1.1778 * hovdum
+	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum + 0.1398
 
 	E2U0 = 1
 	E2U1 = exp(U1)				
@@ -160,10 +160,10 @@ SetRandomSeed(16618)
 	prob1c = prob0 + prob1
 	prob2c = prob1c + prob2
 
-//The 2+ categories are 2 (70.5% of all 2+ is), 3 (19.1%), 4 (4.8%), 5 (3.4%), 6 (1.1%) & 7 (1.1%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.705) then 2 else if (rand_v4 < 0.896) then 3 else if (rand_v4 < 0.944) then 4 else if (rand_v4 < 0.978) then 5 else if (rand_v4 < 0.989) then 6 else 7
-	SetDataVector("hbwdestii|", "IS_AP", choice_v,)
-	CloseView("hbwdestii")	
+//The 2+ categories are 2 (57% of all 2+ is) & 3 (43%)
+	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v3 < prob1c) then 1 else if (rand_v4 < 0.57) then 2 else 3
+	SetDataVector(tour_files[1]+"|", "IS_AP", choice_v,)
+	CloseView(tour_files[1])	
 
 
 //************************** ATW INTERMEDIATE STOP MODEL **************************************************************************************************
@@ -232,7 +232,7 @@ SetRandomSeed(16519)
 	end
 
 //Apply the PA model
-	U1 = -3.566 + 0.05033 * htime + 1.559 * rural_dest + 0.1313 * tours_vec
+	U1 = -2.1350 + 0.0557 * htime - 0.00003 * ret30_dest + 0.8166 * sovdum
 
 	E2U0 = 1
 	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
@@ -243,10 +243,10 @@ SetRandomSeed(16519)
 
 //The 1+ categories are 1 (77.6% of all 1+ is), 2 (9.0%), 3 (8.4%) & 4 (5.0%)
 	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v2 < 0.776) then 1 else if (rand_v2 < 0.866) then 2 else if (rand_v2 < 0.950) then 3 else 4
-	SetDataVector("atwdestii|", "IS_PA", choice_v,)
+	SetDataVector(tour_files[6]+"|", "IS_PA", choice_v,)
 
-//Repeat above logic for AP direction
-	U1 = -2.209 + 1.161 * choice_v + 0.04672 * htime  + 1.525 * cbddum_dest - 0.00008081 * ret30_orig
+// AP direction set to 0
+	U1 = -999
 
 	E2U0 = 1
 	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
@@ -255,8 +255,8 @@ SetRandomSeed(16519)
 	prob0 = E2U0 / E2U_cum
 	prob1 = E2U1 / E2U_cum
 
-//The 1+ categories are 1 (62.3% of all 3+ is), 2 (25.4%), 3 (10.3%) & 4 (2.0%)
-	choice_v = if (rand_v3 < prob0) then 0 else if (rand_v4 < 0.623) then 1 else if (rand_v4 < 0.877) then 2 else if (rand_v4 < 0.980) then 3 else 4
+// this ensures that the choice is always 0
+	choice_v = if (rand_v3 < prob0) then 0 else 0
 	SetDataVector("atwdestii|", "IS_AP", choice_v,)
 	CloseView("atwdestii")	
 
