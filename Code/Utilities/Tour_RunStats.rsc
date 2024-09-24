@@ -41,7 +41,7 @@ Macro "Tour_RunStats" (Args)
 	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
 	counties = GetDataVector(stcnty_tab + "|", "NAME",)
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 
 //******************************************************************************************************************************************************************
 //Create the "ProductionsByCo" and "AttractionsByCo" files (.bin)
@@ -198,15 +198,8 @@ Macro "Tour_RunStats" (Args)
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Runstats Tour_StopsByCounty: " + datentime)
 
-//	purp = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "EXT", "XIW", "XIN"}
-//	purp_tab = {"dcHBW", "dcSCH", "dcHBU", "dcHBS", "dcHBO", "dcATW", "dcEXT", "dcXIW", "dcXIN"}
 	fields = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "IXW", "IXN", "XIW", "XIN"}
 
-/*	stcnty_tab = OpenTable("stcnty_tab", "DBASE", {MetDir + "\\STCNTY_ID.dbf",})
-	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
-	counties = GetDataVector(stcnty_tab + "|", "NAME",)
-	se_vw = OpenTable("se_tab", "DBASE", {Dir + "\\LandUse\\LANDUSE_15_TAZ3490_MDINC10.dbf",})
-*/
 //create AP and PA tables
 	ap_tab = CreateTable("ap_tab", DirReport + "\\StopsByCo_AP.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"County", "String", 15, , "No"}}) 
 	rh = AddRecords("ap_tab", , ,{{"Empty Records", counties.length}})

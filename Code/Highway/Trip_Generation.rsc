@@ -22,7 +22,8 @@ macro "Trip_Generation" (Args)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File]
+	//sedata_dbf = Args.[LandUse File]
+	sedata_bin = Args.[LandUse File]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null
@@ -33,7 +34,8 @@ macro "Trip_Generation" (Args)
 
 	//dbf2csv macro at end of trip gen code
 
-	sedata_file = RunMacro("dbf2csv", sedata_dbf)
+	//sedata_file = RunMacro("dbf2csv", sedata_dbf)
+	sedata_file = RunMacro("bin2csv", sedata_bin)
 
 	FortInfo = GetFileInfo(METDir + "\\Pgm\\tgmet2015_171013.exe")
 	TimeStamp = FortInfo[7] + " " + FortInfo[8]
@@ -234,29 +236,43 @@ macro "Trip_Generation" (Args)
 endmacro
 
 
-macro "dbf2csv" (dbffile)
+//macro "dbf2csv" (dbffile)
+macro "bin2csv" (binfile)
 	
-	dbfpath = SplitPath(dbffile)
-	sedata_file = dbfpath[1] + dbfpath[2] + dbfpath[3] + "_csv.csv"
-	dbftemp = dbfpath[1] + dbfpath[2] + "temp.dbf"
-	csvtemp = dbfpath[1] + dbfpath[2] + "temp.csv"
+	//dbfpath = SplitPath(dbffile)
+	binpath = SplitPath(binfile)
+	//sedata_file = dbfpath[1] + dbfpath[2] + dbfpath[3] + "_csv.csv"
+	sedata_file = binpath[1] + binpath[2] + binpath[3] + "_csv.csv"
+	//dbftemp = dbfpath[1] + dbfpath[2] + "temp.dbf"
+	bintemp = binpath[1] + binpath[2] + "temp.bin"
+	//csvtemp = dbfpath[1] + dbfpath[2] + "temp.csv"
+	csvtemp = binpath[1] + binpath[2] + "temp.csv"
+
+	//exist = GetFileInfo(dbftemp)
+	exist = GetFileInfo(bintemp)
+	//if exist <> null then DeleteFile(dbftemp)
+	if exist <> null then DeleteFile(bintemp)
+	//TheDBASE = OpenTable("TheDBASE", "DBASE", {dbffile})
+	TheBIN = OpenTable("TheBIN", "FFB", {binfile})
 	
-	exist = GetFileInfo(dbftemp)
-	if exist <> null then DeleteFile(dbftemp)
-	TheDBASE = OpenTable("TheDBASE", "DBASE", {dbffile})
+	//pop_tot = CreateExpression(TheDBASE, "POP_TOT", "POP",)
+	pop_tot = CreateExpression(TheBIN, "POP_TOT", "POP",)
+	//emp_tot = CreateExpression(TheDBASE, "EMP_TOT", "LOIND + HIIND + RTL + HWY + LOSVC + HISVC + OFFGOV + EDUC",)
+	emp_tot = CreateExpression(TheBIN, "EMP_TOT", "LOIND + HIIND + RTL + HWY + LOSVC + HISVC + OFFGOV + EDUC",)
+	//subcodist = CreateExpression(TheDBASE, "SUBCODIST", "DISTRICT",)
+	subcodist = CreateExpression(TheBIN, "SUBCODIST", "DISTRICT",)
+	//acres = CreateExpression(TheDBASE, "ACRES", "round((AREA_LU * 640) * 0.75,0)",)
+	acres = CreateExpression(TheBIN, "ACRES", "round((AREA_LU * 640) * 0.75,0)",)
 	
-	pop_tot = CreateExpression(TheDBASE, "POP_TOT", "POP",)
-	emp_tot = CreateExpression(TheDBASE, "EMP_TOT", "LOIND + HIIND + RTL + HWY + LOSVC + HISVC + OFFGOV + EDUC",)
-	subcodist = CreateExpression(TheDBASE, "SUBCODIST", "DISTRICT",)
-	acres = CreateExpression(TheDBASE, "ACRES", "round((AREA_LU * 640) * 0.75,0)",)
-	
-	ExportView(TheDBASE+"|", "DBASE", dbftemp,
+	//ExportView(TheDBASE+"|", "DBASE", dbftemp,
+	  ExportView(TheBIN+"|", "FFB", bintemp,
 		{"TAZ", "POP_TOT", "POP_HHS", "POP_GRP", "HH", "MED_INC", 
 		 "LOIND", "HIIND", "RTL", "HWY", "LOSVC", "HISVC", "OFFGOV", "EDUC",
 		 "EMP_TOT", "STU_K8", "STU_HS", "STU_CU", "DORM",
 		 "ACRES", "STCNTY", "SUBCODIST"},{{"Row Order", {{"TAZ", "Ascending"}}}})	
 
-	TheTEMP = OpenTable("TheTEMP", "DBASE", {dbftemp})
+	//TheTEMP = OpenTable("TheTEMP", "DBASE", {dbftemp})
+	TheTEMP = OpenTable("TheTEMP", "FFB", {bintemp})
 	TableStructure = GetTableStructure(TheTEMP)
 	
 // Add array info[i][12] = original field name - REQUIRED, see ModifyTable() 
@@ -287,7 +303,8 @@ macro "dbf2csv" (dbffile)
 		WriteLine(csvptr, seline)
 	end
 	
-	CloseView(TheDBASE)
+	//CloseView(TheDBASE)
+	CloseView(TheBIN)
 	CloseView(TheTEMP)
 	CloseFile(tempptr)
 	CloseFile(csvptr)

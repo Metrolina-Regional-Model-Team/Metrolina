@@ -38,7 +38,7 @@ Macro "Tour_ToD1_FB" (Args)
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
 	//	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
 	distCBD_vw = OpenTable("distcbd", "FFA", {Dir + "\\LandUse\\Dist_to_CBD.asc",})
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 
 	atype = GetDataVector(areatype+"|", "AREATYPE", {{"Sort Order", {{"TAZ","Ascending"}}}}) 
 	se_vectors = GetDataVectors(se_vw+"|", {"TAZ", "RTL", "HWY", "AREA", "TOTEMP", "SEQ", "POP"},{{"Sort Order", {{"TAZ","Ascending"}}}})

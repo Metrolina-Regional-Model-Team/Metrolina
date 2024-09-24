@@ -34,7 +34,7 @@
         }
         Args.[LandUse File] = {
             "Type":"file",
-            "Value":"%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
+            "Value":"%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.bin"
         }
 	
 	Section = "Networks"

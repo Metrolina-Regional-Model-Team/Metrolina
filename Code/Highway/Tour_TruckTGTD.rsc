@@ -32,7 +32,7 @@ Macro "Tour_TruckTGTD" (Args)
 // ************ Trip Generation (from Trip model) *******************************************
 
 //Open tables, networks & matrices and pull data
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile","FFB", {sedata_file,})
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
 	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
 	basvol_vw = OpenTable("basvol", "FFA", {MetDir + "\\ExtSta\\extstavol.asc",})
@@ -329,7 +329,7 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File]
+	sedata_file = Args.[LandUse File]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null

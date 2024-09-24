@@ -32,7 +32,7 @@ Macro "Tour_IS_Location" (Args)
 
   CreateProgressBar("Starting Tour Intermediate Stops Model", "TRUE")
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	access_peak = OpenTable("access_peak", "FFB", {DirArray + "\\ACCESS_PEAK.bin",})
 	access_free = OpenTable("access_free", "FFB", {DirArray + "\\ACCESS_FREE.bin",})
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
