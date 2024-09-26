@@ -264,6 +264,8 @@ end
 
 //open travel time matrices for DC calcs below
 	autopk = OpenMatrix(Dir + "\\Skims\\TThwy_peak.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autopk, "Write")
+
 	matrix_indices = GetMatrixIndexNames(autopk)	
 	for i = 1 to matrix_indices[1].length do
 		if matrix_indices[1][i] = "Internals" then goto gotpkindex
@@ -274,6 +276,7 @@ end
 	autopkcurall = CreateMatrixCurrency(autopk, "TotalTT", "Rows", "Columns", )
 	autopkintcur = CreateMatrixCurrency(autopk, "TotalTT", "Internals", "Internals", )
 	autofree = OpenMatrix(Dir + "\\Skims\\TThwy_free.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autofree, "Write")
 	matrix_indices = GetMatrixIndexNames(autofree)	
 	for i = 1 to matrix_indices[1].length do
 		if matrix_indices[1][i] = "Internals" then goto gotfreeindex
@@ -363,7 +366,11 @@ SetRandomSeed(100)
 	ixtourid = 0
 //Loop all tours
 SetRandomSeed(737)
+	pbar = CreateObject("G30 Progress Bar", "HBW Tours", true, hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+
 		if hbwtoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbwtours
 		end
@@ -390,8 +397,8 @@ SetRandomSeed(737)
 				htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
 				//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
 				//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
-				U1 = -0.00378*htime + 3.25*intraco + 0.295*cbddum + 0.00135*empdens + 0.932*log(totemp) + 3.73*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				U2 = -0.00378*htime + 2.54*intraco + 0.837*cbddum + 0.00135*empdens + 0.932*log(totemp) + 2.67*intrazonal  //U2 for INC4
+				U1 = -0.0862*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
+				U2 = -0.0862*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
 				fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -445,6 +452,9 @@ SetRandomSeed(737)
 		end
 		nohbwtours:
 	end
+
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	totsumattr = 0
@@ -538,7 +548,11 @@ SetRandomSeed(544)
 
 //Loop all tours
 SetRandomSeed(744)
+	pbar = CreateObject("G30 Progress Bar", "School Tours", true, hhidset.length)
+
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+		
 		if schtoursset[n] = 0 then do			//go to next record if there are no school tours
 			goto noschtours
 		end
@@ -576,7 +590,7 @@ SetRandomSeed(744)
 				end
 				htime = GetMatrixVector(autofreeintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak speed matrix
 				//U1 = -0.3418 * htime + 1.681 * intraco + log(k12enr) + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
-				U1 = -0.0443*htime + 4.34*intraco + 0.812*log(k12enr) + 2.95*intrazonal
+				U1 = -0.268*htime + 1.38*intraco + 0.807*log(k12enr) - 0.253*intrazonal
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (schattr > 0) then max((remain[2] / schattr), 0.01) else 0 //[2] = SCH
 				eU1 = if (k12enr = 0) then 0 else exp(U1) * fac
@@ -612,6 +626,8 @@ SetRandomSeed(744)
 		end
 		noschtours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -700,7 +716,10 @@ SetRandomSeed(91)
 
 //Loop all tours
 SetRandomSeed(991)
-	for n = 1 to hhidset.length do					
+	pbar = CreateObject("G30 Progress Bar", "HBU Tours", true, hhidset.length)
+	
+	for n = 1 to hhidset.length do		
+		pbar.Step()
 		if hbutoursset[n] = 0 then do			//go to next record if there are no hbu tours
 			goto nohbutours
 		end
@@ -725,7 +744,7 @@ SetRandomSeed(991)
 				end
 				htime = GetMatrixVector(autofreeintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak speed matrix
 				//U1 = -0.1635 * htime + log(stucu) + 0.47 * intraco + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
-				U1 = -0.0258 * htime + log(stucu) + 3.61 * intraco
+				U1 = -0.122 * htime + log(stucu) + 1.39 * intraco
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hbuattr > 0) then max((remain[3] / hbuattr), 0.01) else 0	//([3] = HBS)
 				eU1 = if (stucu = 0) then 0 else exp(U1) * fac
@@ -761,6 +780,8 @@ SetRandomSeed(991)
 		end
 		nohbutours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -848,7 +869,11 @@ SetRandomSeed(86489)
 
 //Loop all tours
 SetRandomSeed(72)
+	pbar = CreateObject("G30 Progress Bar"," HBS Tours", true, hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+
 		if hbstoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbstours
 		end
@@ -875,8 +900,8 @@ SetRandomSeed(72)
 				timeSq = ctime * ctime
 				//U1 = -0.3782*ctime - 0.1907*atype - 2.1877*cbddum + log(retemp + 0.003874*pop) - 0.8*intrazonal + 0.0011*timeSq		//calculate probability array -- U1 for Inc 1-3
 				//U2 = -0.3175*ctime - 0.2576*atype - 1.5588*cbddum + 0.0000000468*accH15cfr + log(retemp + 0.003135*pop) - 0.5*intrazonal + 0.0011*timeSq	//U2 for INC4
-				U1 = -0.0293*ctime  - 0.786*cbddum - 0.000011*accH15cfr + log(retemp) + 3.43*intrazonal + 0.0343*retempdens	+ 4*intraco	//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.0308*ctime - 0.306*cbddum - 0.00000782*accH15cfr + log(retemp) + 3.02*intrazonal + 0.0343*retempdens + 3.26*intraco	//U2 for INC4
+				U1 = -0.294*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.763*cbddum + 0.232*intraco		//calculate probability array -- U1 for Inc 1-3
+				U2 = -0.282*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.268*intrazonal - 0.155*atype	//U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hbsattr > 0) then max((remain[4] / hbsattr), 0.01) else 0	//([4] = HBS)
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -926,6 +951,8 @@ SetRandomSeed(72)
 		end
 		nohbstours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -1014,7 +1041,10 @@ SetRandomSeed(763)
 
 //Loop all tours
 SetRandomSeed(953)
+	pbar = CreateObject("G30 Progress Bar", "HBO Tours", true,  hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step() 
 		if hbotoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbotours
 		end
@@ -1043,8 +1073,8 @@ SetRandomSeed(953)
 				dist2cbd = a2v(dist2cbd_ar)
 				//U1 = -0.2201*ctime - 0.4972*atype + 0.1709*sameAT + 0.03015*dist2cbd - 0.00000002033*accE15cfr + 0.4836*pct4 + log(totemp + 0.192242*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//calculate probability array -- U1 for Inc 1-3
 				//U2 = -0.2453*ctime - 0.4178*atype + 0.2998*sameAT + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//U2 for INC4
-				U1 = -0.00943*ctime + 0.00315*empdens - 0.00000386*accE15cfr + 0.768*log(totemp + 0.076536*pop) + 0.0584*cbddum + 3.18*intraco + 4.3*intrazonal	//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.0160*ctime + 0.00315*empdens - 0.00000135*accE15cfr + 0.768*log(totemp + 0.076536*pop) + 0.0584*cbddum + 3.18*intraco + 3.82*intrazonal	//U2 for INC4
+				U1 = -0.301*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000378*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.874*intrazonal	- 0.194*atype//calculate probability array -- U1 for Inc 1-3
+				U2 = -0.294*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000229*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.656*intrazonal	- 0.235*atype//U2 for INC4
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hboattr > 0) then max((remain[5] / hboattr), 0.01) else 0	//([5] = HBO)
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -1094,6 +1124,8 @@ SetRandomSeed(953)
 		end
 		nohbotours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -1785,7 +1817,7 @@ SetRandomSeed(3113)
 		intrazonal = if (taz <> thistaz) then 0 else 1
 		ctime = GetMatrixVector(compintcurarray[4], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the free speed matrix
 		//U = -0.3148*ctime - 0.3274*atype - 0.00000001045*accE15cfr + log(nret + 4.5676*ret + 0.1475*pop) - 0.58*intrazonal  - 0.33*cbddum - 0.80*intraco
-		U = -0.00342*ctime - 0.00369*empdens + 0.896*log(nret + 8.166*ret + 0.0488*pop) + 3.98*intrazonal  + 0.952*cbddum + 4.37*intraco	
+		U = -0.312*ctime - 0.00000681*accE15cfr + 0.801*log(nret + 11.36*ret) + 0.536*intrazonal  + 0.902*cbddum + 0.289*intraco	
 		//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 		fac = if (atwattr > 0) then max((remain_v / atwattr), 0.01) else 0	 
 		eU = exp(U) * fac
@@ -1853,7 +1885,10 @@ SetRandomSeed(3113)
 	DeleteMatrixIndex(autopk, "Internals")
 	DeleteMatrixIndex(autofree, "Internals")
 
-   DestroyProgressBar()
+	CloseMatrixFileHandle(autopk)
+	CloseMatrixFileHandle(autofree)
+
+   	DestroyProgressBar()
     RunMacro("G30 File Close All")
 
     goto quit

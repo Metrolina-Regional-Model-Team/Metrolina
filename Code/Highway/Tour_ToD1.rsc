@@ -33,8 +33,10 @@ Macro "Tour_ToD1" (Args)
   	CreateProgressBar("Starting TOD1", "TRUE")
 
 	autofree = OpenMatrix(Dir + "\\Skims\\TThwy_free.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autofree, "Write")
 	autofreecur = CreateMatrixCurrency(autofree, "TotalTT", "Rows", "Columns", )
 	autopeak = OpenMatrix(Dir + "\\Skims\\TThwy_peak.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autopeak, "Write")
 	autopeakcur = CreateMatrixCurrency(autopeak, "TotalTT", "Rows", "Columns", )
 
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
@@ -196,7 +198,11 @@ r = ' 1,   -0.05',
 		rand_val2 = Vector(idset.length, "float", )	//for AP direction
 
 		SetRandomSeed(RandSeed)
+		pbar = CreateObject("G30 Progress Bar", "Processing...", true, idset.length)
+
+		
 		for n = 1 to idset.length do
+			pbar.Step()
 			if (tourorigtaz[n] = lastorigtaz and tourdesttaz[n] = lastdesttaz) then do
 				PAtime[n] = PAtime[n-1]
 				APtime_pk[n] = APtime_pk[n-1]
@@ -229,6 +235,7 @@ r = ' 1,   -0.05',
 			rand_val[n] = RandomNumber()
 			rand_val2[n] = RandomNumber()
 		end
+		pbar.Destroy()
 		if (p = 1) then do
 			APtime = APtime_pk	//if purpose is HBW (XIW is considered off-peak)
 		end
@@ -292,6 +299,8 @@ r = ' 1,   -0.05',
 		RandSeed = r2i((RandSeed / 6) + 7)
 
 	end
+	CloseMatrixFileHandle(autofree)
+	CloseMatrixFileHandle(autopeak)
 	CloseView(current_file)	
     DestroyProgressBar()
     RunMacro("G30 File Close All")
