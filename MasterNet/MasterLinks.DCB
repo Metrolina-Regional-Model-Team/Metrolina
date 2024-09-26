@@ -1,5 +1,5 @@
 Network
-1274
+1274,codepage=65001
 "ID",I,1,4,0,4,0,,"","",,"Sum",
 "Anode",I,5,4,0,6,0,,"","",,"Blank",
 "Bnode",I,9,4,0,6,0,,"","",,"Copy",
@@ -7,7 +7,7 @@ Network
 "SecondNam",C,88,20,0,20,0,,"","",,"Copy",
 "A_CrossStr",C,108,20,0,20,0,,"","",,"Blank",
 "B_CrossStr",C,128,20,0,20,0,,"","",,"Copy",
-"funcl",I,148,4,0,8,0,,"","",,"Copy",
+"funcl",I,148,4,0,4,0,,"","",,"Copy",
 "fedfuncl",C,152,2,0,2,0,,"","",,"Copy",
 "fedfunc_AQ",C,154,5,0,5,0,,"","",,"Copy",
 "AQ_2008NA",C,159,1,0,1,0,,"","",,"Copy",
@@ -23,7 +23,7 @@ Network
 "Developden",C,188,1,0,1,0,,"","",,"Copy",
 "Drivewayden",C,189,1,0,1,0,,"","",,"Copy",
 "landuse",C,190,1,0,1,0,,"","",,"Copy",
-"areatp",I,191,4,0,8,0,,"","",,"Blank",
+"areatp",I,191,4,0,4,0,,"","",,"Blank",
 "A_LeftLns",I,195,4,0,8,0,,"","",,"Blank",
 "A_ThruLns",I,199,4,0,8,0,,"","",,"Blank",
 "A_RightLns",I,203,4,0,8,0,,"","",,"Blank",
@@ -57,8 +57,8 @@ Network
 "TT_RTE",I,339,4,0,8,0,,"","",,"Blank",
 "TT_KEY_AB",I,343,4,0,8,0,,"","",,"Blank",
 "TT_KEY_BA",I,347,4,0,8,0,,"","",,"Blank",
-"State",I,351,4,0,8,0,,"","",,"Copy",
-"County",I,355,4,0,8,0,,"","",,"Copy",
+"State",I,351,4,0,4,0,,"","",,"Copy",
+"County",I,355,4,0,4,0,,"","",,"Copy",
 "TAZ",I,359,4,0,10,0,,"","",,"Copy",
 "locclass1",I,363,4,0,8,0,,"","",,"Blank",
 "locclass2",I,367,4,0,8,0,,"","",,"Blank",
