@@ -142,7 +142,7 @@ SetRandomSeed(16618)
 	prob2c = prob1c + prob2
 
 //The 2+ categories are 2 (62.0% of all 2+ is) & 3 (38.0%)
-	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) else 3
+	choice_v = if (rand_v1 < prob0) then 0 else if (rand_v1 < prob1c) then 1 else if (rand_v2 < 0.62) then 2 else 3
 	SetDataVector(tour_files[1]+"|", "IS_PA", choice_v,)
 
 //Repeat above logic for AP direction
