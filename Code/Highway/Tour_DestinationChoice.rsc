@@ -264,6 +264,8 @@ end
 
 //open travel time matrices for DC calcs below
 	autopk = OpenMatrix(Dir + "\\Skims\\TThwy_peak.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autopk, "Write")
+
 	matrix_indices = GetMatrixIndexNames(autopk)	
 	for i = 1 to matrix_indices[1].length do
 		if matrix_indices[1][i] = "Internals" then goto gotpkindex
@@ -274,6 +276,7 @@ end
 	autopkcurall = CreateMatrixCurrency(autopk, "TotalTT", "Rows", "Columns", )
 	autopkintcur = CreateMatrixCurrency(autopk, "TotalTT", "Internals", "Internals", )
 	autofree = OpenMatrix(Dir + "\\Skims\\TThwy_free.mtx", "False")			//open as memory-based
+	OpenMatrixFileHandle(autofree, "Write")
 	matrix_indices = GetMatrixIndexNames(autofree)	
 	for i = 1 to matrix_indices[1].length do
 		if matrix_indices[1][i] = "Internals" then goto gotfreeindex
@@ -363,7 +366,11 @@ SetRandomSeed(100)
 	ixtourid = 0
 //Loop all tours
 SetRandomSeed(737)
+	pbar = CreateObject("G30 Progress Bar", "HBW Tours", true, hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+
 		if hbwtoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbwtours
 		end
@@ -445,6 +452,9 @@ SetRandomSeed(737)
 		end
 		nohbwtours:
 	end
+
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	totsumattr = 0
@@ -538,7 +548,11 @@ SetRandomSeed(544)
 
 //Loop all tours
 SetRandomSeed(744)
+	pbar = CreateObject("G30 Progress Bar", "School Tours", true, hhidset.length)
+
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+		
 		if schtoursset[n] = 0 then do			//go to next record if there are no school tours
 			goto noschtours
 		end
@@ -612,6 +626,8 @@ SetRandomSeed(744)
 		end
 		noschtours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -700,7 +716,10 @@ SetRandomSeed(91)
 
 //Loop all tours
 SetRandomSeed(991)
-	for n = 1 to hhidset.length do					
+	pbar = CreateObject("G30 Progress Bar", "HBU Tours", true, hhidset.length)
+	
+	for n = 1 to hhidset.length do		
+		pbar.Step()
 		if hbutoursset[n] = 0 then do			//go to next record if there are no hbu tours
 			goto nohbutours
 		end
@@ -761,6 +780,8 @@ SetRandomSeed(991)
 		end
 		nohbutours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -848,7 +869,11 @@ SetRandomSeed(86489)
 
 //Loop all tours
 SetRandomSeed(72)
+	pbar = CreateObject("G30 Progress Bar"," HBS Tours", true, hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step()
+
 		if hbstoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbstours
 		end
@@ -926,6 +951,8 @@ SetRandomSeed(72)
 		end
 		nohbstours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -1014,7 +1041,10 @@ SetRandomSeed(763)
 
 //Loop all tours
 SetRandomSeed(953)
+	pbar = CreateObject("G30 Progress Bar", "HBO Tours", true,  hhidset.length)
+	
 	for n = 1 to hhidset.length do				//hhidset.length	
+		pbar.Step() 
 		if hbotoursset[n] = 0 then do			//go to next record if there are no hbw tours
 			goto nohbotours
 		end
@@ -1094,6 +1124,8 @@ SetRandomSeed(953)
 		end
 		nohbotours:
 	end
+	pbar.Destroy()
+
 	sse = 0
 	totattr = 0
 	for i = 1 to hh.length do
@@ -1853,7 +1885,10 @@ SetRandomSeed(3113)
 	DeleteMatrixIndex(autopk, "Internals")
 	DeleteMatrixIndex(autofree, "Internals")
 
-   DestroyProgressBar()
+	CloseMatrixFileHandle(autopk)
+	CloseMatrixFileHandle(autofree)
+
+   	DestroyProgressBar()
     RunMacro("G30 File Close All")
 
     goto quit
