@@ -12,7 +12,8 @@ Macro "Transit_Boardings" (Args)
 // 6/20/19, mk: There are now three distinct networks, use offpeak initially for transit set-up
 
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 	// LogFile = Args.[Log File].value
 	// SetLogFileName(LogFile)

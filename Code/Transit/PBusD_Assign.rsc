@@ -12,7 +12,8 @@ Macro "PBusD_Assign" (Args)
 	Dir = Args.[Run Directory]
 	taz_file = Args.[TAZ File]
 	theyear = Args.[Run Year]
-	hwy_file = Args.[AM Peak Hwy Name]
+	//hwy_file = Args.[AM Peak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null

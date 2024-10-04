@@ -12,7 +12,7 @@ Macro "Tour_TF_CountySummaryStats"
 	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	net_file = Args.[Hwy Name]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour TOD1: " + datentime)

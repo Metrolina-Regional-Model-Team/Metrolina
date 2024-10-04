@@ -30,8 +30,11 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 	distweight = Args.[DistWeight]
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = Args.[HwyAssn Converge Feedback]
+	hwy_file = Args.[Hwy Name]
+	//netview = SplitPath(hwy_file)
+	{, , netview, } = SplitPath(hwy_file)
 
-	if timeperiod = "AMpeak" then do	
+	/*if timeperiod = "AMpeak" then do	
 		hwy_file = Args.[AM Peak Hwy Name]
 		{, , netview, } = SplitPath(hwy_file)
 	end
@@ -46,7 +49,8 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 	else do
 		goto badtimeperiod
 	end
-
+	*/
+	
 	hwyassntype = "BPR"
 	msg = null
 					
@@ -70,7 +74,10 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 //      hov2+ are funcl 22 and 82  (24 is now a peak-period shoulder lane that excludes trucks (I-77 North)
 //      hov3+ are funcl 25 and 83 (23 now tollonly)
 //	tollonly are funcl 23 and 83
+	
 	net_file = Dir + "\\"+netview+".DBD"
+
+
 
 	info = GetDBInfo(net_file)
 	scope = info[1]

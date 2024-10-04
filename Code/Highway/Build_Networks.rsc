@@ -8,9 +8,10 @@ Macro "Build_Networks" (Args)
 	Dir = Args.[Run Directory]
 	RunYear = Args.[Run Year]
 	TAZFile = Args.[TAZ File]
-	AMPkHwyName = Args.[AM Peak Hwy Name]
-	PMPkHwyName = Args.[PM Peak Hwy Name]
-	OPHwyName = Args.OPHighway
+	HwyName = Args.[Hwy Name]
+	//AMPkHwyName = Args.[AM Peak Hwy Name]
+	//PMPkHwyName = Args.[PM Peak Hwy Name]
+	//OPHwyName = Args.OPHighway
 	// ReportFile = Args.[Report File].value
 	// LogFile = Args.[Log File].value
 	MasterHwyFile = Args.MasterHwyFile
@@ -43,7 +44,21 @@ Macro "Build_Networks" (Args)
 	NumProj = prj_year.length
 	AppendToReportFile(2, "Number of projects for " + RunYear + ":   " + i2s(NumProj))
 
-	//	do AM Peak highway network first
+	datentime = GetDateandTime()
+	AppendtoLogFile(2, " ")
+	AppendToLogFile(2, "Enter Build_HwyNet: " + datentime)
+
+	HwyName = RunMacro("Build_HwyNet", MRMDir, Dir, RunYear, MasterHwyFile, prj_year, TollFile, HwyName)			
+	datentime = GetDateandTime()
+	AppendToLogFile(2, "Exit Build_HwyNet: " + datentime)
+
+	//Args.[Hwy Name].value = HwyName
+
+	datentime = GetDateandTime()
+	AppendToLogFile(1, "Exit Build_Networks: " + datentime)
+
+
+	/*	do AM Peak highway network first
 	datentime = GetDateandTime()
 	AppendtoLogFile(2, " ")
 	AppendToLogFile(2, "Enter Build_HwyNet (AM): " + datentime)
@@ -117,6 +132,23 @@ Macro "Build_Networks" (Args)
 	AppendToLogFile(1, "Build_Networks: Error: - prj_year array not created")
 	goto didnotwork
 	
+	*/
+
+	if HwyName = null 
+			then do
+				msg = msg + {"Error return from Build_HwyNet"}
+				AppendToLogFile(1, "Error return from Build_HwyNet")
+				HwyOK = 0
+				goto didnotwork
+			end
+			else goto didwork
+			
+		badprjyear:
+		HwyOK = 0
+		msg = msg + {"Build_Networks: Error - prj_year array not created"}
+		AppendToLogFile(1, "Build_Networks: Error: - prj_year array not created")
+		goto didnotwork
+
 	NoRun:
 	didnotwork:
 	if HwyOK = 0
@@ -133,6 +165,7 @@ Macro "Build_Networks" (Args)
 	return({1, msg})
 	quit:
 EndMacro
+
 
 DBox "build_ntwks" (Args)
 //Interface to get master files etc for building a highway network
@@ -564,5 +597,6 @@ enditem
 	enditem
 
 endDBox
+
 
 

@@ -3,7 +3,8 @@ Macro "RouteSystemSetUp" (Args)
 
 	Dir = Args.[Run Directory]
 	METDir = Args.[MET Directory]
-	net_file = Args.[Offpeak Hwy Name]
+	//net_file = Args.[Offpeak Hwy Name]
+	net_file = Args.[Hwy Name]
 	theyear = Args.[Run Year]
 
 	datentime = GetDateandTime()

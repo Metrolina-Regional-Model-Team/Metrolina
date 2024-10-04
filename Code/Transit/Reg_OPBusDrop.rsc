@@ -13,7 +13,8 @@ Macro "Reg_OPBusDrop" (Args)
     Dir = Args.[Run Directory]
     taz_file = Args.[TAZ File]
     theyear = Args.[Run Year]
-    hwy_file = Args.[Offpeak Hwy Name]
+    //hwy_file = Args.[Offpeak Hwy Name]
+    hwy_file = Args.[Hwy Name]
     {, , netname, } = SplitPath(hwy_file)
         
     msg = null

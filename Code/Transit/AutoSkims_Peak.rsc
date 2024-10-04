@@ -14,7 +14,8 @@ Macro "AutoSkims_Peak" (Args)
 	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	hwy_file = Args.[AM Peak Hwy Name]
+	//hwy_file = Args.[AM Peak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 
 	curiter = Args.[Current Feedback Iter]

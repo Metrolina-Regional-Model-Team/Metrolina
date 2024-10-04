@@ -12,7 +12,7 @@ Macro "Tour_RunStats" (Args)
 	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	net_file = Args.[Hwy Name]
 
 	msg = null
 	datentime = GetDateandTime()

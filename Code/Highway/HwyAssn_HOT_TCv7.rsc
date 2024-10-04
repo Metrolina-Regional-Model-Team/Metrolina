@@ -26,7 +26,7 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-//	netview = Args.[Hwy Name].value
+	netview = Args.[Hwy Name]
 	timeweight = Args.[TimeWeight]
 	distweight = Args.[DistWeight]
 	maxTTfac = Args.[MaxTravTimeFactor]
@@ -38,7 +38,7 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"
-
+	/*
 	if timeperiod = "AMpeak" then do	
 		hwy_file = Args.[AM Peak Hwy Name]
 		{, , netview, } = SplitPath(hwy_file)
@@ -54,6 +54,7 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	else do
 		Throw("HwyAssn_HOT: Bad time period")
 	end
+	*/
 
 	PERIOD = hwyassnarguments[1]
 	cap_field = hwyassnarguments[2]

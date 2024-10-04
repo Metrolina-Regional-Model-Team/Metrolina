@@ -8,7 +8,8 @@ Macro "XPR_StopFlags"  (Args)
 	theyear = Args.[Run Year]
 	taz_file = Args.[TAZ File]
 	yearnet = right(theyear,2)
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 
 

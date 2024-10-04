@@ -14,7 +14,7 @@ Macro "Tour_ToD1_FB" (Args)
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	net_file = Args.[Hwy Name]
 	curiter = Args.[Current Feedback Iter]
 	msg = null
 	datentime = GetDateandTime()
