@@ -41,7 +41,7 @@
 	
         Args.ProjectFile = {
             "Type":"file",
-            "Value":"%MRM Directory%\\MasterNet\\MasterProjects.dbf"
+            "Value":"%MRM Directory%\\MasterNet\\MasterProjects.bin"
         }
         Args.MasterHwyFile = {
             "Type":"file",
@@ -56,20 +56,7 @@
             "Type":"file",
             "Value":"%Run Directory%\\RegNet.dbd"
         }
-        
-        /*Args.[AM Peak Hwy Name] = {
-            "Type":"file",
-            "Value":"%Run Directory%\\RegNet_AMpeak.dbd"
-        }
-        Args.[PM Peak Hwy Name] = {
-            "Type":"file",
-            "Value":"%Run Directory%\\RegNet_PMpeak.dbd"
-        }
-        Args.[Offpeak Hwy Name] = {
-            "Type":"file",
-            "Value":"%Run Directory%\\RegNet_Offpeak.dbd"
-        }
-        */
+  
 	Section = "Mode Split"
 	
         Args.TourMCFlag = {
