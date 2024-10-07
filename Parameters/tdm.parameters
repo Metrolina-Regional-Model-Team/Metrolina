@@ -41,7 +41,7 @@
 	
         Args.ProjectFile = {
             "Type":"file",
-            "Value":"%MRM Directory%\\MasterNet\\MasterProjects.bin"
+            "Value":"%MRM Directory%\\MasterNet\\Projects.bin"
         }
         Args.MasterHwyFile = {
             "Type":"file",
@@ -49,7 +49,7 @@
         }
         Args.TollFile = {
             "Type":"file",
-            "Value":"%MRM Directory%\\MasterNet\\MasterTolls.bin"
+            "Value":"%MRM Directory%\\MasterNet\\Tolls.bin"
         }
         
         Args.[Hwy Name] = {
