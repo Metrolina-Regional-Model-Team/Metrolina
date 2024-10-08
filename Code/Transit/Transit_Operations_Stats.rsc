@@ -375,15 +375,17 @@ Macro "Transit_Operations_Stats" (Args)
 	on notfound default
 	setview("Vehicle Routes")
 
-	opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
+	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
 
 	// Fill Key_NUM, TC v.7 would not accept routes_view.routes.key below(maybe because of sort?)
+	/* i think we can drop
 	setview("Routes")
 	vkey = GetDataVector("Routes|","KEY",) 	
 	SetDataVector("Routes|","KEY_NUM", vkey,)
 	setview("Vehicle Routes")
 
 	routes_view = joinviews("routes_view", "[Vehicle Routes].Key", "ROUTES.KEY",)
+	*/
 
 	//--- Select Routes by variable \routes.dbf ALT_FLAG
 
@@ -393,10 +395,12 @@ Macro "Transit_Operations_Stats" (Args)
 	// --- Create the output file that summarizes the Ridership by Vehicle Routes
 
 	rec = 0
-	nrec = GetRecordCount (routes_view, "Selection")
+	//nrec = GetRecordCount (routes_view, "Selection")
+	nrec = GetRecordCount ("Vehicle Routes", "Selection")
 	CreateProgressBar ("Processing Vehicle Route" + String(nrec) + " Transit Routes", "True")   
 	
-	routes_rec = GetFirstRecord (routes_view + "|Selection", {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
+	//routes_rec = GetFirstRecord (routes_view + "|Selection", {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
+	routes_rec = GetFirstRecord ("Vehicle Routes"+ "|Selection", {{"Track", "Ascending"},{"KEY", "Ascending"}})
 
 	while routes_rec <> null do
 		rec = rec + 1
@@ -409,24 +413,37 @@ Macro "Transit_Operations_Stats" (Args)
 			goto userkill
 		end
 
-		field_array = GetFields (routes_view, "All")
+		//field_array = GetFields (routes_view, "All")
+		field_array = GetFields ("Vehicle Routes", "All")
 		fld_names = field_array [1]
 			
-		route_id = routes_view.Route_ID
-		keynum = routes_view.KEY_NUM
+		//route_id = routes_view.Route_ID
+		route_id = "Vehicle Routes"_view.Route_ID
+		//keynum = routes_view.KEY_NUM
+		keynum = "Vehicle Routes".KEY
 			
-		route_name = routes_view.Route_Name
-		corr = routes_view.Corr
-		track = routes_view.Track
-		mode = routes_view.Mode
-		io = routes_view.IO
-		am_head = routes_view.AM_HEAD
-		mid_head = routes_view.MID_HEAD
-		pm_head = routes_view.PM_HEAD
-		night_head = routes_view.NIGHT_HEAD
-			
-		peak_headway = routes_view.AM_HEAD
-		offpeak_headway = routes_view.MID_HEAD
+		//route_name = routes_view.Route_Name
+		route_name = "Vehicle Routes".Route_Name
+		//corr = routes_view.Corr
+		corr = "Vehicle Routes".Corr
+		//track = routes_view.Track
+		track = "Vehicle Routes".Track
+		//mode = routes_view.Mode
+		mode = "Vehicle Routes".Mode
+		//io = routes_view.IO
+		io = "Vehicle Routes".IO
+		//am_head = routes_view.AM_HEAD
+		am_head = "Vehicle Routes".AM_HEAD
+		//mid_head = routes_view.MID_HEAD
+		mid_head = "Vehicle Routes".MID_HEAD
+		//pm_head = routes_view.PM_HEAD
+		pm_head = "Vehicle Routes".PM_HEAD
+		//night_head = routes_view.NIGHT_HEAD
+		night_head = "Vehicle Routes".NIGHT_HEAD	
+		//peak_headway = routes_view.AM_HEAD
+		peak_headway ="Vehicle Routes".AM_HEAD
+		//offpeak_headway = routes_view.MID_HEAD
+		offpeak_headway = "Vehicle Routes".MID_HEAD
 
 		// --- get the AM hourly trips for calculating peak loads
 
@@ -815,9 +832,11 @@ Macro "Transit_Operations_Stats" (Args)
 					
 		AddRecord (operations_view, operations_values)
 
-		SetView(routes_view)
+		//SetView(routes_view)
+		SetView("Vehicle Routes")
 
-		routes_rec = GetNextRecord (routes_view + "|Selection", null, {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
+		//routes_rec = GetNextRecord (routes_view + "|Selection", null, {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
+		routes_rec = GetNextRecord ("Vehicle Routes" + "|Selection", null, {{"Track", "Ascending"},{"KEY", "Ascending"}})
 	end  // while routes_rec
 
 	DestroyProgressBar () 
