@@ -9,7 +9,7 @@ Macro "Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, Hw
 //PMPkHwyName = Args.[PM Peak Hwy Name]
 //OPHwyName = Args.[OffPeak Hwy Name]
 
-//HwyName = Args.[Hwy Name]
+hwy_file = Args.[Hwy Name]
 
 CreateProgressBar("Build Highway Network", "False")
 
@@ -56,10 +56,10 @@ closemap("MetroRoads")
     base =  Dir + "\\BASE_LINKS_net"+yearnet+".dbf"
 	select = "Select*where YEAR < " + I2S(yearselect)
 
-	/// do not like RegNet hardcoging ask Kyle about .value issues	
+	/// do not like RegNet hardcoging ask Kyle about .value issues	/// delete comment if split works
 
 	if HwyName <> null 
-		then netview = HwyName
+		then {, , netview, } = SplitPath(hwy_file)
 		else netview = "RegNet"
 
 	//hwyname_ar = {AMPkHwyName, PMPkHwyName, OPHwyName}
