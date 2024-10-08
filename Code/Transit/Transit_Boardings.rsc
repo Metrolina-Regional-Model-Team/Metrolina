@@ -153,7 +153,8 @@ Macro "Transit_Boardings" (Args)
 
 // -- check whether a field "Key_Num" exists to store key values
 
-	routes1 = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
+/*	can proabbly go away not sure about TC comment on 152 tbd
+routes1 = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
 
 	field_array = GetFields (routes1, "All")
 
@@ -194,19 +195,21 @@ continue10:
 		record = GetNextRecord(routes1 + "|", null, null)
 	end
 
+*/
 
 //--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
 
 	on notfound default
 	setview("Vehicle Routes")
 
-	opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
+	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
 
-	routes_view = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
-	SetView(routes_view)
+	//routes_view = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
+	//SetView(routes_view)
 
 // create selection set of routes to gather boardings
 
+//not sure why we need to loop through GRP_LIST and why GRP_LIST was created 
 	rtesquery = "Select * where GRP_LIST = " + i2s(select_group[1])
 	if select_group.length > 1 then do
 		for i = 2 to select_group.length do
@@ -219,13 +222,16 @@ continue10:
 
 	// select_routes - list of routes to process
 	select_routes = null
-	record = GetFirstRecord (routes_view + "|BoardRtes", null)
-
+	//record = GetFirstRecord (routes_view + "|BoardRtes", null)
+	record = GetFirstRecord ("Vehicle Routes" + "|BoardRtes", null)
+	
 	while record <> null do
-		recval = GetRecordValues(routes_view, record, {"Route_ID"})
+		//recval = GetRecordValues(routes_view, record, {"Route_ID"})
+		recval = GetRecordValues("Vehicle Routes", record, {"Route_ID"})
 		rteID = recval[1][2]
 		select_routes = select_routes + {rteID} 
-		record = GetNextRecord(routes_view + "|BoardRtes", null, null)
+		//record = GetNextRecord(routes_view + "|BoardRtes", null, null)
+		record = GetNextRecord("Vehicle Routes" + "|BoardRtes", null, null)
 	end
 	
 	// ----- Set the paths for the TASN_FLOW files
@@ -312,13 +318,15 @@ continue10:
 
 /// -------- CREATE BOARDING SUMMARY --------------------------------
 	
-	SetView(routes_view)
-
+	//SetView(routes_view)
+	setview("Vehicle Routes")
 		rec = 0
-		nrec = GetRecordCount (routes_view, null)
+		//nrec = GetRecordCount (routes_view, null)
+		nrec = GetRecordCount ("Vehicle Routes", null)
 		CreateProgressBar ("Processing Vehicle Route" + String(nrec) + " Transit Routes", "True")   
 	
-		routes_rec = GetFirstRecord (routes_view + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+		//routes_rec = GetFirstRecord (routes_view + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+		routes_rec = GetFirstRecord ("Vehicle Routes" + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
 
 		while routes_rec <> null do
 
@@ -334,17 +342,26 @@ continue10:
 			peak_boards_flag = 0
 			offpeak_boards_flag = 0
 
-			SetView(routes_view)
-			route_id = routes_view.Route_ID
-			route_name = routes_view.Route_Name
-			track = routes_view.Track
-			corr = routes_view.Corr
-			key = routes_view.KEY_NUM
-			mode = routes_view.MODE
-			io = routes_view.IO
-			peak_headway = routes_view.AM_HEAD
-			offpeak_headway = routes_view.MID_HEAD
-
+			//SetView(routes_view)
+			SetView("Vehicle Routes")
+			//route_id = routes_view.Route_ID
+			route_id = ["Vehicle Routes"].Route_ID
+			//route_name = routes_view.Route_Name
+			route_name =["Vehicle Routes"].Route_Name
+			//track = routes_view.Track
+			track = ["Vehicle Routes"].Track
+			//corr = routes_view.Corr
+			corr = ["Vehicle Routes"].Corr
+			//key = routes_view.KEY_NUM
+			key = ["Vehicle Routes"].KEY_NUM
+			//mode = routes_view.MODE
+			mode = ["Vehicle Routes"].MODE
+			//io = routes_view.IO
+			io = ["Vehicle Routes"].IO
+			//peak_headway = routes_view.AM_HEAD
+			peak_headway =["Vehicle Routes"].AM_HEAD
+			//offpeak_headway = routes_view.MID_HEAD
+			offpeak_headway = ["Vehicle Routes"].MID_HEAD
 			check_flag = 0
 
 			for m = 1 to select_routes.length do
@@ -656,8 +673,10 @@ continue10:
 
 	end   // -- end for check flag
 	
-			SetView(routes_view)
-			routes_rec = GetNextRecord (routes_view + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+			//SetView(routes_view)
+			SetView("Vehicle Routes")
+			//routes_rec = GetNextRecord (routes_view + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+			routes_rec = GetNextRecord ("Vehicle Routes" + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
 		end
 	goto quit
 
