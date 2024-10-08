@@ -15,7 +15,23 @@ Macro "Skimming" (Args)
     first_iter = if Args.[Current Feedback Iter] = 1
         then "true"
         else "false"
- if first_iter then do
+
+    if first_iter then do
+        RunMacro("HwySkim_Free", Args)
+        RunMacro("Prepare_Transit_Files", Args)
+    end
+    RunMacro("HwySkim_Peak", Args)
+    RunMacro("FillParkCost", Args)
+    RunMacro("AutoSkims_Free", Args)
+    RunMacro("AutoSkims_Peak", Args)
+    if first_iter then RunMacro("Reg_NonMotorized", Args)
+    RunMacro("Reg_PPrmW", Args)
+    RunMacro("Reg_PPrmD", Args)
+    RunMacro("Reg_PPrmDrop", Args)
+    RunMacro("Reg_PBusW", Args)
+    RunMacro("Reg_PBusD", Args)
+    RunMacro("Reg_PBusDrop", Args)
+    if first_iter then do
         RunMacro("Reg_OPPrmW", Args)
         RunMacro("Reg_OPPrmD", Args)
         RunMacro("Reg_OPPrmDrop", Args)
