@@ -26,7 +26,8 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	netview = Args.[Hwy Name]
+	hwy_file = Args.[Hwy Name]
+	{, , netview, } = SplitPath(hwy_file)
 	timeweight = Args.[TimeWeight]
 	distweight = Args.[DistWeight]
 	maxTTfac = Args.[MaxTravTimeFactor]
