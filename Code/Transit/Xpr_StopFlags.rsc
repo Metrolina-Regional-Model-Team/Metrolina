@@ -55,12 +55,15 @@ Macro "XPR_StopFlags"  (Args)
 	SetLineWidth(link_lyr+"|", 0)
 	SetLayerVisibility("Route Stops", "False")
 
+	route_layer = rtelyr[1]
 	stop_layer = rtelyr[2]
 	//	showmessage("stop_layer: " + stop_layer)
 
 
  	//-- Open the ROUTES.DBF File - add RTE_ID field if it doesn't have it
+	//Route_ID in RTS file
 
+	/* AR I think we can remove now
 	routeview = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
 	SetView(routeview)
 	field_array = GetFields (routeview, "All")
@@ -92,6 +95,7 @@ Macro "XPR_StopFlags"  (Args)
 	vroute = null
 	CloseView(VRoutesView)
 
+	*/
 
 	// TRANSYS route stops layer
 	
@@ -138,10 +142,10 @@ Macro "XPR_StopFlags"  (Args)
 	on error, notfound default
 
 
-
 	//	Route Stops joined to routes.dbf - using RTE_ID (TC internal route_id, filled above)
-	StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "ROUTES.RTE_ID",)
-
+	//StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "ROUTES.RTE_ID",)
+	StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "[Vehicle Routes].Route_ID",)
+	
 	//Fill PRM_FLAG - all active Premium service stops
 	prm_stop_select = "Select * where Mode < 5 and ALT_FLAG = 1"
 	n_prm_stop = SelectByQuery("Premium Stops", "Several", prm_stop_select,)

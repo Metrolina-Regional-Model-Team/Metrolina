@@ -86,9 +86,9 @@ Macro "OPBusW_Assign" (Args)
 	on notfound default
 	setview("Vehicle Routes")
 
-	opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
+	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
 
-	view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
+	//view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 
