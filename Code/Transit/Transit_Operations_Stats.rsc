@@ -226,7 +226,7 @@ Macro "Transit_Operations_Stats" (Args)
 	operations_info = {
 			{"Key", "Integer", 8, null, "Yes"},		
 			{"Route_ID", "Integer", 8, null, "Yes"},		
-			{"Route_Name", "String", 25, null, "No"},		
+			{"Route_Name", "String", 51, null, "No"},		
 			{"CORR", "Integer", 8, null, "No"},
 			{"CORR_NAME", "String", 35, null, "No"},
 			{"TRACK", "Integer", 8, null, "No"},
@@ -400,7 +400,7 @@ Macro "Transit_Operations_Stats" (Args)
 	CreateProgressBar ("Processing Vehicle Route" + String(nrec) + " Transit Routes", "True")   
 	
 	//routes_rec = GetFirstRecord (routes_view + "|Selection", {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
-	routes_rec = GetFirstRecord ("Vehicle Routes"+ "|Selection", {{"Track", "Ascending"},{"KEY", "Ascending"}})
+	routes_rec = GetFirstRecord ("Vehicle Routes" + "|Selection", {{"Track", "Ascending"},{"KEY", "Ascending"}})
 
 	while routes_rec <> null do
 		rec = rec + 1
@@ -416,34 +416,24 @@ Macro "Transit_Operations_Stats" (Args)
 		//field_array = GetFields (routes_view, "All")
 		field_array = GetFields ("Vehicle Routes", "All")
 		fld_names = field_array [1]
-			
-		//route_id = routes_view.Route_ID
-		route_id = "Vehicle Routes"_view.Route_ID
-		//keynum = routes_view.KEY_NUM
-		keynum = "Vehicle Routes".KEY
-			
-		//route_name = routes_view.Route_Name
-		route_name = "Vehicle Routes".Route_Name
-		//corr = routes_view.Corr
-		corr = "Vehicle Routes".Corr
-		//track = routes_view.Track
-		track = "Vehicle Routes".Track
-		//mode = routes_view.Mode
-		mode = "Vehicle Routes".Mode
-		//io = routes_view.IO
-		io = "Vehicle Routes".IO
-		//am_head = routes_view.AM_HEAD
-		am_head = "Vehicle Routes".AM_HEAD
-		//mid_head = routes_view.MID_HEAD
-		mid_head = "Vehicle Routes".MID_HEAD
-		//pm_head = routes_view.PM_HEAD
-		pm_head = "Vehicle Routes".PM_HEAD
-		//night_head = routes_view.NIGHT_HEAD
-		night_head = "Vehicle Routes".NIGHT_HEAD	
-		//peak_headway = routes_view.AM_HEAD
-		peak_headway ="Vehicle Routes".AM_HEAD
-		//offpeak_headway = routes_view.MID_HEAD
-		offpeak_headway = "Vehicle Routes".MID_HEAD
+
+		routes_view = "Vehicle Routes"
+
+		route_id = routes_view.Route_ID
+		keynum = routes_view.Key
+		
+		route_name = routes_view.Route_Name
+		corr = routes_view.Corr
+		track = routes_view.Track
+		mode = routes_view.Mode
+		io = routes_view.IO
+		am_head = routes_view.AM_HEAD
+		mid_head = routes_view.MID_HEAD
+		pm_head = routes_view.PM_HEAD
+		night_head = routes_view.NIGHT_HEAD	
+		peak_headway = routes_view.AM_HEAD
+		offpeak_headway = routes_view.MID_HEAD
+	
 
 		// --- get the AM hourly trips for calculating peak loads
 
@@ -452,7 +442,6 @@ Macro "Transit_Operations_Stats" (Args)
 			else	am_hourly_units = 0
 
 		// --- Set the time duration depending on the Mode
-
 
 		if ( mode >= 1 and mode <= 4 or mode = 11) then do		// prem buses and skip stop services
 			am_service = am_service_prem
