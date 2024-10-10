@@ -227,7 +227,7 @@ Macro "CreateDir" (Args)
 
     YearTwo = Right(YearUser,2)
     rundir_files = 
-        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf"}
+        {"station_database.dbf", "transit_corridor_id.dbf", "Track_ID.dbf"}
     rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}   
 
     //Standard runyear files
