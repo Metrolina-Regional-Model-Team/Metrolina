@@ -82,7 +82,6 @@ Macro "Transit_Pax_Stats" (Args)
 	net_file = Dir + "\\"+netname+".dbd"
 
 	view = "TranSys"
-	ID = "KEY"
 
 	// Get the scope of a geographic file
 
@@ -108,9 +107,6 @@ Macro "Transit_Pax_Stats" (Args)
 
 	setview("Vehicle Routes")
 
-	//opentable("Routes", "DBASE", {Dir + "\\ROUTES.dbf",})
-
-	//joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].key" , "ROUTES.KEY",)
 
 	closemap()
 
@@ -168,7 +164,6 @@ Macro "Transit_Pax_Stats" (Args)
 //---- Create RouteOut File - open transit rts and join to ROUTES.dbf
 
 	view = "TranSys"
-	ID = "KEY"
 
 	// Get the scope of a geographic file
 
@@ -194,16 +189,11 @@ Macro "Transit_Pax_Stats" (Args)
 
 	setview("Vehicle Routes")
 
-	//opentable("Routes", "DBASE", {Dir + "\\ROUTES.dbf",})
-
-	//joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].key" , "Routes.KEY",)
-	
 
 	query = "Select * where ALT_FLAG = 1"
 	n_select = SelectByQuery("Selection", "Several", query,)
 
-//	ExportView("Vehicle Routes+ROUTES|Selection", "DBASE", Dir + "\\Report\\RouteOut.DBF", {"Route_ID", "Routes.Key" , "Track", "RTE_Name", "Time", "Distance", "IO", "Corr", "MODE", "DWELL", "Routes.COMPANY", "AM_HEAD", "MID_HEAD", "PM_HEAD", "NIGHT_HEAD"},
-	ExportView("Vehicle Routes|Selection", "DBASE", Dir + "\\Report\\RouteOut.DBF", {"Route_ID", "Key" , "Track", "Route_Name", "Time", "Distance", "IO", "Corr", "MODE", "DWELL", "COMPANY", "AM_HEAD", "MID_HEAD", "PM_HEAD", "NIGHT_HEAD"},
+	ExportView("Vehicle Routes|Selection", "DBASE", Dir + "\\Report\\RouteOut.DBF", {"Route_ID", "Track", "Route_Name", "Distance", "IO", "Corr", "MODE", "DWELL", "COMPANY", "AM_HEAD", "MID_HEAD", "PM_HEAD", "NIGHT_HEAD"},
 			{{"Additional Fields",{
 			 {"NUMSTOP", "Integer", 11, , "False"},
 			 {"PASS", "Real", 10, 2, "False"},

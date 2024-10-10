@@ -50,7 +50,6 @@ Macro "Transit_Boardings" (Args)
 		{"Route_Name", "String", 25, null, "Yes"},	
 		{"Track", "Integer", 6, null, "No"},	
 		{"Corr", "Integer", 6, null, "No"},	
-		{"Key", "Integer", 8, null, "No"},	
 		{"IO", "String", 2, null, "No"},	
 		{"MODE", "Integer", 8, null, "No"},		
 		{"AM_HEAD", "Real", 8, 2, "No"},		
@@ -279,7 +278,6 @@ Macro "Transit_Boardings" (Args)
 			route_name = routes_view.Route_Name
 			track = routes_view.Track
 			corr = routes_view.Corr
-			key = routes_view.KEY
 			mode = routes_view.MODE
 			io = routes_view.IO
 			peak_headway = routes_view.AM_HEAD
@@ -530,7 +528,6 @@ Macro "Transit_Boardings" (Args)
 						{"Route_ID", route_id},		
 						{"Route_Name", route_name},	
 						{"Track", track},	
-						{"Key", key},	
 						{"Corr", corr},	
 						{"IO", io},	
 						{"MODE", mode},

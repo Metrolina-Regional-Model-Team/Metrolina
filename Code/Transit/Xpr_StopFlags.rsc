@@ -31,7 +31,6 @@ Macro "XPR_StopFlags"  (Args)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
 
 	// Get the scope of a geographic file
 
@@ -58,44 +57,6 @@ Macro "XPR_StopFlags"  (Args)
 	route_layer = rtelyr[1]
 	stop_layer = rtelyr[2]
 	//	showmessage("stop_layer: " + stop_layer)
-
-
- 	//-- Open the ROUTES.DBF File - add RTE_ID field if it doesn't have it
-	//Route_ID in RTS file
-
-	/* AR I think we can remove now
-	routeview = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-	SetView(routeview)
-	field_array = GetFields (routeview, "All")
-	fld_names = field_array [1]
-	fld_specs = field_array [2]
-
-	for k = 1 to fld_names.length do
-		if (fld_names [k] = "RTE_ID") 
-			then goto skipaddfield
-	end
-
-	// add RTE_ID field to ROUTES.dbf
-	strct = GetTableStructure(routes_view)
-	for i = 1 to strct.length do
-		strct[i] = strct[i] + {strct[i][1]}
-	end
-	new_struct = strct + {{"RTE_ID", "Integer", 8, null, "False",,,, null}}
-	ModifyTable(routeview, new_struct)
-
-	skipaddfield:
-	
-
-	//  Join the [Vehicle Routes] Layer with the ROUTES.DBF file 
-	//  fill RTE_ID field  with TC internal route_id from [Vehicle Routes], close view
-	VRoutesView = joinviews("VRoutesView", "[Vehicle Routes].Key", "ROUTES.Key",)	
-
-	vroute = GetDataVector("VRoutesView|", "Route_ID",)
-	SetDataVector("VRoutesView|", "ROUTES.RTE_ID", vroute,)
-	vroute = null
-	CloseView(VRoutesView)
-
-	*/
 
 	// TRANSYS route stops layer
 	

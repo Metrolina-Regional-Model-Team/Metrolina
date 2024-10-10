@@ -121,7 +121,6 @@ Macro "PBusDrop_Assign" (Args)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
 
 	// Get the scope of a geographic file
 
@@ -155,14 +154,9 @@ Macro "PBusDrop_Assign" (Args)
 	nodes_view = joinviews("Nodes+Stations", node_lyr + ".ID", "STATION_DATABASE.ID",)
 
 
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
-
 	on notfound default
 	setview("Vehicle Routes")
 
-	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-	//view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 
@@ -206,7 +200,6 @@ Macro "PBusDrop_Assign" (Args)
         closemap()
         RunMacro("G30 File Close All")
 
-	ID = "Key"
 
 	// Get the scope of a geographic file
 
@@ -240,14 +233,8 @@ Macro "PBusDrop_Assign" (Args)
       nodes_view = joinviews("Nodes+Stations", node_lyr + ".ID", "STATION_DATABASE.ID",)
 
 
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
-
      on notfound default
      setview("Vehicle Routes")
-
-     opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-     view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
  
      tnwOpts.Input.[OP Time Currency] = {Dir + "\\skims\\skim_knr_peak_noCBD.mtx", "TTPkAssn*", "Origin", "Destination"}
 

@@ -26,8 +26,6 @@ Macro "Reg_NonMotorized" (Args)
 
 	routename = "TranSys"
 
-	ID = "Key"
-
 	// Get the scope of a geographic file
 
 	info = GetDBInfo(Dir + "\\"+netname+".dbd")

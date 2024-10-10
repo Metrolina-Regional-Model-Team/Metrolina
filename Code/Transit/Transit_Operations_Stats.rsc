@@ -142,8 +142,7 @@ Macro "Transit_Operations_Stats" (Args)
 			
 	// -- create a table to store the Peak Ridership information for inbound routes
 
-	ridersbyroute_info = {
-		{"Key", "Integer", 8, null, "Yes"},		
+	ridersbyroute_info = {	
 		{"Route_ID", "Integer", 8, null, "Yes"},		
 		{"Route_Name", "String", 25, null, "No"},		
 		{"CORR", "Integer", 8, null, "No"},
@@ -186,7 +185,6 @@ Macro "Transit_Operations_Stats" (Args)
 // -- create a table to store the Total Ridership for all the transit routes in the system
 
 	ridership_info = {
-		{"Key", "Integer", 8, null, "Yes"},		
 		{"Route_ID", "Integer", 8, null, "Yes"},		
 		{"Route_Name", "String", 25, null, "No"},		
 		{"CORR", "Integer", 8, null, "No"},
@@ -224,7 +222,6 @@ Macro "Transit_Operations_Stats" (Args)
 	// -- create a table to store the Operation Statistics
 	
 	operations_info = {
-			{"Key", "Integer", 8, null, "Yes"},		
 			{"Route_ID", "Integer", 8, null, "Yes"},		
 			{"Route_Name", "String", 51, null, "No"},		
 			{"CORR", "Integer", 8, null, "No"},
@@ -342,8 +339,6 @@ Macro "Transit_Operations_Stats" (Args)
 	netname = info[2]
 	net_file = Dir + "\\"+netname+".dbd"
 
-	ID = "Key"
-
 	// --- Open the Route System
 
 	// Get the scope of a geographic file
@@ -370,24 +365,10 @@ Macro "Transit_Operations_Stats" (Args)
 
 
 
-	//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
+	//---------------------------------Create output files-----------------------------------
 
 	on notfound default
 	setview("Vehicle Routes")
-
-	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-	// Fill Key_NUM, TC v.7 would not accept routes_view.routes.key below(maybe because of sort?)
-	/* i think we can drop
-	setview("Routes")
-	vkey = GetDataVector("Routes|","KEY",) 	
-	SetDataVector("Routes|","KEY_NUM", vkey,)
-	setview("Vehicle Routes")
-
-	routes_view = joinviews("routes_view", "[Vehicle Routes].Key", "ROUTES.KEY",)
-	*/
-
-	//--- Select Routes by variable \routes.dbf ALT_FLAG
 
 	query = "Select * where ALT_FLAG = 1"
 	n_select = SelectByQuery("Selection", "Several", query,)
@@ -399,8 +380,7 @@ Macro "Transit_Operations_Stats" (Args)
 	nrec = GetRecordCount ("Vehicle Routes", "Selection")
 	CreateProgressBar ("Processing Vehicle Route" + String(nrec) + " Transit Routes", "True")   
 	
-	//routes_rec = GetFirstRecord (routes_view + "|Selection", {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
-	routes_rec = GetFirstRecord ("Vehicle Routes" + "|Selection", {{"Track", "Ascending"},{"KEY", "Ascending"}})
+	routes_rec = GetFirstRecord ("Vehicle Routes" + "|Selection", {{"Track", "Ascending"},{"Route_ID", "Ascending"}})
 
 	while routes_rec <> null do
 		rec = rec + 1
@@ -420,7 +400,6 @@ Macro "Transit_Operations_Stats" (Args)
 		routes_view = "Vehicle Routes"
 
 		route_id = routes_view.Route_ID
-		keynum = routes_view.Key
 		
 		route_name = routes_view.Route_Name
 		corr = routes_view.Corr
@@ -704,8 +683,7 @@ Macro "Transit_Operations_Stats" (Args)
 				
 		// --- Open Premium Walk ONO File
 				
-		peakriders_values = {
-				{"Key", keynum},		
+		peakriders_values = {	
 				{"Route_ID", route_id},		
 				{"Route_Name", route_name},		
 				{"CORR", corr},	
@@ -731,8 +709,7 @@ Macro "Transit_Operations_Stats" (Args)
 
 		SetView(ridership_view)
 			
-		ridership_values = {
-				{"Key", keynum},		
+		ridership_values = {	
 				{"Route_ID", route_id},		
 				{"Route_Name", route_name},		
 				{"CORR", corr},
@@ -781,8 +758,7 @@ Macro "Transit_Operations_Stats" (Args)
 				
 		// --- Open Premium Walk ONO File
 				
-		operations_values = {
-				{"Key", keynum},		
+		operations_values = {	
 				{"Route_ID", route_id},		
 				{"Route_Name", route_name},		
 				{"CORR", corr},	
@@ -824,8 +800,7 @@ Macro "Transit_Operations_Stats" (Args)
 		//SetView(routes_view)
 		SetView("Vehicle Routes")
 
-		//routes_rec = GetNextRecord (routes_view + "|Selection", null, {{"Track", "Ascending"},{"ROUTES.KEY", "Ascending"}})
-		routes_rec = GetNextRecord ("Vehicle Routes" + "|Selection", null, {{"Track", "Ascending"},{"KEY", "Ascending"}})
+		routes_rec = GetNextRecord ("Vehicle Routes" + "|Selection", null, {{"Track", "Ascending"},{"Route_ID", "Ascending"}})
 	end  // while routes_rec
 
 	DestroyProgressBar () 
@@ -833,7 +808,7 @@ Macro "Transit_Operations_Stats" (Args)
 	// RouteOut.dbf written by Transit_Pax_Stats
 
 	opentable("PAX", "DBASE", {Dir + "\\Report\\RouteOut.dbf",})
-	pax_view=joinviews(operations_view+"+PAX", "["+operations_view+"].Key", "PAX.Key",)
+	pax_view=joinviews(operations_view+"+PAX", "["+operations_view+"].Route_ID", "PAX.Route_ID",)
 
 	// -- Populate values for PAX_HOURS and PAX_MILES
 

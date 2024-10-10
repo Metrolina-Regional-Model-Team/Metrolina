@@ -57,7 +57,6 @@ Macro "PBusW_Assign" (Args)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
 
 	// Get the scope of a geographic file
 
@@ -81,14 +80,9 @@ Macro "PBusW_Assign" (Args)
 	SetLineWidth(link_lyr+"|", 0)
 	SetLayerVisibility("Route Stops", "False")
 
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
 
 	on notfound default
 	setview("Vehicle Routes")
-
-	//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-	//view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 

@@ -48,8 +48,6 @@ Macro "AutoSkims_Free" (Args)
 //	netname = "RegNet"+yearnet
 	trans_routename = "TranSys"
 
-	ID = "Key"
-
 	// Get the scope of a geographic file
 
 	info = GetDBInfo(Dir + "\\"+netname+".dbd")

@@ -26,7 +26,7 @@ Macro "Transit_RunStats" (Args)
 	RouteOutSumView = ComputeStatistics(RouteOutView + "|", "RouteOutSumView", RouteOutSum, "dBASE", )
 		
 
-	KeyView = JoinViews("KeyView", RouteOutView+".KEY", OpStatsView+".KEY",)
+	KeyView = JoinViews("KeyView", RouteOutView+".Route_ID", OpStatsView+".Route_ID",)
 		
     TrackView = JoinViews("TrackView", IDView+".Track", KeyView+".RouteOutView"+".Track",  
     	{{"A",}, 

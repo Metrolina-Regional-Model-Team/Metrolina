@@ -56,7 +56,6 @@ Macro "Reg_OPBusDrop" (Args)
 
     ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-    ID = "Key"
 
     // Get the scope of a geographic file
 
@@ -90,14 +89,9 @@ opentable("STATION_DATABASE", "DBASE", {Dir + "\\STATION_DATABASE.dbf",})
 nodes_view = joinviews("Nodes+Stations", node_lyr + ".ID", "STATION_DATABASE.ID",)
 
 
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
-
 on notfound default
 setview("Vehicle Routes")
 
-//opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-//view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 
