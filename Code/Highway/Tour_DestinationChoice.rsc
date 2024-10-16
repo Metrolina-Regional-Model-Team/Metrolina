@@ -397,8 +397,11 @@ SetRandomSeed(737)
 				htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
 				//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
 				//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
-				U1 = -0.0862*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				U2 = -0.0862*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
+				//U1 = -0.0862*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
+				//U2 = -0.0862*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
+				U1 = -0.075*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
+				U2 = -0.075*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
+
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
 				fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	
 				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
@@ -744,7 +747,8 @@ SetRandomSeed(991)
 				end
 				htime = GetMatrixVector(autofreeintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak speed matrix
 				//U1 = -0.1635 * htime + log(stucu) + 0.47 * intraco + 0.2 * intrazonal		//calculate probability array (just done for first HH in this TAZ) 
-				U1 = -0.122 * htime + log(stucu) + 1.39 * intraco
+				//U1 = -0.122 * htime + log(stucu) + 1.39 * intraco
+				U1 = -0.15 * htime + log(stucu) + 1.39 * intraco
 				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
 				fac = if (hbuattr > 0) then max((remain[3] / hbuattr), 0.01) else 0	//([3] = HBS)
 				eU1 = if (stucu = 0) then 0 else exp(U1) * fac
