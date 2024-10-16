@@ -225,8 +225,8 @@ SetRandomSeed(454)
 	U2 = -1.5479  + 0.2747 * choice_v - 0.3267 * tourlc2dum - 0.2834 * hbwtours + 1.6968 * hovdum + 0.1398
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ HBW Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -330,8 +330,8 @@ SetRandomSeed(894)
 	U2 = -3.8661 + 0.0380 * htime + 0.5081 * at5dum_origin + 0.5666 * hovdum + 0.1913
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ SCH Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -431,8 +431,8 @@ SetRandomSeed(7844)
 	U2 = -1.0402 + 1.4932 * hovdum - 0.2831 * tours - 1.0455 * at12dum_dest + 0.4461
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				//Initial alternatives are 0, 1 & 2+ HBU Intermediate stops
 	E2U_cum = E2U0 + E2U1+ E2U2
 
 	prob0 = E2U0 / E2U_cum
@@ -551,9 +551,9 @@ SetRandomSeed(9543)
 	U3 = -2.7272 - 0.3747 * choice_v + 0.1019 * htime - 0.3374 * hbstours - .0885 * tours + 0.1666 * tourlc1dum + 0.5523 * hovdum + 0.054
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBS Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -669,9 +669,9 @@ SetRandomSeed(1548)
 	U3 = -4.4799 + 0.9418 * choice_v + 0.0519 * htime - 0.3284 * intraz - 0.0885 * tours - 0.00001 * ret30_orig + 0.1589 * tourlc1dum + 0.5015 * hovdum + 0.0653
 
 	E2U0 = 1
-	E2U1 = exp(U1)				
-	E2U2 = exp(U2)				
-	E2U3 = exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
+	E2U1 = if is_transit then 0 else exp(U1)				
+	E2U2 = if is_transit then 0 else exp(U2)				
+	E2U3 = if is_transit then 0 else exp(U3)				//Initial alternatives are 0, 1, 2, & 3+ HBO Intermediate stops
 	E2U_cum = E2U0 + E2U1 + E2U2 + E2U3
 
 	prob0 = E2U0 / E2U_cum
@@ -776,7 +776,7 @@ SetRandomSeed(40880)
 	U1 = -999
 
 	E2U0 = 1
-	E2U1 = exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
+	E2U1 = if is_transit then 0 else exp(U1)				//Initial alternatives are 0 & 1+ ATW Intermediate stops				
 	E2U_cum = E2U0 + E2U1
 
 	prob0 = E2U0 / E2U_cum

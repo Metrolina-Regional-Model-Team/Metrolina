@@ -25,6 +25,7 @@ Body:
     FlowChartNode(model,"Transit Assignment",,,)
     FlowChartNode(model,"HOT",,,)
     FlowChartNode(model,"Summaries",,,)
+    FlowChartNode(model,"Calibrate MC",,,)
     //
     // Links
     //
@@ -113,8 +114,8 @@ EndMacro
 Macro "Peak Highway Assignment" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Create OD", "Peak Highway Assignment"}},
-        {"Picture", "bmp\\planassigncar_v3.bmp"}
+        {"MacroNames",{"Create OD","Peak Highway Assignment"}},
+    {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro
 
@@ -160,6 +161,14 @@ Macro "Summaries" (Args,Result)
         {"Class", {"GISDK"}},
         {"MacroNames", {"Summaries"}},
         {"Picture", "bmp\\planmatrix_v3.bmp"}
+    }
+EndMacro
+
+
+Macro "Calibrate MC" (Args,Result)
+    Attributes = {
+        {"Class", {"GISDK"}},
+        {"MacroNames", {"Calibrate Tour MCs"}}
     }
 EndMacro
 
