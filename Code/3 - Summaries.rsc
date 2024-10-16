@@ -904,3 +904,16 @@ Macro "Remove Field" (viewName, field_name)
     end
   end
 EndMacro
+
+/*
+Called at the end of the model to clean up hanging progress bars
+*/
+
+Macro "Destroy Progress Bars" (Args)
+  while true do
+    on error, notfound goto stop
+    DestroyProgressBar()
+  end
+  stop:
+  on error default
+endmacro
