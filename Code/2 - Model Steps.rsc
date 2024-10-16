@@ -186,5 +186,6 @@ Macro "Summaries" (Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("Tour_RunStats", Args)
     RunMacro("Other Summaries", Args)
+    RunMacro("Destroy Progress Bars", Args)
     return(1)
 endmacro
