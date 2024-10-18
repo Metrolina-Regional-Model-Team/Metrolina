@@ -111,15 +111,15 @@ knr_prem,DropoffTransitSkim.[Cost - Prem DropOff],Tours.INCOME = 3,-0.000849,Far
 knr_prem,DropoffTransitSkim.[Cost - Prem DropOff],Tours.INCOME = 4,-0.000668,Fare - KNR Premium: Income 4
 knr_prem,Tours.INCOME <= 2,,1.03,Low Income Dummy - KNR Premium
 knr_prem,TAZ.AType.D = 1,,1.73,CBD Destination - KNR Premium
-sov,Constant,,0.199,Additional Calibration Constant
-pool2,Constant,,-0.4303,Additional Calibration Constant
-pool3,Constant,,-0.6541,Additional Calibration Constant
-walk,Constant,,0.6686,Additional Calibration Constant
-bike,Constant,,-1.8372,Additional Calibration Constant
-w_bus,Constant,,-0.7514,Additional Calibration Constant
-w_prem,Constant,,-1.4134,Additional Calibration Constant
-pnr_bus,Constant,,-0.6,Additional Calibration Constant
-pnr_prem,Constant,,-1.7807,Additional Calibration Constant
-knr_bus,Constant,,-1.0624,Additional Calibration Constant
-knr_prem,Constant,,-1.535,Additional Calibration Constant
-tnc,Constant,,-1.2682,Additional Calibration Constant
+sov,Constant,,0.221772,Additional Calibration Constant
+pool2,Constant,,-0.397677,Additional Calibration Constant
+pool3,Constant,,-0.615948,Additional Calibration Constant
+walk,Constant,,-0.11885,Additional Calibration Constant
+bike,Constant,,-2.033377,Additional Calibration Constant
+w_bus,Constant,,-2.130944,Additional Calibration Constant
+w_prem,Constant,,-1.225645,Additional Calibration Constant
+pnr_bus,Constant,,-1.974322,Additional Calibration Constant
+pnr_prem,Constant,,-1.987464,Additional Calibration Constant
+knr_bus,Constant,,-2.500034,Additional Calibration Constant
+knr_prem,Constant,,-1.799326,Additional Calibration Constant
+tnc,Constant,,-1.467162,Additional Calibration Constant

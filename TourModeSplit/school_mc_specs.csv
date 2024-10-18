@@ -16,10 +16,10 @@ w_bus,Constant,,3.23,Walk Bus ASC
 w_bus,WalkTransitSkim.[IVTT - Bus Walk],,-0.00677,IVTT - Walk Bus
 w_bus,WalkTransitSkim.[Initial Wait - Bus Walk],,-0.114,Initial Wait - Walk Bus
 w_bus,Tours.INCOME <= 2,,2.03,Low Income Dummy - Walk Bus
-sov,Constant,,-1.578884,Additional Calibration Constant
-pool2,Constant,,0.111744,Additional Calibration Constant
-pool3,Constant,,0.83771,Additional Calibration Constant
-walk,Constant,,-1.741717,Additional Calibration Constant
-bike,Constant,,-5.879923,Additional Calibration Constant
-w_bus,Constant,,-2.37822,Additional Calibration Constant
-schoolbus,Constant,,0.479926,Additional Calibration Constant
+sov,Constant,,-0.082255,Additional Calibration Constant
+pool2,Constant,,0.133629,Additional Calibration Constant
+pool3,Constant,,0.56129,Additional Calibration Constant
+walk,Constant,,1.320158,Additional Calibration Constant
+bike,Constant,,-1.551309,Additional Calibration Constant
+w_bus,Constant,,0.18455,Additional Calibration Constant
+schoolbus,Constant,,0.578824,Additional Calibration Constant

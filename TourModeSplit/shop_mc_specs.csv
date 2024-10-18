@@ -63,11 +63,11 @@ w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 2,-0.002247,Fare - Walk
 w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 3,-0.001213,Fare - Walk Premium: Income 3
 w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 4,-0.000954,Fare - Walk Premium: Income 4
 w_prem,Tours.INCOME <= 2,,3.02,Low Income Dummy - Walk Premium
-sov,Constant,,0.041455,Additional Calibration Constant
-pool2,Constant,,0.065142,Additional Calibration Constant
-pool3,Constant,,-0.303865,Additional Calibration Constant
-walk,Constant,,0.487249,Additional Calibration Constant
-bike,Constant,,-0.000559,Additional Calibration Constant
-w_bus,Constant,,0.800306,Additional Calibration Constant
-w_prem,Constant,,-0.322659,Additional Calibration Constant
-tnc,Constant,,-1.702933,Additional Calibration Constant
+sov,Constant,,0.055219,Additional Calibration Constant
+pool2,Constant,,0.070576,Additional Calibration Constant
+pool3,Constant,,-0.305219,Additional Calibration Constant
+walk,Constant,,0.413175,Additional Calibration Constant
+bike,Constant,,-0.02647,Additional Calibration Constant
+w_bus,Constant,,-1.078817,Additional Calibration Constant
+w_prem,Constant,,0.499417,Additional Calibration Constant
+tnc,Constant,,-1.931725,Additional Calibration Constant
