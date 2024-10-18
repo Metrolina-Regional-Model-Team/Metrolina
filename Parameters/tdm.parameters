@@ -1,196 +1,337 @@
-
-/**
-    Declare all the parameters used by this model.
-    Parameters are organized by section, page and frame
-    Section = "Group1|Group2|Group3|Page#Frame"
-        Args.ParameterName =
-        {
-            "Caption": caption,
-            "Type": type,
-            "Value": value,
-            "Description": caption,
-            "Style": param_style,
-            "Section": "group|page"
-     }
-**/
-
-    Section = "Files and Folders"
+	Section = "Files and Folders"
+	
         Args.[Base Folder] = {
-                "Type": "Folder",
-                "Value": null
-            }
+            "Type":"Folder",
+            "Value":null
+        }
         Args.[MRM Directory] = {
-                "Type": "Folder",
-                "Value": "%Model Folder%"
-            }
+            "Type":"Folder",
+            "Value":"%Model Folder%"
+        }
         Args.[MET Directory] = {
-                "Type": "Folder",
-                "Value": "%Base Folder%\\Metrolina"
-            }    
+            "Type":"Folder",
+            "Value":"%Base Folder%\\Metrolina"
+        }
         Args.[Run Year] = {
-                "Type": "string",
-                "Value": "2018"
-            }
+            "Type":"string",
+            "Value":"2022"
+        }
         Args.[Run Directory] = {
-                "Type": "Folder",
-                "Value": "%MET Directory%\\%Run Year%"
-            }
+            "Type":"Folder",
+            "Value":"%MET Directory%\\%Run Year%"
+        }
         Args.InputFolder = {
-                "Type": "Folder",
-                "Value": "%Run Directory%Input"
-            }
+            "Type":"Folder",
+            "Value":"%Run Directory%\\Input"
+        }
         Args.[MRM TAZ File] = {
-                "Type": "file",
-                "Value": "%MRM Directory%\\TAZ\\TAZ3578.dbd"
-            }
+            "Type":"file",
+            "Value":"%MRM Directory%\\TAZ\\TAZ3896.dbd"
+        }
         Args.[TAZ File] = {
-                "Type": "file",
-                "Value": "%MET Directory%\\TAZ\\TAZ3578.dbd"
-            }
+            "Type":"file",
+            "Value":"%MET Directory%\\TAZ\\TAZ3896.dbd"
+        }
         Args.[LandUse File] = {
-                "Type": "file",
-                "Value": "%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
-            }
-
-    Section = "Networks"
-
+            "Type":"file",
+            "Value":"%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
+        }
+	
+	Section = "Networks"
+	
         Args.ProjectFile = {
-                "Type": "file",
-                "Value": "%MRM Directory%\\MasterNet\\PROJLIST_2050MTP_MRM22v1.0.dbf"
-            }
+            "Type":"file",
+            "Value":"%MRM Directory%\\MasterNet\\MasterProjects.dbf"
+        }
         Args.MasterHwyFile = {
-                "Type": "file",
-                "Value": "%MRM Directory%\\MasterNet\\Master_2050MTP_MRM22v1.0.dbd"
-            }
+            "Type":"file",
+            "Value":"%MRM Directory%\\MasterNet\\MasterLinks.dbd"
+        }
         Args.TollFile = {
-                "Type": "file",
-                "Value": "%MRM Directory%\\MasterNet\\tolls_2050MTP_MRM22v1.0.bin"
-            }
-
+            "Type":"file",
+            "Value":"%MRM Directory%\\MasterNet\\MasterTolls.bin"
+        }
         Args.[AM Peak Hwy Name] = {
-                "Type": "file",
-                "Value": "%Run Directory%\\RegNet_AMPeak.dbd"
-            }
-
+            "Type":"file",
+            "Value":"%Run Directory%\\RegNet_AMpeak.dbd"
+        }
         Args.[PM Peak Hwy Name] = {
-                "Type": "file",
-                "Value": "%Run Directory%\\RegNet_PMPeak.dbd"
-            }
-
+            "Type":"file",
+            "Value":"%Run Directory%\\RegNet_PMpeak.dbd"
+        }
         Args.[Offpeak Hwy Name] = {
-                "Type": "file",
-                "Value": "%Run Directory%\\RegNet_OffPeak.dbd"
-            }
-    
-    Section = "Numeric Values"
+            "Type":"file",
+            "Value":"%Run Directory%\\RegNet_Offpeak.dbd"
+        }
+	
+	Section = "Mode Split"
+	
+        Args.TourMCFlag = {
+            "Type":"boolean",
+            "Caption":"Run Tour Mode Choice?",
+            "Value":True
+        }
+	
+	Section = "Mode Split#WorkTours"
+	
+        Args.[Work Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\work_mc_specs.csv"
+        }
+        Args.[Work Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\work_mc_nests.csv"
+        }
+	
+	Section = "Mode Split#ShopTours"
+	
+        Args.[Shop Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\shop_mc_specs.csv"
+        }
+        Args.[Shop Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\shop_mc_nests.csv"
+        }
+	
+	Section = "Mode Split#OtherTours"
+	
+        Args.[Other Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\other_mc_specs.csv"
+        }
+        Args.[Other Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\other_mc_nests.csv"
+        }
+	
+	Section = "Mode Split#SchoolTours"
+	
+        Args.[School Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\school_mc_specs.csv"
+        }
+        Args.[School Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\school_mc_nests.csv"
+        }
+	
+	Section = "Mode Split#UniversityTours"
+	
+        Args.[Univ Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\univ_mc_specs.csv"
+        }
+        Args.[Univ Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\univ_mc_nests.csv"
+        }
+	
+	Section = "Mode Split#SubTours"
+	
+        Args.[Sub Tour Mode Spec] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Utility specification file",
+            "Value":"%Run Directory%\\TourModeSplit\\subtour_mc_specs.csv"
+        }
+        Args.[Sub Tour Mode Nests] = {
+            "Type":"file",
+            "Caption":"Work Tour Mode Nest structure file",
+            "Value":"%Run Directory%\\TourModeSplit\\subtour_mc_nests.csv"
+        }
+	
+	Section = "TOD Factors|All Purposes"
+	
+        Args.[PK_PK TOD Factors] = {
+            "Type":"array",
+            "Caption":"TOD Combination Factors for PK-PK tours",
+            "Description":"PK_PK TOD Factors",
+            "Style":"TODCombFactors",
+            "Value":{
+                {"AM_AM",0.079,0.265,0.082,0.396,0.166,0.509},
+                {"AM_PM",0.901,0.714,0.907,0.252,0.195,0.107},
+                {"PM_PM",0.02,0.021,0.011,0.352,0.639,0.384}}
+        }
+        Args.[PK_OP TOD Factors] = {
+            "Type":"array",
+            "Caption":"TOD Combination Factors for PK-OP tours",
+            "Description":"PK_OP TOD Factors",
+            "Style":"TODCombFactors",
+            "Value":{
+                {"AM_MD",0.298,0.768,0.50,0.368,0.397,0.823},
+                {"AM_NT",0.588,0.177,0.26,0.108,0.121,0.011},
+                {"PM_NT",0.114,0.055,0.24,0.524,0.482,0.166}}
+        }
+        Args.[OP_PK TOD Factors] = {
+            "Type":"array",
+            "Caption":"TOD Combination Factors for OP-PK tours",
+            "Description":"OP_PK TOD Factors",
+            "Style":"TODCombFactors",
+            "Value":{
+                {"MD_PM",0.276,0.173,0.588,0.779,0.888,0.987},
+                {"NT_AM",0.065,0.1,0.334,0.08,0.038,0.013},
+                {"NT_PM",0.659,0.727,0.078,0.141,0.074,0.0}}
+        }
+        Args.[OP_OP TOD Factors] = {
+            "Type":"array",
+            "Caption":"TOD Combination Factors for OP-OP tours",
+            "Description":"OP_OP TOD Factors",
+            "Style":"TODCombFactors",
+            "Value":{
+                {"MD_MD",0.089,0.448,0.212,0.552,0.701,0.965},
+                {"MD_NT",0.342,0.053,0.289,0.096,0.078,0.001},
+                {"NT_MD",0.167,0.272,0.042,0.019,0.003,0.001},
+                {"NT_NT",0.402,0.227,0.457,0.333,0.218,0.033}}
+        }
+	
+	Section = "TOD Factors|Commerical and Truck"
+	
+        Args.[Com and Truck TOD Factors] = {
+            "Type":"array",
+            "Caption":"Commerical and Truck TOD factors",
+            "Description":"Com and Truck TOD Factors",
+            "Style":"TODFactors",
+            "Value":{
+                {"AMPeak",0.125,0.25},
+                {"Midday",0.15,0.3},
+                {"PMPeak",0.125,0.25},
+                {"Night",0.1,0.2}}
+        }
 
-        Args.[TimeWeight] = {
-                "Type": "double",
-                "Value": 1,
-                "Description":"Minimum path weight on travel time (minutes)"
-            }
-        Args.[DistWeight] = {
-                "Type": "double",
-                "Value": 0,
-                "Description":"Minimum path weight on distance (miles)"
-            }
-        Args.[MaxTravTimeFactor] = {
-                "Type": "double",
-                "Value": 10,
-                "Description":"Maximum travel time on link expressed as multiple of free speed travel time (Min Speed)"
-            }
+    Section = "TOD Factors|Occupancies"
+        Args.Occupancies = {
+            "Type":"array",
+            "Caption":"Vehicle Occupancies for Pool3",
+            "Description":"Occupancies",
+            "Style":"Occs",
+            "Value":{
+                {"HBW",3.56},
+                {"SCH",3.56},
+                {"HBU",3.36},
+                {"HBS",3.56},
+                {"HBO",3.56},
+                {"ATW",3.66}}
+        }
+	
+	Section = "Numeric Values"
+	
+        Args.TimeWeight = {
+            "Type":"double",
+            "Description":"Minimum path weight on travel time (minutes) when calculating impedance",
+            "Value":1
+        }
+        Args.DistWeight = {
+            "Type":"double",
+            "Description":"Minimum path weight on distance (miles) when calculating impedance",
+            "Value":0
+        }
+        Args.MaxTravTimeFactor = {
+            "Type":"double",
+            "Description":"Maximum travel time on link expressed as multiple of free speed travel time (Min Speed)",
+            "Value":10
+        }
         Args.[Peak Hour Factor] = {
-                "Type": "double",
-                "Value": 0.4,
-                "Description":"Pct of peak hour of the 3 hour peak period - used in calculating V/C in tot_assn"
-            }
+            "Type":"double",
+            "Description":"Pct of peak hour of the 3 hour peak period - used in calculating V/C in tot_assn",
+            "Value":0.4
+        }
         Args.[Feedback Iterations] = {
-                "Type": "int",
-                "Value": 3,
-                "Description":"Number of peak speed feedback iterations"
-            }
+            "Type":"int",
+            "Description":"Number of peak speed feedback iterations",
+            "Value":3
+        }
         Args.[Current Feedback Iter] = {
-                "Type": "int",
-                "Value": 1,
-                "Description":"Current iteration in peak speed feedback"
-            }
+            "Type":"int",
+            "Description":"Current iteration in peak speed feedback",
+            "Value":1
+        }
         Args.[HOTAssn Iterations] = {
-                "Type": "int",
-                "Value": 5,
-                "Description":"Number of iterations for HOT lanes assignment"
-            }
+            "Type":"int",
+            "Description":"Number of iterations for HOT lanes assignment",
+            "Value":5
+        }
         Args.[HwyAssn Max Iter Feedback] = {
-                "Type": "int",
-                "Value": 250,
-                "Description":"TransCad MMA assignment - max. number of iterations for all but final assignment"
-            }
-        Args.[HwyAssn Converge Feedback] = {
-                "Type": "double",
-                "Value": .01,
-                "Description":"TransCad MMA assignment - convergence criteria for all but final assignment"
-            }
+            "Type":"int",
+            "Description":"TransCad MMA assignment - max. number of iterations for all but final assignment",
+            "Value":250
+        }
+        Args.[HwyAssn Converge] = {
+            "Type":"double",
+            "Description":"Relative gap for MMA assignment convergence",
+            "Value":0.0001
+        }
         Args.[HwyAssn Max Iter Final] = {
-                "Type": "int",
-                "Value": 25000,
-                "Description":"TransCad MMA assignment - max. number of iterations for final assignment"
-            }
-        Args.[HwyAssn Converge Final] = {
-                "Type": "double",
-                "Value": .0001,
-                "Description":"TransCad MMA assignment - convergence criteria for final assignment"
-            }
-
-    Section = "Tables"
+            "Type":"int",
+            "Description":"TransCad MMA assignment - max. number of iterations for final assignment",
+            "Value":500
+        }
+	
+	Section = "Tables"
+	
         Args.[Simple Table] = {
-                "Type": "array",
-                "Style": "SimpleTable",
-                "Value": null
-            }
-    Section = "Numbers"
+            "Type":"array",
+            "Style":"SimpleTable",
+            "Value":null
+        }
+	
+	Section = "Numbers"
+	
         Args.[Int  Interval] = {
-                "Type":"array",
-                "Style": "IntRange",
-                "Value": null
-            }
+            "Type":"array",
+            "Style":"IntRange",
+            "Value":null
+        }
         Args.[Real Interval] = {
-                "Type": "array",
-                "Style": "RealRange",
-                "Value": null
-            }
+            "Type":"array",
+            "Style":"RealRange",
+            "Value":null
+        }
         Args.[Int  Value] = {
-                "Type": "int",
-                "Style": "IntSlider",
-                "Value": null
-            }
+            "Type":"int",
+            "Style":"IntSlider",
+            "Value":null
+        }
         Args.[Real Value] = {
-                "Type": "double",
-                "Style": "RealSlider",
-                "Value": null
-            }
-
-    Section = "Choices"
+            "Type":"double",
+            "Style":"RealSlider",
+            "Value":null
+        }
+	
+	Section = "Choices"
+	
         Args.[Radio Value] = {
-                "Type": "string",
-                "Style": "RadioList",
-                "Value": null
-            }
+            "Type":"string",
+            "Style":"RadioList",
+            "Value":null
+        }
         Args.[Checkbox Value] = {
-                "Type": "array",
-                "Style": "CheckBoxes",
-                "Value": null
-            }
+            "Type":"array",
+            "Style":"CheckBoxes",
+            "Value":null
+        }
         Args.[Droplist Value] = {
-                "Type": "string",
-                "Style": "DropList",
-                "Value": null
-            }
+            "Type":"string",
+            "Style":"DropList",
+            "Value":null
+        }
         Args.[Combobox Value] = {
-                "Type": "string",
-                "Style": "ComboBox",
-                "Value": null
-            }
-    
-    Section = "Runtime Parameters"
+            "Type":"string",
+            "Style":"ComboBox",
+            "Value":null
+        }
+	
+	Section = "Runtime Parameters"
+	
         Args.[Disable Steps] = {
             "Type":"array",
             "Description":"List of disabled step names for each scenario",

@@ -2,7 +2,7 @@ Macro "Tour_RunStats" (Args)
 
 //Creates the "ProductionsByCo" and "AttractionsByCo" files (.bin)
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

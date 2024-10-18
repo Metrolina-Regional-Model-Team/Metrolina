@@ -1,0 +1,66 @@
+Alternative,Expression,Filter,Coefficient,Description
+sov,Constant,,2.17,SOV ASC
+sov,AutoSkim.[Non HOV TermTT],,-0.0134,Auto Skim with terminal time
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 1,-0.002,Parking Cost: Income 1
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 2,-0.001,Parking Cost: Income 2
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 3,-0.000542,Parking Cost: Income 3
+sov,AutoSkim.[Non HOV Park Cost]/2,Tours.INCOME = 4,-0.000426,Parking Cost: Income 4
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 1,-0.02,Auto Operating Cost: Income 1
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 2,-0.01,Auto Operating Cost: Income 2
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 3,-0.00542,Auto Operating Cost: Income 3
+sov,nz(AutoSkim.[Non HOV Length]),Tours.INCOME = 4,-0.00426,Auto Operating Cost: Income 4
+pool2,Constant,,1.64,Pool2 ASC
+pool2,AutoSkim.[HOV TermTT],,-0.0134,Auto Skim with terminal time
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 1,-0.002,Parking Cost: Income 1
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 2,-0.001,Parking Cost: Income 2
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 3,-0.000542,Parking Cost: Income 3
+pool2,AutoSkim.[HOV Park Cost]/4,Tours.INCOME = 4,-0.000426,Parking Cost: Income 4
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 1,-0.02,Auto Operating Cost: Income 1
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 2,-0.01,Auto Operating Cost: Income 2
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 3,-0.00542,Auto Operating Cost: Income 3
+pool2,nz(AutoSkim.[HOV Length])/2,Tours.INCOME = 4,-0.00426,Auto Operating Cost: Income 4
+pool3,Constant,,1.35,Pool3 ASC
+pool3,AutoSkim.[HOV TermTT],,-0.0134,Auto Skim with terminal time
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 1,-0.002,Parking Cost: Income 1
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 2,-0.001,Parking Cost: Income 2
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 3,-0.000542,Parking Cost: Income 3
+pool3,AutoSkim.[HOV Park Cost]/(2*<occ3>),Tours.INCOME = 4,-0.000426,Parking Cost: Income 4
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 1,-0.02,Auto Operating Cost: Income 1
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 2,-0.01,Auto Operating Cost: Income 2
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 3,-0.00542,Auto Operating Cost: Income 3
+pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 4,-0.00426,Auto Operating Cost: Income 4
+walk,Constant,,1.08,Walk ASC
+walk,NMSkim.[TTWalk*],,-0.0134,Walk Time
+w_bus,Constant,,0.818,Walk Bus ASC
+w_bus,WalkTransitSkim.[IVTT - Bus Walk],,-0.0134,IVTT - Walk Bus
+w_bus,WalkTransitSkim.[Access Walk Time - Bus Walk],,-0.0335,Access Walk Time - Walk Bus
+w_bus,WalkTransitSkim.[Transfer Walk Time - Bus Walk],,-0.0335,Transfer Walk Time - Walk Bus
+w_bus,WalkTransitSkim.[Egress Walk Time - Bus Walk],,-0.0335,Egress Walk Time - Walk Bus
+w_bus,WalkTransitSkim.[Initial Wait - Bus Walk],,-0.0201,Initial Wait - Walk Bus
+w_bus,WalkTransitSkim.[Transfer Wait Time - Bus Walk],,-0.0268,Transfer Wait - Walk Bus
+w_bus,WalkTransitSkim.[Transfer Penalty Time - Bus Walk],,-0.0134,Transfer Penalty - Walk Bus
+w_bus,WalkTransitSkim.[Cost - Bus Walk],Tours.INCOME = 1,-0.002,Fare - Walk Bus: Income 1
+w_bus,WalkTransitSkim.[Cost - Bus Walk],Tours.INCOME = 2,-0.001,Fare - Walk Bus: Income 2
+w_bus,WalkTransitSkim.[Cost - Bus Walk],Tours.INCOME = 3,-0.000542,Fare - Walk Bus: Income 3
+w_bus,WalkTransitSkim.[Cost - Bus Walk],Tours.INCOME = 4,-0.000426,Fare - Walk Bus: Income 4
+w_bus,Tours.INCOME <= 2,,1.92,Low Income Dummy - Walk Bus
+w_bus,TAZ.AType.D = 1,,1.86,CBD Destination - Walk Bus
+w_prem,WalkTransitSkim.[IVTT - Prem Walk] - 0.3*WalkTransitSkim.[Prem IVTT],,-0.0134,Discounted IVTT - Walk Premium
+w_prem,WalkTransitSkim.[Access Walk Time - Prem Walk],,-0.0335,Access Walk Time - Walk Premium
+w_prem,WalkTransitSkim.[Transfer Walk Time - Prem Walk],,-0.0335,Transfer Walk Time - Walk Premium
+w_prem,WalkTransitSkim.[Egress Walk Time - Prem Walk],,-0.0335,Egress Walk Time - Walk Premium
+w_prem,WalkTransitSkim.[Initial Wait - Prem Walk],,-0.0201,Initial Wait - Walk Premium
+w_prem,WalkTransitSkim.[Transfer Wait Time - Prem Walk],,-0.0268,Transfer Wait - Walk Premium
+w_prem,WalkTransitSkim.[Transfer Penalty Time - Prem Walk],,-0.0134,Transfer Penalty - Walk Premium
+w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 1,-0.002,Fare - Walk Premium: Income 1
+w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 2,-0.001,Fare - Walk Premium: Income 2
+w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 3,-0.000542,Fare - Walk Premium: Income 3
+w_prem,WalkTransitSkim.[Cost - Prem Walk],Tours.INCOME = 4,-0.000426,Fare - Walk Premium: Income 4
+w_prem,Tours.INCOME <= 2,,1.92,Low Income Dummy - Walk Premium
+w_prem,TAZ.AType.D = 1,,1.86,CBD Destination - Walk Premium
+sov,Constant,,0.07561,Additional Calibration Constant
+pool2,Constant,,-0.985689,Additional Calibration Constant
+pool3,Constant,,-0.270178,Additional Calibration Constant
+walk,Constant,,1.000818,Additional Calibration Constant
+w_bus,Constant,,-0.35958,Additional Calibration Constant
+w_prem,Constant,,1.993742,Additional Calibration Constant

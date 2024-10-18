@@ -100,7 +100,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	enditem	 
 
 	Button "bufbasemapnewmap" 44, same, 10 Prompt: " new map " Help: "Create a new base highway map to create buffers" do
-		on error, escape, notfound goto badnewbufbasemap
+		// on error, escape, notfound goto badnewbufbasemap
 		BufBaseMapFile = ChooseFile({{"Standard","*.dbd"}}, "Create a new base highway map to create buffers",	
 				{{"Initial Directory", WorkingFolder}})
 
@@ -162,7 +162,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 
 	Button "bufbasemapaddtomap" 56, same, 10 Prompt: " add to map " Help: "Add a base highway DBD to existing map " do
 		message = null
-		on error, escape, notfound goto badaddbufbasemap
+		// on error, escape, notfound goto badaddbufbasemap
 
 		BufBaseMapFile = ChooseFile({{"Standard","*.dbd"}}, "Select DBD to add to map",	
 				{{"Initial Directory", WorkingFolder}})
@@ -248,7 +248,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	Text 22, after, 32 Variable: WorkingFolder Prompt: "Folder for buffer files" Framed
 	
 	Button "changeworkingfolder" 68, same, 16 Prompt: "change folder" Help: "Folder where buffer files will be written" do
-		on error, notfound, escape goto badchangefolder
+		// on error, notfound, escape goto badchangefolder
 		WorkingFolder = ChooseDirectory("Folder for buffer files   ",{{"Initial Directory", WorkingFolder}})	
 		if WorkingFolder = null
 			then do
@@ -332,7 +332,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 
 	Button "getprojdbffile" 56, same, 10 Prompt: "open file" Help: "Open projects dbf file" do
 		message = null
-		on error, escape, notfound goto badprojdbffile
+		// on error, escape, notfound goto badprojdbffile
 		ProjDBFFile = ChooseFile({{"DBase files","*.dbf"}},"Projects dbf file",	
 				{{"Initial Directory", WorkingFolder}})
 
@@ -543,7 +543,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 
 	Button " Create Buffer " 68, same, 16 do
 		message = null
-		on error, escape, notfound goto badcreatebuffer
+		// on error, escape, notfound goto badcreatebuffer
 
 		// empty buffer
 		if MapBufSelectSet = null
@@ -606,7 +606,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	Text 2, after, 50 Variable: BufferView Framed 
 
 	Button "bufferaddtomap" 56, same, 10 Prompt: " add to map " Help: "Add buffer DBD to base map " do
-		on error, notfound, escape goto badaddbuffer
+		// on error, notfound, escape goto badaddbuffer
 		message = null
 		// No map selected to add DBD
 		BufferDBFile = ChooseFile({{"Standard","*.dbd"}}, "Choose buffer file to add to map",	
@@ -702,7 +702,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	enditem	 
 
 	Button "nobldaddtomap" 56, same, 10 Prompt: " add to map " Help: "Add no build highway DBD to base map " do
-		on error, notfound, escape goto badaddnobld
+		// on error, notfound, escape goto badaddnobld
 		message = null
 		// No map selected to add DBD
 		NoBldMapFile = ChooseFile({{"Standard","*.dbd"}}, "Select DBD to add to map",	
@@ -788,7 +788,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	Text "nbtotassn" 2, after, 52 variable: NBTotAssnFile Help: "NO BUILD HOT highway assn tot_assn.bin" Framed
 
 	Button "getnbtotassn" 56, same, 10 Prompt: "open file" Help: "Select NO BUILD HOT highway assignment tot_assn file" do
-		on error, escape, notfound goto badnbtotassn
+		// on error, escape, notfound goto badnbtotassn
 		NBTotAssnFile = ChooseFile({{"Fixed format binary (.bin)","*.bin"}},
 								 "Select NO BUILD HOT highway assignment tot_assn file",	
 								 {{"Initial Directory", WorkingFolder}})
@@ -836,7 +836,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	enditem	 
 
 	Button "buildaddtomap" 56, same, 10 Prompt: " add to map " Help: "Add Build highway DBD to base map " do
-		on error, notfound, escape goto badaddbuild
+		// on error, notfound, escape goto badaddbuild
 		message = null
 		// No map selected to add DBD
 		BuildMapFile = ChooseFile({{"Standard","*.dbd"}}, "Select DBD to add to map",	
@@ -922,7 +922,7 @@ dbox "BufferStats" Toolbox Title: "Buffer Stats - VMT-VHT Statistics for a Proje
 	Text "butotassn" 2, after, 52 variable: BUTotAssnFile Help: "BUILD HOT highway assn tot_assn.bin" Framed
 
 	Button "getbutotassn" 56, same, 10 Prompt: "open file" Help: "Select BUILD HOT highway assignment tot_assn file" do
-		on error, escape, notfound goto badbutotassn
+		// on error, escape, notfound goto badbutotassn
 		BUTotAssnFile = ChooseFile({{"Fixed format binary (.bin)","*.bin"}},
 								 "Select BUILD HOT highway assignment tot_assn file",	
 								 {{"Initial Directory", WorkingFolder}})

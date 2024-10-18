@@ -1,21 +1,6 @@
 1 - Create Tour Directory.rsc
 2 - Model Steps.rsc
-
-RunSetUp\\TCMenu
-RunSetUp\\MasterDBox_laptop
-RunSetUp\\InitializeArgs
-RunSetUp\\showargs
-RunSetUp\\ChooseAB
-RunSetUp\\ChooseABC
-RunSetUp\\AssnonExistingTripTables_laptop
-
-RunSetUp\\GetFieldCore	
-RunSetUp\\Matrix_template
-RunSetUp\\RunJob
-RunSetUp\\RunJob_Tour
-RunSetUp\\Select_PartialRun
-RunSetUp\\Select_PartialRun_Tour_laptop
-RunSetUp\\DidItRun
+3 - Summaries.rsc
 
 Highway\\Build_Networks
 Highway\\Fill_prj_year
@@ -42,16 +27,9 @@ Highway\\Tour_IS_Location
 Highway\\Tour_TruckTGTD
 Highway\\Tour_ToD1
 Highway\\Tour_TripAccumulator
-Highway\\Tour_TOD2_AMPeak
-Highway\\Tour_TOD2_PMPeak
-Highway\\Tour_TOD2_Midday
-Highway\\Tour_TOD2_Night
-Highway\\Tour_DC_FB
-Highway\\Tour_IS_FB
-Highway\\Tour_IS_Location_FB
-Highway\\Tour_ToD1_FB
-Highway\\Tour_TripAccumulator_FB
-
+Highway\\Tour_ModeSplit
+Highway\CalibrateMC.rsc
+Highway\Create_Highway_OD.rsc
 Highway\\TDHBW1
 Highway\\TDHBW2
 Highway\\TDHBW3
@@ -178,3 +156,5 @@ Utilities\\AvgTripLenTrips_tour
 Utilities\\Tour_RunStats
 Utilities\\HighwayCalibrationStats
 Utilities\\HighwayCalibrationStats_tour_AHG
+
+MRMFunctions\\DBFieldCheck

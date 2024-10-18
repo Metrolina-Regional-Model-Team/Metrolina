@@ -13,7 +13,7 @@ CreateProgressBar("Build Highway Network", "False")
 
 on escape do
 	DestroyProgressBar()
-	DisableProgressBar()
+	//DisableProgressBar()
 	Return()
 end
 
@@ -381,12 +381,12 @@ badtimeperiod:
 
 badquit:
 	DestroyProgressBar()
-	DisableProgressBar()
+	//DisableProgressBar()
 	return()
 
 quit:
 	DestroyProgressBar()
-	DisableProgressBar()
+	//DisableProgressBar()
 //	showmessage("hwy name = " + netview)	
 //	on error, notfound goto quit2
 	DeleteDataBase(Dir + "\\Netxx.dbd")

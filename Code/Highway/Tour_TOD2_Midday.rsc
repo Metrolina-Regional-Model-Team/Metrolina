@@ -1,10 +1,11 @@
+/*
 Macro "Tour_TOD2_Midday" (Args)
  
 //PA-AP fractions updated 10/2/13; 3+ occupancy rates derived from 2012 HHTS
 
 // 1/16/18, mk: this version uses the Trip model for commercial vehicles (rewritten in GISDK in the Truck_Trip_for_Tour.rsc macro).  The outputs are identical to the trip model for CVs.
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)
@@ -246,3 +247,4 @@ Macro "Tour_TOD2_Midday" (Args)
     RunMacro("G30 File Close All")
 
 endmacro
+*/

@@ -1,0 +1,185 @@
+---
+title: "tour_is_freq"
+output: html_document
+date: "2024-06-11"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(dplyr.summarise.inform = FALSE)
+options(scipen = 999)
+
+library(tidyverse)
+library(knitr)
+library(scales)
+library(kableExtra)
+library(readxl)
+```
+
+```{r}
+hh <- read_csv("data/_private/hh_survey/output/output_households.csv")
+per <- read_csv("data/_private/hh_survey/output/output_persons.csv")
+tours <- read_csv("data/_private/hh_survey/output/output_tours.csv")
+# se <- read_csv("data/input/se_data/SE_2018.csv")
+ret30_orig <- read_csv("data/input/ret30_orig.csv")
+ret30_dest <- read_csv("data/input/ret30_dest.csv")
+
+```
+
+# Create estimation dataset
+
+```{r}
+# Household data is created using the same code from the tour freq
+# rmd.
+
+retired <- per %>%
+  mutate(
+    retired = ifelse(employment == "Retired", 1, 0)
+  ) %>%
+  group_by(hh_id) %>%
+  summarize(retired = max(retired, na.rm = TRUE))
+
+# bottom 10% income: $20k
+# 25%: $30k (closest breakpoint in the survey)
+# 50%: $40k
+
+hh_data <- hh %>%
+  left_join(retired, by = "hh_id") %>%
+  mutate(
+    life_cycle = case_when(
+      retired == 1 ~ 1,
+      num_kids != "0 children" ~ 2,
+      TRUE ~ 3
+    ),
+    income = case_when(
+      income_broad == "Under $20,000" ~ 1,
+      income_detailed %in% c("$20,000-$29,999", "$30,000-$39,999") ~ 2,
+      income_detailed %in% c("$40,000-$49,999", "$50,000-$74,999") ~ 3,
+      TRUE ~ 4
+    ),
+    size = gsub("(?:\\sperson|\\speople)", "", num_people),
+    size = as.numeric(size),
+    size = ifelse(size > 5, 5, size),
+    workers = gsub("(?:\\sworker|\\sworkers)", "", num_workers),
+    workers = as.numeric(workers),
+    workers = ifelse(workers > 3, 3, workers)
+  ) %>%
+  select(hh_id2, hh_id, HomeTAZ, size, workers, life_cycle, income, contains("_tours")) %>%
+  filter(!is.na(HomeTAZ)) %>%
+  # cap tour counts to match model structure
+  mutate(
+    school_tours_orig = school_tours,
+    univ_tours_orig = univ_tours,
+    work_tours_orig = work_tours,
+    shop_tours_orig = shop_tours,
+    other_tours_orig = other_tours,
+    school_tours = ifelse(school_tours > 2, 2, school_tours),
+    univ_tours = ifelse(univ_tours > 1, 1, univ_tours),
+    work_tours = ifelse(work_tours > 2, 2, work_tours),
+    shop_tours = ifelse(shop_tours > 2, 2, shop_tours),
+    other_tours = ifelse(other_tours > 4, 4, other_tours)
+  )
+```
+
+```{r}
+# The choice is how many intermediate stops per tour, so each row
+# should be a tour.
+
+est_tbl <- tours %>%
+  mutate(total_is = int_stop_fwd + int_stop_ret) %>%
+  left_join(hh_data %>% select(-hh_id), by = "hh_id2") %>%
+  filter(!is.na(HomeTAZ)) %>%
+  left_join(ret30_orig, by = c("HomeTAZ" = "TAZ")) %>%
+  left_join(ret30_dest, by = c("anchor_taz" = "TAZ")) %>%
+  mutate(
+    int_stop_fwd_cap = case_when(
+      tour_type %in% c("shop", "other") & int_stop_fwd > 3 ~ 3,
+      int_stop_fwd > 2 ~ 2,
+      TRUE ~ int_stop_fwd
+    ),
+    int_stop_ret_cap = case_when(
+      tour_type %in% c("shop", "other") & int_stop_ret > 3 ~ 3,
+      int_stop_ret > 2 ~ 2,
+      TRUE ~ int_stop_ret
+    )
+  ) %>%
+  relocate(int_stop_fwd_cap, .after = int_stop_fwd) %>%
+  relocate(int_stop_ret_cap, .after = int_stop_ret)
+```
+
+```{r}
+# Calculate the percentage distribution of IS above the cap of 2
+cap3 <- c("shop", "other")
+
+fwd_pcts <- est_tbl %>%
+  filter((tour_type %in% cap3 & int_stop_fwd >= 3) | (!(tour_type %in% cap3) & int_stop_fwd >= 2)) %>%
+  mutate(int_stop_fwd = case_when(
+    tour_type == "other" & int_stop_fwd > 7 ~ 7,
+    tour_type == "shop" & int_stop_fwd > 6 ~ 6,
+    int_stop_fwd > 5 ~ 5,
+    TRUE ~ int_stop_fwd
+  )) %>%
+  group_by(tour_type, int_stop_fwd) %>%
+  summarize(count = n()) %>%
+  mutate(
+    pct = round(count / sum(count) * 100, 0),
+    cumesum = cumsum(pct)
+  )
+  
+ret_pcts <- est_tbl %>%
+  filter((tour_type %in% cap3 & int_stop_ret >= 3) | (!(tour_type %in% cap3) & int_stop_ret >= 2)) %>%
+  mutate(int_stop_ret = case_when(
+    tour_type == "other" & int_stop_ret > 7 ~ 7,
+    tour_type == "shop" & int_stop_ret > 6 ~ 6,
+    int_stop_ret > 5 ~ 5,
+    TRUE ~ int_stop_ret
+  )) %>%
+  group_by(tour_type, int_stop_ret) %>%
+  summarize(count = n()) %>%
+  mutate(
+    pct = round(count / sum(count) * 100, 0),
+    cumesum = cumsum(pct)
+  )
+```
+
+# Calibration
+
+```{r}
+# model data
+tbl <- read_excel("data/input/intermediate_stops/model_results.xlsx")
+
+model <- tbl %>%
+  mutate(
+    stops = case_when(
+      tour_type %in% c("shop", "other") & stops > 3 ~ 3,
+      stops > 2 ~ 2,
+      TRUE ~ stops
+    )
+  ) %>%
+  group_by(tour_type, PA_AP, stops) %>%
+  summarize(tour_count = sum(tour_count, na.rm = TRUE)) %>%
+  mutate(model_pct = tour_count / sum(tour_count, na.rm = TRUE)) %>%
+  select(-tour_count)
+
+# survey data
+survey <- est_tbl %>%
+  select(tour_type, PA = int_stop_fwd_cap, AP = int_stop_ret_cap, hh_id) %>%
+  left_join(hh %>% select(hh_id, hh_weight), by = "hh_id") %>%
+  select(-hh_id) %>%
+  pivot_longer(cols = PA:AP, names_to = "PA_AP", values_to = "stops") %>%
+  group_by(tour_type, PA_AP, stops) %>%
+  summarize(tour_count = sum(hh_weight, na.rm = TRUE)) %>%
+  mutate(survey_pct = tour_count / sum(tour_count, na.rm = TRUE)) %>%
+  select(-tour_count)
+
+calib_tbl <- survey %>%
+  left_join(model, by = c("tour_type", "PA_AP", "stops")) %>%
+  mutate(factor = log(survey_pct / model_pct))
+```
+
+
+```{r, eval=FALSE}
+write_csv(est_tbl, "data/_private/hh_survey/output/tour_is_freq_est.csv", na = "")
+```

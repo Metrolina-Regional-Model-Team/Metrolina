@@ -43,8 +43,8 @@ Macro "Skimming" (Args)
 endmacro
 
 Macro "Trip Generation" (Args)
-    
-    if Args.[Current Feedback Iter] > 1 then return(1)
+    if Args.[Current Feedback Iter] > 1 then 
+        return(1)
     
     RunMacro("ExtStaforTripGen", Args)
     RunMacro("HHMET", Args)
@@ -55,22 +55,16 @@ Macro "Trip Generation" (Args)
 endmacro
 
 Macro "Trip Distribution" (Args)
-
-    first_iter = if Args.[Current Feedback Iter] = 1
-        then "true"
-        else "false"
-
     RunMacro("TD_TranPath_Peak", Args)
     RunMacro("TD_TranPath_Free", Args)
-    if first_iter then do
+    RunMacro("Tour_DestinationChoice", Args)
+    
+    /*
+    if Args.[Current Feedback Iter] = 1 then
         RunMacro("Tour_DestinationChoice", Args)
-        RunMacro("Tour_IS", Args)
-        RunMacro("Tour_IS_Location", Args)
-    end else do
-        RunMacro("Tour_DC_FB", Args)
-        RunMacro("Tour_IS_FB", Args)
-        RunMacro("Tour_IS_Location_FB", Args)
-    end
+    else
+        RunMacro("Tour_DC_FB", Args)*/
+    
     return(1)
 endmacro
 
@@ -80,27 +74,56 @@ Macro "Trucks" (Args)
 endmacro
 
 Macro "Mode Split" (Args)
-
-    first_iter = if Args.[Current Feedback Iter] = 1
-        then "true"
-        else "false"
-
-    if first_iter then do
+    /*if Args.[Current Feedback Iter] then
         RunMacro("Tour_ToD1", Args)
-        RunMacro("Tour_TripAccumulator", Args)
-    end else do
-        RunMacro("Tour_ToD1_FB", Args)
-        RunMacro("Tour_TripAccumulator_FB", Args)
-    end
-    RunMacro("MS_RunPeak", Args)
-    RunMacro("Tour_TOD2_AMPeak", Args)
+    else
+        RunMacro("Tour_ToD1_FB", Args)*/
+    
+    RunMacro("Tour_ToD1", Args)
+    RunMacro("Tour Mode Split", Args)
+
     return(1)
 endmacro
+
+Macro "Intermediate Stops"(Args)
+    /*if Args.[Current Feedback Iter] = 1 then do
+        RunMacro("Tour_IS", Args)
+        RunMacro("Tour_IS_Location", Args)
+    end
+    else do
+        RunMacro("Tour_IS_FB", Args)
+        RunMacro("Tour_IS_Location_FB", Args)
+    end*/
+
+    RunMacro("Tour_IS", Args)
+    RunMacro("Tour_IS_Location", Args)
+
+    return(1)
+endmacro
+
+
+Macro "Create OD"(Args)
+    // Assign forward and return TOD (AM, MD, PM, NT) to each tour
+    RunMacro("Tour TOD Combinations", Args)
+
+    // Create purpose specific trip file and purpose specific TOD (AM, MD, PM, NT) matrices
+    RunMacro("Create Trips", Args)
+
+    // Create IX/XI matrices by time period directly from dc tour file(s)
+    RunMacro("Create IE EI OD", Args)
+
+    // Combine all purposes, IE/EI, Truck and Commercial data to create OD for AMPeak time period
+    RunMacro("Create Highway OD", Args, "AM")
+
+    return(1)
+endMacro
+
 
 Macro "Peak Highway Assignment" (Args)
     RunMacro("HwyAssn_RunAMPeak", Args)    
     return(1)
 endmacro
+
 
 Macro "Convergence" (Args)
     curiter = Args.[Current Feedback Iter]
@@ -113,17 +136,19 @@ Macro "Convergence" (Args)
     return(converged + 1)
 endmacro
 
+
 Macro "Post Feedback" (Args)
-    RunMacro("MS_RunOffPeak", Args)
-    RunMacro("MSMatrixStats", Args)
-    RunMacro("Tour_TOD2_PMPeak", Args)
-    RunMacro("Tour_TOD2_Midday", Args)
-    RunMacro("Tour_TOD2_Night", Args)
+    RunMacro("Create Highway OD", Args, "PM")
     RunMacro("HwyAssn_RunPMPeak", Args)
+    
+    RunMacro("Create Highway OD", Args, "MD")
     RunMacro("HwyAssn_RunMidday", Args)
+
+    RunMacro("Create Highway OD", Args, "NT")
     RunMacro("HwyAssn_RunNight", Args)
     return(1)
 endmacro
+
 
 Macro "Transit Assignment" (Args)
     RunMacro("Transit_Input", Args)
@@ -160,5 +185,7 @@ Macro "Summaries" (Args)
     RunMacro("VMTAQ", Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("Tour_RunStats", Args)
+    RunMacro("Other Summaries", Args)
+    RunMacro("Destroy Progress Bars", Args)
     return(1)
 endmacro

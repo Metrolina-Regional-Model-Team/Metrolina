@@ -2,7 +2,7 @@ Macro "Tour_TripAccumulator" (Args)
 
 // 1/17, mk: changed from .dbf to .bin
 
-	on error goto badquit
+	// on error goto badquit
 	// LogFile = Args.[Log File].value
 	// ReportFile = Args.[Report File].value
 	// SetLogFileName(LogFile)

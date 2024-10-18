@@ -5,6 +5,8 @@
 // Create tour directory
 Macro "Create Tour Dir" (Args)
     
+    pbar = CreateObject("G30 Progress Bar", "Creating Directory", True, )
+
     run_dir = Args.[Run Directory]
     mrm_dir = Args.[MRM Directory]
     year = Args.[Run Year]
@@ -157,8 +159,8 @@ Macro "CreateDir" (Args)
             "UPD_DA_Dist_Time_Costv1.exe","UPD_DA_Dist_Time_Costv2.exe"}},
 
         {"\\Pgm\\CapspdFactors", 
-            {"capspd_factors.prn", "capspd_nodeerrors.asc", "capspd_nodeerrors.dct", "guideway20.prn"}},
-
+            {"capspd_guideway.asc", "capspd_guideway.dct", "CapSpd_lookup.csv", "CapSpd_lookup.dcc"}},
+            // {"capspd_factors.prn", "capspd_nodeerrors.asc", "capspd_nodeerrors.dct", "guideway20.prn", "CapSpd_lookup.csv","capspd_guideway.asc"}},
         // {"\\Pgm\\FrictionFactors\\Trip",  
         //     {"ffhbw1.prn", "ffhbw2.prn", "ffhbw3.prn", "ffhbw4.prn", 
         //     "ffhbo1.prn", "ffhbo2.prn", "ffhbo3.prn", "ffhbo4.prn",
@@ -178,7 +180,7 @@ Macro "CreateDir" (Args)
         {"\\ExtSta", 
             {"thrubase_auto.asc", "thrubase_auto.dct", "thrubase_com.asc", "thrubase_com.dct",
             "thrubase_mtk.asc",  "thrubase_mtk.dct",  "thrubase_htk.asc", "thrubase_htk.dct",
-            "bvthru.asc", "bvthru.dct", "extstavol18_base.asc", "extstavol18_base.dct"}},
+            "bvthru.asc", "bvthru.dct", "extstavol.asc", "extstavol.dct"}},
 
         {"",
             {"ATFUN_ID.dbf", "COATFUN_ID.dbf", "County_ATFun.bin","County_ATFun.dcb","County_ATFunID.bin", 
@@ -221,8 +223,8 @@ Macro "CreateDir" (Args)
             MRMdatestamp = null
             METdatestamp = null
             MRMInfo = GetFileInfo(MRMUser + MRMSubDir + "\\" + METFiles[i][2][j])
-            if MRMInfo = null then Throw("CreateDir Warning! MRM! " + MRMUser + MRMSubSir + "\\" +  METFiles[i][2][j] + " not found")
-                // then Message = Message + {"CreateDir Warning! MRM! " + MRMUser + MRMSubSir + "\\" +  METFiles[i][2][j] + " not found"}
+            if MRMInfo = null then Throw("CreateDir Warning! MRM! " + MRMUser + MRMSubDir + "\\" +  METFiles[i][2][j] + " not found")
+                // then Message = Message + {"CreateDir Warning! MRM! " + MRMUser + MRMSubDir + "\\" +  METFiles[i][2][j] + " not found"}
             MRMdatestamp = MRMInfo[7] + " " + MRMInfo[8]
 
             if GetDirectoryInfo(METUser + METSubDir, "All") = null then CreateDirectory(METUser + METSubDir)
@@ -291,6 +293,7 @@ Macro "CreateDir" (Args)
 
     RunDirSubDir = 
         {"\\AutoSkims", "\\Ext", "\\HwyAssn", "\\LandUse", "\\ModeSplit", "\\Report", "\\Skims", "\\TD", "\\TG", "\\TOD2",
+            "\\TourModeSplit",
             "\\TranAssn", "\\TripTables", "\\HwyAssn\\HOT",
             "\\TranAssn\\PPrmW", "\\TranAssn\\PPrmD", "\\TranAssn\\PPrmDrop", "\\TranAssn\\OPPrmW", "\\TranAssn\\OPPrmD",
             "\\TranAssn\\OPPrmDrop", "\\TranAssn\\PBusW", "\\TranAssn\\PBusD", "\\TranAssn\\PBusDrop", "\\TranAssn\\OPBusW", 
@@ -307,15 +310,26 @@ Macro "CreateDir" (Args)
     if (exist <> null) then DeleteFile(batchname)
     batchhandle = OpenFile(batchname, "w")
 
+    // Copy route system
+    MRMpath = MRMUser + "\\" + YearUser + "\\"
+    dm = CreateObject("DataManager")
+    dm.AddDataSource("rts", {FileName: MRMpath + "transys.rts", DataType: "RS"})
+    route_file = DirUser + "\\" + "transys.rts"
+    dm.CopyRouteSystem("rts", {TargetRS: route_file})
+    net_file = Args.[Offpeak Hwy Name]
+    {, , netname, } = SplitPath(net_file)
+    ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
+
     // need to add year onto extsta vol files	
-    
+
     YearTwo = Right(YearUser,2)
     rundir_files = 
-        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf", 
-            "transys.rtg", "transys.rts","transysc.bin", "transysc.BX", "transysc.DCB", "transysL.bin",
-            "transysL.BX", "transysL.DCB", "transysR.bin", "transysR.BX", "transysR.DCB", "transysS.bin",
-            "transysS.BX", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
-            "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"}
+        {"station_database.dbf", "transit_corridor_id.dbf", "routes.dbf", "Track_ID.dbf"
+            // "transys.rtg", "transys.rts","transysc.bin", "transysc.BX", "transysc.DCB", "transysL.bin",
+            // "transysL.BX", "transysL.DCB", "transysR.bin", "transysR.BX", "transysR.DCB", "transysS.bin",
+            // "transysS.BX", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
+            // "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"
+            }
     rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}   
 
     //Standard runyear files
@@ -362,6 +376,19 @@ Macro "CreateDir" (Args)
                 // DirSignalStatus = 2
             end
     end // for i
+
+    // TourModeSplit
+    MRMpath = MRMUser + "\\TourModeSplit\\"
+    MRMInfo = GetDirectoryInfo(MRMpath + "*.*", "File")
+    if MRMInfo <> null 
+        then do
+            for i = 1 to MRMInfo.length do
+                WriteLine(batchhandle, "copy " + MRMpath + MRMInfo[i][1] + " " + DirUser + "\\TourModeSplit\\" + MRMInfo[i][1])
+            end
+        end	
+        else do
+            Throw(MRMPath + " files missing, not copied")
+        end
 
     //Everything in landuse subdirectory
     MRMpath = MRMUser + "\\" + YearUser + "\\LandUse\\"
