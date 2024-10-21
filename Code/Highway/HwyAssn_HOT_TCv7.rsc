@@ -26,16 +26,15 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[Hwy Name]
-	{, , netview, } = SplitPath(hwy_file)
-	timeweight = Args.[TimeWeight]
-	distweight = Args.[DistWeight]
-	maxTTfac = Args.[MaxTravTimeFactor]
+	timeweight = Args.TimeWeight
+	distweight = Args.DistWeight
+	maxTTfac = Args.MaxTravTimeFactor
+
 	HOTAssnIterations = Args.[HOTAssn Iterations]
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
-	hwyassnconverge = Args.[HwyAssn Converge Feedback]
+	hwyassnconverge = .01
 	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final]
-	hwyassnconvergefinal = Args.[HwyAssn Converge Final]
+	hwyassnconvergefinal = Args.[HwyAssn Converge]
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"

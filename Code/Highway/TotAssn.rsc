@@ -29,7 +29,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	//hwy_file = Args.[AM Peak Hwy Name]
 	hwy_file = Args.[Hwy Name]
 	{, , netview, } = SplitPath(hwy_file)
-	MaxTTFac = Args.[MaxTravTimeFactor]
+	MaxTTFac = Args.MaxTravTimeFactor
 	pkhrfac = Args.[Peak Hour Factor]
 	
 	totassnOK = 1

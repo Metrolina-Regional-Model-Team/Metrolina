@@ -16,9 +16,9 @@ Macro "Feedback_TravelTime" (Args)
 	//hwy_file = Args.[AM Peak Hwy Name]
 	hwy_file = Args.[Hwy Name]
 	{, , netview, } = SplitPath(hwy_file)
-	timeweight = Args.[TimeWeight]
-	distweight = Args.[DistWeight]
-	maxTTfac = Args.[MaxTravTimeFactor]
+	timeweight = Args.TimeWeight
+	distweight = Args.DistWeight
+	maxTTfac = Args.MaxTravTimeFactor
 
 	curiter = Args.[Current Feedback Iter]
 	FeedbackTTOK = 1

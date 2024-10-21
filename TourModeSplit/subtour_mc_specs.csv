@@ -31,7 +31,7 @@ pool3,nz(AutoSkim.[HOV Length])/<occ3>,Tours.INCOME = 4,-0.03943,Auto Operating 
 walk,Constant,,2.29,Walk ASC
 walk,NMSkim.[TTWalk*],,-0.124,Walk Time
 walk,Tours.ORIG_TAZ = Tours.DEST_TAZ,,0.627,Intrazonal: Walk
-sov,Constant,,-0.313226,Additional Calibration Constant
-pool2,Constant,,-0.724911,Additional Calibration Constant
-pool3,Constant,,-1.319745,Additional Calibration Constant
-walk,Constant,,1.779488,Additional Calibration Constant
+sov,Constant,,0.008157,Additional Calibration Constant
+pool2,Constant,,-0.37903,Additional Calibration Constant
+pool3,Constant,,-0.960387,Additional Calibration Constant
+walk,Constant,,0.948803,Additional Calibration Constant

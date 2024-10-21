@@ -485,10 +485,11 @@ trip_add_purp <- trip_with_taz %>%
     )
   )
 
-skim <- read_csv("data/input/skims/ff_skim.csv")
-trip_add_skim <- trip_add_purp %>%
-  left_join(skim, by = c("p_taz" = "Origin", "a_taz" = "Destination")) %>%
-  rename(skim_time = Time, skim_length = Distance)
+# No longer the correct skim after updating to 2022 zones
+# skim <- read_csv("data/input/skims/ff_skim.csv")
+# trip_add_skim <- trip_add_purp %>%
+#   left_join(skim, by = c("p_taz" = "Origin", "a_taz" = "Destination")) %>%
+#   rename(skim_time = Time, skim_length = Distance)
 ```
 
 ## EDA for Non-Mandatory
@@ -548,7 +549,7 @@ write_csv(hh_add_tours, "data/_private/hh_survey/output/output_households.csv", 
 
 write_csv(tour_add_subtour, "data/_private/hh_survey/output/output_tours.csv", na = "")
 write_csv(stops_file, "data/_private/hh_survey/output/output_stops.csv", na = "")
-write_csv(trip_add_skim, "data/_private/hh_survey/output/output_trips.csv", na = "")
+write_csv(trip_add_purp, "data/_private/hh_survey/output/output_trips.csv", na = "")
 # write_csv(eda_df, "data/_private/hh_survey/output/eda.csv", na = "")
 ```
 

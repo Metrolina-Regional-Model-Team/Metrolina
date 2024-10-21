@@ -220,12 +220,12 @@
 	
         Args.TimeWeight = {
             "Type":"double",
-            "Description":"Minimum path weight on travel time (minutes)",
+            "Description":"Minimum path weight on travel time (minutes) when calculating impedance",
             "Value":1
         }
         Args.DistWeight = {
             "Type":"double",
-            "Description":"Minimum path weight on distance (miles)",
+            "Description":"Minimum path weight on distance (miles) when calculating impedance",
             "Value":0
         }
         Args.MaxTravTimeFactor = {
@@ -258,20 +258,15 @@
             "Description":"TransCad MMA assignment - max. number of iterations for all but final assignment",
             "Value":250
         }
-        Args.[HwyAssn Converge Feedback] = {
+        Args.[HwyAssn Converge] = {
             "Type":"double",
-            "Description":"TransCad MMA assignment - convergence criteria for all but final assignment",
+            "Description":"Relative gap for MMA assignment convergence",
             "Value":0.0001
         }
         Args.[HwyAssn Max Iter Final] = {
             "Type":"int",
             "Description":"TransCad MMA assignment - max. number of iterations for final assignment",
             "Value":500
-        }
-        Args.[HwyAssn Converge Final] = {
-            "Type":"double",
-            "Description":"TransCad MMA assignment - convergence criteria for final assignment",
-            "Value":0.0001
         }
 	
 	Section = "Tables"

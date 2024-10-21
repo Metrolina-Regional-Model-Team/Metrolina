@@ -113,8 +113,8 @@ EndMacro
 Macro "Peak Highway Assignment" (Args,Result)
     Attributes = {
         {"Class", {"GISDK"}},
-        {"MacroNames", {"Create OD", "Peak Highway Assignment"}},
-        {"Picture", "bmp\\planassigncar_v3.bmp"}
+        {"MacroNames",{"Create OD","Peak Highway Assignment"}},
+    {"Picture", "bmp\\planassigncar_v3.bmp"}
     }
 EndMacro
 
@@ -162,4 +162,3 @@ Macro "Summaries" (Args,Result)
         {"Picture", "bmp\\planmatrix_v3.bmp"}
     }
 EndMacro
-

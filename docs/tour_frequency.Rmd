@@ -143,9 +143,9 @@ model_shares <- model_tours %>%
   ) %>%
   pivot_longer(cols = SCH:HBO, names_to = "tour_type", values_to = "count") %>%
   group_by(tour_type, count) %>%
-  summarize(n = n()) %>%
+  summarize(model_hhs = n()) %>%
   mutate(
-    model_pct = round(n / sum(n, na.rm = TRUE) * 100, 2),
+    model_pct = round(model_hhs / sum(model_hhs, na.rm = TRUE) * 100, 2),
     tour_type = case_when(
       tour_type == "HBO" ~ "other_tours",
       tour_type == "SCH" ~ "school_tours",
@@ -161,30 +161,82 @@ model_shares <- model_tours %>%
 # If a household was surveyed on multiple days, divide it's weight by the
 # number of days surveyed. This will prevent too many tours being counted
 # when expanded to household weight.
-weights <- hh %>%
+weight_tbl <- hh %>%
   select(hh_id, hh_id2, hh_weight) %>%
   group_by(hh_id) %>%
   summarize(n = n(), hh_weight = first(hh_weight)) %>%
   mutate(hh_weight = hh_weight / n) %>%
   select(hh_id, hh_weight)
 
+model_hhs <- 1208548
+survey_hhs <- sum(weight_tbl$hh_weight)
+fac <- model_hhs / survey_hhs
+
 # tours %>%
-#   left_join(weights, by = "hh_id") %>%
+#   left_join(weight_tbl, by = "hh_id") %>%
 #   group_by(tour_type) %>%
 #   summarize(total = sum(hh_weight))
 
 cal_tbl <- est_tbl %>%
   pivot_longer(cols = ends_with("_tours"), names_to = "tour_type", values_to = "count") %>%
-  left_join(weights, by = "hh_id") %>%
+  left_join(weight_tbl, by = "hh_id") %>%
   group_by(tour_type, count) %>%
-  summarize(expanded_tours = sum(hh_weight, na.rm = TRUE)) %>%
+  summarize(survey_hhs = sum(hh_weight, na.rm = TRUE)) %>%
   filter(tour_type != "sub_tours") %>%
-  mutate(survey_pct = round(expanded_tours / sum(expanded_tours) * 100, 1)) %>%
+  mutate(survey_pct = round(survey_hhs / sum(survey_hhs) * 100, 1)) %>%
   left_join(
-    model_shares %>% select(-n), by = c("tour_type", "count")
+    model_shares, by = c("tour_type", "count")
   ) %>%
-  select(-expanded_tours) %>%
   mutate(constant = round(log(survey_pct/model_pct) * .8, 2))
+
+# also check total tours
+model <- model_tours %>%
+  select(SCH:HBO) %>%
+  pivot_longer(cols = SCH:HBO, names_to = "tour_type", values_to = "count") %>%
+  mutate(
+    tour_type = case_when(
+      tour_type == "HBO" ~ "other_tours",
+      tour_type == "SCH" ~ "school_tours",
+      tour_type == "HBW" ~ "work_tours",
+      tour_type == "HBU" ~ "univ_tours",
+      tour_type == "HBS" ~ "shop_tours",
+    )
+  ) %>%
+  group_by(tour_type) %>%
+  summarize(model_tours = sum(count))
+
+# to get the correct daily total from the survey, exclude observations
+# of the same household after the first.
+tours_by_type <- est_tbl1 %>%
+  group_by(hh_id) %>%
+  slice(1) %>%
+  ungroup() %>%
+  pivot_longer(cols = ends_with("_orig"), names_to = "tour_type", values_to = "tours") %>%
+  left_join(
+    hh %>%
+      group_by(hh_id) %>%
+      slice(1),
+      select(hh_id, hh_weight),
+    by = "hh_id"
+  ) %>%
+  select(hh_id, tour_type, tours, hh_weight) %>%
+  mutate(tours = tours * hh_weight) %>%
+  group_by(tour_type) %>%
+  summarize(survey_tours = sum(tours), survey_weight = sum(hh_weight)) %>%
+  mutate(
+    tour_type = gsub("_orig", "", tour_type),
+    # factor up the survey tours given that model has more HHs
+    survey_tours = survey_tours * (1208548/1024732)
+  ) %>%
+  left_join(model, by = "tour_type") %>%
+  select(-survey_weight)
+
+total_tours <- tours_by_type %>%
+  ungroup() %>%
+  summarize(
+    survey_tours = sum(survey_tours),
+    model_tours = sum(model_tours)
+  )
 ```
 
 
