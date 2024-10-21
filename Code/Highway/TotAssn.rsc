@@ -54,7 +54,9 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 
 	setview(netview)
 
-	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB18 > 0 then 1 else 0",)
+	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB22 > 0 then 1 else 0",)
+	MTKflag		= CreateExpression(netview, "MTKFLAG", "if MTK22 > 0 then 1 else 0",)
+	HTKflag		= CreateExpression(netview, "HTKFLAG", "if HTK22 > 0 then 1 else 0",)
 	fun2		= CreateExpression(netview, "Fun2", "if FUNCL = 1 or FUNCL = 2 or FUNCL = 9 then 1 else if funcl < 6 then 3 else if funcl < 10 then 4 else if (funcl > 20 and funcl < 30 or funcl = 82 or funcl = 83) then 2 else 0",)  
 	cntyaf	= CreateExpression(netview, "CntyAF", "COUNTY * 10000 + AREATP * 100 + Fun2",)
 	vmtlen	= CreateExpression(netview, "VMTLen", "if FUNCL = 90 then nz(LENGTH) * 2 else nz(LENGTH)",)
@@ -67,8 +69,8 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	net_bin = AssnSubDir + "\\Tempnet.bin"
 	tjoin_bin = AssnSubDir + "\\Tempjoinnet.bin"
 
-	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", 
-				"COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA", "CNTFLAG", "Fun2", "CntyAF", "VMTLen"}
+	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", 
+				"COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA", "CNTFLAG", "MTKFLAG", "HTKFLAG", "Fun2", "CntyAF", "VMTLen"}
 
 	ExportView(netview+"|HwyLinks", "FFB", net_bin, netfields ,)
 
@@ -155,7 +157,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	vcab		= CreateExpression(jointod, "vc" + tod[i] + "AB", "if tdir <> -1 then (nz(AB_Flow) * " + r2s(pkhrfac) + ") / tcapab else 0",)
 	vcba		= CreateExpression(jointod, "vc" + tod[i] + "BA", "if tdir <> 1 then (nz(BA_Flow) * " + r2s(pkhrfac) + ") / tcapba else 0",)
 
-	pool3tod	= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
+//	pool3tod	= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
 	mtktod		= CreateExpression(jointod, "mtk" + tod[i], "mtk" + tod[i] + "AB + mtk" + tod[i] + "BA",)
 	htktod		= CreateExpression(jointod, "htk" + tod[i], "htk" + tod[i] + "AB + htk" + tod[i] + "BA",)
 
@@ -165,6 +167,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 		sov		= CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA",)
 		com		= CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA",)
 		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA",)
+		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
 		MiddleField = {"Fresov" + tod[i] + "AB", "Fresov" + tod[i] + "BA", "Frepl2" + tod[i] + "AB", "Frepl2" + tod[i] + "BA", 
 			   "Frepl3" + tod[i] + "AB", "Frepl3" + tod[i] + "BA", "Frecom" + tod[i] + "AB", "Frecom" + tod[i] + "BA", "mtk" + tod[i] + "AB", "mtk" + tod[i] + "BA", "htk" + tod[i] + "AB", "htk" + tod[i] + "BA", 
 			   "sov" + tod[i], "pool2" + tod[i], "pool3" + tod[i], "com" + tod[i], "mtk" + tod[i], "htk" + tod[i]}
@@ -191,7 +194,8 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 		hotcomba	= CreateExpression(jointod, "HOTcom" + tod[i] + "BA", "nz(BA_Flow_HOTCOM)",)
 		sov		= CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA + HOTsov" + tod[i] + "AB + HOTsov" + tod[i] + "BA",)
 		com		= CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA + HOTcom" + tod[i] + "AB + HOTcom" + tod[i] + "BA",)
-		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA",)
+		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA + HOTpl2" + tod[i] + "AB + HOTpl2" + tod[i] + "BA",)
+		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA + HOTpl3" + tod[i] + "AB + HOTpl3" + tod[i] + "BA",)
 		MiddleField	= {"Fresov" + tod[i] + "AB", "Fresov" + tod[i] + "BA", "HOTsov" + tod[i] + "AB", "HOTsov" + tod[i] + "BA", 
 					"Frepl2" + tod[i] + "AB", "Frepl2" + tod[i] + "BA", "HOTpl2" + tod[i] + "AB", "HOTpl2" + tod[i] + "BA", 
 					"Frepl3" + tod[i] + "AB", "Frepl3" + tod[i] + "BA", "HOTpl3" + tod[i] + "AB", "HOTpl3" + tod[i] + "BA", 
@@ -249,15 +253,15 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	tot_vht		= CreateExpression(join4, "TOT_VHT", "VHT_AM + VHT_MI + VHT_PM + VHT_NT",)
 
 
-	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB18 > 0 then pow(TOT_VOL - CALIB18,2) else 0",)
+	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB22 > 0 then pow(TOT_VOL - CALIB22,2) else 0",)
 //	commcsq		= CreateExpression(join4, "COMMCSQ", "if COM08 > 0 then pow(TOT_COM - COM08,2) else 0",)
-	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK18 > 0 then pow(TOT_MTK - MTK18,2) else 0",) 
-	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK18 > 0 then pow(TOT_HTK - HTK18,2) else 0",)
+	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK22 > 0 then pow(TOT_MTK - MTK22,2) else 0",) 
+	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK22 > 0 then pow(TOT_HTK - HTK22,2) else 0",)
 
 	if typeassn = "base" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",  
@@ -280,13 +284,13 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
 	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
 	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
+	 	 "CNTFLAG", "MTKFLAG", "HTKFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
 	end
 
 /*	else if typeassn = "HOT2+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "VOL_POST", "Tot_Vol",   
@@ -317,7 +321,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 */	else if typeassn = "HOT3+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",   
@@ -344,7 +348,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
 	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
 	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
+	 	 "CNTFLAG", "MTKFLAG", "HTKFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
 	end
 
 
