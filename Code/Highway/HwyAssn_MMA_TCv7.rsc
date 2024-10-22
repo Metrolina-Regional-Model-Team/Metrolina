@@ -30,6 +30,9 @@ Macro "HwyAssn_MMA" (Args, od_matrix, cap_field, output_bin, timeperiod)
 	distweight = Args.DistWeight
 	hwyassnmaxiter = Args.[HwyAssn Max Iter Feedback]
 	hwyassnconverge = Args.[HwyAssn Converge]
+	hwy_file = Args.[Hwy Name]
+	{, , netview, } = SplitPath(hwy_file)
+
 
 	/*if timeperiod = "AMpeak" then do	
 		hwy_file = Args.[AM Peak Hwy Name]
