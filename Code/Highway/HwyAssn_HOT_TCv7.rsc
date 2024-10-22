@@ -35,6 +35,8 @@ macro "HwyAssn_HOT" (Args, hwyassnarguments, timeperiod)
 	hwyassnconverge = .01
 	hwyassnmaxiterfinal = Args.[HwyAssn Max Iter Final]
 	hwyassnconvergefinal = Args.[HwyAssn Converge]
+	hwy_file = Args.[Hwy Name]
+	{, , netview, } = SplitPath(hwy_file)
 
 	// can change to "BPR" to run straight BPR function
 	hwyassntype = "BPR"
