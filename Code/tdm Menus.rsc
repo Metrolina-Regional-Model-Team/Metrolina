@@ -34,7 +34,7 @@ menu "Metrolina Menu"
     init do
     enditem
 
-    MenuItem "Create Tour Dir" text: "Create Tour Dir"
+    MenuItem "Create Scenario" text: "Create Scenario"
         do 
         mr = CreateObject("Model.Runtime")
         Args = mr.GetValues()
@@ -49,7 +49,20 @@ menu "Metrolina Menu"
         mr.RunCode("Create Tour Dir", Args)
         return(1)
     enditem
+
+    separator
+
+    MenuItem "Utilities" text: "Tools"
+        menu "MRM Utilities"
+
 endMenu 
+menu "MRM Utilities"
+    init do
+    enditem
 
+   MenuItem "diff" text: "Diff Tool" do
+        mr = CreateObject("Model.Runtime")
+        mr.RunCodeEx("Open Diff Tool")
+    enditem
 
-
+endMenu
