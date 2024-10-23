@@ -47,24 +47,24 @@ macro "VMTAQ" (Args)
 
 	VMTAQ =  JoinViews("VMTAQ", "FUNAQID.FUNAQ", "TotAssn.FEDFUNC_AQ", 
         	           {{"A",}, 
-    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB18", {{"Sum"}}}, {"VMT_AM",  {{"Sum"}}}, {"VHT_AM", {{"Sum"}}}, {"VMT_PM", {{"Sum"}}}, {"VHT_PM", {{"Sum"}}},  		       
+    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB22", {{"Sum"}}}, {"VMT_AM",  {{"Sum"}}}, {"VHT_AM", {{"Sum"}}}, {"VMT_PM", {{"Sum"}}}, {"VHT_PM", {{"Sum"}}},  		       
 			            {"VMT_MI", {{"Sum"}}}, {"VHT_MI", {{"Sum"}}}, {"VMT_NT", {{"Sum"}}}, {"VHT_NT", {{"Sum"}}}, {"TOT_VMT", {{"Sum"}}}, {"TOT_VHT", {{"Sum"}}}   		       
    			       }}})
 
 	runstats_VMTAQ = ExportView("VMTAQ|", "CSV", Dir + "\\report\\runstats_VMTAQ.csv", 
-		{"ORDER", "FUNAQ", "FUNAQID.COUNTY", "[N TotAssn]", "LENGTH", "CNTFLAG", "CALIB18", "VMT_AM", "VHT_AM", "VMT_PM", "VHT_PM", "VMT_MI", "VHT_MI", "VMT_NT", "VHT_NT", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )
+		{"ORDER", "FUNAQ", "FUNAQID.COUNTY", "[N TotAssn]", "LENGTH", "CNTFLAG", "CALIB22", "VMT_AM", "VHT_AM", "VMT_PM", "VHT_PM", "VMT_MI", "VHT_MI", "VMT_NT", "VHT_NT", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )
 
 	
 	//  RUNSTATS_VMTCnty ****************************
 
 	VMTAQ2 =  JoinViews("VMTAQ2", "FUNAQID.FUNAQ", "TotAssn.CO_FEDFUNC", 
         	           {{"A",}, 
-    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB18", {{"Sum"}}}, {"VMT_AM",  {{"Sum"}}}, {"VHT_AM", {{"Sum"}}}, {"VMT_PM", {{"Sum"}}}, {"VHT_PM", {{"Sum"}}},  		       
+    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB22", {{"Sum"}}}, {"VMT_AM",  {{"Sum"}}}, {"VHT_AM", {{"Sum"}}}, {"VMT_PM", {{"Sum"}}}, {"VHT_PM", {{"Sum"}}},  		       
 			            {"VMT_MI", {{"Sum"}}}, {"VHT_MI", {{"Sum"}}}, {"VMT_NT", {{"Sum"}}}, {"VHT_NT", {{"Sum"}}}, {"TOT_VMT", {{"Sum"}}}, {"TOT_VHT", {{"Sum"}}}   		       
    			       }}})
 
 	runstats_VMTCnty = ExportView("VMTAQ2|", "CSV", Dir + "\\report\\runstats_VMTCnty.csv", 
-		{"ORDER", "FUNAQ", "FUNAQID.COUNTY", "[N TotAssn]", "LENGTH", "CNTFLAG", "CALIB18", "VMT_AM", "VHT_AM", "VMT_PM", "VHT_PM", "VMT_MI", "VHT_MI", "VMT_NT", "VHT_NT", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )
+		{"ORDER", "FUNAQ", "FUNAQID.COUNTY", "[N TotAssn]", "LENGTH", "CNTFLAG", "CALIB22", "VMT_AM", "VHT_AM", "VMT_PM", "VHT_PM", "VMT_MI", "VHT_MI", "VMT_NT", "VHT_NT", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )
 
 	CloseView(VMTAQ)
 	CloseView(VMTAQ2)
