@@ -547,7 +547,7 @@ Macro "Roadway Count Comparison Tables" (MacroOpts)
     }
   end
   file = out_dir + "/count_comparison_by_fac_type.csv"
-  lines = {"HCMType,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+  lines = {"FACTYPE,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
   lines = lines + total_line
   RunMacro("Write CSV by Line", file, lines)
 
@@ -577,7 +577,7 @@ Macro "Roadway Count Comparison Tables" (MacroOpts)
         }
       end
     end
-    lines = {"HCMType,AreaType,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+    lines = {"FACTYPE,AreaType,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
     lines = lines + area_total_line
     file = out_dir + "/count_comparison_by_ft_and_at.csv"
     RunMacro("Write CSV by Line", file, lines)
@@ -614,7 +614,7 @@ Macro "Roadway Count Comparison Tables" (MacroOpts)
         end
       end
     end
-    lines = {"HCMType,AreaType,Median,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
+    lines = {"FACTYPE,AreaType,Median,N,TotalCount,TotalVolume,PctDiff,PRMSE"} + lines
     lines = lines + area_total_line
     file = out_dir + "/count_comparison_by_ft_and_at_and_med.csv"
     RunMacro("Write CSV by Line", file, lines)
