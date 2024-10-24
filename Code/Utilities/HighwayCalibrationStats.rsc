@@ -41,12 +41,12 @@ Macro "HighwayCalibrationStats" (Args)
 	CATFun   = CreateExpression("TotAssn", "CATFun", "if (county = 57 or county = 91) then (45000+county)*1000 + AREATP * 100 + funcl else (37000 + county) * 1000 + areatp * 100 + funcl",)
 	Lane_Mi  = CreateExpression("TotAssn", "Lane_Mi", "LENGTH * LANESAB + LENGTH * LANESBA",)
 //	comflag  = CreateExpression("TotAssn", "ComFlag", "if Com08 <> null then 1 else 0",)
-	mtkflag  = CreateExpression("TotAssn", "MTKFlag", "if MTK15 <> null then 1 else 0",)
-	htkflag  = CreateExpression("TotAssn", "HTKFlag", "if HTK15 <> null then 1 else 0",)
-	assnvol  = CreateExpression("TotAssn", "AssnVol", "if CALIB15 <> null then TOT_VOL else 0",)
+	mtkflag  = CreateExpression("TotAssn", "MTKFlag", "if MTK22 <> null then 1 else 0",)
+	htkflag  = CreateExpression("TotAssn", "HTKFlag", "if HTK22 <> null then 1 else 0",)
+	assnvol  = CreateExpression("TotAssn", "AssnVol", "if CALIB22 <> null then TOT_VOL else 0",)
 //	assncom  = CreateExpression("TotAssn", "AssnCOM", "if COM08     <> null then TOT_VOL else 0",)
-	assnmtk  = CreateExpression("TotAssn", "AssnMTK", "if MTK15     <> null then TOT_VOL else 0",)
-	assnhtk  = CreateExpression("TotAssn", "AssnHTK", "if HTK15     <> null then TOT_VOL else 0",)
+	assnmtk  = CreateExpression("TotAssn", "AssnMTK", "if MTK22     <> null then TOT_VOL else 0",)
+	assnhtk  = CreateExpression("TotAssn", "AssnHTK", "if HTK22     <> null then TOT_VOL else 0",)
 
 	atfun = CreateExpression("TotAssn", "ATFUN", "AREATP * 100 + funcl",)
 	coatfun = CreateExpression("TotAssn", "COATFUN", "IF COUNTY = 119 THEN (10000 + (AREATP * 100) + FUNCL) ELSE (20000 + (AREATP * 100) + FUNCL) ",)
@@ -66,14 +66,14 @@ Macro "HighwayCalibrationStats" (Args)
 		        	       {"VMT_MI",    {{"Sum"}}}, {"VHT_MI",   {{"Sum"}}},     		       
 		        	       {"VMT_PM",    {{"Sum"}}}, {"VHT_PM",   {{"Sum"}}},     		       
 		      		       {"VMT_NT",    {{"Sum"}}}, {"VHT_NT",   {{"Sum"}}},     		       
-			               {"CALIB15",   {{"Sum"}}}, {"AssnVol",  {{"Sum"}}},     		       
+			               {"CALIB22",   {{"Sum"}}}, {"AssnVol",  {{"Sum"}}},     		       
 			               {"CNTFLAG",   {{"Sum"}}}, {"CNTMCSQ",  {{"Sum"}}},     		       
 //			               {"COM08",     {{"Sum"}}}, {"AssnCOM",  {{"Sum"}}},     		       
 //			               {"AssnCom",   {{"Sum"}}}, {"TOT_COM",  {{"Sum"}}},     		       
 //			               {"COMFLAG",   {{"Sum"}}}, {"COMMCSQ",  {{"Sum"}}},     		       
-			               {"MTK15",     {{"Sum"}}}, {"AssnMTK",  {{"Sum"}}},     		       
+			               {"MTK22",     {{"Sum"}}}, {"AssnMTK",  {{"Sum"}}},     		       
 			               {"MTKFLAG",   {{"Sum"}}}, {"MTKMCSQ",  {{"Sum"}}},     		       
-			               {"HTK15",     {{"Sum"}}}, {"AssnHTK",  {{"Sum"}}},     		       
+			               {"HTK22",     {{"Sum"}}}, {"AssnHTK",  {{"Sum"}}},     		       
 			               {"HTKFLAG",   {{"Sum"}}}, {"HTKMCSQ",  {{"Sum"}}},     		       
    			       }}})
 
@@ -81,10 +81,10 @@ Macro "HighwayCalibrationStats" (Args)
 			  "CATMatch2.CntyName", "AT2Name", "Fun2Name"}
 	MileNameArray  = {"LENGTH", "LANE_MI"}
 	VMTNameArray   = {"VMT_AM", "VHT_AM", "VMT_MI", "VHT_MI", "VMT_PM", "VHT_PM", "VMT_NT", "VHT_NT"}
-        CountNameArray = {"CALIB15","AssnVol", "CNTFLAG", "CNTMCSQ",
+        CountNameArray = {"CALIB22","AssnVol", "CNTFLAG", "CNTMCSQ",
 //        		  "COM08",    "AssnCOM", "COMFLAG", "COMMCSQ",  
-        		  "MTK15",    "AssnMTK", "MTKFLAG", "MTKMCSQ",  
-        		  "HTK15",    "AssnHTK", "HTKFLAG", "HTKMCSQ"} 
+        		  "MTK22",    "AssnMTK", "MTKFLAG", "MTKMCSQ",  
+        		  "HTK22",    "AssnHTK", "HTKFLAG", "HTKMCSQ"} 
 	OutNameArray   = IDNameArray + MileNameArray + VMTNameArray + CountNameArray
 	ExportView(join2 +"|", "DBASE", Dir + "\\Report\\RunStats_HwyAssn.dbf", OutNameArray,)
 	CloseView(CATMatch)
@@ -101,7 +101,7 @@ Macro "HighwayCalibrationStats" (Args)
 	//	if nlnks < 1 then goto NoScreen
 	ExportView("TotAssn"+"|ScrLineLinks", "FFB", Dir + "\\hwyassn\\ScreenLineLinks.bin", 
 		{"SCRLN", "ID", "LENGTH", "DIR", "FUNCL", "AREATP", "COUNTY","Strname", "A_CrossStr", "B_CrossStr", 
-		 "CALIB15", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},)
+		 "CALIB22", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},)
 	
 
 	//Reopen file of screenline links - join to screenline id
@@ -109,12 +109,12 @@ Macro "HighwayCalibrationStats" (Args)
 	 	
 	join3 =  JoinViews("ScrLnSum", "ScrLnID.SCRLN", "ScrLnLinks.SCRLN", 
         	           {{"A",}, 
-    			    {"Fields",{{"CALIB15", {{"Sum"}}}, {"TOT_VOL",  {{"Sum"}}},     		       
+    			    {"Fields",{{"CALIB22", {{"Sum"}}}, {"TOT_VOL",  {{"Sum"}}},     		       
 			               {"CNTFLAG",   {{"Sum"}}}, {"CNTMCSQ",  {{"Sum"}}}     		       
    			       }}})
 
 	ExportView("ScrLnSum|", "DBASE", Dir + "\\report\\ScreenLineSummary.dbf", 
-		{"SCRLN", "CALIB15", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},)
+		{"SCRLN", "CALIB22", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},)
 	
 	CloseView(ScrlnID)
 	CloseView(join3)
@@ -123,11 +123,11 @@ Macro "HighwayCalibrationStats" (Args)
 	// runstats_dwnldVol.dbf
 	join_vol =  JoinViews("Counts", "ATFUNID.ATFUN", "TotAssn.ATFUN", 
         	           {{"A",}, 
-    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB15", {{"Sum"}}}, {"AssnVol",  {{"Sum"}}}, {"CNTMCSQ", {{"Sum"}}}   		       
+    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB22", {{"Sum"}}}, {"AssnVol",  {{"Sum"}}}, {"CNTMCSQ", {{"Sum"}}}   		       
    			       }}})
 
 	ExportView("Counts|", "DBASE", Dir + "\\report\\runstats_dwnldVOL.dbf", 
-		{"ATFUN", "CNTFLAG", "CALIB15", "AssnVol", "CNTMCSQ"},)
+		{"ATFUN", "CNTFLAG", "CALIB22", "AssnVol", "CNTMCSQ"},)
 	
 	CloseView(join_vol)
 	CloseView(ATFUNID)
@@ -135,11 +135,11 @@ Macro "HighwayCalibrationStats" (Args)
 	// runstats_dwnldcoatfun.dbf
 	join_vol2 =  JoinViews("Counts2", "COATFUNID.COATFUN", "TotAssn.COATFUN", 
         	           {{"A",}, 
-    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB15", {{"Sum"}}}, {"AssnVol",  {{"Sum"}}}, {"CNTMCSQ", {{"Sum"}}}   		       
+    			    {"Fields",{{"CNTFLAG", {{"Sum"}}}, {"CALIB22", {{"Sum"}}}, {"AssnVol",  {{"Sum"}}}, {"CNTMCSQ", {{"Sum"}}}   		       
    			       }}})
 
 	ExportView("Counts2|", "DBASE", Dir + "\\report\\runstats_dwnldCOATFUN.dbf", 
-		{"ORDER", "COATFUN", "CNTFLAG", "CALIB15", "AssnVol", "CNTMCSQ"},)
+		{"ORDER", "COATFUN", "CNTFLAG", "CALIB22", "AssnVol", "CNTMCSQ"},)
 
 	CloseView(join_vol2)
 	CloseView(COATFUNID)

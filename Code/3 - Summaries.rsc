@@ -12,7 +12,7 @@ Add assignment results to the AM link layer for easy visualization
 Macro "Load Link Layer" (Args)
     
     scen_dir = Args.[Run Directory]
-    hwy_dbd = Args.[AM Peak Hwy Name]
+    hwy_dbd = Args.[Hwy Name]
     assn_dir = scen_dir + "\\HwyAssn\\HOT"
     periods = {"AM", "MD", "PM", "NT"}
 
@@ -76,7 +76,7 @@ summarize. e.g. {"Flow_auto", "Flow", "VMT"}.
 Macro "Calculate Daily Fields" (Args)
 
   a_periods = {"AM", "MD", "PM", "NT"}
-  hwy_dbd = Args.[AM Peak Hwy Name]
+  hwy_dbd = Args.[Hwy Name]
   a_dir = {"AB", "BA"}
   modes = {
     "SOV", "Pool2", "Pool3", "COM", "MTK", "HTK",
@@ -156,7 +156,7 @@ Macro "Create Count Difference Map" (Args)
     scen_dir = Args.[Run Directory]
     output_dir = scen_dir + "\\Report\\maps"
     if GetDirectoryInfo(output_dir, "All") = null then CreateDirectory(output_dir)
-    hwy_dbd = Args.[AM Peak Hwy Name]
+    hwy_dbd = Args.[Hwy Name]
 
     // Create total count diff map
     opts = null
@@ -444,7 +444,7 @@ Creates tables with %RMSE and volume % diff by facility type and volume group
 */
 
 Macro "Count PRMSEs" (Args)
-    hwy_dbd = Args.[AM Peak Hwy Name]
+    hwy_dbd = Args.[Hwy Name]
     scen_dir = Args.[Run Directory]
     output_dir = scen_dir + "\\Report\\validation"
     if GetDirectoryInfo(output_dir, "All") = null then CreateDirectory(output_dir)
