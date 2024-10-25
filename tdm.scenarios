@@ -3,3 +3,9 @@
 Scenario "Base Year"
 EndScenario
     
+Scenario "2025"
+    
+    [Output Folder] = "%Model Folder%\\Output\\2025"
+    [Run Year] = "2025"
+EndScenario
+    
