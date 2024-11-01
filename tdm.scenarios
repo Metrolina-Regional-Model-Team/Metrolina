@@ -8,4 +8,21 @@ Scenario "2025"
     [Output Folder] = "%Model Folder%\\Output\\2025"
     [Run Year] = "2025"
 EndScenario
+
+Scenario "2035"
     
+    [Output Folder] = "%Model Folder%\\Output\\2035"
+    [Run Year] = "2035"
+EndScenario    
+
+Scenario "2045"
+    
+    [Output Folder] = "%Model Folder%\\Output\\2045"
+    [Run Year] = "2045"
+EndScenario    
+
+Scenario "2055"
+    
+    [Output Folder] = "%Model Folder%\\Output\\2055"
+    [Run Year] = "2055"
+EndScenario    
