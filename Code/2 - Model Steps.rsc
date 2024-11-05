@@ -58,13 +58,6 @@ Macro "Trip Distribution" (Args)
     RunMacro("TD_TranPath_Peak", Args)
     RunMacro("TD_TranPath_Free", Args)
     RunMacro("Tour_DestinationChoice", Args)
-    
-    /*
-    if Args.[Current Feedback Iter] = 1 then
-        RunMacro("Tour_DestinationChoice", Args)
-    else
-        RunMacro("Tour_DC_FB", Args)*/
-    
     return(1)
 endmacro
 
@@ -74,11 +67,6 @@ Macro "Trucks" (Args)
 endmacro
 
 Macro "Mode Split" (Args)
-    /*if Args.[Current Feedback Iter] then
-        RunMacro("Tour_ToD1", Args)
-    else
-        RunMacro("Tour_ToD1_FB", Args)*/
-    
     RunMacro("Tour_ToD1", Args)
     RunMacro("Tour Mode Split", Args)
 
@@ -86,15 +74,6 @@ Macro "Mode Split" (Args)
 endmacro
 
 Macro "Intermediate Stops"(Args)
-    /*if Args.[Current Feedback Iter] = 1 then do
-        RunMacro("Tour_IS", Args)
-        RunMacro("Tour_IS_Location", Args)
-    end
-    else do
-        RunMacro("Tour_IS_FB", Args)
-        RunMacro("Tour_IS_Location_FB", Args)
-    end*/
-
     RunMacro("Tour_IS", Args)
     RunMacro("Tour_IS_Location", Args)
 
