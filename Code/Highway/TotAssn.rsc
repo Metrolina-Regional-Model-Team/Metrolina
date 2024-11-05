@@ -53,7 +53,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 
 	setview(netview)
 
-	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB18 > 0 then 1 else 0",)
+	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB > 0 then 1 else 0",)
 	fun2		= CreateExpression(netview, "Fun2", "if FUNCL = 1 or FUNCL = 2 or FUNCL = 9 then 1 else if funcl < 6 then 3 else if funcl < 10 then 4 else if (funcl > 20 and funcl < 30 or funcl = 82 or funcl = 83) then 2 else 0",)  
 	cntyaf	= CreateExpression(netview, "CntyAF", "COUNTY * 10000 + AREATP * 100 + Fun2",)
 	vmtlen	= CreateExpression(netview, "VMTLen", "if FUNCL = 90 then nz(LENGTH) * 2 else nz(LENGTH)",)
@@ -66,7 +66,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	net_bin = AssnSubDir + "\\Tempnet.bin"
 	tjoin_bin = AssnSubDir + "\\Tempjoinnet.bin"
 
-	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", 
+	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB", "MTK", "HTK", "Scrln", 
 				"COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA", "CNTFLAG", "Fun2", "CntyAF", "VMTLen"}
 
 	ExportView(netview+"|HwyLinks", "FFB", net_bin, netfields ,)
@@ -248,15 +248,15 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	tot_vht		= CreateExpression(join4, "TOT_VHT", "VHT_AM + VHT_MI + VHT_PM + VHT_NT",)
 
 
-	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB18 > 0 then pow(TOT_VOL - CALIB18,2) else 0",)
+	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB > 0 then pow(TOT_VOL - CALIB,2) else 0",)
 //	commcsq		= CreateExpression(join4, "COMMCSQ", "if COM08 > 0 then pow(TOT_COM - COM08,2) else 0",)
-	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK18 > 0 then pow(TOT_MTK - MTK18,2) else 0",) 
-	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK18 > 0 then pow(TOT_HTK - HTK18,2) else 0",)
+	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK > 0 then pow(TOT_MTK - MTK,2) else 0",) 
+	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK > 0 then pow(TOT_HTK - HTK,2) else 0",)
 
 	if typeassn = "base" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",  
@@ -285,7 +285,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 /*	else if typeassn = "HOT2+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "VOL_POST", "Tot_Vol",   
@@ -316,7 +316,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 */	else if typeassn = "HOT3+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB18", "MTK18", "HTK18", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",   
