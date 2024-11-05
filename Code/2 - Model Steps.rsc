@@ -168,20 +168,21 @@ Macro "Transit Assignment" (Args)
 endmacro
 
 Macro "HOT" (Args)
-    RunMacro("HwyAssn_RunHOTAMPeak", Args)
+    /*  RunMacro("HwyAssn_RunHOTAMPeak", Args)
     RunMacro("HwyAssn_RunHOTPMPeak", Args)
     RunMacro("HwyAssn_RunHOTMidday", Args)
     RunMacro("HwyAssn_RunHOTNight", Args)
-    RunMacro("HwyAssn_RunHOTTotAssn", Args)
+    */ RunMacro("HwyAssn_RunHOTTotAssn", Args)
     return(1)
 endmacro
 
+
 Macro "Summaries" (Args)
-    RunMacro("ODMatrixStats", Args)
+ /*   RunMacro("ODMatrixStats", Args)
     RunMacro("VMTAQ", Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("Tour_RunStats", Args)
-    RunMacro("Transit_Pax_Stats", Args)
+   */ RunMacro("Transit_Pax_Stats", Args)
     RunMacro("Transit_Operations_Stats", Args)
     RunMacro("Transit_Boardings", Args)
     RunMacro("Transit_RunStats", Args)

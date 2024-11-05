@@ -202,7 +202,7 @@ Macro "Transit_Pax_Stats" (Args)
 	query = "Select * where ALT_FLAG = 1"
 	n_select = SelectByQuery("Selection", "Several", query,)
 
-	ExportView("Vehicle Routes+ROUTES|Selection", "DBASE", Dir + "\\Report\\RouteOut.DBF", {"Route_ID", "Routes.Key" , "Track", "RTE_Name", "Time", "Distance", "IO", "Rtecomb", "Corr", "MODE", "DWELL", "Routes.COMPANY", "AM_HEAD", "MID_HEAD", "PM_HEAD", "NIGHT_HEAD"},
+	ExportView("Vehicle Routes+ROUTES|Selection", "DBASE", Dir + "\\Report\\RouteOut.DBF", {"Route_ID", "Routes.Key" , "Track", "RTE_Name", "Time", "Distance", "IO", "Corr", "MODE", "DWELL", "Routes.COMPANY", "AM_HEAD", "MID_HEAD", "PM_HEAD", "NIGHT_HEAD"},
 			{{"Additional Fields",{
 			 {"NUMSTOP", "Integer", 11, , "False"},
 			 {"PASS", "Real", 10, 2, "False"},
