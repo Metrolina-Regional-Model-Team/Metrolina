@@ -68,7 +68,7 @@ Body:
     { drive , path , name , ext } = SplitPath(flowchart.UI)
     rootFolder = drive + path
     ui_DB = rootFolder + "Code\\ui.dbd"
-    srcFile = rootFolder + "Code\\menu_MRM2002_laptop.lst"
+    srcFile = rootFolder + "Code\\menu.lst"
     RunMacro("CompileGISDKCode", {Source: srcFile, UIDB: ui_DB, Silent: 0, ErrorMessage: "Error compiling code"})
 
     if lower(GetMapUnits()) <> "miles" then
