@@ -25,6 +25,8 @@ Macro "Tour_TruckTGTD" (Args)
  	yr_str = Right(theyear,2)
 	yr = s2i(yr_str)
 
+
+
   CreateProgressBar("Tour Truck Model", "TRUE")
 
 // ************************************************************************************
@@ -99,10 +101,69 @@ vt_ar = {"COM", "MTK", "HTK"}
 	SetDataVector(xxfactab+"|", "STATION", extsta,)
 
 	//factors & coefficients:
-
 	//Area type adjustment factor, 
-	atfacta = 1.0	//Since all area type factors are 1.0 for now
+//	atfacta = 1.0	//Since all area type factors are 1.0 for now
 	tfactor = 1.0
+	
+	//Aug. 2024:  Gallup added atfacta=0.5 for AT 1 & atfacta=0.25 for AT 2
+
+
+	strct = GetTableStructure(areatype, {{"Include Original", "True"}})
+
+	// Add a field for AFACTA
+
+	strct = strct + {{"ATFACTACOM", "Real", 12, 2, "False", , , , , , , null}}
+	strct = strct + {{"ATFACTAMTK", "Real", 12, 2, "False", , , , , , , null}}
+	strct = strct + {{"ATFACTAHTK", "Real", 12, 2, "False", , , , , , , null}}
+	// Modify the table
+
+	ModifyTable(areatype, strct)
+
+
+		vw1 = "areatype"
+
+	//Fill ATFACTA based on area type
+		ptr = GetFirstRecord("areatype|",)
+		while ptr <> null do
+	
+			if vw1.AREATYPE> 2 
+				then vw1.ATFACTACOM = 1.0 
+			if vw1.AREATYPE = 1
+				then vw1.ATFACTACOM = 1.0 
+			if vw1.AREATYPE = 2
+				then vw1.ATFACTACOM = 1.0 
+
+			ptr = GetNextRecord("areatype|",,)
+		end
+
+		ptr = GetFirstRecord("areatype|",)
+		while ptr <> null do
+	
+			if vw1.AREATYPE> 2 
+				then vw1.ATFACTAMTK = 1.0 
+			if vw1.AREATYPE = 1
+				then vw1.ATFACTAMTK = 0.5
+			if vw1.AREATYPE = 2
+				then vw1.ATFACTAMTK = 0.25
+		
+			ptr = GetNextRecord("areatype|",,)
+		end
+
+		ptr = GetFirstRecord("areatype|",)
+		while ptr <> null do
+	
+			if vw1.AREATYPE> 2 
+				then vw1.ATFACTAHTK = 1.2
+			if vw1.AREATYPE = 1
+				then vw1.ATFACTAHTK = 0.15
+			if vw1.AREATYPE = 2
+				then vw1.ATFACTAHTK = 0.25
+		
+			ptr = GetNextRecord("areatype|",,)
+		end
+
+	areatype_v = GetDataVectors(areatype+"|", {"TAZ", "ZAREA", "EMPTOT", "HHPOP", "EMPDEN", "POPDEN", "AREATYPE", "ATFACTACOM", "ATFACTAMTK", "ATFACTAHTK"},{{"Sort Order", {{"TAZ","Ascending"}}}})
+
 
 /*	arate =  { {0.146, 0.099, 0.038},	//hh
 		   {0.000, 0.000, 0.000},	//pop_hhs
@@ -124,17 +185,23 @@ vt_ar = {"COM", "MTK", "HTK"}
 	//'ARATE' array: attraction model coefficients. This is derived from the 2012 survey. Also note that the NHB and Truck coefficients
 	//  have already been cut in half (from their originally calibrated values) to convert total trip ends to true attractions.  See AttrResults.xls.
 	//	      com    mtk    htk	   
-	arate =  { {0.146, 0.099, 0.038},	//se_v.HH
+/*	arate =  { {0.146, 0.099, 0.038},	//se_v.HH
 		   {0.454 ,0.266, 0.139},	//indemp (loind + hiind)
 		   {0.501, 0.253, 0.065},	//retail (ret + hwy)
 		   {0.454, 0.068, 0.009} }	//service (losvc + hisvc + offgov + educ)
-
+*/
+	//summer 2024:  TRMG2 rates replace previous MRM rates
+	arate =  { {0.218, 0.086, 0.028},	//se_v.HH
+		   {0.087 ,0.226, 0.100},	//indemp (loind + hiind)
+		   {0.774, 0.220, 0.048},	//retail (ret + hwy)
+		   {0.383, 0.059, 0.007} }	//service (losvc + hisvc + offgov + educ)	
+		
 	//'EXTADJ' array: adjustments to external share models, in order to make the base year (2010) estimates match the cordon counts.
 	//  to make the base year (2010) estimates match the cordon counts.
 	//  Array is (vehicle type 1-5, direction 1-2), where direction 1 is I/E and direction 2 is E/I.
 	//	      com    mtk    htk	   
 //	extadj =  { {0.3600, 0.9050, 3.2500},	// I/E
-//		    {0.2134, 0.5390, 1.4500} }	// E/I
+//		    {0.2134, 0.5390, 1.4500} }	// E/I	
 	extadj =  { {0.4772, 0.7798, 5.3757},	// I/E
 		    {0.1491, 0.2673, 1.4012} }	// E/I
 	dim extpct[3]
@@ -142,9 +209,18 @@ vt_ar = {"COM", "MTK", "HTK"}
   //Loop on vehicle type: VT1 = commercial, VT2 = MT, VT3 = HT.  This includes I/I + I/X.
 	for vt = 1 to 3 do	//3
    UpdateProgressBar("Tour Truck Model (Generation: " + vt_ar[vt] + ")", 10) 
-		// Commercial and Truck productions (= attractions).  Store them all as "income 1".  Apply Attraction area type adjustment. (line 2347)
-		prod_int = (se_v.HH * arate[1][vt] + indemp * arate[2][vt] + retail * arate[3][vt] + service * arate[4][vt]) * atfacta * tfactor
-	
+			// Commercial and Truck productions (= attractions).  Store them all as "income 1".  Apply Attraction area type adjustment. (line 190)
+ 	if vt=1 then do 
+ 		atfacta = areatype_v[8]
+ 	end
+ 	if vt=2 then do 
+ 		atfacta = areatype_v[9]
+	end
+	if vt=3 then do 
+		atfacta = areatype_v[10]
+	end
+		prod_int = (se_v.HH * arate[1][vt] + indemp * arate[2][vt] + retail * arate[3][vt] + service * arate[4][vt]) * atfacta* tfactor
+//	  end
 		//Apply I/E model to split productions into I/I and I/E.  I/E model estimates the % of total productions that are externally attracted,
 		// as an exponential function of the zone's distance to the cordon. Model was calibrated from 2012 survey data; see iemodel.xlsx.
 		// If that distance is 0.0, can't do the exponentiation, so just set the external share to 100%.  Calculate 2 percents: Work and
@@ -167,7 +243,8 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 		//Now, on to attractions. For the NHB and Truck purposes (6-11), the originally calibrated attraction model coefficients have been already divided by 2,
 		// in order to convert total trip ends to true attractions. Also, adjust attractions by Area Type and factor in the global adjustment factor.
-		attr_int = (se_v.HH * arate[1][vt] + indemp * arate[2][vt] + retail * arate[3][vt] + service * arate[4][vt]) * atfacta * tfactor
+		
+		attr_int = (se_v.HH * arate[1][vt] + indemp * arate[2][vt] + retail * arate[3][vt] + service * arate[4][vt]) * atfacta* tfactor
 		
 		//Sum total attractions by purpose.  Do this twice to help the normalization calculation, below.	 (line 2575)
 		tattr1 = VectorStatistic(attr_int, "Sum",)
