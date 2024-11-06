@@ -19,5 +19,4 @@ The MRM is maintained and operated by a team of modelers from the following agen
 •	Rock Hill-Forth Mill Area Transportation Study (RFATS)
 •	Rocky River Rural Planning Organization (RRRPO)
 
-Model developers: Caliper
-Caliper PM: Kyle Ward
+Model developers: Caliper |  Caliper PM: Kyle Ward
