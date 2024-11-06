@@ -1,4 +1,4 @@
-# Metrolina
+# Metrolina Regional Model (MRM)
 
 Development documentation:
 To be added...
