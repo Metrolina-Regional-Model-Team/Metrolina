@@ -90,6 +90,9 @@ Highway\\HwyAssn_RunHOTMidday
 Highway\\HwyAssn_RunHOTNight
 Highway\\HwyAssn_HOT_TCv7
 Highway\\HwyAssn_RunHOTTotAssn
+Highway\\DidItRun
+Highway\\GetFieldCore
+Highway\\Matrix_template
 
 
 Transit\\RouteSystemSetUp

@@ -54,9 +54,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 
 	setview(netview)
 
-	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB22 > 0 then 1 else 0",)
-	MTKflag		= CreateExpression(netview, "MTKFLAG", "if MTK22 > 0 then 1 else 0",)
-	HTKflag		= CreateExpression(netview, "HTKFLAG", "if HTK22 > 0 then 1 else 0",)
+	cntflag		= CreateExpression(netview, "CNTFLAG", "if CALIB > 0 then 1 else 0",)
 	fun2		= CreateExpression(netview, "Fun2", "if FUNCL = 1 or FUNCL = 2 or FUNCL = 9 then 1 else if funcl < 6 then 3 else if funcl < 10 then 4 else if (funcl > 20 and funcl < 30 or funcl = 82 or funcl = 83) then 2 else 0",)  
 	cntyaf	= CreateExpression(netview, "CntyAF", "COUNTY * 10000 + AREATP * 100 + Fun2",)
 	vmtlen	= CreateExpression(netview, "VMTLen", "if FUNCL = 90 then nz(LENGTH) * 2 else nz(LENGTH)",)
@@ -69,8 +67,8 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	net_bin = AssnSubDir + "\\Tempnet.bin"
 	tjoin_bin = AssnSubDir + "\\Tempjoinnet.bin"
 
-	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", 
-				"COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA", "CNTFLAG", "MTKFLAG", "HTKFLAG", "Fun2", "CntyAF", "VMTLen"}
+	netfields = {"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", "AREATP", "CALIB", "MTK", "HTK", "Scrln", 
+				"COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA", "CNTFLAG", "Fun2", "CntyAF", "VMTLen"}
 
 	ExportView(netview+"|HwyLinks", "FFB", net_bin, netfields ,)
 
@@ -192,8 +190,8 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 		hotpl3ba	= CreateExpression(jointod, "HOTpl3" + tod[i] + "BA", "nz(BA_Flow_HOTPOOL3)",)
 		hotcomab	= CreateExpression(jointod, "HOTcom" + tod[i] + "AB", "nz(AB_Flow_HOTCOM)",)
 		hotcomba	= CreateExpression(jointod, "HOTcom" + tod[i] + "BA", "nz(BA_Flow_HOTCOM)",)
-		sov		= CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA + HOTsov" + tod[i] + "AB + HOTsov" + tod[i] + "BA",)
-		com		= CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA + HOTcom" + tod[i] + "AB + HOTcom" + tod[i] + "BA",)
+		sov		    = CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA + HOTsov" + tod[i] + "AB + HOTsov" + tod[i] + "BA",)
+		com		    = CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA + HOTcom" + tod[i] + "AB + HOTcom" + tod[i] + "BA",)
 		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA + HOTpl2" + tod[i] + "AB + HOTpl2" + tod[i] + "BA",)
 		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA + HOTpl3" + tod[i] + "AB + HOTpl3" + tod[i] + "BA",)
 		MiddleField	= {"Fresov" + tod[i] + "AB", "Fresov" + tod[i] + "BA", "HOTsov" + tod[i] + "AB", "HOTsov" + tod[i] + "BA", 
@@ -253,15 +251,15 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	tot_vht		= CreateExpression(join4, "TOT_VHT", "VHT_AM + VHT_MI + VHT_PM + VHT_NT",)
 
 
-	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB22 > 0 then pow(TOT_VOL - CALIB22,2) else 0",)
+	cntmcsq		= CreateExpression(join4, "CNTMCSQ", "if CALIB > 0 then pow(TOT_VOL - CALIB,2) else 0",)
 //	commcsq		= CreateExpression(join4, "COMMCSQ", "if COM08 > 0 then pow(TOT_COM - COM08,2) else 0",)
-	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK22 > 0 then pow(TOT_MTK - MTK22,2) else 0",) 
-	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK22 > 0 then pow(TOT_HTK - HTK22,2) else 0",)
+	mtkmcsq		= CreateExpression(join4, "MTKMCSQ", "if MTK > 0 then pow(TOT_MTK - MTK,2) else 0",) 
+	htkmcsq		= CreateExpression(join4, "HTKMCSQ", "if HTK > 0 then pow(TOT_HTK - HTK,2) else 0",)
 
 	if typeassn = "base" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",  
@@ -286,42 +284,11 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
 	 	 "CNTFLAG", "MTKFLAG", "HTKFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
 	end
-
-/*	else if typeassn = "HOT2+" then do
+	
+else if typeassn = "HOT3+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
-	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
-	 	 "Fun2", "CntyAF", "VMTLen", 
-	 	 "VOL_POST", "Tot_Vol",   
-	 	 "TOT_VMT", "VMT_AM", "VMT_MI", "VMT_PM", "VMT_NT", 
-		 "TOT_VHT", "VHT_AM", "VHT_MI", "VHT_PM", "VHT_NT",  
- 	 	 "TOT_SOV", "sovAM", "sovMI", "sovPM", "sovNT", 
- 	 	 "TOT_POOL2", "pool2AM", "pool2MI", "pool2PM", "pool2NT", 
- 	 	 "TOT_POOL3", "pool3AM", "pool3MI", "pool3PM","pool3NT",  
- 	 	 "TOT_COM", "comAM", "comMI", "comPM", "comNT", 
- 	 	 "TOT_MTK", "mtkAM", "mtkMI", "mtkPM", "mtkNT", 
- 	 	 "TOT_HTK", "htkAM", "htkMI", "htkPM", "htkNT", 
-	 	 "VolAMAB", "VolAMBA", "VolMIAB", "VolMIBA", "VolPMAB", "VolPMBA", "VolNTAB", "VolNTBA", 
-	 	 "FresovAMAB", "FresovAMBA",  "FresovMIAB", "FresovMIBA", "FresovPMAB", "FresovPMBA", "FresovNTAB", "FresovNTBA",  
-	 	 "HOTsovAMAB", "HOTsovAMBA", "HOTsovMIAB", "HOTsovMIBA", "HOTsovPMAB", "HOTsovPMBA", "HOTsovNTAB", "HOTsovNTBA",  
-	 	 "Frepl2AMAB", "Frepl2AMBA", "Frepl2MIAB", "Frepl2MIBA", "Frepl2PMAB", "Frepl2PMBA", "Frepl2NTAB", "Frepl2NTBA",  
-	 	 "pl3AMAB", "pl3AMBA", "pl3MIAB", "pl3MIBA", "pl3PMAB", "pl3PMBA", "pl3NTAB", "pl3NTBA",   
-	 	 "FrecomAMAB", "FrecomAMBA", "FrecomMIAB", "FrecomMIBA", "FrecomPMAB", "FrecomPMBA", "FrecomNTAB", "FrecomNTBA",
-	 	 "HOTcomAMAB", "HOTcomAMBA", "HOTcomMIAB", "HOTcomMIBA", "HOTcomPMAB", "HOTcomPMBA", "HOTcomNTAB", "HOTcomNTBA",    
-	 	 "mtkAMAB", "mtkAMBA", "mtkMIAB", "mtkMIBA", "mtkPMAB", "mtkPMBA", "mtkNTAB", "mtkNTBA",   
-	 	 "htkAMAB", "htkAMBA", "htkMIAB", "htkMIBA", "htkPMAB", "htkPMBA","htkNTAB", "htkNTBA",
-	 	 "minAMAB", "minAMBA", "minMIAB", "minMIBA", "minPMAB", "minPMBA", "minNTAB", "minNTBA", 
-	 	 "MinRawAMAB", "MinRawAMBA", "MinRawMIAB", "MinRawMIBA", "MinRawPMAB", "MinRawPMBA", "MinRawNTAB", "MinRawNTBA", 
-	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
-	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
-	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
-	end
-*/	else if typeassn = "HOT3+" then do
-		OutFields = 
-		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB22", "MTK22", "HTK22", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
+	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
 	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
 	 	 "Fun2", "CntyAF", "VMTLen", 
 	 	 "TotVolAB", "TotVolBA", "VOL_POST", "Tot_Vol",   
@@ -355,21 +322,6 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	ExportView(join4+"|", "FFB", out_bin, OutFields,)
 
 	CloseView(join4)
-
-//copy bin to dbf so other pgms ok 
-//	bin_in = OpenTable("bin_in", "FFB", {out_bin,})
-//	ExportView(bin_in + "|", "dBASE", out_dbf, , )
-
-	//Get Rid of temps
-//	tempset = {net_bin, tempam_bin, temppm_bin, tempmi_bin}
-//	for i = 1 to tempset.length do
-//		killit = GetFileInfo(tempset[i])
-//		if killit <> null then do
-//			killparts = SplitPath(tempset[i])
-//			DeleteFile(tempset[i])
-//			DeleteFile(killparts[1] + killparts[2] + killparts[3] + ".dcb")
-//		end
-//	end //for i
 
 	return(totassnOK)
 

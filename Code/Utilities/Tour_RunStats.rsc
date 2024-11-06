@@ -789,7 +789,7 @@ Macro "Tour_RunStats" (Args)
 //Creates VolGroupStats output files
 
 	volgroup_tab = CreateTable("volgroup_tab", DirReport + "\\volgroup_tab.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"VolGrpID", "Integer", 2, , "No"},
-	{"LinksCount", "Integer", 10, , "No"}, {"Length", "Real", 21, 4, "No"}, {"CALIB22", "Real", 21, 4, "No"}, {"Tot_Vol", "Real", 21, 4, "No"}, {"TOT_VMT", "Real", 21, 4, "No"},
+	{"LinksCount", "Integer", 10, , "No"}, {"Length", "Real", 21, 4, "No"}, {"CALIB", "Real", 21, 4, "No"}, {"Tot_Vol", "Real", 21, 4, "No"}, {"TOT_VMT", "Real", 21, 4, "No"},
 	{"TOT_VHT", "Real", 21, 4, "No"}, {"CNTMCSQ", "Real", 21, 4, "No"}})
 
 		
@@ -809,31 +809,31 @@ Macro "Tour_RunStats" (Args)
 					counter = counter + 1
 					
 					SetView("totassn_tab")
-					qry1 = "Select * where STCNTY = " + stcnty_ar[c] + " and CALIB22 between " + i2s(volgroup_ar[vg]+1) + " and " + i2s(volgroup_ar[vg+1]) // 1-1000, 1001 - 2500
+					qry1 = "Select * where STCNTY = " + stcnty_ar[c] + " and CALIB between " + i2s(volgroup_ar[vg]+1) + " and " + i2s(volgroup_ar[vg+1]) // 1-1000, 1001 - 2500
 					numlinks = SelectByQuery("numlinks", "Several", qry1, )
 
 					stats_tab = ComputeStatistics("totassn_tab|numlinks", "stats_tab", Dir +"\\stats_tab.bin", "FFB",) 
 					
 					SetView("stats_tab")
-					qry2 = 'Select * where Field = "Length" or Field= "CALIB22" or Field = "Tot_Vol" or Field = "CNTMCSQ" or Field = "TOT_VMT" or Field = "TOT_VHT" '
+					qry2 = 'Select * where Field = "Length" or Field= "CALIB" or Field = "Tot_Vol" or Field = "CNTMCSQ" or Field = "TOT_VMT" or Field = "TOT_VHT" '
 					sumfields = SelectByQuery("sumfields", "Several", qry2, )
 
 					stats_v = GetDataVector(stats_tab +"|sumfields", "Sum",)
 					lengthval = stats_v[1]
-					CALIB22val = stats_v[2]
+					CALIBval = stats_v[2]
 					tot_volval = stats_v[3]
 					TOT_VMTval = stats_v[4]
 					TOT_VHTval = stats_v[5]	
 					CNTMCSQval = stats_v[6]			
 	
-					rh = AddRecord("volgroup_tab", {{"STCNTY", s2i(stcnty_ar[c])}, {"VolGrpID", counter}, {"LinksCount", numlinks}, {"Length", lengthval}, {"CALIB22", CALIB22val},
+					rh = AddRecord("volgroup_tab", {{"STCNTY", s2i(stcnty_ar[c])}, {"VolGrpID", counter}, {"LinksCount", numlinks}, {"Length", lengthval}, {"CALIB", CALIBval},
 						{"Tot_Vol", tot_volval}, {"TOT_VMT", TOT_VMTval}, {"TOT_VHT", TOT_VHTval}, {"CNTMCSQ", CNTMCSQval}})      
 					CloseView(stats_tab)
 				end
 			end
 		
 
-		volgroup_tab2 = ExportView("volgroup_tab|", "CSV", DirReport + "\\VolGroupStats.csv",{"STCNTY", "VolGrpID", "LinksCount", "Length", "CALIB22", "Tot_Vol", "CNTMCSQ", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )		
+		volgroup_tab2 = ExportView("volgroup_tab|", "CSV", DirReport + "\\VolGroupStats.csv",{"STCNTY", "VolGrpID", "LinksCount", "Length", "CALIB", "Tot_Vol", "CNTMCSQ", "TOT_VMT", "TOT_VHT"}, { {"CSV Header", "True"} } )		
 	
     
 

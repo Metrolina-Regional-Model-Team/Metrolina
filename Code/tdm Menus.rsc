@@ -34,7 +34,7 @@ menu "Metrolina Menu"
     init do
     enditem
 
-    MenuItem "Create Scenario" text: "Create Scenario"
+    MenuItem "Create Tour Dir" text: "Create Scenario"
         do 
         mr = CreateObject("Model.Runtime")
         Args = mr.GetValues()
