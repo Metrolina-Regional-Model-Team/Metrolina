@@ -15,6 +15,11 @@ Macro "RouteSystemSetUp" (Args)
 	{, , netname, } = SplitPath(net_file)
 	map = CreateObject("Map", {FileName: route_file})
 
+	// Get the scope of a geographic file
+
+	info = GetDBInfo(net_file)
+	scope = info[1]
+
 	ReloadRouteSystem(route_file)
 	VerifyRouteSystem(route_file, "Connected")
 	nottagged = TagRouteStopsWithNode("Vehicle Routes", null, "UserID", 0.02)
@@ -26,4 +31,5 @@ Macro "RouteSystemSetUp" (Args)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Build Networks: exit Route System Set Up  " + datentime)
+	
 endMacro
