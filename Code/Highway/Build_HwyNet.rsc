@@ -134,9 +134,9 @@ closemap("MetroRoads")
 	nv = netview // alias
 	SetView(nv)
 
-	network_qry = "Select * where projnum1 >0 or projnum2>0 or projnum3>0 or projam>0"
-	prj_array = {"projnum1", "projnum2", "projnum3", "projam"} 
-	prj_ar = {"prj1", "prj2", "prj3", "prjam"} 
+	network_qry = "Select * where projnum1 >0 or projnum2>0 or projnum3>0"
+	prj_array = {"projnum1", "projnum2", "projnum3"} 
+	prj_ar = {"prj1", "prj2", "prj3"} 
 
 	n_recs = SelectByQuery ("project_links", "Several", network_qry,)
 
