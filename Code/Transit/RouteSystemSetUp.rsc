@@ -20,7 +20,6 @@ Macro "RouteSystemSetUp" (Args)
 	info = GetDBInfo(net_file)
 	scope = info[1]
 
-
 	ReloadRouteSystem(route_file)
 	VerifyRouteSystem(route_file, "Connected")
 	nottagged = TagRouteStopsWithNode("Vehicle Routes", null, "UserID", 0.02)
@@ -32,4 +31,5 @@ Macro "RouteSystemSetUp" (Args)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Build Networks: exit Route System Set Up  " + datentime)
+	
 endMacro
