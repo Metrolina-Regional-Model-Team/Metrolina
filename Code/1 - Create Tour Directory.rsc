@@ -194,13 +194,12 @@ Macro "CreateDir" (Args)
     LandUseStatus = 1
 
     RunDirSubDir = 
-        {"\\AutoSkims", "\\Ext", "\\HwyAssn", "\\LandUse", "\\ModeSplit", "\\Report", "\\Skims", "\\TD", "\\TG", "\\TOD2",
+        {"\\AutoSkims", "\\Ext", "\\HwyAssn", "\\LandUse", "\\Report", "\\Skims", "\\TD", "\\TG", "\\TOD2",
             "\\TourModeSplit",
             "\\TranAssn", "\\TripTables", "\\HwyAssn\\HOT",
             "\\TranAssn\\PPrmW", "\\TranAssn\\PPrmD", "\\TranAssn\\PPrmDrop", "\\TranAssn\\OPPrmW", "\\TranAssn\\OPPrmD",
             "\\TranAssn\\OPPrmDrop", "\\TranAssn\\PBusW", "\\TranAssn\\PBusD", "\\TranAssn\\PBusDrop", "\\TranAssn\\OPBusW", 
-            "\\TranAssn\\OPBusD", "\\TranAssn\\OPBusDrop",
-            "\\ModeSplit\\Inputs","\\ModeSplit\\Inputs\\Controls", "\\ModeSplit\\Results"}	
+            "\\TranAssn\\OPBusD", "\\TranAssn\\OPBusDrop"}	
 
     for i = 1 to RunDirSubDir.length do
         if GetDirectoryInfo(DirUser + RunDirSubDir[i], "All") = null then CreateDirectory(DirUser + RunDirSubDir[i])
