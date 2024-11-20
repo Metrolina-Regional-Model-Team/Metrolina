@@ -56,6 +56,7 @@ macro "VMTAQ" (Args)
 
 	
 	//  RUNSTATS_VMTCnty ****************************
+	//Co_fedfunc
 
 	VMTAQ2 =  JoinViews("VMTAQ2", "FUNAQID.FUNAQ", "TotAssn.CO_FEDFUNC", 
         	           {{"A",}, 
