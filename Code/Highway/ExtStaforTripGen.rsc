@@ -9,7 +9,8 @@ Macro "ExtStaforTripGen" (Args)
 // 5/30/19, mk: There are now three distinct networks, use offpeak 
 
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netview, } = SplitPath(hwy_file)
 	SPMATFile = Dir + "\\Skims\\SPMAT_Free.mtx"
 	SPMATCoreName = "Length (skim)"

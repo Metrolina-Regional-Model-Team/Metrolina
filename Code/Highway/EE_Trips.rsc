@@ -9,7 +9,7 @@ Macro "EE_Trips" (Args)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File]
+	sedata_file = Args.[LandUse File]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null

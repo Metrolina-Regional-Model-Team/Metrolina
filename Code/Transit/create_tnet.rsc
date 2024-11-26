@@ -102,28 +102,35 @@ Macro "create_tnet" (time_period, transit_mode, access_mode, Dir)
      Opts = null
 
      Opts.Input.[Transit RS] = route_file
+	 
 
 	// -- setting for selecting transit routes	
 
 	if ( transit_mode = "premium") then do
 		if (time_period = "peak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where AM_HEAD > 0 and ALT_FLAG = 1"} 
+		     //Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where AM_HEAD > 0 and ALT_FLAG = 1"} 
+			 Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes", "All Modes", "Select * where AM_HEAD > 0 and ALT_FLAG = 1"} 
 		if (time_period = "offpeak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where MID_HEAD > 0 and ALT_FLAG = 1"} 
+		     //Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where MID_HEAD > 0 and ALT_FLAG = 1"} 
+			 Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes", "All Modes", "Select * where MID_HEAD > 0 and ALT_FLAG = 1"} 
 	end
 
 	if ( transit_mode = "premium2") then do
 		if (time_period = "peak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where AM_HEAD > 0 and Mode < 5 and ALT_FLAG = 1"} 
+		     //Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where AM_HEAD > 0 and Mode < 5 and ALT_FLAG = 1"} 
+			 Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes",  "All Modes", "Select * where AM_HEAD > 0 and Mode < 5 and ALT_FLAG = 1"} 
 		if (time_period = "offpeak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where MID_HEAD > 0  and Mode < 5 and ALT_FLAG = 1"} 
+		     //Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Modes", "Select * where MID_HEAD > 0  and Mode < 5 and ALT_FLAG = 1"} 
+			 Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes",  "All Modes", "Select * where MID_HEAD > 0  and Mode < 5 and ALT_FLAG = 1"} 
 	end
 
 	if ( transit_mode = "bus") then do
 		if (time_period = "peak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Buses", "Select * where AM_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"} 
+		    // Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Buses", "Select * where AM_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"} 
+			Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes", "All Buses", "Select * where AM_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"} 
 		if (time_period = "offpeak") then 
-		     Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Buses", "Select * where MID_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"}
+			// Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "[Vehicle Routes+ROUTES]", "All Buses", "Select * where MID_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"}
+			 Opts.Input.[RS Set] = {route_file + "|Vehicle Routes", "Vehicle Routes", "All Buses", "Select * where MID_HEAD > 0 and (Mode >= 5) and ALT_FLAG = 1"}
 	end
 
 //     Opts.Input.[Walk Link Set] = {net_file + "|" + link_lyr, link_lyr, "Walking Links", "Select * where TTwalkAB <> 9999.00 or TTwalkBA <> 9999.00"}
@@ -254,15 +261,18 @@ Macro "create_tnet" (time_period, transit_mode, access_mode, Dir)
 
 	end
 
-     Opts.Global.[Network Options].[Route Attributes].MODE = {"[Vehicle Routes+ROUTES].MODE"}
+    // Opts.Global.[Network Options].[Route Attributes].MODE = {"[Vehicle Routes+ROUTES].MODE"}
+	 Opts.Global.[Network Options].[Route Attributes].MODE = {"[Vehicle Routes].MODE"}
 
 	if ( time_period = "peak") then
-	     Opts.Global.[Network Options].[Route Attributes].AM_HEAD = {"[Vehicle Routes+ROUTES].AM_HEAD"}
+	     //Opts.Global.[Network Options].[Route Attributes].AM_HEAD = {"[Vehicle Routes+ROUTES].AM_HEAD"}
+		 Opts.Global.[Network Options].[Route Attributes].AM_HEAD = {"[Vehicle Routes].AM_HEAD"}
 	else if ( time_period = "offpeak") then 
-		Opts.Global.[Network Options].[Route Attributes].MID_HEAD = {"[Vehicle Routes+ROUTES].MID_HEAD"}
-
-     Opts.Global.[Network Options].[Route Attributes].DWELL = {"[Vehicle Routes+ROUTES].DWELL"}
-     Opts.Global.[Network Options].[Stop Attributes].UserID = {"[Route Stops].UserID"}
+		//Opts.Global.[Network Options].[Route Attributes].MID_HEAD = {"[Vehicle Routes+ROUTES].MID_HEAD"}
+		Opts.Global.[Network Options].[Route Attributes].MID_HEAD = {"[Vehicle Routes].MID_HEAD"}
+     //Opts.Global.[Network Options].[Route Attributes].DWELL = {"[Vehicle Routes+ROUTES].DWELL"}
+     Opts.Global.[Network Options].[Route Attributes].DWELL = {"[Vehicle Routes].DWELL"}
+	 Opts.Global.[Network Options].[Stop Attributes].UserID = {"[Route Stops].UserID"}
 
 // --- Set the Stop Access flag for Express Buses - Disabled Temporarily	
 // Enable stop access coding for modes 5 and 6 for use with TransCAD5, JainM, 07.20.08
@@ -310,8 +320,9 @@ Macro "create_tnet" (time_period, transit_mode, access_mode, Dir)
 		{"TTWtdWlk*", {link_lyr + ".TTWtdWlkAB", link_lyr + ".TTWtdWlkBA"}, "SUMFRAC"},
 		{"BRT_Flag", {link_lyr + ".BRT_Flag", link_lyr + ".BRT_Flag"}, "SUMFRAC"}}
 
-     Opts.Global.[Network Options].[Mode Field] = "[Vehicle Routes+ROUTES].Mode"
-     Opts.Global.[Network Options].[Walk Mode] = link_lyr + ".Mode"
+     //Opts.Global.[Network Options].[Mode Field] = "[Vehicle Routes+ROUTES].Mode"
+     Opts.Global.[Network Options].[Mode Field] = "[Vehicle Routes].MODE"
+	 Opts.Global.[Network Options].[Walk Mode] = link_lyr + ".Mode"
 
 	if ( access_mode = "drive" or access_mode = "dropoff") then 
 	     Opts.Global.[Network Options].[Link Direction Field] = link_lyr + ".Dir"

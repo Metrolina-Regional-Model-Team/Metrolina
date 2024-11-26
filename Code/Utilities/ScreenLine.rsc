@@ -17,7 +17,7 @@ Macro "ScreenLine" (Args)
 //	if nlnks < 1 then goto NoScreen
 	ExportView("TotAssn"+"|ScrLineLinks", "FFB", Dir + "\\hwyassn\\ScreenLineLinks.bin", 
 		{"SCRLN", "ID", "LENGTH", "DIR", "FUNCL", "AREATP", "COUNTY","Strname", "A_CrossStr", "B_CrossStr", 
-		 "CALIB10", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},) 
+		 "CALIB22", "TOT_VOL", "CNTFLAG", "CNTMCSQ"},) 
 	
 //	CloseView(TotAssn)
 
@@ -26,12 +26,12 @@ Macro "ScreenLine" (Args)
 	 	
 	join3 =  JoinViews("ScrLnSum", "ScrLnID.SCRLN", "ScrLnLinks.SCRLN", 
         	           {{"A",}, 
-    			    {"Fields",{{"CALIB10", {{"Sum"}}}, {"TOT_VOL",  {{"Sum"}}},     		       
+    			    {"Fields",{{"CALIB22", {{"Sum"}}}, {"TOT_VOL",  {{"Sum"}}},     		       
 			               {"CNTFLAG",   {{"Sum"}}}, {"CNTMCSQ",  {{"Sum"}}}     		       
    			       }}})
 
 	ExportView("ScrLnSum|", "CSV", Dir + "\\report\\ScreenLineSummary.csv", 
-		{"SCRLN", "CALIB10", "TOT_VOL", "CNTFLAG", "CNTMCSQ"}, { {"CSV Header", "True"} } )
+		{"SCRLN", "CALIB22", "TOT_VOL", "CNTFLAG", "CNTMCSQ"}, { {"CSV Header", "True"} } )
 	
 	CloseView(join3)
 	CloseView(ScrLnLinks)

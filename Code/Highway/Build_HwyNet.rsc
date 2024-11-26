@@ -1,13 +1,8 @@
-Macro "Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName, timeperiod)
+Macro "Build_HwyNet" (Args, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, HwyName)
 //Macro"Build_HwyNet" (MRMDir, Dir, RunYear, MasterHwyFile, prj_year, Toll_File, AMPkHwyName, PMPkHwyName, OPHwyName, timeperiod)
 
 //Returns netview - Hwy file name
 // 5/30/19, mk: This version is set up to create three distinct networks: AM peak, PM peak, and offpeak
-
-MRMDir = Args.[MRM Directory]
-AMPkHwyName = Args.[AM Peak Hwy Name]
-PMPkHwyName = Args.[PM Peak Hwy Name]
-OPHwyName = Args.[OffPeak Hwy Name]
 
 CreateProgressBar("Build Highway Network", "False")
 
@@ -54,10 +49,14 @@ closemap("MetroRoads")
     base =  Dir + "\\BASE_LINKS_net"+yearnet+".dbf"
 	select = "Select*where YEAR < " + I2S(yearselect)
 
-	hwyname_ar = {AMPkHwyName, PMPkHwyName, OPHwyName}
+	/*if HwyName <> null 
+		then {, , netview, } = SplitPath(hwy_file)
+		else netview = "RegNet"
+	*/	
+	
+	//hwyname_ar = {AMPkHwyName, PMPkHwyName, OPHwyName}
 
-	// netview = "RegNet" + yearnet + "_" + timeperiod
-	netview = "RegNet_" + timeperiod
+	 netview = "RegNet"
 
 // 	if timeperiod = "AMpeak" then do	
 // //		if AMPkHwyName <> null 
@@ -108,9 +107,9 @@ closemap("MetroRoads")
 
 	
 	//select links with any project ids
-	nv = netview // alias
-	SetView(nv)
-	if timeperiod = "AMpeak" then do
+	//nv = netview // alias
+	//SetView(nv)
+	/*if timeperiod = "AMpeak" then do
 		network_qry = "Select * where projnum1 >0 or projnum2>0 or projnum3>0 or projam>0"
 		prj_array = {"projnum1", "projnum2", "projnum3", "projam"} 
 		prj_ar = {"prj1", "prj2", "prj3", "prjam"} 
@@ -130,7 +129,15 @@ closemap("MetroRoads")
 //ShowArray(v1)
 		goto badtimeperiod
 	end
-		
+	*/	
+	
+	nv = netview // alias
+	SetView(nv)
+
+	network_qry = "Select * where projnum1 >0 or projnum2>0 or projnum3>0"
+	prj_array = {"projnum1", "projnum2", "projnum3"} 
+	prj_ar = {"prj1", "prj2", "prj3"} 
+
 	n_recs = SelectByQuery ("project_links", "Several", network_qry,)
 
 	if n_recs> 0 then do
@@ -144,6 +151,12 @@ closemap("MetroRoads")
 			end
 		end
 		//for each link with project ids
+
+		rec = GetFirstRecord(netview+"|project_links",)
+
+		linkcounter = 0
+		updatepct = round(n_recs/94,0)
+		pbpct = 6
 
 		rec = GetFirstRecord(netview+"|project_links",)
 
@@ -371,13 +384,13 @@ RunMacro("G30 File Close All")
 
 goto quit
 
-badtimeperiod:
+/*badtimeperiod:
 		Throw("Highway Network Time period error")
 		AppendToLogFile(1, "Build_HwyNet: Error: - Time period error")
 		ShowItem(" Error/Warning messages ")
 		ShowItem("netmessageslist")
 		goto quit
-
+*/
 
 badquit:
 	DestroyProgressBar()

@@ -81,7 +81,7 @@ Macro "FillParkCost" (Args)
 
     offpeak_cost_view = CreateTable (offpeak_cost_name, offpeak_cost_file, "DBASE", offpeak_cost_table)
 
-    se_vw=opentable("SE"+theyear, "DBASE", {se_file,})
+    se_vw=opentable("SE"+theyear, "FFB", {se_file,})
 
     base_vw=opentable("Parking_Cost_Base06", "DBASE", {base_file,})
 

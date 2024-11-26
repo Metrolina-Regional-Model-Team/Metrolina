@@ -62,7 +62,7 @@ addBias = 0.8
 //	wkr2dum = if (wrkr = 2) then 1 else 0			//
 	wkr3dum = if (wrkr = 3) then 1 else 0			//SCH,HBU,
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	se_vectors = GetDataVectors(se_vw+"|", {"TAZ", "HH", "POP", "DORM", "MED_INC"},{{"Sort Order", {{"TAZ","Ascending"}}}})
 	taz = se_vectors[1]
 	hh = se_vectors[2]
@@ -504,7 +504,7 @@ WriteArray(reportfile, pctwkr)
 
 // *********** Create & fill total productions table
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	
 	prod_attr = CreateTable("prod_attr", DirArray + "\\Productions_Attractions.bin", "FFB", {
 		{"TAZ", "Short", 5, null, "Yes"},

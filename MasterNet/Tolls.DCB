@@ -1,5 +1,5 @@
 
-53
+53,codepage=65001
 "FACILITY",C,1,25,0,25,0,,"","",,"Blank",
 "PROJNUM",I,26,4,0,12,0,,"","",,"Blank",
 "FUNCL",I,30,4,0,12,0,,"","",,"Blank",

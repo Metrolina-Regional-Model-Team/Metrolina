@@ -8,7 +8,8 @@ Macro "XPR_StopFlags"  (Args)
 	theyear = Args.[Run Year]
 	taz_file = Args.[TAZ File]
 	yearnet = right(theyear,2)
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 
 
@@ -30,7 +31,6 @@ Macro "XPR_StopFlags"  (Args)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
 
 	// Get the scope of a geographic file
 
@@ -54,43 +54,9 @@ Macro "XPR_StopFlags"  (Args)
 	SetLineWidth(link_lyr+"|", 0)
 	SetLayerVisibility("Route Stops", "False")
 
+	route_layer = rtelyr[1]
 	stop_layer = rtelyr[2]
 	//	showmessage("stop_layer: " + stop_layer)
-
-
- 	//-- Open the ROUTES.DBF File - add RTE_ID field if it doesn't have it
-
-	routeview = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-	SetView(routeview)
-	field_array = GetFields (routeview, "All")
-	fld_names = field_array [1]
-	fld_specs = field_array [2]
-
-	for k = 1 to fld_names.length do
-		if (fld_names [k] = "RTE_ID") 
-			then goto skipaddfield
-	end
-
-	// add RTE_ID field to ROUTES.dbf
-	strct = GetTableStructure(routes_view)
-	for i = 1 to strct.length do
-		strct[i] = strct[i] + {strct[i][1]}
-	end
-	new_struct = strct + {{"RTE_ID", "Integer", 8, null, "False",,,, null}}
-	ModifyTable(routeview, new_struct)
-
-	skipaddfield:
-	
-
-	//  Join the [Vehicle Routes] Layer with the ROUTES.DBF file 
-	//  fill RTE_ID field  with TC internal route_id from [Vehicle Routes], close view
-	VRoutesView = joinviews("VRoutesView", "[Vehicle Routes].Key", "ROUTES.Key",)	
-
-	vroute = GetDataVector("VRoutesView|", "Route_ID",)
-	SetDataVector("VRoutesView|", "ROUTES.RTE_ID", vroute,)
-	vroute = null
-	CloseView(VRoutesView)
-
 
 	// TRANSYS route stops layer
 	
@@ -137,10 +103,10 @@ Macro "XPR_StopFlags"  (Args)
 	on error, notfound default
 
 
-
 	//	Route Stops joined to routes.dbf - using RTE_ID (TC internal route_id, filled above)
-	StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "ROUTES.RTE_ID",)
-
+	//StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "ROUTES.RTE_ID",)
+	StopsRoutesView = joinviews("StopsRoutesView", stop_layer + ".Route_ID", "[Vehicle Routes].Route_ID",)
+	
 	//Fill PRM_FLAG - all active Premium service stops
 	prm_stop_select = "Select * where Mode < 5 and ALT_FLAG = 1"
 	n_prm_stop = SelectByQuery("Premium Stops", "Several", prm_stop_select,)

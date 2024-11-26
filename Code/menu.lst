@@ -15,6 +15,9 @@ Highway\\ExtStaforTripGen
 Highway\\Trip_Generation
 Highway\\Aggregate_TripGen
 Highway\\EE_Trips
+Highway\\Matrix_template
+Highway\\GetFieldCore
+Highway\\DidItRun
 
 Highway\\HHMET
 Highway\\Tour_XX
@@ -144,7 +147,7 @@ Transit\\OPBusD_Assign
 Transit\\OPBusDrop_Assign
 Transit\\Transit_Pax_Stats
 Transit\\Transit_Operations_Stats
-\\Transit\\Transit_Boardings
+Transit\\Transit_Boardings
 Transit\\Transit_RunStats
 
 Utilities\\MRMUtilities
@@ -158,5 +161,6 @@ Utilities\\AvgTripLenTrips
 Utilities\\AvgTripLenTrips_tour
 Utilities\\Tour_RunStats
 Utilities\\HighwayCalibrationStats
+Utilities\\LinkDiffTool
 
 MRMFunctions\\DBFieldCheck

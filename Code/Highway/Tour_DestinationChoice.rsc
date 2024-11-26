@@ -52,7 +52,7 @@ Macro "Tour_DestinationChoice" (Args)
   CreateProgressBar("Tour Destination Choice...Opening files", "TRUE")
 
 //Open all needed tables, pull out vectors
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	hhbyincome = OpenTable("hhbyincome", "FFB", {DirArray + "\\HH_INCOME.bin",})
 	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
 	distCBD_vw = OpenTable("distcbd", "FFA", {Dir + "\\LandUse\\Dist_to_CBD.asc",})

@@ -26,7 +26,8 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 //	goto skiparound
 
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[AM Peak Hwy Name]
+	//hwy_file = Args.[AM Peak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netview, } = SplitPath(hwy_file)
 	MaxTTFac = Args.MaxTravTimeFactor
 	pkhrfac = Args.[Peak Hour Factor]
@@ -154,7 +155,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	vcab		= CreateExpression(jointod, "vc" + tod[i] + "AB", "if tdir <> -1 then (nz(AB_Flow) * " + r2s(pkhrfac) + ") / tcapab else 0",)
 	vcba		= CreateExpression(jointod, "vc" + tod[i] + "BA", "if tdir <> 1 then (nz(BA_Flow) * " + r2s(pkhrfac) + ") / tcapba else 0",)
 
-	pool3tod	= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
+//	pool3tod	= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
 	mtktod		= CreateExpression(jointod, "mtk" + tod[i], "mtk" + tod[i] + "AB + mtk" + tod[i] + "BA",)
 	htktod		= CreateExpression(jointod, "htk" + tod[i], "htk" + tod[i] + "AB + htk" + tod[i] + "BA",)
 
@@ -164,7 +165,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 		sov		= CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA",)
 		com		= CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA",)
 		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA",)
-//		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
+		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA",)
 		MiddleField = {"Fresov" + tod[i] + "AB", "Fresov" + tod[i] + "BA", "Frepl2" + tod[i] + "AB", "Frepl2" + tod[i] + "BA", 
 			   "Frepl3" + tod[i] + "AB", "Frepl3" + tod[i] + "BA", "Frecom" + tod[i] + "AB", "Frecom" + tod[i] + "BA", "mtk" + tod[i] + "AB", "mtk" + tod[i] + "BA", "htk" + tod[i] + "AB", "htk" + tod[i] + "BA", 
 			   "sov" + tod[i], "pool2" + tod[i], "pool3" + tod[i], "com" + tod[i], "mtk" + tod[i], "htk" + tod[i]}
@@ -192,7 +193,7 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 		sov		    = CreateExpression(jointod, "sov" + tod[i], "Fresov" + tod[i] + "AB + Fresov" + tod[i] + "BA + HOTsov" + tod[i] + "AB + HOTsov" + tod[i] + "BA",)
 		com		    = CreateExpression(jointod, "com" + tod[i], "Frecom" + tod[i] + "AB + Frecom" + tod[i] + "BA + HOTcom" + tod[i] + "AB + HOTcom" + tod[i] + "BA",)
 		pool2		= CreateExpression(jointod, "pool2" + tod[i], "Frepl2" + tod[i] + "AB + Frepl2" + tod[i] + "BA + HOTpl2" + tod[i] + "AB + HOTpl2" + tod[i] + "BA",)
-//		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA + HOTpl3" + tod[i] + "AB + HOTpl3" + tod[i] + "BA",)
+		pool3		= CreateExpression(jointod, "pool3" + tod[i], "Frepl3" + tod[i] + "AB + Frepl3" + tod[i] + "BA + HOTpl3" + tod[i] + "AB + HOTpl3" + tod[i] + "BA",)
 		MiddleField	= {"Fresov" + tod[i] + "AB", "Fresov" + tod[i] + "BA", "HOTsov" + tod[i] + "AB", "HOTsov" + tod[i] + "BA", 
 					"Frepl2" + tod[i] + "AB", "Frepl2" + tod[i] + "BA", "HOTpl2" + tod[i] + "AB", "HOTpl2" + tod[i] + "BA", 
 					"Frepl3" + tod[i] + "AB", "Frepl3" + tod[i] + "BA", "HOTpl3" + tod[i] + "AB", "HOTpl3" + tod[i] + "BA", 
@@ -281,41 +282,10 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
 	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
 	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
+	 	 "CNTFLAG", "MTKFLAG", "HTKFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
 	end
-
-/*	else if typeassn = "HOT2+" then do
-		OutFields = 
-		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
-	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "Cap1hrAB", "Cap1hrBA", 
-	 	 "TTfreeAB", "TTfreeBA", "TTPkAssnAB", "TTPkAssnBA", "lanesAB", "lanesBA",
-	 	 "Fun2", "CntyAF", "VMTLen", 
-	 	 "VOL_POST", "Tot_Vol",   
-	 	 "TOT_VMT", "VMT_AM", "VMT_MI", "VMT_PM", "VMT_NT", 
-		 "TOT_VHT", "VHT_AM", "VHT_MI", "VHT_PM", "VHT_NT",  
- 	 	 "TOT_SOV", "sovAM", "sovMI", "sovPM", "sovNT", 
- 	 	 "TOT_POOL2", "pool2AM", "pool2MI", "pool2PM", "pool2NT", 
- 	 	 "TOT_POOL3", "pool3AM", "pool3MI", "pool3PM","pool3NT",  
- 	 	 "TOT_COM", "comAM", "comMI", "comPM", "comNT", 
- 	 	 "TOT_MTK", "mtkAM", "mtkMI", "mtkPM", "mtkNT", 
- 	 	 "TOT_HTK", "htkAM", "htkMI", "htkPM", "htkNT", 
-	 	 "VolAMAB", "VolAMBA", "VolMIAB", "VolMIBA", "VolPMAB", "VolPMBA", "VolNTAB", "VolNTBA", 
-	 	 "FresovAMAB", "FresovAMBA",  "FresovMIAB", "FresovMIBA", "FresovPMAB", "FresovPMBA", "FresovNTAB", "FresovNTBA",  
-	 	 "HOTsovAMAB", "HOTsovAMBA", "HOTsovMIAB", "HOTsovMIBA", "HOTsovPMAB", "HOTsovPMBA", "HOTsovNTAB", "HOTsovNTBA",  
-	 	 "Frepl2AMAB", "Frepl2AMBA", "Frepl2MIAB", "Frepl2MIBA", "Frepl2PMAB", "Frepl2PMBA", "Frepl2NTAB", "Frepl2NTBA",  
-	 	 "pl3AMAB", "pl3AMBA", "pl3MIAB", "pl3MIBA", "pl3PMAB", "pl3PMBA", "pl3NTAB", "pl3NTBA",   
-	 	 "FrecomAMAB", "FrecomAMBA", "FrecomMIAB", "FrecomMIBA", "FrecomPMAB", "FrecomPMBA", "FrecomNTAB", "FrecomNTBA",
-	 	 "HOTcomAMAB", "HOTcomAMBA", "HOTcomMIAB", "HOTcomMIBA", "HOTcomPMAB", "HOTcomPMBA", "HOTcomNTAB", "HOTcomNTBA",    
-	 	 "mtkAMAB", "mtkAMBA", "mtkMIAB", "mtkMIBA", "mtkPMAB", "mtkPMBA", "mtkNTAB", "mtkNTBA",   
-	 	 "htkAMAB", "htkAMBA", "htkMIAB", "htkMIBA", "htkPMAB", "htkPMBA","htkNTAB", "htkNTBA",
-	 	 "minAMAB", "minAMBA", "minMIAB", "minMIBA", "minPMAB", "minPMBA", "minNTAB", "minNTBA", 
-	 	 "MinRawAMAB", "MinRawAMBA", "MinRawMIAB", "MinRawMIBA", "MinRawPMAB", "MinRawPMBA", "MinRawNTAB", "MinRawNTBA", 
-	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
-	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
-	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
-	end
-*/	else if typeassn = "HOT3+" then do
+	
+else if typeassn = "HOT3+" then do
 		OutFields = 
 		{"ID", "LENGTH", "DIR", "FUNCL", "FEDFUNC_AQ", "CO_FEDFUNC", "Strname", "A_CrossStr", "B_CrossStr", 
 	  	 "AREATP", "CALIB", "MTK", "HTK", "Scrln", "COUNTY", "STCNTY", "Cap1hrAB", "Cap1hrBA", 
@@ -345,28 +315,13 @@ macro "TotAssn" (Args, AssnSubDir, assntype)
 	 	 "VMTAMAB", "VMTAMBA", "VMTMIAB", "VMTMIBA", "VMTPMAB", "VMTPMBA", "VMTNTAB", "VMTNTBA",   
 	 	 "VHTAMAB", "VHTAMBA", "VHTMIAB", "VHTMIBA", "VHTPMAB", "VHTPMBA", "VHTNTAB", "VHTNTBA",  
 	 	 "vcAMAB", "vcAMBA", "vcPMAB", "vcPMBA", 
-	 	 "CNTFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
+	 	 "CNTFLAG", "MTKFLAG", "HTKFLAG", "CNTMCSQ", "MTKMCSQ", "HTKMCSQ"}
 	end
 
 
 	ExportView(join4+"|", "FFB", out_bin, OutFields,)
 
 	CloseView(join4)
-
-//copy bin to dbf so other pgms ok 
-//	bin_in = OpenTable("bin_in", "FFB", {out_bin,})
-//	ExportView(bin_in + "|", "dBASE", out_dbf, , )
-
-	//Get Rid of temps
-//	tempset = {net_bin, tempam_bin, temppm_bin, tempmi_bin}
-//	for i = 1 to tempset.length do
-//		killit = GetFileInfo(tempset[i])
-//		if killit <> null then do
-//			killparts = SplitPath(tempset[i])
-//			DeleteFile(tempset[i])
-//			DeleteFile(killparts[1] + killparts[2] + killparts[3] + ".dcb")
-//		end
-//	end //for i
 
 	return(totassnOK)
 

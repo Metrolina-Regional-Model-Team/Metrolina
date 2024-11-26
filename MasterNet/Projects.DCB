@@ -1,0 +1,14 @@
+
+461,codepage=65001
+"INDEX",I,1,4,0,6,0,,"","Project ID",,"Sum",
+"YEAR",I,5,4,0,6,0,,"","Project build year",,"Sum",
+"TIP_NO",C,9,20,0,20,0,,"","Transportation Improvement Plan ID",,"Copy",
+"PROJECT",C,29,75,0,75,0,,"","Project name",,"Copy",
+"LIMITS",C,104,70,0,70,0,,"","Project extents",,"Copy",
+"CATEGORY",C,174,50,0,50,0,,"","",,"Copy",
+"TYPE",C,224,50,0,50,0,,"","",,"Copy",
+"DESCRIPTION",C,274,150,0,150,0,,"","",,"Copy",
+"COUNTY",C,424,20,0,20,0,,"","",,"Copy",
+"EC_50MTP",C,444,4,0,4,0,,"","Project in existing/committed network for CRTPO 2050 MTP",,"Copy",
+"MTP50_NO",I,448,4,0,8,0,,""," CRTPO 2050 MTP project number",,"Sum",
+"PROJSET50",C,452,10,0,10,0,,"","CRTPO 2050 MTP project groupings for MRM analysis",,"Copy",

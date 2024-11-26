@@ -14,7 +14,8 @@ Macro "AutoSkims_Free" (Args)
 	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 	msg = null
 	AutoSkimsFreeOK = 1
@@ -46,8 +47,6 @@ Macro "AutoSkims_Free" (Args)
 
 //	netname = "RegNet"+yearnet
 	trans_routename = "TranSys"
-
-	ID = "Key"
 
 	// Get the scope of a geographic file
 

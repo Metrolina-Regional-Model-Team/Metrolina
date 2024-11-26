@@ -13,7 +13,8 @@ Macro "Reg_OPPrmW" (Args)
 	Dir = Args.[Run Directory]
 	taz_file = Args.[TAZ File]
 	theyear = Args.[Run Year]
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 		
 	msg = null
@@ -57,8 +58,6 @@ Macro "Reg_OPPrmW" (Args)
 
 	ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
 
-	ID = "Key"
-
 	// Get the scope of a geographic file
 
 	info = GetDBInfo(net_file)
@@ -81,14 +80,9 @@ Macro "Reg_OPPrmW" (Args)
 	SetLineWidth(link_lyr+"|", 0)
 	SetLayerVisibility("Route Stops", "False")
 
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
 
 on notfound default
 setview("Vehicle Routes")
-
-opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-view_name = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
 
 // ----------------------------------- STEP 1: Build Transit Network  -----------------------------------
 

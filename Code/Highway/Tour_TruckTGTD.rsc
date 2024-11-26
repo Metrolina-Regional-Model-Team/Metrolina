@@ -34,7 +34,7 @@ Macro "Tour_TruckTGTD" (Args)
 // ************ Trip Generation (from Trip model) *******************************************
 
 //Open tables, networks & matrices and pull data
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile","FFB", {sedata_file,})
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
 	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
 	basvol_vw = OpenTable("basvol", "FFA", {MetDir + "\\ExtSta\\extstavol.asc",})
@@ -163,6 +163,65 @@ vt_ar = {"COM", "MTK", "HTK"}
 		end
 
 	areatype_v = GetDataVectors(areatype+"|", {"TAZ", "ZAREA", "EMPTOT", "HHPOP", "EMPDEN", "POPDEN", "AREATYPE", "ATFACTACOM", "ATFACTAMTK", "ATFACTAHTK"},{{"Sort Order", {{"TAZ","Ascending"}}}})
+
+
+//Aug. 2024:  Gallup added atfacta=0.5 for AT 1 & atfacta=0.25 for AT 2
+
+strct = GetTableStructure(areatype, {{"Include Original", "True"}})
+
+// Add a field for AFACTA
+
+strct = strct + {{"ATFACTACOM", "Real", 12, 2, "False", , , , , , , null}}
+strct = strct + {{"ATFACTAMTK", "Real", 12, 2, "False", , , , , , , null}}
+strct = strct + {{"ATFACTAHTK", "Real", 12, 2, "False", , , , , , , null}}
+// Modify the table
+
+ModifyTable(areatype, strct)
+
+
+	vw1 = "areatype"
+
+//Fill ATFACTA based on area type
+	ptr = GetFirstRecord("areatype|",)
+	while ptr <> null do
+  
+		if vw1.AREATYPE> 2 
+			then vw1.ATFACTACOM = 1.0 
+		if vw1.AREATYPE = 1
+			then vw1.ATFACTACOM = 1.0 
+		if vw1.AREATYPE = 2
+			then vw1.ATFACTACOM = 1.0 
+
+		ptr = GetNextRecord("areatype|",,)
+	end
+
+	ptr = GetFirstRecord("areatype|",)
+	while ptr <> null do
+  
+		if vw1.AREATYPE> 2 
+			then vw1.ATFACTAMTK = 1.0 
+		if vw1.AREATYPE = 1
+			then vw1.ATFACTAMTK = 0.5
+		if vw1.AREATYPE = 2
+			then vw1.ATFACTAMTK = 0.25
+	
+		ptr = GetNextRecord("areatype|",,)
+	end
+
+	ptr = GetFirstRecord("areatype|",)
+	while ptr <> null do
+  
+		if vw1.AREATYPE> 2 
+			then vw1.ATFACTAHTK = 1.2
+		if vw1.AREATYPE = 1
+			then vw1.ATFACTAHTK = 0.15
+		if vw1.AREATYPE = 2
+			then vw1.ATFACTAHTK = 0.25
+	
+		ptr = GetNextRecord("areatype|",,)
+	end
+
+areatype_v = GetDataVectors(areatype+"|", {"TAZ", "ZAREA", "EMPTOT", "HHPOP", "EMPDEN", "POPDEN", "AREATYPE", "ATFACTACOM", "ATFACTAMTK", "ATFACTAHTK"},{{"Sort Order", {{"TAZ","Ascending"}}}})
 
 
 /*	arate =  { {0.146, 0.099, 0.038},	//hh
@@ -406,7 +465,7 @@ vt_ar = {"COM", "MTK", "HTK"}
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	sedata_dbf = Args.[LandUse File]
+	sedata_file = Args.[LandUse File]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
 	msg = null

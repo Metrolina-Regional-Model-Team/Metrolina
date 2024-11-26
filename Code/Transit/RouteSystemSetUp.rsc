@@ -3,7 +3,8 @@ Macro "RouteSystemSetUp" (Args)
 
 	Dir = Args.[Run Directory]
 	METDir = Args.[MET Directory]
-	net_file = Args.[Offpeak Hwy Name]
+	//net_file = Args.[Offpeak Hwy Name]
+	net_file = Args.[Hwy Name]
 	theyear = Args.[Run Year]
 
 	datentime = GetDateandTime()
@@ -13,6 +14,11 @@ Macro "RouteSystemSetUp" (Args)
 	route_file = Dir + "\\"+routename+".rts"
 	{, , netname, } = SplitPath(net_file)
 	map = CreateObject("Map", {FileName: route_file})
+
+	// Get the scope of a geographic file
+
+	info = GetDBInfo(net_file)
+	scope = info[1]
 
 	ReloadRouteSystem(route_file)
 	VerifyRouteSystem(route_file, "Connected")
@@ -25,4 +31,5 @@ Macro "RouteSystemSetUp" (Args)
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Build Networks: exit Route System Set Up  " + datentime)
+	
 endMacro

@@ -41,7 +41,7 @@ Macro "Tour_Accessibility" (Args)
 
 	DirArray  = Dir + "\\TG"
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	se_vectors = GetDataVectors(se_vw+"|", {"TAZ", "HH", "TOTEMP", "SEQ"},{{"Sort Order", {{"TAZ","Ascending"}}}})
 	taz = se_vectors[1]
 	hh = se_vectors[2]
