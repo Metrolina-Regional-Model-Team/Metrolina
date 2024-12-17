@@ -157,17 +157,17 @@ endmacro
 
 
 Macro "Summaries" (Args)
-   /* RunMacro("ODMatrixStats", Args)
+   RunMacro("ODMatrixStats", Args)
     RunMacro("VMTAQ", Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("MSMatrixStats", Args)
-   */ RunMacro("HighwayCalibrationStats", Args)
-    /*RunMacro("Tour_RunStats", Args)
+    RunMacro("HighwayCalibrationStats", Args)
+    RunMacro("Tour_RunStats", Args)
     RunMacro("Transit_Pax_Stats", Args)
     RunMacro("Transit_Operations_Stats", Args)
     RunMacro("Transit_Boardings", Args)
     RunMacro("Transit_RunStats", Args)
     RunMacro("Other Summaries", Args)
     RunMacro("Destroy Progress Bars", Args)
-   */ return(1)
+    return(1)
 endmacro

@@ -19,7 +19,7 @@ Macro "RouteSystemSetUp" (Args)
 
 	info = GetDBInfo(net_file)
 	scope = info[1]
-
+	
 	ReloadRouteSystem(route_file)
 	VerifyRouteSystem(route_file, "Connected")
 	nottagged = TagRouteStopsWithNode("Vehicle Routes", null, "UserID", 0.02)
@@ -27,7 +27,22 @@ Macro "RouteSystemSetUp" (Args)
 		then do
 			Throw("RouteSystemSetUp ERROR!, " + i2s(nottagged) + " stops not tagged to node!")
 		end	
-	map = null
+	//map = null
+
+	SetLayer("Vehicle Routes")
+	qry = 'Select * where ALT_Flag = 2 '
+	num_recs = SelectByQuery("Drop", "Several", qry,)
+	if num_recs > 0 then do
+		dim delete_array[num_recs]
+			rh = GetFirstRecord("Vehicle Routes|Drop",)
+			vals = GetRecordsValues("Vehicle Routes|Drop", rh, {"[Route_Name]"},,,,) 
+			for n = 1 to num_recs do
+				delete_array[n] = vals[1][n] // 1st element is field, 2nd element is value another day!
+				ShowArray(vals)
+			end
+			ShowArray(delete_array)
+		DeleteRoutes("Vehicle Routes", delete_array)
+	end
 
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Build Networks: exit Route System Set Up  " + datentime)

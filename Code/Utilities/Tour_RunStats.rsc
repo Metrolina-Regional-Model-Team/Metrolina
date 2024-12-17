@@ -427,7 +427,7 @@ Macro "Tour_RunStats" (Args)
 	for p = 1 to purp.length do	//purp.length
 		counter = 1
 		for c = 1 to counties.length do
-			for n = 1 to 10 do	//10 is max number of stops
+			for n = n = 1 to 11 do	//10 is max number of stops (also includes 0, so 11)
 				qry = "Select * where STCNTY = " + i2s(stcnty[c]) + " and " + purp[p] + " = " + i2s(n-1)
 				SetView(pjoin)
 				numtours = SelectByQuery("numtours", "Several", qry)
