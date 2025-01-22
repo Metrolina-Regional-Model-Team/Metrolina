@@ -364,14 +364,14 @@ MD-MD	0.1553		0.1173		0.4425		0.4425
 NT-MD	0.8447		0.8827		0.5575		0.5575
 */
 
-	pa_tod_opt = { {1, 2}, {1, 1}, {3, 4}, {3, 4} }	//AM = 1, PM = 2, MD = 3, NT = 4
+	_opt = { {1, 2}, {1, 1}, {3, 4}, {3, 4} }	//AM = 1, PM = 2, MD = 3, NT = 4
 	ap_tod_opt = { {2, 2}, {3, 4}, {2, 2}, {3, 3} }
 
 	tod2frac = { {0.9775, 0.9944, 0.9984, 1.000}, {0.9958, 0.9958, 1.000, 1.000}, {0.6341, 0.6341, 0.6341, 0.6341}, {0.1553, 0.1173, 0.4425, 0.4425} }
 
-	pa_tod_v = Vector(paper.length, "Short",)
+	_v = Vector(paper.length, "Short",)
 	ap_tod_v = Vector(paper.length, "Short",)
-	pa_tod = Vector(paper.length, "String",)
+	 = Vector(paper.length, "String",)
 	ap_tod = Vector(paper.length, "String",)
 
 SetRandomSeed(8080)
@@ -379,7 +379,7 @@ SetRandomSeed(8080)
 	for n = 1 to paper.length do
 		rand_val = RandomNumber()
 		if (tod2frac[tod1[n]][stopcode[n]] > rand_val) then do
-			pa_tod_v[n] = pa_tod_opt[tod1[n]][1]
+			_v[n] = pa_tod_opt[tod1[n]][1]
 			ap_tod_v[n] = ap_tod_opt[tod1[n]][1]
 		end
 		else do

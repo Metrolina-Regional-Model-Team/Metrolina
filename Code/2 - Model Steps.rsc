@@ -157,7 +157,7 @@ endmacro
 
 
 Macro "Summaries" (Args)
-    RunMacro("ODMatrixStats", Args)
+   RunMacro("ODMatrixStats", Args)
     RunMacro("VMTAQ", Args)
     RunMacro("AvgTripLenTrips_tour", Args)
     RunMacro("MSMatrixStats", Args)
@@ -171,26 +171,3 @@ Macro "Summaries" (Args)
     RunMacro("Destroy Progress Bars", Args)
     return(1)
 endmacro
-
-Macro "Telecommute"(Args)
-
-    RunMacro("Telecommute_20", Args) 
-    // Run telecommute overwrites files in run folder
-
-    RunMacro("Create Trips", Args)
-
-    // Create IX/XI matrices by time period directly from dc tour file(s)
-    RunMacro("Create IE EI OD", Args)
-
-    // Combine all purposes, IE/EI, Truck and Commercial data to create OD for AMPeak time period
-    RunMacro("Create Highway OD", Args, "AM")
-
-    RunMacro("HwyAssn_RunHOTAMPeak", Args)
-    RunMacro("HwyAssn_RunHOTPMPeak", Args)
-    RunMacro("HwyAssn_RunHOTMidday", Args)
-    RunMacro("HwyAssn_RunHOTNight", Args)
-    RunMacro("HwyAssn_RunHOTTotAssn", Args)
-    RunMacro("Destroy Progress Bars", Args)
-
-    return(1)
-endMacro
