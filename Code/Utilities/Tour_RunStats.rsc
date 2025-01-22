@@ -12,7 +12,7 @@ Macro "Tour_RunStats" (Args)
 	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	net_file = Args.[Hwy Name]
 
 	msg = null
 	datentime = GetDateandTime()
@@ -41,7 +41,7 @@ Macro "Tour_RunStats" (Args)
 	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
 	counties = GetDataVector(stcnty_tab + "|", "NAME",)
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 
 //******************************************************************************************************************************************************************
 //Create the "ProductionsByCo" and "AttractionsByCo" files (.bin)
@@ -198,15 +198,8 @@ Macro "Tour_RunStats" (Args)
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Runstats Tour_StopsByCounty: " + datentime)
 
-//	purp = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "EXT", "XIW", "XIN"}
-//	purp_tab = {"dcHBW", "dcSCH", "dcHBU", "dcHBS", "dcHBO", "dcATW", "dcEXT", "dcXIW", "dcXIN"}
 	fields = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "IXW", "IXN", "XIW", "XIN"}
 
-/*	stcnty_tab = OpenTable("stcnty_tab", "DBASE", {MetDir + "\\STCNTY_ID.dbf",})
-	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
-	counties = GetDataVector(stcnty_tab + "|", "NAME",)
-	se_vw = OpenTable("se_tab", "DBASE", {Dir + "\\LandUse\\LANDUSE_15_TAZ3490_MDINC10.dbf",})
-*/
 //create AP and PA tables
 	ap_tab = CreateTable("ap_tab", DirReport + "\\StopsByCo_AP.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"County", "String", 15, , "No"}}) 
 	rh = AddRecords("ap_tab", , ,{{"Empty Records", counties.length}})
@@ -388,10 +381,10 @@ Macro "Tour_RunStats" (Args)
 
 	DirTF  = Dir + "\\TG"
 
-	purp = {"HBW", "SCH", "HBU", "HBS", "HBO"}
+	purp = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW"}
 
 	TF_NUM = CreateTable("TF_NUM", DirReport + "\\TF_NUM.bin", "FFB", {{"Tours", "Integer", 2, , "No"}, {"SCH", "Integer", 8, , "No"}, {"HBU", "Integer", 8, , "No"}, 
-			{"HBW", "Integer", 8, , "No"}, {"HBS", "Integer", 8, , "No"}, {"HBO", "Integer", 8, , "No"}})
+			{"HBW", "Integer", 8, , "No"}, {"HBS", "Integer", 8, , "No"}, {"HBO", "Integer", 8, , "No"}, {"ATW", "Integer", 8, , "No"}})
 	rh = AddRecords("TF_NUM", {"Tours"}, {{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}},)
 			
 	tf_file = OpenTable("tf_file", "FFB", {DirTF + "\\TourRecords.bin",})
@@ -406,7 +399,7 @@ Macro "Tour_RunStats" (Args)
 		end
 	end
 		
-	TFnum_tab2 = ExportView("TF_NUM|", "CSV", DirReport + "\\TF_NUM.csv",{"Tours", "SCH", "HBU", "HBW", "HBS", "HBO"}, { {"CSV Header", "True"} } )
+	TFnum_tab2 = ExportView("TF_NUM|", "CSV", DirReport + "\\TF_NUM.csv",{"Tours", "SCH", "HBU", "HBW", "HBS", "HBO", "ATW"}, { {"CSV Header", "True"} } )
 //*******************************************************************************************************************************************************************
 //Create the second runstats output file for Tour Frequency (.bin)
 //Macro "Tour_NumByCounty"
@@ -418,11 +411,11 @@ Macro "Tour_RunStats" (Args)
 
 	DirTF  = Dir + "\\TG"
 
-	purp = {"HBW", "SCH", "HBU", "HBS", "HBO"}
+	purp = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW"}
 
 
 	TFnumXco = CreateTable("TFnumXco", DirReport + "\\TF_NumByCounty.bin", "FFB", {{"County", "Integer", 6, , "No"}, {"Tours", "Integer", 2, , "No"}, {"HBW", "Integer", 8, , "No"}, 
-			{"SCH", "Integer", 8, , "No"}, {"HBU", "Integer", 8, , "No"}, {"HBS", "Integer", 8, , "No"}, {"HBO", "Integer", 8, , "No"}})
+			{"SCH", "Integer", 8, , "No"}, {"HBU", "Integer", 8, , "No"}, {"HBS", "Integer", 8, , "No"}, {"HBO", "Integer", 8, , "No"}, {"ATW", "Integer", 8, , "No"}})
 
 	pjoin = JoinViews("pjoin", "tf_file.TAZ", "SEFile.TAZ",)
 	
@@ -434,7 +427,7 @@ Macro "Tour_RunStats" (Args)
 	for p = 1 to purp.length do	//purp.length
 		counter = 1
 		for c = 1 to counties.length do
-			for n = 1 to 10 do	//10 is max number of stops
+			for n = n = 1 to 11 do	//10 is max number of stops (also includes 0, so 11)
 				qry = "Select * where STCNTY = " + i2s(stcnty[c]) + " and " + purp[p] + " = " + i2s(n-1)
 				SetView(pjoin)
 				numtours = SelectByQuery("numtours", "Several", qry)
@@ -445,190 +438,7 @@ Macro "Tour_RunStats" (Args)
 
 	end
 
-	TFnumXco_tab2 = ExportView("TFnumXco|", "CSV", DirReport + "\\TF_NumByCounty.csv",{"County", "Tours", "HBW", "SCH", "HBU", "HBS", "HBO"}, { {"CSV Header", "True"} } )
-//*******************************************************************************************************************************************************************
-//Creates the "StopsByCoPA" and "StopsByCoAP" files (.bin)
-//Macro "Tour_StopsByCounty"
-
-/*  UpdateProgressBar("Runstats Tour_StopsByCounty", 10) 
-
-	purp = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "EXT", "XIW", "XIN"}
-	purp_tab = {"dcHBW", "dcSCH", "dcHBU", "dcHBS", "dcHBO", "dcATW", "dcEXT", "dcXIW", "dcXIN"}
-	fields = {"HBW", "SCH", "HBU", "HBS", "HBO", "ATW", "IXW", "IXN", "XIW", "XIN"}
-
-
-	stcnty_tab = OpenTable("stcnty_tab", "DBASE", {MetDir + "\\STCNTY_ID.dbf",})
-	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
-	counties = GetDataVector(stcnty_tab + "|", "NAME",)
-
-	se_tab = OpenTable("se_tab", "DBASE", {Dir + "\\LandUse\\LANDUSE_15_TAZ3490_MDINC10.dbf",})
-
-//create AP and PA tables
-	ap_tab = CreateTable("ap_tab", DirReport + "\\StopsByCo_AP.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"County", "String", 15, , "No"}}) 
-	rh = AddRecords("ap_tab", , ,{{"Empty Records", counties.length}})
-	apstrct = GetTableStructure(ap_tab)					
-	
-	pa_tab = CreateTable("pa_tab", DirReport + "\\StopsByCo_PA.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"County", "String", 15, , "No"}}) 
-	rh = AddRecords("pa_tab", , ,{{"Empty Records", counties.length}})
-	pastrct = GetTableStructure(pa_tab)
-						
-	for j = 1 to apstrct.length do
- 		apstrct[j] = apstrct[j] + {apstrct[j][1]}
- 		pastrct[j] = pastrct[j] + {pastrct[j][1]}
- 	end
-	for j = 1 to fields.length do
-		apstrct = apstrct + {{fields[j], "Integer", 8,,,,,,,,,}}
-		pastrct = pastrct + {{fields[j], "Integer", 8,,,,,,,,,}}
- 	end
-	ModifyTable(ap_tab, apstrct)
-	ModifyTable(pa_tab, pastrct)
-
-// fill in STCNTY and County name	
-	SetDataVectors("ap_tab|", {{"STCNTY", stcnty}, {"County", counties}},)
-	SetDataVectors("pa_tab|", {{"STCNTY", stcnty}, {"County", counties}},)
-
-	counter = 1
-	apfield = {"SL_AP1","SL_AP2","SL_AP3","SL_AP4","SL_AP5","SL_AP6","SL_AP7"}
-	pafield = {"SL_PA1","SL_PA2","SL_PA3","SL_PA4","SL_PA5","SL_PA6","SL_PA7"}
-		
-// Open DC tables, join to get county totals 
-	for p = 1 to purp.length do	//purp.length
-		dc_tab = OpenTable("dc_tab", "FFB", {DirOutDC + "\\dc" +purp[p] + ".bin",})
-		apstop = GetDataVector(dc_tab+"|", "IS_AP", )
-		apmax = VectorStatistic(apstop, "Max", )
-		pastop = GetDataVector(dc_tab+"|", "IS_PA", )
-		pamax = VectorStatistic(pastop, "Max", )
-
-		
-		if (purp[p] <> "XIW" and purp[p] <> "XIN" and purp[p] <> "EXT") then do // Calculate for internal-internal dc table
-			//fill ap
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to apmax do
-				apjoin = JoinViews("apjoin", "dc_tab." + apfield[s], "se_tab.TAZ",)
-				apjoin2 = JoinViews("apjoin2", "stcnty_tab.STCNTY", "apjoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(apjoin2+"|", "[N apjoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("apjoin")
-				CloseView("apjoin2")
-			end
-			SetDataVector("ap_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})
-			//fill pa
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to pamax do
-				pajoin = JoinViews("pajoin", "dc_tab." + pafield[s], "se_tab.TAZ",)
-				pajoin2 = JoinViews("pajoin2", "stcnty_tab.STCNTY", "pajoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(pajoin2+"|", "[N pajoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("pajoin")
-				CloseView("pajoin2")
-			end
-			SetDataVector("pa_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})	
-		counter = counter + 1
-		CloseView("dc_tab")
-		dc_tab = null
-		end
-		
-		else if (purp[p] = "EXT") then do // Calculate for internal-external dc table
-			//fill IXW first, ap & pa direction
-			SetView(dc_tab)
-			qry = "Select * where Purp = 'HBW'"
-			precs = SelectByQuery("precs", "Several", qry)
-			ExportView("dc_tab|precs", "MEM", "IXW",,)
-			SetView("IXW")
-			//fill ap
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to apmax do
-				apjoin = JoinViews("apjoin", "IXW." + apfield[s], "se_tab.TAZ",)
-				apjoin2 = JoinViews("apjoin2", "stcnty_tab.STCNTY", "apjoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(apjoin2+"|", "[N apjoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("apjoin")
-				CloseView("apjoin2")
-			end
-			SetDataVector("ap_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})
-			
-			//fill pa
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to pamax do
-				pajoin = JoinViews("pajoin", "IXW." + pafield[s], "se_tab.TAZ",)
-				pajoin2 = JoinViews("pajoin2", "stcnty_tab.STCNTY", "pajoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(pajoin2+"|", "[N pajoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("pajoin")
-				CloseView("pajoin2")
-			end
-			SetDataVector("pa_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})    //set productions
-			
-			CloseView("IXW")
-			IXW = null
-			counter = counter + 1
-			
-			//next IXN, ap & pa direction
-			SetView(dc_tab)
-			qry = "Select * where Purp <> 'HBW'"
-			precs = SelectByQuery("precs", "Several", qry)
-			ExportView("dc_tab|precs", "MEM", "IXN",,)
-			SetView("IXN")
-			//fill ap
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to apmax do
-				apjoin = JoinViews("apjoin", "IXN." + apfield[s], "se_tab.TAZ",)
-				apjoin2 = JoinViews("apjoin2", "stcnty_tab.STCNTY", "apjoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(apjoin2+"|", "[N apjoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("apjoin")
-				CloseView("apjoin2")
-			end
-			SetDataVector("ap_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})
-			//fill pa
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to pamax do
-				pajoin = JoinViews("pajoin", "IXN." + pafield[s], "se_tab.TAZ",)
-				pajoin2 = JoinViews("pajoin2", "stcnty_tab.STCNTY", "pajoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(pajoin2+"|", "[N pajoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("pajoin")
-				CloseView("pajoin2")
-			end
-			SetDataVector("pa_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})    //set productions
-			
-			counter = counter + 1
-			CloseView("IXN")
-			IXN = null
-			CloseView("dc_tab")
-			dc_tab = null
-		end
-		else do // Calculate for external-external dc table
-			//fill ap
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to apmax do
-				apjoin = JoinViews("apjoin", "dc_tab." + apfield[s], "se_tab.TAZ",)
-				apjoin2 = JoinViews("apjoin2", "stcnty_tab.STCNTY", "apjoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(apjoin2+"|", "[N apjoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("apjoin")
-				CloseView("apjoin2")
-			end
-			SetDataVector("ap_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})
-			//fill pa
-			totaltours = vector(counties.length, "long",{{"Constant", 0}})
-			for s = 1 to pamax do
-				pajoin = JoinViews("pajoin", "dc_tab." + pafield[s], "se_tab.TAZ",)
-				pajoin2 = JoinViews("pajoin2", "stcnty_tab.STCNTY", "pajoin.STCNTY", {{"A",}}) 
-				numtours = GetDataVector(pajoin2+"|", "[N pajoin]", {{"Sort Order", {{"stcnty_tab.STCNTY","Ascending"}}}}) 
-				totaltours = totaltours + numtours
-				CloseView("pajoin")
-				CloseView("pajoin2")
-			end
-			SetDataVector("pa_tab|", fields[counter], totaltours, {{"Sort Order", {{"STCNTY","Ascending"}}}})
-			
-			counter = counter + 1
-			CloseView("dc_tab")
-			dc_tab = null
-		end
-		
-	end		
-*/			
+	TFnumXco_tab2 = ExportView("TFnumXco|", "CSV", DirReport + "\\TF_NumByCounty.csv",{"County", "Tours", "HBW", "SCH", "HBU", "HBS", "HBO", "ATW"}, { {"CSV Header", "True"} } )
 
 //*******************************************************************************************************************************************************************
 //Creates DC_output, ODtime_dist & StopsDistr files
@@ -805,7 +615,7 @@ Macro "Tour_RunStats" (Args)
 	
 	//Define Variables - Arrays for STCNTY and VolGroup
 
-	stcnty_ar = { "37025", "37035", "37045", "37071", "37097", "37109", "37119", "37159", "37167", "37179", "45057", "45091"}
+	stcnty_ar = { "37007", "37025", "37035", "37045", "37071", "37097", "37109", "37119", "37159", "37167", "37179", "45057", "45091"}
 
 	volgroup_ar = { 0, 1000, 2500, 5000, 10000, 25000, 50000, 1000000 }
 

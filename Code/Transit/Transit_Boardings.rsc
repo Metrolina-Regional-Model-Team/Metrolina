@@ -12,10 +12,9 @@ Macro "Transit_Boardings" (Args)
 // 6/20/19, mk: There are now three distinct networks, use offpeak initially for transit set-up
 
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
-	// LogFile = Args.[Log File].value
-	// SetLogFileName(LogFile)
+
 
 	msg = null
 	TransitBoardsOK = 1
@@ -30,7 +29,7 @@ Macro "Transit_Boardings" (Args)
 	//*************************************************************************
 	//  put this either into Args or list from interface
 	//************************************************************************
-	select_group = {1,2,3,4}
+	//select_group = {1,2,3,4}
 
 	dim pprmwalk_boards[2], pprmdrive_boards[2], pprmdrop_boards[2]
 	dim opprmwalk_boards[2], opprmdrive_boards[2], opprmdrop_boards[2]
@@ -40,7 +39,7 @@ Macro "Transit_Boardings" (Args)
 
 	dim temp[10], route_id_list[1000]
 
-	if select_group.length = 0 then goto skipALL	
+	//if select_group.length = 0 then goto skipALL	
 	
 
 	// -- create a table to store the ON/OFF Boards Information for all Buses/Premium Services
@@ -51,7 +50,6 @@ Macro "Transit_Boardings" (Args)
 		{"Route_Name", "String", 25, null, "Yes"},	
 		{"Track", "Integer", 6, null, "No"},	
 		{"Corr", "Integer", 6, null, "No"},	
-		{"Key", "Integer", 8, null, "No"},	
 		{"IO", "String", 2, null, "No"},	
 		{"MODE", "Integer", 8, null, "No"},		
 		{"AM_HEAD", "Real", 8, 2, "No"},		
@@ -147,86 +145,24 @@ Macro "Transit_Boardings" (Args)
 	SetLineWidth(link_lyr+"|", 0)
 	SetLayerVisibility("Route Stops", "False")
 
-// --open the Routes.DBF file and create Key_Num field to store the "Key" values.
-// -- this is necessary as TransCAD doesnt allow using the key field for reading as its a primary key
-
-// -- check whether a field "Key_Num" exists to store key values
-
-	routes1 = opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-	field_array = GetFields (routes1, "All")
-
-	fld_names = field_array [1]
-	fld_specs = field_array [2]
-
-	field_flag = 0
-
-	for k = 1 to fld_names.length do
-		if (fld_names [k] = "KEY_NUM") then do
-			field_flag = 1
-			goto continue10
-		end
-	end
-
-continue10:
-
-	if (field_flag = 0) then do
-		// Get the structure of the routes
-		strct = GetTableStructure(routes1)
-		for i = 1 to strct.length do
-		// Copy the current name to the end of strct
-		strct[i] = strct[i] + {strct[i][1]}
-		end
-		// Add a field for Passenger Hours
-		new_struct = strct + {{"KEY_NUM", "Integer", 8, null, "False",,,, null}}
-
-		// Modify the table
-		ModifyTable(routes1, new_struct)
-	end
-
-// --- Fill the newly added field with the "Key" values
-
-	record = GetFirstRecord (routes1 + "|", null)
-
-	while record <> null do
-		routes1.KEY_NUM = routes1.key
-		record = GetNextRecord(routes1 + "|", null, null)
-	end
-
-
-//--------------------------------- Joining Vehicle Routes and Routes -----------------------------------
-
+// create selection set of routes to gather boardings
 	on notfound default
 	setview("Vehicle Routes")
-
-	opentable("Routes", "DBASE", {Dir + "\\Routes.dbf",})
-
-	routes_view = joinviews("Vehicle Routes+ROUTES", "[Vehicle Routes].Key", "ROUTES.KEY",)
-	SetView(routes_view)
-
-// create selection set of routes to gather boardings
-
-	rtesquery = "Select * where GRP_LIST = " + i2s(select_group[1])
-	if select_group.length > 1 then do
-		for i = 2 to select_group.length do
-			rtesquery = rtesquery + " or GRP_LIST = " + i2s(select_group[i])
-		end
-	end
+	
+	//if you need to specify group sets adjust query, default is set to pull boardings for all routes 
+	rtesquery = "Select * where Route_ID <> null"
 	numrtes = SelectByQuery("BoardRtes", "Several", rtesquery,)
 
-	if numrtes = 0 then goto noroutesingroup
-
-	// select_routes - list of routes to process
 	select_routes = null
-	record = GetFirstRecord (routes_view + "|BoardRtes", null)
+	record = GetFirstRecord ("Vehicle Routes" + "|BoardRtes", null)
 
 	while record <> null do
-		recval = GetRecordValues(routes_view, record, {"Route_ID"})
+		recval = GetRecordValues("Vehicle Routes", record, {"Route_ID"})
 		rteID = recval[1][2]
 		select_routes = select_routes + {rteID} 
-		record = GetNextRecord(routes_view + "|BoardRtes", null, null)
+		record = GetNextRecord("Vehicle Routes" + "|BoardRtes", null, null)
 	end
-	
+
 	// ----- Set the paths for the TASN_FLOW files
 
 	pprmw_TASN_FLW = Dir + "\\tranassn\\PprmW\\TASN_FLW.bin"
@@ -311,13 +247,15 @@ continue10:
 
 /// -------- CREATE BOARDING SUMMARY --------------------------------
 	
-	SetView(routes_view)
-
+	//SetView(routes_view)
+	setview("Vehicle Routes")
 		rec = 0
-		nrec = GetRecordCount (routes_view, null)
+		//nrec = GetRecordCount (routes_view, null)
+		nrec = GetRecordCount ("Vehicle Routes", null)
 		CreateProgressBar ("Processing Vehicle Route" + String(nrec) + " Transit Routes", "True")   
 	
-		routes_rec = GetFirstRecord (routes_view + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+		//routes_rec = GetFirstRecord (routes_view + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+		routes_rec = GetFirstRecord ("Vehicle Routes"  + "|BoardRtes", {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
 
 		while routes_rec <> null do
 
@@ -333,17 +271,18 @@ continue10:
 			peak_boards_flag = 0
 			offpeak_boards_flag = 0
 
-			SetView(routes_view)
+			SetView("Vehicle Routes")
+			routes_view = "Vehicle Routes"
+			
 			route_id = routes_view.Route_ID
 			route_name = routes_view.Route_Name
 			track = routes_view.Track
 			corr = routes_view.Corr
-			key = routes_view.KEY_NUM
 			mode = routes_view.MODE
 			io = routes_view.IO
 			peak_headway = routes_view.AM_HEAD
 			offpeak_headway = routes_view.MID_HEAD
-
+			
 			check_flag = 0
 
 			for m = 1 to select_routes.length do
@@ -589,7 +528,6 @@ continue10:
 						{"Route_ID", route_id},		
 						{"Route_Name", route_name},	
 						{"Track", track},	
-						{"Key", key},	
 						{"Corr", corr},	
 						{"IO", io},	
 						{"MODE", mode},
@@ -655,8 +593,10 @@ continue10:
 
 	end   // -- end for check flag
 	
-			SetView(routes_view)
-			routes_rec = GetNextRecord (routes_view + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+			//SetView(routes_view)
+			SetView("Vehicle Routes")
+			//routes_rec = GetNextRecord (routes_view + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
+			routes_rec = GetNextRecord ("Vehicle Routes" + "|", null, {{"Track", "Ascending"},{"IO", "Ascending"},{"Route_Name", "Ascending"}})
 		end
 	goto quit
 

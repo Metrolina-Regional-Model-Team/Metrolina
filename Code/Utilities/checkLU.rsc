@@ -10,7 +10,7 @@ Macro "checkLU" (LUFile, TAZFile)
 	tazpath = SplitPath(TAZFile)
 	TAZIDFile = tazpath[1] + tazpath[2] + tazpath[3] + "_TAZID.asc"
 	
-	LU_in = OpenTable("LU_in", "DBASE", {LUFile,})
+	LU_in = OpenTable("LU_in", "FFB", {LUFile,})
 	TAZID = OpenTable("TAZID", "FFA", {TAZIDFile,})
 
 	//TAZ in LU not in TAZID

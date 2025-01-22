@@ -85,6 +85,7 @@ macro "AvgTripLenTrips_tour" (Args)
   	if (exist <> null) then DeleteFile(StatOutName)
  
   	StatOut = OpenFile(StatOutName, "w")
+	WriteLine(StatOut, "Core," + "Mode," +"Measure,"+ "Value")
 
 //	AvgTripLengthTrips = CreateTable("AvgTripLengthTrips", DirReport + "\\AvgTripLengthTrips.bin", "FFB", {{"TOD", "String", 19, , "No"}, {"Measure", "String", 12, , "No"}, {"Result", "Real", 15, 4, "No"}}) 
 
@@ -119,7 +120,7 @@ macro "AvgTripLenTrips_tour" (Args)
 			fill_mat_sum = fill_mat_stat_array.AvgTripLen.Sum
 			if tod2_M_sum > 0 then avg_trip_length = fill_mat_sum / tod2_M_sum
 							  else avg_trip_length = 0
-			WriteLine(StatOut, tod2[i] + tod2_cores[j] + ", ATL Miles, " + r2s(avg_trip_length))
+			WriteLine(StatOut, tod2[i] + "," + tod2_cores[j] + ", ATL Miles, " + r2s(avg_trip_length))
 
 			//now do average travel time (minutes)
 			fill_mc := tod2_mc * imp_tt_mc
@@ -127,7 +128,7 @@ macro "AvgTripLenTrips_tour" (Args)
 			fill_mat_sum = fill_mat_stat_array.AvgTripLen.Sum
 			if tod2_M_sum > 0 then avg_trip_length = fill_mat_sum / tod2_M_sum
 							  else avg_trip_length = 0
-			WriteLine(StatOut, tod2[i] + tod2_cores[j] + ", ATL Min, " + r2s(avg_trip_length))
+			WriteLine(StatOut, tod2[i] + "," + tod2_cores[j] + ", ATL Min, " + r2s(avg_trip_length))
 		end
 	end
 

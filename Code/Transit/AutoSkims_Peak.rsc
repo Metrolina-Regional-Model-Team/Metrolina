@@ -14,7 +14,8 @@ Macro "AutoSkims_Peak" (Args)
 	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year]
 	yearnet = right(theyear,2)
-	hwy_file = Args.[AM Peak Hwy Name]
+	//hwy_file = Args.[AM Peak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , netname, } = SplitPath(hwy_file)
 
 	curiter = Args.[Current Feedback Iter]
@@ -49,8 +50,6 @@ Macro "AutoSkims_Peak" (Args)
 
 //	netname = "RegNet"+yearnet
 	trans_routename = "TranSys"
-
-	ID = "Key"
 
 	// Get the scope of a geographic file
 

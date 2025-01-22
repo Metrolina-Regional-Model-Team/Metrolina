@@ -52,7 +52,7 @@ Macro "Tour_DestinationChoice" (Args)
   CreateProgressBar("Tour Destination Choice...Opening files", "TRUE")
 
 //Open all needed tables, pull out vectors
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 	hhbyincome = OpenTable("hhbyincome", "FFB", {DirArray + "\\HH_INCOME.bin",})
 	distExtsta_vw = OpenTable("distextsta", "FFA", {Dir + "\\Ext\\Dist_to_Closest_ExtSta.asc",})
 	distCBD_vw = OpenTable("distcbd", "FFA", {Dir + "\\LandUse\\Dist_to_CBD.asc",})
@@ -265,7 +265,6 @@ end
 //open travel time matrices for DC calcs below
 	autopk = OpenMatrix(Dir + "\\Skims\\TThwy_peak.mtx", "False")			//open as memory-based
 	OpenMatrixFileHandle(autopk, "Write")
-
 	matrix_indices = GetMatrixIndexNames(autopk)	
 	for i = 1 to matrix_indices[1].length do
 		if matrix_indices[1][i] = "Internals" then goto gotpkindex
@@ -296,10 +295,158 @@ end
 	//create a sequential vector to add to cumulative probability vector so that when it's sorted, the correct (first) TAZ is chosen
 	aide_de_sort_vec = Vector(taz.length, "float", {{"Sequence", 0.001, 0.001}})
 
-//******************************** HBW DESTINATION CHOICE ***************************************************************************************************************
+
+//******************************CALCULATE THE NUMBER OF IX AND XI TOURS (BROKEN DOWN BY WORK/NON-WORK ******************************************************
+  UpdateProgressBar("Calculate the number of IX Work Tours", 10) 
+
+//Open extstavol table
+	extstavoltab = OpenTable("extstavoltab", "FFA", {Dir + "\\Ext\\EXTSTAVOL" + yr_str + ".asc",})
+	extstavol_v = GetDataVectors(extstavoltab+"|", {"MODEL_STA", "TOT_AUTO"},{{"Sort Order", {{"MODEL_STA","Ascending"}}}})
+	extsta = extstavol_v[1]
+	extstavol = extstavol_v[2]
+//	extstavol_ar = v2a(extstavol)		//have to do this so doesn't remove attraction from exstavol vector as well (not sure why)
+	totextstavol = VectorStatistic(extstavol, "Sum",)
+
+//Open table containing PC X/X trip ends (calculated in Tour_XX.rsc
+	xxvoltab = OpenTable("xxvoltab", "FFA", {DirArray + "\\thruvol.asc",})	
+	pcxx = GetDataVector(xxvoltab+"|", "auto",{{"Sort Order", {{"MODEL_STA","Ascending"}}}})
+	totxxvol = VectorStatistic(pcxx, "Sum",)
+	
+//Open IX/XI tables (IX first, XI second)
+	ixxipcttab = OpenTable("ixxipcttab", "CSV", {DirArray + "\\IXXI_pct.csv",})	
+	ixxipct = GetDataVector(ixxipcttab+"|", "PercentVeh",)
+	ixpct = ixxipct[1]
+	xipct = ixxipct[2]
+
+//Calculate the number of IX & XI vehicles at each station (plus total overall)  
+	remainExtVol = extstavol - pcxx
+	ixveh = r2i(remainExtVol * ixpct)
+	totixveh = VectorStatistic(ixveh, "Sum",)
+	xiveh = remainExtVol - ixveh				// need to check that adds up after converting IX to persons
+	totxiveh = VectorStatistic(xiveh, "Sum",)
+	
+//Calculate the number of IX person tours.  (Use 1.375 persons/vehicle; divide by 2 to get tours--productions/attractions)  
+	ixtours = r2i(ixveh * 1.375 / 2)
+	totixtours = VectorStatistic(ixtours, "Sum",)
+
+//Calculate the number of IX person tours that are Work & Non-Work (assumes the ratio is the same at every extsta
+	ixworkpcttab = OpenTable("ixworkpcttab", "CSV", {DirArray + "\\IX_Work_Pct.csv",})	
+	ixworkpct_v = GetDataVector(ixworkpcttab+"|", "Percent",)
+	ixworkpct = ixworkpct_v[1]
+	ixnonworkpct = ixworkpct_v[2]
+
+	totixworktours = r2i(totixtours * ixworkpct)
+	totixnonworktours = r2i(totixtours * (1 - ixworkpct))
+
+//********************** Separate Out IX Work Trips from HBW **********************************************************************************
+//Get each zone's distance to closest Extsta, and open travel time distribution table
+    //	dst2extsta = GetDataVector(distExtsta_vw+"|", "Len", {{"Sort Order", {{"From","Ascending"}}}}) 
+ 	HBW_IX_disttab = OpenTable("HBW_IX_disttab", "CSV", {DirArray + "\\HBW_IX.csv",})	
+	Lowval = GetDataVector(HBW_IX_disttab+"|", "Low",)
+	Highval = GetDataVector(HBW_IX_disttab+"|", "High",)
+	HBW_IX_distpct = GetDataVector(HBW_IX_disttab+"|", "Percent",)
+   	
+	//calculate the number of tours availible in each distribution (by distance) range
+	dim HBW_IX_tours[Lowval.length]	
+	for i = 1 to Lowval.length do
+		HBW_IX_tours[i] = r2i(totixworktours * HBW_IX_distpct[i]/100)
+	end
+	
+	//create a temp table to put all HBW tours in (HHID, disttoexsta, randnum); then sort table by randnum and first "x" number in dist bin become XIN 
+	strct = GetTableStructure(tourrecords)
+	for j = 1 to (strct.length) do
+ 		strct[j] = strct[j] + {strct[j][1]}
+ 	end
+	dim newstrct[13]
+	for j = 1 to 13 do							//there are 13 fields that need to copied from TourRecords.bin (not randum numbers)
+		newstrct[j] = strct[j]
+	end
+	temphbwdc = CreateTable("temphbwdc", DirOutDC + "\\temp_hbwdc.bin", "FFB", newstrct)
+	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"OD_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"DO_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
+	newstrct = newstrct + {{"EXT", "Integer", 2,,,,,,,,,}}
+	newstrct = newstrct + {{"distEXT", "Real", 10,6,,,,,,,,}}	
+	newstrct = newstrct + {{"randnum", "Real", 10,8,,,,,,,,}}
+	newstrct = newstrct + {{"tazrandnum", "Real", 10,8,,,,,,,,}}		//for the HBW II table ONLY, create a random number field, which will be used for the ATW DC
+		
+	ModifyTable(temphbwdc, newstrct)
+
+	qry = "Select * where HBW > 0"
+	SetView("tourrecords")
+	havetours = SelectByQuery("havetours", "Several", qry)
+	SortSet("havetours", "TAZ")
+	tourrecordset_v = GetDataVectors(tourrecords+"|havetours", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum1"},{{"Sort Order", {{"tazrandnum1","Ascending"},{"ID","Ascending"}}}}) 
+	hhidset = tourrecordset_v[1]
+	tourtazset = tourrecordset_v[2]
+	tourtazseqset = tourrecordset_v[3]
+	sizeset = tourrecordset_v[4]
+	incset = tourrecordset_v[5]
+	lcset = tourrecordset_v[6]
+	wrkrsset = tourrecordset_v[7]
+	schtoursset = tourrecordset_v[8]
+	hbutoursset = tourrecordset_v[9]
+	hbwtoursset = tourrecordset_v[10]
+	hbstoursset = tourrecordset_v[11]
+	hbotoursset = tourrecordset_v[12]
+
+	lasttaz = 0
+	temptourid = 0
+	iitourid = 0
+	ixtourid = 0
+	
+SetRandomSeed(37)
+	for n = 1 to hhidset.length do				//loop thru tour records	
+//		pbar.Step()
+		if hbwtoursset[n] = 0 then do			//go to next record if there are no hbw tours
+			goto nohbwtours
+		end
+		thistaz = tourtazset[n]
+		thistazseq = tourtazseqset[n]
+		thisdistextsta = dist2extsta[thistazseq]
+		for i = 1 to hbwtoursset[n] do
+			rand_val = RandomNumber()
+			rand_val2 = RandomNumber()
+			temptourid = temptourid + 1
+			filltable = AddRecord("temphbwdc", {{"ID", temptourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+								{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+								{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBW"}, {"distEXT", thisdistextsta}, {"randnum", rand_val}, {"EXT", 0}, {"tazrandnum", rand_val2}})
+		end
+		nohbwtours:
+	end
+	//loop by distance buckets, then sort the by random num then fill "EXT" of first x number
+	SetView("temphbwdc")
+	temprecordset_v = GetDataVectors(temphbwdc+"|", {"ID", "distEXT", "randnum", "EXT"},{{"Sort Order", {{"ID","Ascending"}}}}) 
+	hhidset = temprecordset_v[1]
+	distset = temprecordset_v[2]
+	randset = temprecordset_v[3]
+	EXTset = temprecordset_v[4]
+	dim HBW_IX_tours_counter[HBW_IX_tours.length]
+
+	for i = 1 to HBW_IX_tours.length do
+		qry = "Select * where distEXT >= " + i2s(Lowval[i]) + " and distEXT < " + i2s(Highval[i])
+		SetView("temphbwdc")
+		inbucket = SelectByQuery("inbucket", "Several", qry)
+		HBW_IX_tours_counter[i] = inbucket
+		if inbucket > 0 then do
+			EXTfill_v = GetDataVectors("temphbwdc|inbucket", {"ID", "EXT"},{{"Sort Order", {{"randnum","Ascending"}}}})
+			for j = 1 to HBW_IX_tours[i] do
+				EXTfill_v[2][j] = 1
+			end
+			SetDataVector("temphbwdc|inbucket", "EXT", EXTfill_v[2],{{"Sort Order", {{"randnum","Ascending"}}}})
+		end
+	end
+		
+
+//******************************** HBW DESTINATION CHOICE --INTERNALS ONLY *******************************************************************************************
   UpdateProgressBar("Destination Choice: HBW", 10) 
 
-//Create HBW tour II & IX destination tables
+//Create HBW tour II destination table
 	strct = GetTableStructure(tourrecords)
 	for j = 1 to (strct.length) do
  		strct[j] = strct[j] + {strct[j][1]}
@@ -309,7 +456,6 @@ end
 		newstrct[j] = strct[j]
 	end
 	hbwdestii = CreateTable("hbwdestii", DirOutDC + "\\dcHBW.bin", "FFB", newstrct)
-	hbwdestix = CreateTable("hbwdestix", DirOutDC + "\\dcHBWext.bin", "FFB", newstrct)
 	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
@@ -321,32 +467,20 @@ end
 	newstrctii = newstrct + {{"tazrandnum", "Real", 10,8,,,,,,,,}}		//for the HBW II table ONLY, create a random number field, which will be used for the ATW DC
 
 	ModifyTable(hbwdestii, newstrctii)
-	ModifyTable(hbwdestix, newstrct)
 
-//Calculate probability that tour from this origin, for this purpose, is I/X
-//	pEXT = min(1.0 * 1.31 * Pow(dist2extsta, -1.47), 0.50)
-	pEXT = min(1.0 * 1.975 * Pow(dist2extsta, -1.47), 0.50)
-
-//Fill in random number for each TAZ set
-//	rand_val = RandomNumber()
-//	tazrandnum[1] = rand_val
 SetRandomSeed(100)
-	for n = 1 to tourtaz.length do
-/*		if (tourtaz[n] = tourtaz[n-1]) then do
-			tazrandnum[n] = tazrandnum[n-1]
-		end
-		else do
-*/			rand_val = RandomNumber()
-			tazrandnum[n] = rand_val
-//		end
+/*	for n = 1 to tourtaz.length do
+		rand_val = RandomNumber()
+		tazrandnum[n] = rand_val
 	end
-	SetDataVector(tourrecords+"|", "tazrandnum1", tazrandnum,{{"Sort Order", {{"ID","Ascending"}}}})	// Note "tazrandnum1" for HBW
+	SetDataVector(temphbwdc+"|", "tazrandnum1", tazrandnum,{{"Sort Order", {{"ID","Ascending"}}}})	// Note "tazrandnum1" for HBW
+*/
 //Pull vectors sorted by randomized TAZ sets
-	qry = "Select * where HBW > 0"
-	SetView("tourrecords")
-	havetours = SelectByQuery("havetours", "Several", qry)
-	SortSet("havetours", "TAZ")
-	tourrecordset_v = GetDataVectors(tourrecords+"|havetours", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum1"},{{"Sort Order", {{"tazrandnum1","Ascending"},{"ID","Ascending"}}}}) 
+	qry = "Select * where EXT = 0" 
+	SetView("temphbwdc")
+	hbw_II = SelectByQuery("hbw_II", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbwdc+"|hbw_II", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
+
 	hhidset = tourrecordset_v[1]
 	tourtazset = tourrecordset_v[2]
 	tourtazseqset = tourrecordset_v[3]
@@ -372,7 +506,7 @@ SetRandomSeed(737)
 		pbar.Step()
 
 		if hbwtoursset[n] = 0 then do			//go to next record if there are no hbw tours
-			goto nohbwtours
+			goto nohbwiitours
 		end
 		thistaz = tourtazset[n]
 		thistazseq = tourtazseqset[n]
@@ -381,79 +515,67 @@ SetRandomSeed(737)
 		intraco = if (stcnty = thiscnty) then 1 else 0
 		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
 		intrazonal = if (taz <> thistaz) then 0 else 1
-		for i = 1 to hbwtoursset[n] do
-			rand_val = RandomNumber()
-			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
-				ixtourid = ixtourid + 1
-				filltable = AddRecord("hbwdestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-									{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
-									{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBW"}})
-				goto skipIIhbw
-			end
-			else do
-				if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
-					goto skipprobhbw
-				end
-				htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
-				//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
-				//U1 = -0.0862*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				//U2 = -0.0862*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
-				U1 = -0.075*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
-				U2 = -0.075*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
-
-				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
-				fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	
-				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
-				eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
-				sumeU1 = VectorStatistic(eU1, "Sum",)
-				sumeU2 = VectorStatistic(eU2, "Sum",)
-				prob1 = eU1 / sumeU1
-				prob2 = eU2 / sumeU2  
-				vecs1 = {prob1, taz, tazseq}
-				cumprob1 = CumulativeVector(vecs1[1])		//cumulative sum of probabilities, not sorted
-				cumprob1[U1.length] = 1
-				vecs2 = {prob2, taz, tazseq}
-				cumprob2 = CumulativeVector(vecs2[1])
-				cumprob2[U1.length] = 1
-			end
-			lasttaz = thistaz
-			skipprobhbw:
-			redo_randval_hbw:
-			rand_val = RandomNumber()
-			//redo if zero since dividing by zero below results in null ; redo if one since last element is defined as one from above, and will be choice whether or not it's eligible
-			if (rand_val = 0 or rand_val = 1)  then do
-				goto redo_randval_hbw
-			end
-			addnum = max(r2i(1/rand_val), 500)
-			if (incset[n] <> 4) then do
-				cumprob = cumprob1 / rand_val				//divide cumulative probabilities by random number; any number under 1.0 is not the chosen value and
-				cumprob = if cumprob < 1.0 then addnum else cumprob		//is thus given a high number (100).  The first number greater than or equal to 1.0 is the chosen
-				cumprob = cumprob + aide_de_sort_vec				//value, will be placed first in order in the sort, and is picked below:
-				sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})	
-			end
-			else do
-				cumprob = cumprob2 / rand_val
-				cumprob = if cumprob < 1.0 then addnum else cumprob
-				cumprob = cumprob + aide_de_sort_vec
-				sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})			
-			end
-			dest_taz = sorted_vecs[2][1]
-			dest_tazseq = sorted_vecs[3][1]
-			odtime = GetMatrixValue(autopkintcur, i2s(thistaz), i2s(dest_taz))
-			dotime = GetMatrixValue(autopkintcur, i2s(dest_taz), i2s(thistaz))
-			iitourid = iitourid + 1
-			filltable = AddRecord("hbwdestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-						{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
-						{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBW"}})
-/*			filltable = AddRecord("hbwdestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-						{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
-						{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBW"}, {"tazrandnum", rand_val}})
-*/			remain[1][dest_tazseq] = max(remain[1][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
-			sumattr[1][dest_tazseq] = sumattr[1][dest_tazseq] + 1
-			skipIIhbw:
+//		for i = 1 to hbwtoursset[n] do
+		rand_val = RandomNumber()
+		if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
+			goto skipprobhbw
 		end
-		nohbwtours:
+		htime = GetMatrixVector(autopkintcur, {{"Row", thistaz}})	//pull the TT vector for this TAZ from the peak speed matrix
+		//U1 = -0.06521*htime + 0.8109*intraco - 0.03048*cbddum - 0.001735*empdens + log(totemp) + 0.7*intrazonal  //calculate probability array -- U1 for Inc 1-3
+		//U2 = -0.04812*htime + 1.1500*intraco - 0.2652*cbddum - 0.0005294*empdens + log(totemp) + 0.7*intrazonal  //U2 for INC4
+		//U1 = -0.0862*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
+		//U2 = -0.0862*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
+		U1 = -0.075*htime + 0.944*intraco + 0.525*cbddum + 0.00248*empdens + 0.949*log(totemp) + 2.14*intrazonal  //calculate probability array -- U1 for Inc 1-3
+		U2 = -0.075*htime + 0.479*intraco + 1.14*cbddum + 0.00248*empdens + 0.949*log(totemp) + 1.13*intrazonal  //U2 for INC4
+
+		//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone ([1] = HBW)
+		fac = if (hbwattr > 0) then (remain[1] / hbwattr) else 0	
+		eU1 = if (totemp = 0) then 0 else exp(U1) * fac
+		eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
+		sumeU1 = VectorStatistic(eU1, "Sum",)
+		sumeU2 = VectorStatistic(eU2, "Sum",)
+		prob1 = eU1 / sumeU1
+		prob2 = eU2 / sumeU2  
+		vecs1 = {prob1, taz, tazseq}
+		cumprob1 = CumulativeVector(vecs1[1])		//cumulative sum of probabilities, not sorted
+		cumprob1[U1.length] = 1
+		vecs2 = {prob2, taz, tazseq}
+		cumprob2 = CumulativeVector(vecs2[1])
+		cumprob2[U1.length] = 1
+		lasttaz = thistaz
+		skipprobhbw:
+		redo_randval_hbw:
+		rand_val = RandomNumber()
+		//redo if zero since dividing by zero below results in null ; redo if one since last element is defined as one from above, and will be choice whether or not it's eligible
+		if (rand_val = 0 or rand_val = 1)  then do
+			goto redo_randval_hbw
+		end
+		addnum = max(r2i(1/rand_val), 500)
+		if (incset[n] <> 4) then do
+			cumprob = cumprob1 / rand_val				//divide cumulative probabilities by random number; any number under 1.0 is not the chosen value and
+			cumprob = if cumprob < 1.0 then addnum else cumprob		//is thus given a high number (100).  The first number greater than or equal to 1.0 is the chosen
+			cumprob = cumprob + aide_de_sort_vec				//value, will be placed first in order in the sort, and is picked below:
+			sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})	
+		end
+		else do
+			cumprob = cumprob2 / rand_val
+			cumprob = if cumprob < 1.0 then addnum else cumprob
+			cumprob = cumprob + aide_de_sort_vec
+			sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})			
+		end
+		dest_taz = sorted_vecs[2][1]
+		dest_tazseq = sorted_vecs[3][1]
+		odtime = GetMatrixValue(autopkintcur, i2s(thistaz), i2s(dest_taz))
+		dotime = GetMatrixValue(autopkintcur, i2s(dest_taz), i2s(thistaz))
+		iitourid = iitourid + 1
+		filltable = AddRecord("hbwdestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+					{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBW"}})
+		remain[1][dest_tazseq] = max(remain[1][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
+		sumattr[1][dest_tazseq] = sumattr[1][dest_tazseq] + 1
+		skipIIhbw:
+		//end
+		nohbwiitours:
 	end
 
 	pbar.Destroy()
@@ -480,7 +602,57 @@ SetRandomSeed(737)
 //WriteLine(reportfile, "HBW RMSE = " + r2s(rmse))
      CloseView("hbwdestii")
 
+//**************************CREATE HBW IX TABLE *******************************************************************************************
+	strct = GetTableStructure(tourrecords)
+	for j = 1 to (strct.length) do
+ 		strct[j] = strct[j] + {strct[j][1]}
+ 	end
+	dim newstrct[13]
+	for j = 1 to 13 do							//there are 13 fields that need to copied from TourRecords.bin (not randum numbers)
+		newstrct[j] = strct[j]
+	end
+	hbwdestix = CreateTable("hbwdestix", DirOutDC + "\\dcHBWext.bin", "FFB", newstrct)
+	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"OD_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"DO_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
+
+	ModifyTable(hbwdestix, newstrct)
+
+//Pull vectors sorted by randomized TAZ sets
+	qry = "Select * where EXT = 1" 
+	SetView("temphbwdc")
+	hbw_IX = SelectByQuery("hbw_IX", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbwdc+"|hbw_IX", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
+
+	hhidset = tourrecordset_v[1]
+	tourtazset = tourrecordset_v[2]
+	tourtazseqset = tourrecordset_v[3]
+	sizeset = tourrecordset_v[4]
+	incset = tourrecordset_v[5]
+	lcset = tourrecordset_v[6]
+	wrkrsset = tourrecordset_v[7]
+	schtoursset = tourrecordset_v[8]
+	hbutoursset = tourrecordset_v[9]
+	hbwtoursset = tourrecordset_v[10]
+	hbstoursset = tourrecordset_v[11]
+	hbotoursset = tourrecordset_v[12]
+	tazrandnumset = tourrecordset_v[13]
+
+	for n = 1 to hbw_IX do
+		ixtourid = ixtourid + 1
+		filltable = AddRecord("hbwdestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", tourtazset[n]}, {"TAZ_SEQ", tourtazseqset[n]}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, {"ORIG_TAZ", tourtazset[n]}, {"ORIG_SEQ", tourtazseqset[n]}, {"PURP", "HBW"}})
+	end
+     CloseView("temphbwdc")
+//ShowArray(hhidset)
+//goto skip2hbs
 //*********************************SCHOOL DESTINATION CHOICE****************************************************************************************************************
+	//stays as is
 skip2school:
   UpdateProgressBar("Destination Choice: School", 10) 
 //Create School tour II & IX destination tables
@@ -650,6 +822,7 @@ SetRandomSeed(744)
      CloseView("schdestii")
 skiptohbu:
 //******************************** HBU DESTINATION CHOICE ***************************************************************************************************************
+	//stays as is
   UpdateProgressBar("Destination Choice: HBU", 10) 
 //Create HBU tour II & IX destination tables
 
@@ -714,6 +887,7 @@ SetRandomSeed(91)
 	tazrandnumset = tourrecordset_v[13]
 
 	lasttaz = 0
+	temptourid = 0
 	iitourid = 0
 	ixtourid = 0
 
@@ -803,9 +977,125 @@ SetRandomSeed(991)
 
      CloseView("hbudestii")
 
-//********************************* HBS DESTINATION CHOICE ***************************************************************************************************************
+skip2hbs:	
+//********************** Separate Out IX Non-work Trips from HBS & HBO (combine both purposes) *****************************************************************
+//Get each zone's distance to closest Extsta, and open travel time distribution table
+    //	dst2extsta = GetDataVector(distExtsta_vw+"|", "Len", {{"Sort Order", {{"From","Ascending"}}}}) 
+ 	HBSO_IX_disttab = OpenTable("HBSO_IX_disttab", "CSV", {DirArray + "\\HBO_IX.csv",})	//check name
+	Lowval = GetDataVector(HBSO_IX_disttab+"|", "Low",)
+	Highval = GetDataVector(HBSO_IX_disttab+"|", "High",)
+	HBSO_IX_distpct = GetDataVector(HBSO_IX_disttab+"|", "Percent",)
+   	
+	//calculate the number of tours availible in each distribution (by distance) range
+	dim HBSO_IX_tours[Lowval.length]	
+	for i = 1 to Lowval.length do
+		HBSO_IX_tours[i] = r2i(totixnonworktours * HBSO_IX_distpct[i]/100)
+	end
+	
+	//create a temp table to put all HBW tours in (HHID, disttoexsta, randnum); then sort table by randnum and first "x" number in dist bin become XIN 
+	strct = GetTableStructure(tourrecords)
+	for j = 1 to (strct.length) do
+ 		strct[j] = strct[j] + {strct[j][1]}
+ 	end
+	dim newstrct[13]
+	for j = 1 to 13 do							//there are 13 fields that need to copied from TourRecords.bin (not randum numbers)
+		newstrct[j] = strct[j]
+	end
+	temphbsodc = CreateTable("temphbsodc", DirOutDC + "\\temp_hbsodc.bin", "FFB", newstrct)
+	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"OD_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"DO_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
+	newstrct = newstrct + {{"EXT", "Integer", 2,,,,,,,,,}}
+	newstrct = newstrct + {{"distEXT", "Real", 10,6,,,,,,,,}}	
+	newstrct = newstrct + {{"randnum", "Real", 10,8,,,,,,,,}}
+	newstrct = newstrct + {{"tazrandnum", "Real", 10,8,,,,,,,,}}		
+		
+	ModifyTable(temphbsodc, newstrct)
+
+	qry = "Select * where HBS > 0 or HBO > 0"
+	SetView("tourrecords")
+	havetours = SelectByQuery("havetours", "Several", qry)
+	SortSet("havetours", "TAZ")
+	tourrecordset_v = GetDataVectors(tourrecords+"|havetours", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum4"},{{"Sort Order", {{"tazrandnum4","Ascending"},{"ID","Ascending"}}}}) 
+	hhidset = tourrecordset_v[1]
+	tourtazset = tourrecordset_v[2]
+	tourtazseqset = tourrecordset_v[3]
+	sizeset = tourrecordset_v[4]
+	incset = tourrecordset_v[5]
+	lcset = tourrecordset_v[6]
+	wrkrsset = tourrecordset_v[7]
+	schtoursset = tourrecordset_v[8]
+	hbutoursset = tourrecordset_v[9]
+	hbwtoursset = tourrecordset_v[10]
+	hbstoursset = tourrecordset_v[11]
+	hbotoursset = tourrecordset_v[12]
+
+	lasttaz = 0
+	temptourid = 0
+	iitourid = 0
+	ixtourid = 0
+
+	for n = 1 to hhidset.length do				//loop thru tour records	
+//		pbar.Step()
+//		if (hbstoursset[n] = 0 and hbotoursset[n]) = 0 then do			//go to next record if there are no hbs or hbo tours
+//			goto nohbsotours
+//		end
+		thistaz = tourtazset[n]
+		thistazseq = tourtazseqset[n]
+		thisdistextsta = dist2extsta[thistazseq]
+		//fill PURP (either HBS or HBO) & other fields
+		if hbstoursset[n] > 0 then do
+			for j = 1 to hbstoursset[n] do
+				temptourid = temptourid + 1
+				rand_val = RandomNumber()
+				rand_val2 = RandomNumber()
+				filltable = AddRecord("temphbsodc", {{"ID", temptourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+							{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+							{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBS"}, {"distEXT", thisdistextsta}, {"randnum", rand_val}, {"EXT", 0}, {"tazrandnum", rand_val2}})
+			end
+		end
+		if hbotoursset[n] > 0 then do
+			for k = 1 to hbotoursset[n] do
+				temptourid = temptourid + 1
+				rand_val = RandomNumber()
+				rand_val2 = RandomNumber()
+				filltable = AddRecord("temphbsodc", {{"ID", temptourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+							{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+							{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBO"}, {"distEXT", thisdistextsta}, {"randnum", rand_val}, {"EXT", 0}, {"tazrandnum", rand_val2}})
+			end
+		end				
+		nohbsotours:
+	end
+	//loop by distance buckets, then sort the by random num then fill "EXT" of first x number
+	SetView("temphbsodc")
+	temprecordset_v = GetDataVectors(temphbsodc+"|", {"ID", "distEXT", "randnum", "EXT"},{{"Sort Order", {{"ID","Ascending"}}}}) 
+	hhidset = temprecordset_v[1]
+	distset = temprecordset_v[2]
+	randset = temprecordset_v[3]
+	EXTset = temprecordset_v[4]
+
+	for i = 1 to HBSO_IX_tours.length do
+		qry = "Select * where distEXT >= " + i2s(Lowval[i]) + " and distEXT < " + i2s(Highval[i])
+		SetView("temphbsodc")
+		inbucket = SelectByQuery("inbucket", "Several", qry)
+		if inbucket > 0 then do
+			EXTfill_v = GetDataVectors("temphbsodc|inbucket", {"ID", "EXT"},{{"Sort Order", {{"randnum","Ascending"}}}})
+			for j = 1 to HBSO_IX_tours[i] do
+				EXTfill_v[2][j] = 1
+			end
+			SetDataVector("temphbsodc|inbucket", "EXT", EXTfill_v[2],{{"Sort Order", {{"randnum","Ascending"}}}})
+		end
+	end
+
+//********************************* HBS DESTINATION CHOICE --INTERNALS ONLY ***********************************************************************************************
+
   UpdateProgressBar("Destination Choice: HBS", 10) 
-//Create HBS tour II & IX destination tables
+//Create HBS tour II destination table
 
 	strct = GetTableStructure(tourrecords)
 	for j = 1 to strct.length do
@@ -816,7 +1106,6 @@ SetRandomSeed(991)
 		newstrct[j] = strct[j]
 	end
 	hbsdestii = CreateTable("hbsdestii", DirOutDC + "\\dcHBS.bin", "FFB", newstrct)
-	hbsdestix = CreateTable("hbsdestix", DirOutDC + "\\dcHBSext.bin", "FFB", newstrct)
 	newstrct = newstrct + {{"HHID", "Integer", 6,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
@@ -827,32 +1116,21 @@ SetRandomSeed(991)
 	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
 
 	ModifyTable(hbsdestii, newstrct)
-	ModifyTable(hbsdestix, newstrct)
 	
-//Calculate probability that tour from this origin, for this purpose, is I/X
-//	pEXT = min(1.5 * 0.29 * Pow(dist2extsta, -1.33), 0.30)
-	pEXT = min(2.2 * 0.29 * Pow(dist2extsta, -1.33), 0.30)
+//Pull vectors sorted by randomized TAZ sets
+	qry = "Select * where Purp = 'HBS' and EXT = 0" 
+	SetView("temphbsodc")
+	hbs_II = SelectByQuery("hbs_II", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbsodc+"|hbs_II", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
 
-//Fill in random number for each TAZ set
-//	rand_val = RandomNumber()
-//	tazrandnum[1] = rand_val
 SetRandomSeed(86489)
-	for n = 1 to tourtaz.length do
-/*		if (tourtaz[n] = tourtaz[n-1]) then do
-			tazrandnum[n] = tazrandnum[n-1]
-		end
-		else do
-*/			rand_val = RandomNumber()
+/*	for n = 1 to tourtaz.length do
+			rand_val = RandomNumber()
 			tazrandnum[n] = rand_val
-//		end
 	end
 	SetDataVector(tourrecords+"|", "tazrandnum4", tazrandnum,{{"Sort Order", {{"ID","Ascending"}}}})	// Note "tazrandnum4" for HBS
+*/
 //Pull vectors sorted by randomized TAZ sets
-	qry = "Select * where HBS > 0"
-	SetView("tourrecords")
-	havetours = SelectByQuery("havetours", "Several", qry)
-	SortSet("havetours", "TAZ")
-	tourrecordset_v = GetDataVectors(tourrecords+"|havetours", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum4"},{{"Sort Order", {{"tazrandnum4","Ascending"},{"ID","Ascending"}}}}) 
 	hhidset = tourrecordset_v[1]
 	tourtazset = tourrecordset_v[2]
 	tourtazseqset = tourrecordset_v[3]
@@ -888,71 +1166,62 @@ SetRandomSeed(72)
 		intraco = if (stcnty = thiscnty) then 1 else 0
 		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT < 3) then 0.8 else if (thisAT < 5) then 2.0 else 1.0	//changed for validation
 		intrazonal = if (taz <> thistaz) then 0 else 1
-		for i = 1 to hbstoursset[n] do
-			rand_val = RandomNumber()
-			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
-				ixtourid = ixtourid + 1
-				filltable = AddRecord("hbsdestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-									{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, {"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBS"}})
-				goto skipIIhbs
-			end
-			else do
-				if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
-					goto skipprobhbs
-				end
-				ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
-				timeSq = ctime * ctime
-				//U1 = -0.3782*ctime - 0.1907*atype - 2.1877*cbddum + log(retemp + 0.003874*pop) - 0.8*intrazonal + 0.0011*timeSq		//calculate probability array -- U1 for Inc 1-3
-				//U2 = -0.3175*ctime - 0.2576*atype - 1.5588*cbddum + 0.0000000468*accH15cfr + log(retemp + 0.003135*pop) - 0.5*intrazonal + 0.0011*timeSq	//U2 for INC4
-				U1 = -0.294*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.763*cbddum + 0.232*intraco		//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.282*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.268*intrazonal - 0.155*atype	//U2 for INC4
-				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
-				fac = if (hbsattr > 0) then max((remain[4] / hbsattr), 0.01) else 0	//([4] = HBS)
-				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
-				eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
-				sumeU1 = VectorStatistic(eU1, "Sum",)
-				sumeU2 = VectorStatistic(eU2, "Sum",)
-				prob1 = eU1 / sumeU1
-				prob2 = eU2 / sumeU2
-				vecs1 = {prob1, taz, tazseq}
-				cumprob1 = CumulativeVector(vecs1[1])
-				cumprob1[U1.length] = 1
-				vecs2 = {prob2, taz, tazseq}
-				cumprob2 = CumulativeVector(vecs2[1])
-				cumprob2[U1.length] = 1
-			end
-			lasttaz = thistaz
-			skipprobhbs:
-			redo_randval_hbs:
-			rand_val = RandomNumber()
-			if (rand_val = 0 or rand_val = 1)  then do
-				goto redo_randval_hbs
-			end
-			addnum = max(r2i(1/rand_val), 500)
-			if (incset[n] <> 4) then do
-				cumprob = cumprob1 / rand_val
-				cumprob = if cumprob < 1.0 then addnum else cumprob
-				cumprob = cumprob + aide_de_sort_vec
-				sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})				
-			end
-			else do
-				cumprob = cumprob2 / rand_val
-				cumprob = if cumprob < 1.0 then addnum else cumprob
-				cumprob = cumprob + aide_de_sort_vec
-				sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})				
-			end
-			dest_taz = sorted_vecs[2][1]
-			dest_tazseq = sorted_vecs[3][1]
-			odtime = GetMatrixValue(autofreeintcur, i2s(thistaz), i2s(dest_taz))
-			dotime = GetMatrixValue(autofreeintcur, i2s(dest_taz), i2s(thistaz))
-			iitourid = iitourid + 1
-			filltable = AddRecord("hbsdestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-						{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
-						{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBS"}})
-			remain[4][dest_tazseq] = max(remain[4][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
-			sumattr[4][dest_tazseq] = sumattr[4][dest_tazseq] + 1
-			skipIIhbs:
+//		for i = 1 to hbstoursset[n] do
+		rand_val = RandomNumber()
+		if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
+			goto skipprobhbs
 		end
+		ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
+		timeSq = ctime * ctime
+		//U1 = -0.3782*ctime - 0.1907*atype - 2.1877*cbddum + log(retemp + 0.003874*pop) - 0.8*intrazonal + 0.0011*timeSq		//calculate probability array -- U1 for Inc 1-3
+		//U2 = -0.3175*ctime - 0.2576*atype - 1.5588*cbddum + 0.0000000468*accH15cfr + log(retemp + 0.003135*pop) - 0.5*intrazonal + 0.0011*timeSq	//U2 for INC4
+		U1 = -0.294*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.763*cbddum + 0.232*intraco		//calculate probability array -- U1 for Inc 1-3
+		U2 = -0.282*ctime + 0.930*log(retemp) + 0.0649*retempdens - 0.268*intrazonal - 0.155*atype	//U2 for INC4
+		//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
+		fac = if (hbsattr > 0) then max((remain[4] / hbsattr), 0.01) else 0	//([4] = HBS)
+		eU1 = if (totemp = 0) then 0 else exp(U1) * fac
+		eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
+		sumeU1 = VectorStatistic(eU1, "Sum",)
+		sumeU2 = VectorStatistic(eU2, "Sum",)
+		prob1 = eU1 / sumeU1
+		prob2 = eU2 / sumeU2
+		vecs1 = {prob1, taz, tazseq}
+		cumprob1 = CumulativeVector(vecs1[1])
+		cumprob1[U1.length] = 1
+		vecs2 = {prob2, taz, tazseq}
+		cumprob2 = CumulativeVector(vecs2[1])
+		cumprob2[U1.length] = 1
+		lasttaz = thistaz
+		skipprobhbs:
+		redo_randval_hbs:
+		rand_val = RandomNumber()
+		if (rand_val = 0 or rand_val = 1)  then do
+			goto redo_randval_hbs
+		end
+		addnum = max(r2i(1/rand_val), 500)
+		if (incset[n] <> 4) then do
+			cumprob = cumprob1 / rand_val
+			cumprob = if cumprob < 1.0 then addnum else cumprob
+			cumprob = cumprob + aide_de_sort_vec
+			sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})				
+		end
+		else do
+			cumprob = cumprob2 / rand_val
+			cumprob = if cumprob < 1.0 then addnum else cumprob
+			cumprob = cumprob + aide_de_sort_vec
+			sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})				
+		end
+		dest_taz = sorted_vecs[2][1]
+		dest_tazseq = sorted_vecs[3][1]
+		odtime = GetMatrixValue(autofreeintcur, i2s(thistaz), i2s(dest_taz))
+		dotime = GetMatrixValue(autofreeintcur, i2s(dest_taz), i2s(thistaz))
+		iitourid = iitourid + 1
+		filltable = AddRecord("hbsdestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+					{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBS"}})
+		remain[4][dest_tazseq] = max(remain[4][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
+		sumattr[4][dest_tazseq] = sumattr[4][dest_tazseq] + 1
+		//end
 		nohbstours:
 	end
 	pbar.Destroy()
@@ -974,7 +1243,54 @@ SetRandomSeed(72)
 
      CloseView("hbsdestii")
 
-//********************************* HBO DESTINATION CHOICE ***************************************************************************************************************
+//**************************CREATE HBS IX TABLE *******************************************************************************************
+	strct = GetTableStructure(tourrecords)
+	for j = 1 to (strct.length) do
+ 		strct[j] = strct[j] + {strct[j][1]}
+ 	end
+	dim newstrct[13]
+	for j = 1 to 13 do							//there are 13 fields that need to copied from TourRecords.bin (not randum numbers)
+		newstrct[j] = strct[j]
+	end
+	hbsdestix = CreateTable("hbsdestix", DirOutDC + "\\dcHBSext.bin", "FFB", newstrct)
+	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"OD_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"DO_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
+
+	ModifyTable(hbsdestix, newstrct)
+
+//Pull vectors sorted by randomized TAZ sets
+	qry = "Select * where PURP = 'HBS' and EXT = 1" 
+	SetView("temphbsodc")
+	hbs_IX = SelectByQuery("hbs_IX", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbsodc+"|hbs_IX", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
+
+	hhidset = tourrecordset_v[1]
+	tourtazset = tourrecordset_v[2]
+	tourtazseqset = tourrecordset_v[3]
+	sizeset = tourrecordset_v[4]
+	incset = tourrecordset_v[5]
+	lcset = tourrecordset_v[6]
+	wrkrsset = tourrecordset_v[7]
+	schtoursset = tourrecordset_v[8]
+	hbutoursset = tourrecordset_v[9]
+	hbwtoursset = tourrecordset_v[10]
+	hbstoursset = tourrecordset_v[11]
+	hbotoursset = tourrecordset_v[12]
+	tazrandnumset = tourrecordset_v[13]
+
+	for n = 1 to hbs_IX do
+		ixtourid = ixtourid + 1
+		filltable = AddRecord("hbsdestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", tourtazset[n]}, {"TAZ_SEQ", tourtazseqset[n]}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, {"ORIG_TAZ", tourtazset[n]}, {"ORIG_SEQ", tourtazseqset[n]}, {"PURP", "HBS"}})
+	end
+
+//********************************* HBO DESTINATION CHOICE INTERNALS ONLY *****************************************************************************************
   UpdateProgressBar("Destination Choice: HBO", 10) 
 
 //Create HBO tour II & IX destination tables
@@ -988,7 +1304,6 @@ SetRandomSeed(72)
 		newstrct[j] = strct[j]
 	end
 	hbodestii = CreateTable("hbodestii", DirOutDC + "\\dcHBO.bin", "FFB", newstrct)
-	hbodestix = CreateTable("hbodestix", DirOutDC + "\\dcHBOext.bin", "FFB", newstrct)
 	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
 	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
@@ -999,32 +1314,14 @@ SetRandomSeed(72)
 	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
 
 	ModifyTable(hbodestii, newstrct)
-	ModifyTable(hbodestix, newstrct)
 	
-//Calculate probability that tour from this origin, for this purpose, is I/X
-//	pEXT = min(2.3 * 0.29 * Pow(dist2extsta, -1.33), 0.30)
-	pEXT = min(3.25 * 0.29 * Pow(dist2extsta, -1.33), 0.30)
-
-//Fill in random number for each TAZ set
-//	rand_val = RandomNumber()
-//	tazrandnum[1] = rand_val
 SetRandomSeed(763)
-	for n = 1 to tourtaz.length do
-/*		if (tourtaz[n] = tourtaz[n-1]) then do
-			tazrandnum[n] = tazrandnum[n-1]
-		end
-		else do
-*/			rand_val = RandomNumber()
-			tazrandnum[n] = rand_val
-//		end
-	end
-	SetDataVector(tourrecords+"|", "tazrandnum5", tazrandnum,{{"Sort Order", {{"ID","Ascending"}}}})	// Note "tazrandnum5" for HBO
 //Pull vectors sorted by randomized TAZ sets
-	qry = "Select * where HBO > 0"
-	SetView("tourrecords")
-	havetours = SelectByQuery("havetours", "Several", qry)
-	SortSet("havetours", "TAZ")
-	tourrecordset_v = GetDataVectors(tourrecords+"|havetours", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum5"},{{"Sort Order", {{"tazrandnum5","Ascending"},{"ID","Ascending"}}}}) 
+	qry = "Select * where PURP = 'HBO' and EXT = 0" 
+	SetView("temphbsodc")
+	hbo_II = SelectByQuery("hbo_II", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbsodc+"|hbo_II", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
+
 	hhidset = tourrecordset_v[1]
 	tourtazset = tourrecordset_v[2]
 	tourtazseqset = tourrecordset_v[3]
@@ -1049,7 +1346,7 @@ SetRandomSeed(953)
 	
 	for n = 1 to hhidset.length do				//hhidset.length	
 		pbar.Step() 
-		if hbotoursset[n] = 0 then do			//go to next record if there are no hbw tours
+		if hbotoursset[n] = 0 then do			//go to next record if there are no hbo tours
 			goto nohbotours
 		end
 		thistaz = tourtazset[n]
@@ -1060,72 +1357,64 @@ SetRandomSeed(953)
 		//intrazonal = if (taz <> thistaz) then 0 else if (thisAT = 1) then -0.7 else if (thisAT = 2) then 0.0 else if (thisAT < 5) then -2.0 else -0.3	//changed for validation
 		intrazonal = if (taz <> thistaz) then 0 else 1
 		sameAT = if (atype = thisAT) then 1 else 0		//create a dummy same area type vector 
-		for i = 1 to hbotoursset[n] do
-			rand_val = RandomNumber()
-			if pEXT[thistazseq] > rand_val then do	//create a record for this tour if it is IX
-				ixtourid = ixtourid + 1
-				filltable = AddRecord("hbodestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-									{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, {"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"PURP", "HBO"}})
-				goto skipIIhbo
-			end
-			else do
-				if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
-					goto skipprobhbo
-				end
-				ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
-				dist2extsta = a2v(dist2extsta_ar)
-				dist2cbd = a2v(dist2cbd_ar)
-				//U1 = -0.2201*ctime - 0.4972*atype + 0.1709*sameAT + 0.03015*dist2cbd - 0.00000002033*accE15cfr + 0.4836*pct4 + log(totemp + 0.192242*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//calculate probability array -- U1 for Inc 1-3
-				//U2 = -0.2453*ctime - 0.4178*atype + 0.2998*sameAT + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//U2 for INC4
-				U1 = -0.301*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000378*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.874*intrazonal	- 0.194*atype//calculate probability array -- U1 for Inc 1-3
-				U2 = -0.294*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000229*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.656*intrazonal	- 0.235*atype//U2 for INC4
-				//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
-				fac = if (hboattr > 0) then max((remain[5] / hboattr), 0.01) else 0	//([5] = HBO)
-				eU1 = if (totemp = 0) then 0 else exp(U1) * fac
-				eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
-				sumeU1 = VectorStatistic(eU1, "Sum",)
-				sumeU2 = VectorStatistic(eU2, "Sum",)
-				prob1 = eU1 / sumeU1
-				prob2 = eU2 / sumeU2
-				vecs1 = {prob1, taz, tazseq}
-				cumprob1 = CumulativeVector(vecs1[1])
-				cumprob1[U1.length] = 1
-				vecs2 = {prob2, taz, tazseq}
-				cumprob2 = CumulativeVector(vecs2[1])
-				cumprob2[U1.length] = 1
-			end
-			lasttaz = thistaz
-			skipprobhbo:
-			redo_randval_hbo:
-			rand_val = RandomNumber()
-			if (rand_val = 0 or rand_val = 1)  then do
-				goto redo_randval_hbo
-			end
-			addnum = max(r2i(1/rand_val), 500)
-			if (incset[n] <> 4) then do
-				cumprob = cumprob1 / rand_val
-				cumprob = if cumprob < 1.0 then addnum else cumprob
-				cumprob = cumprob + aide_de_sort_vec
-				sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})				
-			end
-			else do
-				cumprob = cumprob2 / rand_val
-				cumprob = if cumprob < 1.0 then addnum else cumprob
-				cumprob = cumprob + aide_de_sort_vec
-				sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})				
-			end
-			dest_taz = sorted_vecs[2][1]
-			dest_tazseq = sorted_vecs[3][1]
-			odtime = GetMatrixValue(autofreeintcur, i2s(thistaz), i2s(dest_taz))
-			dotime = GetMatrixValue(autofreeintcur, i2s(dest_taz), i2s(thistaz))
-			iitourid = iitourid + 1
-			filltable = AddRecord("hbodestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
-						{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
-						{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBO"}})
-			remain[5][dest_tazseq] = max(remain[5][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
-			sumattr[5][dest_tazseq] = sumattr[5][dest_tazseq] + 1
-			skipIIhbo:
+//		for i = 1 to hbotoursset[n] do
+		rand_val = RandomNumber()
+		if thistaz = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
+			goto skipprobhbo
 		end
+		ctime = GetMatrixVector(compintcurarray[incset[n]], {{"Row", thistaz}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group
+		dist2extsta = a2v(dist2extsta_ar)
+		dist2cbd = a2v(dist2cbd_ar)
+		//U1 = -0.2201*ctime - 0.4972*atype + 0.1709*sameAT + 0.03015*dist2cbd - 0.00000002033*accE15cfr + 0.4836*pct4 + log(totemp + 0.192242*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//calculate probability array -- U1 for Inc 1-3
+		//U2 = -0.2453*ctime - 0.4178*atype + 0.2998*sameAT + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.2*cbddum + 0.45*intraco + 0.2*intrazonal	//U2 for INC4
+		U1 = -0.301*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000378*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.874*intrazonal	- 0.194*atype//calculate probability array -- U1 for Inc 1-3
+		U2 = -0.294*ctime + 0.00202*ctime*ctime + 0.00775*empdens - 0.00000229*accE15cfr + 0.742*log(totemp + 0.1108*pop) - 0.102*cbddum + 0.329*intraco + 0.656*intrazonal	- 0.235*atype//U2 for INC4
+		//factor exp. utile by the ratio of remaining attrs to total attrs for this dest zone, but with a minimun ratio of 0.01 so that no zone truly runs out of attractions
+		fac = if (hboattr > 0) then max((remain[5] / hboattr), 0.01) else 0	//([5] = HBO)
+		eU1 = if (totemp = 0) then 0 else exp(U1) * fac
+		eU2 = if (totemp = 0) then 0 else exp(U2) * fac						//zero out zones with no employment
+		sumeU1 = VectorStatistic(eU1, "Sum",)
+		sumeU2 = VectorStatistic(eU2, "Sum",)
+		prob1 = eU1 / sumeU1
+		prob2 = eU2 / sumeU2
+		vecs1 = {prob1, taz, tazseq}
+		cumprob1 = CumulativeVector(vecs1[1])
+		cumprob1[U1.length] = 1
+		vecs2 = {prob2, taz, tazseq}
+		cumprob2 = CumulativeVector(vecs2[1])
+		cumprob2[U1.length] = 1
+		lasttaz = thistaz
+		skipprobhbo:
+		redo_randval_hbo:
+		rand_val = RandomNumber()
+		if (rand_val = 0 or rand_val = 1)  then do
+			goto redo_randval_hbo
+		end
+		addnum = max(r2i(1/rand_val), 500)
+		if (incset[n] <> 4) then do
+			cumprob = cumprob1 / rand_val
+			cumprob = if cumprob < 1.0 then addnum else cumprob
+			cumprob = cumprob + aide_de_sort_vec
+			sorted_vecs = SortVectors({cumprob, vecs1[2], vecs1[3]})				
+		end
+		else do
+			cumprob = cumprob2 / rand_val
+			cumprob = if cumprob < 1.0 then addnum else cumprob
+			cumprob = cumprob + aide_de_sort_vec
+			sorted_vecs = SortVectors({cumprob, vecs2[2], vecs2[3]})				
+		end
+		dest_taz = sorted_vecs[2][1]
+		dest_tazseq = sorted_vecs[3][1]
+		odtime = GetMatrixValue(autofreeintcur, i2s(thistaz), i2s(dest_taz))
+		dotime = GetMatrixValue(autofreeintcur, i2s(dest_taz), i2s(thistaz))
+		iitourid = iitourid + 1
+		filltable = AddRecord("hbodestii", {{"ID", iitourid}, {"HHID", hhidset[n]}, {"TAZ", thistaz}, {"TAZ_SEQ", thistazseq}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, 
+					{"ORIG_TAZ", thistaz}, {"ORIG_SEQ", thistazseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}, {"PURP", "HBO"}})
+		remain[5][dest_tazseq] = max(remain[5][dest_tazseq] - 1, 0)	//this removes one attraction from destination zone for each tour
+		sumattr[5][dest_tazseq] = sumattr[5][dest_tazseq] + 1
+		skipIIhbo:
+//		end
 		nohbotours:
 	end
 	pbar.Destroy()
@@ -1147,6 +1436,52 @@ SetRandomSeed(953)
 
      CloseView("hbodestii")
 
+//**************************CREATE HBO IX TABLE *******************************************************************************************
+	strct = GetTableStructure(tourrecords)
+	for j = 1 to (strct.length) do
+ 		strct[j] = strct[j] + {strct[j][1]}
+ 	end
+	dim newstrct[13]
+	for j = 1 to 13 do							//there are 13 fields that need to copied from TourRecords.bin (not randum numbers)
+		newstrct[j] = strct[j]
+	end
+	hbodestix = CreateTable("hbodestix", DirOutDC + "\\dcHBOext.bin", "FFB", newstrct)
+	newstrct = newstrct + {{"HHID", "Integer", 7,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"ORIG_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_TAZ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"DEST_SEQ", "Integer", 6,,,,,,,,,}}
+	newstrct = newstrct + {{"OD_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"DO_Time", "Real", 8,2,,,,,,,,}}
+	newstrct = newstrct + {{"Purp", "Character", 3,,,,,,,,,}}
+
+	ModifyTable(hbodestix, newstrct)
+
+//Pull vectors sorted by randomized TAZ sets
+	qry = "Select * where PURP = 'HBO' and EXT = 1" 
+	SetView("temphbsodc")
+	hbo_IX = SelectByQuery("hbo_IX", "Several", qry)
+	tourrecordset_v = GetDataVectors(temphbsodc+"|hbo_IX", {"ID", "TAZ", "TAZ_SEQ", "SIZE", "INCOME", "LIFE", "WRKRS", "SCH", "HBU", "HBW", "HBS", "HBO", "tazrandnum"},{{"Sort Order", {{"tazrandnum","Ascending"},{"ID","Ascending"}}}}) 
+
+	hhidset = tourrecordset_v[1]
+	tourtazset = tourrecordset_v[2]
+	tourtazseqset = tourrecordset_v[3]
+	sizeset = tourrecordset_v[4]
+	incset = tourrecordset_v[5]
+	lcset = tourrecordset_v[6]
+	wrkrsset = tourrecordset_v[7]
+	schtoursset = tourrecordset_v[8]
+	hbutoursset = tourrecordset_v[9]
+	hbwtoursset = tourrecordset_v[10]
+	hbstoursset = tourrecordset_v[11]
+	hbotoursset = tourrecordset_v[12]
+	tazrandnumset = tourrecordset_v[13]
+
+	for n = 1 to hbo_IX do
+		ixtourid = ixtourid + 1
+		filltable = AddRecord("hbodestix", {{"ID", ixtourid}, {"HHID", hhidset[n]}, {"TAZ", tourtazset[n]}, {"TAZ_SEQ", tourtazseqset[n]}, {"SIZE", sizeset[n]}, {"INCOME", incset[n]}, {"LIFE", lcset[n]}, {"WRKRS", wrkrsset[n]}, 
+					{"SCH", schtoursset[n]}, {"HBU", hbutoursset[n]}, {"HBW", hbwtoursset[n]}, {"HBS", hbstoursset[n]}, {"HBO", hbotoursset[n]}, {"ORIG_TAZ", tourtazset[n]}, {"ORIG_SEQ", tourtazseqset[n]}, {"PURP", "HBO"}})
+	end
 
 //******* AT-WORK TOUR FREQUENCY *********** AT-WORK TOUR FREQUENCY *********** AT-WORK TOUR FREQUENCY *********** AT-WORK TOUR FREQUENCY ***********
 atwdc:
@@ -1510,6 +1845,21 @@ SetRandomSeed(85497)
 	end
 	ModifyTable(mergedix, newstrct)
 
+	// get travel time distance matrix for XI bins
+	autopkdist = OpenMatrix(Dir + "\\Skims\\SPMAT_Peak.mtx", "False")			//open as memory-based
+	matrix_indices = GetMatrixIndexNames(autopkdist)	
+	for i = 1 to matrix_indices[1].length do
+		if matrix_indices[1][i] = "Externals" then goto gotpkdistEXTindex
+	end
+	int_pkdistindex = CreateMatrixIndex("Externals", autopkdist, "Both", extstavoltab+"|", "MODEL_STA", "MODEL_STA" )	//just external zones
+	gotpkdistEXTindex:
+	for i = 1 to matrix_indices[1].length do
+		if matrix_indices[1][i] = "Internals" then goto gotpkdistINTindex
+	end
+	int_pkdistindex = CreateMatrixIndex("Internals", autopkdist, "Both", se_vw+"|", "TAZ", "TAZ" )	//just external zones
+	gotpkdistINTindex:
+	autopkdistcur = CreateMatrixCurrency(autopkdist, "Length (Skim)", "Externals", "Internals", )
+
 
 //********************************* SUMMARIZE I/X TOURS ***********************************************************************************************
 
@@ -1533,133 +1883,188 @@ SetRandomSeed(85497)
 //Multiply I/X tour ends by 2 to convert from tours to trips and divide by 1.375 to convert from person travel to vehicle travel.  [WGA] already checked and
 // the result of this equation is non-negative for all stations in 2010. Analysis of 2014 external survey data said that 44% of the X/I passenger car
 // trips are for work.  Apply that percentage here.  So the I/X tours are person tours and the X/I tours are vehicle tours, from this point on.
+//12/2024: new % of XI trips that are work is 27% (from RSG big data, also RITIS?)
+
+// **  NEED TO OPEN UP TABLE WITH THE 27% WORK
 
 	pcxi = (extstavol - pcxx - (2*pcix)/1.375)/2
-	wrk = r2i(round(0.44 * pcxi,0))
+//	wrk = r2i(round(0.44 * pcxi,0))
+	wrk = r2i(round(0.27 * pcxi,0))
 	nwrk = r2i(round(pcxi - wrk,0))
 	wrk = max(wrk,0)		//just in case you get a negative -- maybe can update???
 	nwrk = max(nwrk,0)	
 
-//Do 2 loops on stations to convert the aggregate X/I totals by station into individual tour records.  Write out 1 record per tour
+//Get number of XI workers & non-workers; create tables
 	totwrk = r2i(VectorStatistic(wrk, "Sum",))
 	totnwrk = r2i(VectorStatistic(nwrk, "Sum",))
-	xiwrk = Vector(totwrk,"Long",)
-	xiwrkid = Vector(totwrk,"Long",{{"Sequence", 1, 1}})
-	xinwrk = Vector(totnwrk,"Long",)
-	xinwrkid = Vector(totnwrk,"Long",{{"Sequence", 1, 1}})
-	extsta_w_seq = Vector(totwrk,"Short",)
-	extsta_n_seq = Vector(totnwrk,"Short",)
 
 	xidestwrk = CreateTable("xidestwrk", DirOutDC + "\\dcXIW.bin", "FFB", {{"ID", "Integer", 6, null, "Yes"},{"ORIG_TAZ", "Integer", 5, null,},{"ORIG_SEQ", "Integer", 3, null,},
 										{"DEST_TAZ", "Integer", 5, null,},{"DEST_SEQ", "Integer", 5, null,},{"OD_Time", "Real", 8, 2,},{"DO_Time", "Real", 8, 2,},{"ATW", "Integer", 1, null,}})
-	rh = AddRecords("xidestwrk", null, null, {{"Empty Records", totwrk}})
 	xidestnwrk = CreateTable("xidestnwrk", DirOutDC + "\\dcXIN.bin", "FFB", {{"ID", "Integer", 6, null, "Yes"},{"ORIG_TAZ", "Integer", 5, null,},{"ORIG_SEQ", "Integer", 3, null,},
-										{"DEST_TAZ", "Integer", 5, null,},{"DEST_SEQ", "Integer", 5, null,},{"OD_Time", "Real", 8, 2,},{"DO_Time", "Real", 8, 2,}})
-	rh = AddRecords("xidestnwrk", null, null, {{"Empty Records", totnwrk}})
-	wrkcounter = 1
-	nwrkcounter = 1
-	for n = 1 to extsta.length do
-		if wrk[n] > 0 then do
-			for i = 1 to wrk[n] do
-				xiwrk[wrkcounter] = extsta[n]
-				extsta_w_seq[wrkcounter] = n
-				wrkcounter = wrkcounter + 1
-			end
-		end
-		if nwrk[n] > 0 then do
-			for i = 1 to nwrk[n] do
-				xinwrk[nwrkcounter] = extsta[n]
-				extsta_n_seq[nwrkcounter] = n
-				nwrkcounter = nwrkcounter + 1
-			end
-		end
-	end
-	SetDataVectors(xidestwrk+"|", {{"ID", xiwrkid}, {"ORIG_TAZ", xiwrk}, {"ORIG_SEQ", extsta_w_seq}}, )
-	SetDataVectors(xidestnwrk+"|", {{"ID", xinwrkid}, {"ORIG_TAZ", xinwrk}, {"ORIG_SEQ", extsta_n_seq}}, )
+										{"DEST_TAZ", "Integer", 5, null,},{"DEST_SEQ", "Integer", 5, null,},{"OD_Time", "Real", 8, 2,},{"DO_Time", "Real", 8, 2,},{"ATW", "Integer", 1, null,}})
 
-//********************************* X/I WORK DESTINATION CHOICE **********************************************************************************************************
-
-	lasttaz = 0
-
+//********************************* X/I WORK & NON-WORK DESTINATION CHOICE ***********************************************************************************************
+//Get each zone's distance to closest Extsta, and open travel time distribution table
+    //	dst2extsta = GetDataVector(distExtsta_vw+"|", "Len", {{"Sort Order", {{"From","Ascending"}}}}) 
+ 	XIW_shortdisttab = OpenTable("XIW_shortdisttab", "CSV", {DirArray + "\\HBW_XI_short.csv",})	
+	LowvalshortXIW = GetDataVector(XIW_shortdisttab+"|", "Low",)
+	HighvalshortXIW = GetDataVector(XIW_shortdisttab+"|", "High",)
+	XIW_shortdistpctXIW = GetDataVector(XIW_shortdisttab+"|", "Percent",)
+ 
+ 	XIW_longdisttab = OpenTable("XIW_longdisttab", "CSV", {DirArray + "\\HBW_XI_long.csv",})	
+	Lowvallong = GetDataVector(XIW_longdisttab+"|", "Low",)
+	Highvallong = GetDataVector(XIW_longdisttab+"|", "High",)
+	XIW_longdistpct = GetDataVector(XIW_longdisttab+"|", "Percent",)
+ 
+ 	XIN_shortdisttab = OpenTable("XIN_shortdisttab", "CSV", {DirArray + "\\HBO_XI_short.csv",})	
+	LowvalshortXIN = GetDataVector(XIN_shortdisttab+"|", "Low",)
+	HighvalshortXIN = GetDataVector(XIN_shortdisttab+"|", "High",)
+	XIN_shortdistpctXIN = GetDataVector(XIN_shortdisttab+"|", "Percent",)
+ 
+ 	XIN_longdisttab = OpenTable("XIN_longdisttab", "CSV", {DirArray + "\\HBO_XI_long.csv",})	
+	LowvallongXIN = GetDataVector(XIN_longdisttab+"|", "Low",)
+	HighvallongXIN = GetDataVector(XIN_longdisttab+"|", "High",)
+	XIN_longdistpctXIN = GetDataVector(XIN_longdisttab+"|", "Percent",)
+ 
 //Loop all tours
 SetRandomSeed(46498)
-	for n = 1 to totwrk do					
-		if xiwrk[n] = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
-			goto skipprobxiw
-		end
-		htime = GetMatrixVector(autopkcur, {{"Row", xiwrk[n]}})	//pull the TT vector for this TAZ from the peak speed matrix
 /* 	  Calculate utility & probability.  This is the HBW model, minus the INTRACO term, which cannot be calculated.  Use the high income model 
 	  only.  Not trying to match attractions for this purpose.  Tweak HTIME coefficient to match external survey average trip length. (original HBW value: -0.07360)
-*/		U = -0.07185*htime + 1.102*cbddum - 0.00000001031*accE15cpk + log(ret + 1.8556*nret) + 0.1*cbddum	//calculate probability array (just done for first HH in this TAZ) 
-		eU = exp(U)
-		sumeU = VectorStatistic(eU, "Sum",)
-		prob = eU / sumeU
-		vecs = {prob, taz, tazseq}
-		cumprob1 = CumulativeVector(vecs[1])
-		cumprob1[U.length] = 1
-		lasttaz = xiwrk[n]
-		skipprobxiw:
-		redo_randval_xiw:
-		rand_val = RandomNumber()
-		if (rand_val = 0 or rand_val = 1)  then do
-			goto redo_randval_xiw
+*/
+/* 12/2024: We are now using distance bins to assign eligible destination zones.  We are taking the time & distance variable out, and using the
+		distance bins instead.  If the total XI volume at the station is < 1% of the total XI volume at all stations, then it is designated
+		as a "Short" station, and uses that distance bin.  Otherwise, it uses the "Long" bin.
+*/
+	wrkcounter = 0
+	nwrkcounter = 0
+	extstaseq = 0
+	lasttaz = 0
+	for n = 1 to extsta.length do
+		extstaseq = extstaseq + 1
+		//start with XIW
+		if wrk[n] > 0 then do
+			hdist = GetMatrixVector(autopkdistcur, {{"Row", extsta[n]}})	//pull the TT vector for this TAZ from the peak speed matrix
+			if wrk[n] < (totwrk * 0.1) then do	//is this a short external station
+				Lowval = LowvalshortXIW
+				Highval = HighvalshortXIW
+				XIW_distpct = XIW_shortdistpctXIW
+			end
+			else do
+				Lowval = LowvallongXIW
+				Highval = HighvallongXIW
+				XIW_distpct = XIW_longdistpctXIW
+			end
+			
+			for i = 1 to XIW_distpct.length do
+				Lowval_v = Vector(hdist.length, "Float", {{"Constant", Lowval[i]}})
+				Highval_v = Vector(hdist.length, "Float", {{"Constant", Highval[i]}})
+				numrec = ceil(wrk[n] * XIW_distpct[i]/100)
+				bindist = if (hdist => Lowval_v and hdist < Highval_v) then 1 else 0
+				U = (-0.00000001031*accE15cpk + log(ret + 1.8556*nret)) * bindist	 
+				eU = exp(U)
+				sumeU = VectorStatistic(eU, "Sum",)
+				prob = eU / sumeU
+				vecs = {prob, taz, tazseq}
+				cumprob1 = CumulativeVector(vecs[1])
+				cumprob1[U.length] = 1
+				lasttaz = extsta[n]
+				redo_randval_xiw:
+				rand_val = RandomNumber()
+				if (rand_val = 0 or rand_val = 1)  then do
+					goto redo_randval_xiw
+				end
+				addnum = max(r2i(1/rand_val), 500)
+				cumprob = cumprob1 / rand_val
+				cumprob = if cumprob < 1.0 then addnum else cumprob
+				cumprob = cumprob + aide_de_sort_vec
+				sorted_vecs = SortVectors({cumprob, vecs[2], vecs[3]})				
+				posUcounter = 0
+				for p = 1 to U.length do
+					if U[p] > 0 then do
+						posUcounter = posUcounter + 1
+					end
+				end
+				reccounter = 0
+				for j = 1 to numrec do
+					reccounter = reccounter + 1
+					wrkcounter = wrkcounter + 1
+					dest_taz = sorted_vecs[2][reccounter]
+					dest_tazseq = sorted_vecs[3][reccounter]
+					odtime = GetMatrixValue(autopkcurall, i2s(extsta[n]), i2s(dest_taz))
+					dotime = GetMatrixValue(autopkcurall, i2s(dest_taz), i2s(extsta[n]))
+					filltable = AddRecord("xidestwrk", {{"ID", wrkcounter}, {"ORIG_TAZ", extsta[n]}, {"ORIG_SEQ", extstaseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}})
+					if reccounter = posUcounter then do
+						reccounter = 0
+					end
+				end
+			end
 		end
-		addnum = max(r2i(1/rand_val), 500)
-		cumprob = cumprob1 / rand_val
-		cumprob = if cumprob < 1.0 then addnum else cumprob
-		cumprob = cumprob + aide_de_sort_vec
-		sorted_vecs = SortVectors({cumprob, vecs[2], vecs[3]})				
-		dest_taz = sorted_vecs[2][1]
-		dest_tazseq = sorted_vecs[3][1]
-		odtime = GetMatrixValue(autopkcurall, i2s(xiwrk[n]), i2s(dest_taz))
-		dotime = GetMatrixValue(autopkcurall, i2s(dest_taz), i2s(xiwrk[n]))
-		SetRecordValues("xidestwrk", i2s(n), {{"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}})		
+		//now XIN (within same loop of external stations
+		if nwrk[n] > 0 then do
+			hdist = GetMatrixVector(autopkdistcur, {{"Row", extsta[n]}})	//pull the dist vector for this TAZ from the peak speed matrix
+			if nwrk[n] < (totnwrk * 0.1) then do	//is this a short external station
+				Lowval = LowvalshortXIN
+				Highval = HighvalshortXIN
+				XIN_distpct = XIN_shortdistpctXIN
+			end
+			else do
+				Lowval = LowvallongXIN
+				Highval = HighvallongXIN
+				XIN_distpct = XIN_longdistpctXIN
+			end
+			for i = 1 to XIN_distpct.length do
+				Lowval_v = Vector(hdist.length, "Float", {{"Constant", Lowval[i]}})
+				Highval_v = Vector(hdist.length, "Float", {{"Constant", Highval[i]}})
+				numrec = ceil(nwrk[n] * XIN_distpct[i]/100)
+				bindist = if (hdist => Lowval_v and hdist < Highval_v) then 1 else 0
+				U = (-0.4178*atype - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop)) * bindist	 
+//				U = -0.2453*ctime - 0.4178*atype + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.5*cbddum	//calculate probability array (just done for first HH in this TAZ)
+				eU = exp(U)
+				sumeU = VectorStatistic(eU, "Sum",)
+				prob = eU / sumeU
+				vecs = {prob, taz, tazseq}
+				cumprob1 = CumulativeVector(vecs[1])
+				cumprob1[U.length] = 1
+				lasttaz = extsta[n]
+				redo_randval_xin:
+				rand_val = RandomNumber()
+				if (rand_val = 0 or rand_val = 1)  then do
+					goto redo_randval_xin
+				end
+				addnum = max(r2i(1/rand_val), 500)
+				cumprob = cumprob1 / rand_val
+				cumprob = if cumprob < 1.0 then addnum else cumprob
+				cumprob = cumprob + aide_de_sort_vec
+				sorted_vecs = SortVectors({cumprob, vecs[2], vecs[3]})				
+				posUcounter = 0
+				for p = 1 to U.length do
+					if U[p] > 0 then do
+						posUcounter = posUcounter + 1
+					end
+				end
+				reccounter = 0
+				for j = 1 to numrec do
+					reccounter = reccounter + 1
+					nwrkcounter = nwrkcounter + 1
+					dest_taz = sorted_vecs[2][reccounter]
+					dest_tazseq = sorted_vecs[3][reccounter]
+					odtime = GetMatrixValue(autopkcurall, i2s(extsta[n]), i2s(dest_taz))
+					dotime = GetMatrixValue(autopkcurall, i2s(dest_taz), i2s(extsta[n]))
+					filltable = AddRecord("xidestnwrk", {{"ID", nwrkcounter}, {"ORIG_TAZ", extsta[n]}, {"ORIG_SEQ", extstaseq}, {"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}})
+					if reccounter = posUcounter then do
+						reccounter = 0
+					end
+				end
+			end
+		end
 	end
-	
+
 	//fill assigned XIW tours into productions_attractions table
 	jointab = JoinViews("jointab", "prod_attr.TAZ", "xidestwrk.DEST_TAZ", {{"A",}})
 	attv = GetDataVector(jointab+"|", "[N xidestwrk]", )
 	SetDataVector(prod_attr+"|", "DC_XIW", attv, )
 	CloseView("jointab")
 
-//********************************* X/I NON-WORK DESTINATION CHOICE ******************************************************************************************************
-
-	lasttaz = 0
-
-//Loop all tours
-SetRandomSeed(149)
-	for n = 1 to totnwrk do					
-		if xinwrk[n] = lasttaz then do			//skip the probability array creation step if already been done for this TAZ
-			goto skipprobxinw
-		end
-		ctime = GetMatrixVector(compfreecur4, {{"Row", xinwrk[n]}})	//pull the TT vector for this TAZ from the offpeak composite speed matrix based on income group 4
-/*		Calculate utility & probability.  This is the HBO model, minus the SAMEAT term, which cannot be calculated.  Use the high income 
-		model only.  Not trying to match attractions for this purpose.  Tweak CTIME coefficient to match external survey average trip length.(original HBO value: -0.2324)
-*/		U = -0.2453*ctime - 0.4178*atype + 0.02397*dist2cbd - 0.000000015*accE15cfr + 1.128*pct4 + log(totemp + 0.109481*pop) + 0.5*cbddum	//calculate probability array (just done for first HH in this TAZ)
-		eU = exp(U)
-		sumeU = VectorStatistic(eU, "Sum",)
-		prob = eU / sumeU
-		vecs = {prob, taz, tazseq}
-		cumprob1 = CumulativeVector(vecs[1])
-		cumprob1[U.length] = 1
-		lasttaz = xinwrk[n]
-		skipprobxinw:
-		redo_randval_xinw:
-		rand_val = RandomNumber()
-		if (rand_val = 0 or rand_val = 1)  then do
-			goto redo_randval_xinw
-		end
-		addnum = max(r2i(1/rand_val), 500)
-		cumprob = cumprob1 / rand_val
-		cumprob = if cumprob < 1.0 then addnum else cumprob
-		cumprob = cumprob + aide_de_sort_vec
-		sorted_vecs = SortVectors({cumprob, vecs[2], vecs[3]})				
-		dest_taz = sorted_vecs[2][1]
-		dest_tazseq = sorted_vecs[3][1]
-		odtime = GetMatrixValue(autofreecur, i2s(xinwrk[n]), i2s(dest_taz))
-		dotime = GetMatrixValue(autofreecur, i2s(dest_taz), i2s(xinwrk[n]))
-		SetRecordValues("xidestnwrk", i2s(n), {{"DEST_TAZ", dest_taz}, {"DEST_SEQ", dest_tazseq}, {"OD_Time", odtime}, {"DO_Time", dotime}})		//, {"PURP"}})
-	end
 	
 	//fill assigned XIN tours into productions_attractions table
 	jointab = JoinViews("jointab", "prod_attr.TAZ", "xidestnwrk.DEST_TAZ", {{"A",}})
@@ -1678,12 +2083,13 @@ SetRandomSeed(149)
 	wrkdum = 1.56		//We don't know the workers/HH for non-residents, so use the average value for Metrolina in 2010, calculated by the HH synthesis model. Because we 
 				//have an X/I work trip, we know there must be at least one worker in the HH, so exclude the zero-worker HHs in this calculation = 976,538 workers / (833,570 - 206,937 HH).
 	
+// ** THIS SHOULD BE TOTWRK, BUT NUMBERS DON'T MATCH; NOT SURE WHY **
 	desttazseq_v = GetDataVector(xidestwrk+"|", "DEST_SEQ",) 
-	dim areaval[totwrk]
-	dim hhval[totwrk]
-	dim accE15cfr_ar[totwrk]
+	dim areaval[wrkcounter]
+	dim hhval[wrkcounter]
+	dim accE15cfr_ar[wrkcounter]
 	origtaz = 0
-	for n = 1 to totwrk do
+	for n = 1 to wrkcounter do
 		hhval[n] = hh[desttazseq_v[n]]
 		areaval[n] = area[desttazseq_v[n]]
 		accE15cfr_ar[n] = accE15cfr[desttazseq_v[n]]
@@ -1695,18 +2101,18 @@ SetRandomSeed(149)
 
 	U1 = -2.659 - 0.3166*wrkdum + 0.000003801*med_incdum + 0.7615*inc4dum + 0.03204*hhdens 	// Use the accessibility of the workplace zone.
 
- 	E2U0 = Vector(totwrk, "float", {{"Constant", 1}})
+ 	E2U0 = Vector(wrkcounter, "float", {{"Constant", 1}})
 	E2U1 = exp(U1)						//Initial alternatives are 0, 1+ X/I ATW tours
 	E2U_cum = E2U0 + E2U1
 
 	prob0 = E2U0 / E2U_cum
 	prob1 = E2U1 / E2U_cum
 
-	choice_v = Vector(totwrk, "short", {{"Constant", 0}})	//reset choice vector to 0 tours
+	choice_v = Vector(wrkcounter, "short", {{"Constant", 0}})	//reset choice vector to 0 tours
 
 //Do a big loop in order to sort each HH's alternatives by ascending probability.  
 SetRandomSeed(617)
-	for n = 1 to totwrk do
+	for n = 1 to wrkcounter do
 		rand_val = RandomNumber()
 		//if probability of 1 HBU tour is less than random number then 0 tours, else use 1+ fractions:
 		//The 1+ categories are 1 (89.8% of all 1+ tours) & 2 (10.2%)
@@ -1913,5 +2319,5 @@ SetRandomSeed(3113)
 		AppendToLogFile(1, "Exit Tour Destination Choice " + datentime)
     	return({1, msg})
 		
-
+skiptoend:
 endmacro

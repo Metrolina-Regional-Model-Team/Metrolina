@@ -21,7 +21,8 @@ Macro "HwySkim_Peak" (Args)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[AM Peak Hwy Name] // here's the only change for new networks
+	//hwy_file = Args.[AM Peak Hwy Name] // here's the only change for new networks
+	hwy_file = Args.[Hwy Name] // here's the only change for new networks
 	{, , netview, } = SplitPath(hwy_file)
 
 	curiter = Args.[Current Feedback Iter]

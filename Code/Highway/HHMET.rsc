@@ -39,7 +39,7 @@ Macro "HHMET" (Args)
 
 	DirArray  = Dir + "\\TG"
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 
 	se_vectors = GetDataVectors(se_vw+"|", {"TAZ", "POP", "HH", "POP_HHS", "MED_INC", "TOTEMP", "SEQ"},{{"Sort Order", {{"TAZ","Ascending"}}}}) //6 vectors
 	taz = se_vectors[1]

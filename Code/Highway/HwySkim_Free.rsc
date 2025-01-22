@@ -21,7 +21,8 @@ Macro "HwySkim_Free" (Args)
 
 	METDir = Args.[MET Directory]
 	Dir = Args.[Run Directory]
-	hwy_file = Args.[Offpeak Hwy Name]	// here's the only change for new networks
+	//hwy_file = Args.[Offpeak Hwy Name]	// here's the only change for new networks
+	hwy_file = Args.[Hwy Name]
 	{, , netview, } = SplitPath(hwy_file)
 	msg = null
 	SkimOK = 1

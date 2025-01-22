@@ -124,10 +124,12 @@ Macro "CapSpd" (Args)
 	Dir = Args.[Run Directory]
 	METDir = Args.[MET Directory]
 	//hwyname_ar = {Args.[AM Peak Hwy Name], Args.[PM Peak Hwy Name], Args.[Offpeak Hwy Name]}
-	hwyname_ar = {"RegNet_AMpeak", "RegNet_PMpeak", "RegNet_Offpeak"}
-	timeperiod_ar = {"AM Peak", "PM Peak", "Offpeak"}
+	//hwyname_ar = {"RegNet_AMpeak", "RegNet_PMpeak", "RegNet_Offpeak"}
+	//timeperiod_ar = {"AM Peak", "PM Peak", "Offpeak"}
+
 	RunYear = Args.[Run Year]
-	
+	Hwy = SplitPath(Args.[Hwy Name])
+	HwyName = Hwy[3]
 
 	CapSpdLookUpFile = METDir + "\\Pgm\\Capspdfactors\\CapSpd_lookup.csv"
 	GuidewayFile = METDir + "\\Pgm\\Capspdfactors\\capspd_guideway.asc"
@@ -148,8 +150,6 @@ Macro "CapSpd" (Args)
 	
 //	CreateProgressBar("Capacity and Speed Calculations", "False")
 //	stat = UpdateProgressBar("Capacity and Speed Calculations",1)
-
-
 
 	msg = null
 	CapSpdOK = 1
@@ -189,65 +189,65 @@ Macro "CapSpd" (Args)
 //Loop through three networks
 	// Check files
 	// Highway network
-	for tp = 1 to 3 do
+	/*for tp = 1 to 3 do
 		CreateProgressBar("Capacity and Speed Calculations "+timeperiod_ar[tp], "False")
 		stat = UpdateProgressBar("Capacity and Speed Calculations "+timeperiod_ar[tp],1)
+	*/
+		//HwyName = hwyname_ar[tp]
+	netview = HwyName
+	altname = netview
+	HwyFile = Dir + "\\" + HwyName + ".dbd"
+	
+	HwyFileChk = RunMacro("DBFieldCheck", HwyFile, HwyName, "OppFunclA", 0)
 
-		HwyName = hwyname_ar[tp]
-		netview = HwyName
-		altname = netview
+	if HwyFileChk > 0 then do
+		cnterrlvl3 = cnterrlvl3 + 1
+		// ErrFileRec: ID, layer, level field, val, message
+		ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "HwyFile", ,"Highway file " + mrmfunctionmessages[HwyFileChk]}}
+	end
 		
-		HwyFile = Dir + "\\" + HwyName + ".dbd"
-		HwyFileChk = RunMacro("DBFieldCheck", HwyFile, HwyName, "OppFunclA", 0)
-	
-		if HwyFileChk > 0 then do
+	// Area type by TAZ - to be joined to HwyView by TAZ no.  
+	AreaTypeFile = Dir + "\\LandUse\\TAZ_AreaType.asc"
+	exist = GetFileInfo(AreaTypeFile)
+	if exist = null
+		then do
 			cnterrlvl3 = cnterrlvl3 + 1
-			// ErrFileRec: ID, layer, level field, val, message
-			ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "HwyFile", ,"Highway file " + mrmfunctionmessages[HwyFileChk]}}
+			ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "ATFile", ,AreaTypeFile + " NOT FOUND"}}
 		end
-			
-		// Area type by TAZ - to be joined to HwyView by TAZ no.  
-		AreaTypeFile = Dir + "\\LandUse\\TAZ_AreaType.asc"
-		exist = GetFileInfo(AreaTypeFile)
-		if exist = null
-			then do
-				cnterrlvl3 = cnterrlvl3 + 1
-				ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "ATFile", ,AreaTypeFile + " NOT FOUND"}}
-			end
 	
-		// CapSpd Factors file - lookup tables for capspd - See READ ME tab in spreadsheet
-		exist = GetFileInfo(CapSpdLookUpFile)
-		if exist = null
-			then do
-				cnterrlvl3 = cnterrlvl3 + 1
-				ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "Lookup", ,CapSpdLookUpFile + " NOT FOUND"}}
-			end
+	// CapSpd Factors file - lookup tables for capspd - See READ ME tab in spreadsheet
+	exist = GetFileInfo(CapSpdLookUpFile)
+	if exist = null
+		then do
+			cnterrlvl3 = cnterrlvl3 + 1
+			ErrFileRec = ErrFileRec + {{, "No File", "FATAL", "Lookup", ,CapSpdLookUpFile + " NOT FOUND"}}
+		end
+
+	// CapSpd Guideway file - guideway travel time over-rides - See READ ME tab in spreadsheet
+	exist = GetFileInfo(GuidewayFile)
+	if exist = null
+		then do
+			cnterrlvl2 = cnterrlvl2 + 1
+			GuidewayOverride = "False"
+			ErrFileRec = ErrFileRec + {{, "No File", "Severe", "Guideway", ,HwyFile + " NOT FOUND, No Guideway overrides"}}
+		end
+		else GuidewayOverride = "True"
 	
-		// CapSpd Guideway file - guideway travel time over-rides - See READ ME tab in spreadsheet
-		exist = GetFileInfo(GuidewayFile)
-		if exist = null
-			then do
-				cnterrlvl2 = cnterrlvl2 + 1
-				GuidewayOverride = "False"
-				ErrFileRec = ErrFileRec + {{, "No File", "Severe", "Guideway", ,HwyFile + " NOT FOUND, No Guideway overrides"}}
-			end
-			else GuidewayOverride = "True"
-	
-		// Write error/warning messages
-		if ErrFileRec <> null 
-			then do
-				SetView(CapSpdErr)
-				for i = 1 to ErrFileRec.length do
-					errvals = 	{{"ID", ErrFileRec[i][1]}, {"ErrLayer", ErrFileRec[i][2]},
-								 {"ErrLevel", ErrFileRec[i][3]}, {"ErrField", ErrFileRec[i][4]}, 
-								 {"ErrVal", ErrFileRec[i][5]}, {"ErrMsg", ErrFileRec[i][6] }}
-					AddRecord (CapSpdErr, errvals)
-		 			//AppendToLogFile
-		 		end // for i	
-			end
-		ErrFileRec = null
-	
-		if cnterrlvl3 > 0 then goto badquit	
+	// Write error/warning messages
+	if ErrFileRec <> null 
+		then do
+			SetView(CapSpdErr)
+			for i = 1 to ErrFileRec.length do
+				errvals = 	{{"ID", ErrFileRec[i][1]}, {"ErrLayer", ErrFileRec[i][2]},
+								{"ErrLevel", ErrFileRec[i][3]}, {"ErrField", ErrFileRec[i][4]}, 
+								{"ErrVal", ErrFileRec[i][5]}, {"ErrMsg", ErrFileRec[i][6] }}
+				AddRecord (CapSpdErr, errvals)
+				//AppendToLogFile
+			end // for i	
+		end
+	ErrFileRec = null
+
+	if cnterrlvl3 > 0 then goto badquit	
 	
 		//	11111111111111111111111111111111111111111111111111111111111111111111111111111111111111
 		//	    1.  Read lookup and guideway tables from Excel worksheets
@@ -1907,7 +1907,7 @@ Macro "CapSpd" (Args)
 		end
 */
 	DestroyProgressBar()
-	end // timeperiod loop (tp)
+	//end // timeperiod loop (tp)
 	
 	CloseView(CapSpdErr)
 	return({CapSpdOK, msg})

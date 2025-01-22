@@ -12,7 +12,7 @@ Macro "Tour_TF_CountySummaryStats"
 	Dir = Args.[Run Directory]
 	MetDir = Args.[MET Directory]
 	theyear = Args.[Run Year]
-	net_file = Args.[Hwy Name].value
+	net_file = Args.[Hwy Name]
 	msg = null
 	datentime = GetDateandTime()
 	AppendToLogFile(1, "Tour TOD1: " + datentime)
@@ -39,7 +39,7 @@ Macro "Tour_TF_CountySummaryStats"
 	stcnty = GetDataVector(stcnty_tab + "|", "STCNTY",)
 	counties = GetDataVector(stcnty_tab + "|", "NAME",)
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 
 //create Productions and Attractions tables
 	prod_tab = CreateTable("prod_tab", DirTG + "\\Productions.bin", "FFB", {{"STCNTY", "Integer", 5, , "No"}, {"County", "String", 15, , "No"}}) 

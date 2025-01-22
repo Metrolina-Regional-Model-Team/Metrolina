@@ -34,14 +34,14 @@
         }
         Args.[LandUse File] = {
             "Type":"file",
-            "Value":"%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.dbf"
+            "Value":"%MET Directory%\\%Run Year%\\Landuse\\SE_%Run Year%.bin"
         }
 	
 	Section = "Networks"
 	
         Args.ProjectFile = {
             "Type":"file",
-            "Value":"%MRM Directory%\\MasterNet\\MasterProjects.dbf"
+            "Value":"%MRM Directory%\\MasterNet\\Projects.bin"
         }
         Args.MasterHwyFile = {
             "Type":"file",
@@ -49,21 +49,14 @@
         }
         Args.TollFile = {
             "Type":"file",
-            "Value":"%MRM Directory%\\MasterNet\\MasterTolls.bin"
+            "Value":"%MRM Directory%\\MasterNet\\Tolls.bin"
         }
-        Args.[AM Peak Hwy Name] = {
+        
+        Args.[Hwy Name] = {
             "Type":"file",
-            "Value":"%Run Directory%\\RegNet_AMpeak.dbd"
+            "Value":"%Run Directory%\\RegNet.dbd"
         }
-        Args.[PM Peak Hwy Name] = {
-            "Type":"file",
-            "Value":"%Run Directory%\\RegNet_PMpeak.dbd"
-        }
-        Args.[Offpeak Hwy Name] = {
-            "Type":"file",
-            "Value":"%Run Directory%\\RegNet_Offpeak.dbd"
-        }
-	
+  
 	Section = "Mode Split"
 	
         Args.TourMCFlag = {

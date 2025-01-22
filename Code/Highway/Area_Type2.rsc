@@ -41,7 +41,7 @@ Macro "Area_Type" (Args)
 	msg = null
 	AreaTypeOK = 1
 
-	SEDataView = Opentable("SEDataView","DBASE",{SEDataFile,})
+	SEDataView = Opentable("SEDataView","FFB",{SEDataFile,})
 	ZonePctView = OpenTable("ZonePctView", "FFA", {ZonePctFile,})
 	
 

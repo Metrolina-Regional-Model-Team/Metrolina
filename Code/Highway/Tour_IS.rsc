@@ -16,7 +16,8 @@ Macro "Tour_IS" (Args)
 	sedata_file = Args.[LandUse file]
 	Dir = Args.[Run Directory]
 	theyear = Args.[Run Year]
-	hwy_file = Args.[Offpeak Hwy Name]
+	//hwy_file = Args.[Offpeak Hwy Name]
+	hwy_file = Args.[Hwy Name]
 	{, , net_file, } = SplitPath(hwy_file)
 
 	msg = null
@@ -46,7 +47,7 @@ Macro "Tour_IS" (Args)
 
   CreateProgressBar("Tour Intermediate Stop Model...Opening files", "TRUE")
 
-	se_vw = OpenTable("SEFile", "dBASE", {sedata_file,})
+	se_vw = OpenTable("SEFile", "FFB", {sedata_file,})
 //	access_peak = OpenTable("access_peak", "FFB", {DirArray + "\\ACCESS_PEAK.bin",})
 //	access_free = OpenTable("access_free", "FFB", {DirArray + "\\ACCESS_FREE.bin",})
 	areatype = OpenTable("areatype", "DBASE", {Dir + "\\landuse\\SE" + theyear + "_DENSITY.dbf",})  
