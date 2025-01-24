@@ -1,11 +1,18 @@
 ---
-title: "ghpages"
+title: "MRM Documentation"
 output: html_document
-toc: true
-    theme: journal
-    highlight: tango
 ---
 
-# Welcome to My Website
+# Introduction
 
-This is a simple website created with R Markdown.
+Welcome to the MRM Documentation.
+
+rmarkdown::render("C:/MRM/docs/ghpages/ghpages.Rmd")
+
+install.packages("rmarkdown")
+install.packages("knitr")
+install.packages("yaml")
+
+library(rmarkdown)
+library(knitr)
+library(yaml)
