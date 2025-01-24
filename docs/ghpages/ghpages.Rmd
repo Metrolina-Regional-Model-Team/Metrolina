@@ -1,0 +1,11 @@
+---
+title: "ghpages"
+output: html_document
+toc: true
+    theme: journal
+    highlight: tango
+---
+
+# Welcome to My Website
+
+This is a simple website created with R Markdown.
