@@ -1,0 +1,13 @@
+---
+title: "About Us"
+---
+
+# Our Team
+
+We are a dedicated group of professionals committed to innovation and excellence.
+
+## Team Members
+
+1. **Jane Doe** - Founder & CEO
+2. **John Smith** - Chief Technology Officer
+3. **Emily Chen** - Lead Designer

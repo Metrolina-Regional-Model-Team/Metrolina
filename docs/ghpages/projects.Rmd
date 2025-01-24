@@ -1,0 +1,11 @@
+---
+title: "Our Projects"
+---
+
+# Current Projects
+
+## Project Alpha
+A cutting-edge research initiative focusing on sustainable technology.
+
+## Project Beta
+An innovative software development project revolutionizing user experiences.

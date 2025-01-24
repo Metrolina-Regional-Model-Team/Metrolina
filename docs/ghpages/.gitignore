@@ -1,0 +1,7 @@
+*.xsl
+*.xml
+*.bak
+*.upx
+.DS_Store
+.Rproj.user
+.Rhistory

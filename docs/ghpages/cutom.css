@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&display=swap');
+
+body {
+  font-family: 'Calibri', sans-serif;
+  background-color: #f4f6f9;
+}
+
+.navbar {
+  background-color: #2c3e50;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-family: 'Calibri', sans-serif;
+  color: #ffffff;
+}
+
+.navbar .dropdown-menu {
+  background-color: #2c3e50;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 10px 0;
+}
+
+.navbar .dropdown-menu a {
+  color: #000000 !important;
+  font-family: 'Calibri', sans-serif;
+  padding: 8px 15px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar .dropdown-menu a:hover {
+  background-color: #34495e;
+  color: #ffffff !important;
+}
+
+h1, h2, h3 {
+  font-family: 'Calibri', sans-serif;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}

@@ -1,0 +1,52 @@
+/* Basic layout tweaks */
+body {
+  font-family: 'Calibri', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Navbar customization */
+.navbar {
+  background-color: #0073e6; /* Blue background */
+}
+
+.navbar a, .navbar .navbar-brand {
+  color: white !important;
+  font-size: 16px;
+}
+
+.navbar a:hover {
+  background-color: #005bb5;
+  color: white;
+}
+
+/* Header and Table of Contents */
+h1, h2, h3, h4, h5, h6 {
+  color: #0073e6; /* Blue headers */
+}
+
+.toc {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.toc .section {
+  font-size: 18px;
+}
+
+.toc a {
+  text-decoration: none;
+  color: #0073e6;
+}
+
+.toc a:hover {
+  text-decoration: underline;
+}
+
+/* Footer Styling */
+footer {
+  background-color: #0073e6;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}

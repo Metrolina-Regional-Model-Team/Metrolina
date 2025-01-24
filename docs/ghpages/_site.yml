@@ -1,0 +1,34 @@
+name: "My Website"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+    css: custom.css
+    includes:
+      after_body: footer.html
+    toc: false
+
+navbar:
+  title: "My Website" 
+  background: "#2c3e50"
+  foreground: "#ffffff"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      menu:
+        - text: "Team"
+          href: about.html
+        - text: "Our Story"
+          href: our-story.html
+    - text: "Projects"
+      menu:
+        - text: "Current Projects" 
+          href: projects.html
+        - text: "Past Projects"
+          href: past-projects.html
+    - text: "Contact"
+      menu:
+        - text: "Contact"
+          href: contact.html
