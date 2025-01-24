@@ -1,5 +1,5 @@
 TAZ3896
-126
+122,codepage=1252
 "ID",I,1,4,0,4,0,,"","",,"Sum",
 "SEQ",I,5,4,0,12,0,,"","",,"Sum",
 "ORDER",I,9,4,0,12,0,,"","",,"Sum",
@@ -13,8 +13,7 @@ TAZ3896
 "MPORPO2020",C,53,30,0,30,0,,"","",,"Copy",
 "PUMA2010",I,83,4,0,12,0,,"","",,"Sum",
 "GEOID20",C,87,16,0,16,0,,"","2020 Census GEOID",,"Copy",
-"TRACT20",I,103,4,0,8,0,,"","2020 Census Tract ID",,"Sum",
-"TRACTBLKGR20",I,107,4,0,12,0,,"","2020 Census Block Group ID - extras folder for TAZ that encompass multiple block groups",,"Sum",
-"MULTI_BG",I,111,4,0,12,0,,"","If a TAZ falls between multiple block groups",,"Sum",
-"PUMA20",C,115,8,0,8,0,,"","",,"Sum",
-"PUMA",I,123,4,0,8,0,,"","PUMA MRM ID",,"Sum",
+"TRACTBLKGR20",I,103,4,0,12,0,,"","2020 Census Block Group ID - extras folder for TAZ that encompass multiple block groups",,"Sum",
+"MULTI_BG",I,107,4,0,12,0,,"","If a TAZ falls between multiple block groups",,"Sum",
+"PUMA20",C,111,8,0,8,0,,"","",,"Sum",
+"PUMA",I,119,4,0,8,0,,"","PUMA MRM ID",,"Sum",
