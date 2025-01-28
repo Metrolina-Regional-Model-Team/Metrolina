@@ -1,0 +1,33 @@
+---
+title: "Metrolina Regional Model"
+---
+
+:::{.section}
+
+## About the MRM
+
+The Metrolina Regional Model (MRM) is the primary forecasting and analysis tool used for regional transportation planning processes in the Metrolina region. The MRM is used for the development of the Metropolitan Transportation Plan (MTP), Air Quality Conformity Analysis and Determination, and the Transportation Improvement Program (TIP). The model is also intended to be used as a tool for other transportation planning needs in the area including preparing traffic forecasts, studying transit and multi-modal systems, testing the impacts of system improvements, and analyzing socioeconomic changes in the Metrolina region. 
+
+
+## Model Area
+The modeling area covers 13 counties in the bi-state region of North and South Carolina. These counties include Anson, Cabarrus, portions of Catawba, Cleveland, Gaston, Iredell, Lincoln, Mecklenburg, Rowan, Stanly, and Union counties from the North Carolina side and the northern panhandle of Lancaster and York counties from the South Carolina side.  
+
+
+## Model Team
+Charlotte Department of Transportation (CDOT) serves as the model custodian for the Metrolina Regional Model. The MRM is maintained and operated by a team of modelers from the following agencies: 
+
+* North Carolina Department of Transportation (NCDOT)
+* South Carolina Department of Transportation (SCDOT)
+* Charlotte Regional Transportation Planning Organization (CRTPO)
+* Gaston – Cleveland – Lincoln Metropolitan Planning Organization (GCLMPO)
+* Cabarrus-Rowan Metropolitan Planning Organization (CRMPO)
+* Rock Hill-Forth Mill Area Transportation Study (RFATS)
+* Rocky River Rural Planning Organization (RRRPO) 
+
+
+## Note
+This documentation reflects MRM25v1.0. The official base year  is 2022. The horizon years include 2025, 2035, 2045, and 2055. For conformity purposes, the year 2026 is also modeled. 
+
+Later versions of the model may not match the charts and tables exactly due to network and other changes. It is the sole responsibility of the user to ensure that the latest version of the MRM is being deployed for their respective projects/studies. 
+:::
+
