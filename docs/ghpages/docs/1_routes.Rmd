@@ -1,0 +1,11 @@
+---
+title: "Contact Us"
+---
+
+# Get in Touch
+
+## Contact Information
+
+- **Email**: contact@example.com
+- **Phone**: (555) 123-4567
+- **Address**: 123 Innovation Street, Tech City, TC 12345
