@@ -1,34 +1,41 @@
-name: "My Website"
+name: "MRM"
 output:
   html_document:
-    theme: flatly
+    theme: cosmo
+    css: "styles.css"
     highlight: tango
-    css: custom.css
-    includes:
-      after_body: footer.html
-    toc: false
-
+    toc: true
+    toc_float: 
+      collapsed: false  
+      smooth_scroll: true  
+      number_sections: false  
+      highlight: true  
+    toc_depth: 3
+    
+    
 navbar:
-  title: "My Website" 
-  background: "#2c3e50"
+  title: "MRM"
+  background: "#000000"
   foreground: "#ffffff"
   type: inverse
   left:
-    - text: "Home"
-      href: index.html
-    - text: "About"
+    - text: "Databases"
       menu:
-        - text: "Team"
-          href: about.html
-        - text: "Our Story"
-          href: our-story.html
-    - text: "Projects"
+        - text: "TAZs & SE"
+          href: 1_taz_se.html
+        - text: "Networks"
+          href: 1_networks.html
+        - text: "Route Systems"
+          href: 1_routes.html
+    - text: "Surveys"
       menu:
-        - text: "Current Projects" 
-          href: projects.html
-        - text: "Past Projects"
-          href: past-projects.html
+        - text: "Household Travel Survey"
+          href: 2_hhts.html
+        - text: "On Board Surveys"
+          href: 2_onboard.html
     - text: "Contact"
-      menu:
-        - text: "Contact"
-          href: contact.html
+      href: contact.html
+  right:
+    - icon: fa-github
+      href: https://github.com/Metrolina-Regional-Model-Team/MRM
+      

@@ -1,0 +1,24 @@
+---
+title: "Scenario Roadway Layer"
+---
+
+To create a scenario roadway layer the MRM uses three files: the master roadway layer, the project list providing project details and build year, and the toll data file containing the toll facilities and toll rates. The master roadway layer, along with the project list and toll data file described below, combine the base year and all future year networks into a single, integrated database.
+
+## Master Roadway Layer
+
+The master roadway layer consists of over 23,000 links and over 900 projects that are used for creating model scenarios. The master roadway layer has been developed to represent all regionally and locally significant roads in the study model area. Significance of facility is measured in terms of functional classification, average daily traffic, and connection with the transportation system.  
+
+More information on coded attributes of the master roadway layer is provided [here](pdfs/MasterLayer.pdf).  In addition, the master roadway layer includes attribute descriptions within its bin file.  
+
+## Project List Database
+The master roadway layer incorporates all the planned capacity-enhancing projects that are expected to be opened by each forecast year. Projects that do not add capacity, such as minor intersection improvements or small widenings, and that are not regionally significant roadways may be below the scope of the model and therefore deliberately omitted from analysis. 
+
+Projects included in the future year networks are based on the financially constrained Metropolitan Transportation Plans (MTP) for each of the respective MPOs. Highway projects in non-MPO (RPO) were added only if they were included in their respective NC or SC Transportation Improvement Plans (TIP) documents. Financial constraint calculations and project selection criteria can be found in the respective MTP documents. 
+
+### Project Coding
+The project list database has a list of unique project IDs stored in the “ProjNum” field. Each project ID corresponds to a set of project ID fields in the master roadway layer. A future build year for each project is also included in the project list database. Each link that will be included in a particular project gets coded with the project ID, and when the network is built, the link is updated with the appropriate network information. The MRM has the capability of storing three project IDs on a single link, which allows a single link to include three different and successive improvements over time.   
+
+## Toll Database
+Tolls are represented in the model using either a single-point cost (gate) or a cost per mile rate. Toll costs are considered by the model at highway route level. Tolling is incorporated during highway assignment. Tolling on toll-only facilities is handled through the generalized cost function of the multi-modal-multi-class user equilibrium highway assignment. Tolling on express lanes is incorporated through a High Occupancy/Toll (HOT) Assignment Module that is run after the normal feedback process is completed.  
+
+Toll data for toll only facilities is stored in a master toll file that corresponds to a unique identifier coded on the master highway networklayer (Toll_PRJID). Toll data for managed lanes is stored in the same master toll file that corresponds to the unique identifier, HOT_PRJID, also coded on the master highway layer. 
