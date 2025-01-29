@@ -16,9 +16,11 @@ output:
       number_sections: false  
       highlight: true  
     toc_depth: 3
+    self_contained: true
 includes:
     in_header: |
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.2/cosmo/bootstrap.min.css">
     
 navbar:
   title: "MRM"
