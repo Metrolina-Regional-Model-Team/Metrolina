@@ -2,6 +2,10 @@
 title: "Metrolina Regional Model"
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 :::{.section}
 
 ## About the MRM

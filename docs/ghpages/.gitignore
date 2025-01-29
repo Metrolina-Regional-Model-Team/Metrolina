@@ -2,6 +2,7 @@
 *.xml
 *.bak
 *.upx
+*.yml
 .DS_Store
 .Rproj.user
 .Rhistory

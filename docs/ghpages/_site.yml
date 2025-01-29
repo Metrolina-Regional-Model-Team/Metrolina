@@ -1,4 +1,9 @@
 name: "MRM"
+output_dir: "_site"
+clean_site: true        
+exclude: ["*.Rmd"]    
+keep_md: false
+lib_dir: "_site/site_libs"
 output:
   html_document:
     theme: cosmo
@@ -11,7 +16,9 @@ output:
       number_sections: false  
       highlight: true  
     toc_depth: 3
-    
+includes:
+    in_header: |
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
 navbar:
   title: "MRM"
