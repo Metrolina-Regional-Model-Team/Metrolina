@@ -11,7 +11,7 @@
 
 
 
-<title>Contact Us</title>
+<title>Transit Routes</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,6 +33,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -51,6 +53,7 @@
 
 
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -328,27 +331,78 @@ div.tocify {
       <a href="1_networks.html">Networks</a>
     </li>
     <li>
-      <a href="1_routes.html">Route Systems</a>
+      <a href="1_routes.html">Transit</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Surveys
+    Surveys &amp; Data
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="2_hhts.html">Household Travel Survey</a>
+      <a href="2_surveys.html">Surveys</a>
     </li>
     <li>
-      <a href="2_onboard.html">On Board Surveys</a>
+      <a href="2_traveldata.html">Travel Data</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="contact.html">Contact</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="3_hhsynth.html">Household Synthesis</a>
+    </li>
+    <li>
+      <a href="3_purpose.html">Tour Purpose</a>
+    </li>
+    <li>
+      <a href="3_dc.html">Destination Choice</a>
+    </li>
+    <li>
+      <a href="3_stops.html">Intermediate Stops</a>
+    </li>
+    <li>
+      <a href="3_mode.html">Mode Choice</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Other Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="4_ext.html">Externals</a>
+    </li>
+    <li>
+      <a href="4_assignment.html">Assignment</a>
+    </li>
+    <li>
+      <a href="4_validation.html">Validation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MRM Versions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="5_mrm25v1.html">MRM25v1.0</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -367,23 +421,228 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Contact Us</h1>
+<h1 class="title toc-ignore">Transit Routes</h1>
 
 </div>
 
 
-<div id="get-in-touch" class="section level1">
-<h1>Get in Touch</h1>
-<div id="contact-information" class="section level2">
-<h2>Contact Information</h2>
-<ul>
-<li><strong>Email</strong>: <a href="mailto:contact@example.com"
-class="email">contact@example.com</a></li>
-<li><strong>Phone</strong>: (555) 123-4567</li>
-<li><strong>Address</strong>: 123 Innovation Street, Tech City, TC
-12345</li>
-</ul>
+<p>The Route System layer contains the transit routes and stop locations
+of each transit agency within the region. Each horizon year route is
+coded over the corresponding horizon year roadway network. Bus routes
+operating in mixed traffic are coded over roadways, while other modes,
+such as light rail, which do not operate in mixed traffic, are coded
+over dedicated guideway links included in the road network layer.
+Transit routes use characteristics of the underlying roadway layer in
+determining speed, travel time, and other attributes.</p>
+<div id="transit-systems" class="section level2">
+<h2>Transit Systems</h2>
+<p>Transit routes are coded as closely as possible to actual service
+routes using the model roadway layer . Inbound and outbound trips of a
+route are coded as separate routes. If the route changes between peak
+and off-peak (midday), both versions are coded as separate routes.
+Different route patterns, such as the case where every-other route makes
+a diversion into a neighborhood are coded as separate routes. The
+current version of the MRM does not model weekend routes. Night routes
+are not modeled but are used in estimation of vehicle hours and
+miles.</p>
+<p>Six separate transit systems are currently operating in the Metrolina
+region. They are distinguished in the transit route system using the
+“company” code. The Charlotte Area Transit System (CATS) operates the
+LYNX light rail, CityLynx streetcar, regional express service, Charlotte
+express buses and local routes in the Charlotte region. Gastonia Transit
+operates local routes in Gastonia. Concord-Kannapolis Rider operates
+routes in Cabarrus County and Salisbury Transit operates routes in Rowan
+County. Iredell County Transportation Services (ICATS) operates routes
+in Iredell County. My Ride Rock Hill operates fixed routes in Rock
+Hill.</p>
 </div>
+<div id="transit-modes" class="section level2">
+<h2>Transit Modes</h2>
+<p>The MRM has the capability to model 10 modes. Premium modes include
+light rail (mode 1), streetcar (mode 2), commuter rail (mode 3), and Bus
+rapid transit (mode 4). The fiscally constrained future year networks
+contain both light rail and streetcar. Bus modes include regional
+express (mode 5), express bus (mode 6), feeder bus (mode 7), local bus
+(mode 8), and shuttles including the Davidson Shuttle in Davidson (mode
+9). The table below provides the fare and type of service modeled for
+each mode.</p>
+<strong>Mode Fare Table</strong>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Mode ID
+</th>
+<th style="text-align:left;">
+Mode Classification
+</th>
+<th style="text-align:left;">
+Mode Description
+</th>
+<th style="text-align:left;">
+Base Year Fare
+</th>
+<th style="text-align:left;">
+Future Year Fare
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Premium
+</td>
+<td style="text-align:left;">
+Light Rail Transit
+</td>
+<td style="text-align:left;">
+$1.75
+</td>
+<td style="text-align:left;">
+$1.75
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Premium
+</td>
+<td style="text-align:left;">
+Streetcar
+</td>
+<td style="text-align:left;">
+$1.75
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Premium
+</td>
+<td style="text-align:left;">
+Commuter Rail
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Premium
+</td>
+<td style="text-align:left;">
+Bus Rapid Transit
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Bus
+</td>
+<td style="text-align:left;">
+Regional Express
+</td>
+<td style="text-align:left;">
+$3.50
+</td>
+<td style="text-align:left;">
+$3.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+Bus
+</td>
+<td style="text-align:left;">
+Express Bus
+</td>
+<td style="text-align:left;">
+$2.40
+</td>
+<td style="text-align:left;">
+$2.40
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+Bus
+</td>
+<td style="text-align:left;">
+Feeder Bus
+</td>
+<td style="text-align:left;">
+N/A
+</td>
+<td style="text-align:left;">
+$0.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Bus
+</td>
+<td style="text-align:left;">
+Local Bus
+</td>
+<td style="text-align:left;">
+$1.75
+</td>
+<td style="text-align:left;">
+$1.75
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+Bus
+</td>
+<td style="text-align:left;">
+Downtown Circulator
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+<td style="text-align:left;">
+$0.00
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
@@ -435,7 +694,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2,h3,h4",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
