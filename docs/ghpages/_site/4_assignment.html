@@ -11,7 +11,7 @@
 
 
 
-<title>2_hhts</title>
+<title>Assignment</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,6 +33,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -51,6 +53,7 @@
 
 
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -328,27 +331,78 @@ div.tocify {
       <a href="1_networks.html">Networks</a>
     </li>
     <li>
-      <a href="1_routes.html">Route Systems</a>
+      <a href="1_routes.html">Transit</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Surveys
+    Surveys &amp; Data
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="2_hhts.html">Household Travel Survey</a>
+      <a href="2_surveys.html">Surveys</a>
     </li>
     <li>
-      <a href="2_onboard.html">On Board Surveys</a>
+      <a href="2_traveldata.html">Travel Data</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="contact.html">Contact</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="3_hhsynth.html">Household Synthesis</a>
+    </li>
+    <li>
+      <a href="3_purpose.html">Tour Purpose</a>
+    </li>
+    <li>
+      <a href="3_dc.html">Destination Choice</a>
+    </li>
+    <li>
+      <a href="3_stops.html">Intermediate Stops</a>
+    </li>
+    <li>
+      <a href="3_mode.html">Mode Choice</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Other Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="4_ext.html">Externals</a>
+    </li>
+    <li>
+      <a href="4_assignment.html">Assignment</a>
+    </li>
+    <li>
+      <a href="4_validation.html">Validation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MRM Versions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="5_mrm25v1.html">MRM25v1.0</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -367,12 +421,137 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">2_hhts</h1>
+<h1 class="title toc-ignore">Assignment</h1>
 
 </div>
 
 
-
+<div id="highway" class="section level2">
+<h2>Highway</h2>
+<p>The traffic assignment process for the MRM is a multi-class “user
+equilibrium” assignment, which is a multipath procedure where vehicle
+trips are loaded from origin to destination through an iterative
+process. During each iteration, the trips for each origin-destination
+TAZ pair are assigned to a single shortest path along the network. The
+loadings from the iterations are weighted in a manner that results, at
+convergence, in the travel times along all paths being equal. This
+ensures that no driver could improve the travel time by changing the
+path. The MRM allows up to 250 iterations to ensure each assignment
+reaches the set convergence of 0.0001. As part of the assignment, the
+trip tables are assigned to the network.</p>
+<div id="highway-assignment-trip-tables" class="section level3">
+<h3>Highway Assignment Trip Tables</h3>
+<p>The assignment process is applied separately to each of the four time
+periods (AM, PM, MI, NT). Then, those results are added together to
+generate the total daily volume on each link.</p>
+<p>For each of the time periods, six trip assignment tables are
+assigned:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Single-occupancy vehicles (SOV):</strong> These trips do
+not have access to HOT lanes.</p></li>
+<li><p><strong>Two-person carpool vehicle trips (HOV-2):</strong>
+Vehicles with two persons have free access to HOT-2 express lanes
+(functional class 22 and 82 for access). However, no HOT-2 lanes exist
+in the official model, as all existing and planned express lanes are
+HOT-3+.</p></li>
+<li><p><strong>Three or more-person carpool vehicle trips
+(HOV-3):</strong> Vehicles with three or more persons have free access
+to HOT-2 and HOT-3+ lanes (functional class 25 and 83 for access).
+HOT-3+ facilities in the model include the existing I-77 North Express
+Lanes, as well as the planned express lanes on I-77 South, US-74, and
+I-485 in build in future horizon years.</p></li>
+<li><p><strong>Commercial vehicles:</strong> These trips do not have
+access to HOT lanes during assignment.</p></li>
+<li><p><strong>Medium trucks:</strong> These trucks are assumed to have
+a passenger-car-equivalent (PCE) of 1.5 passenger cars when calculating
+congestion. These trips do not have access to HOT lanes or Peak Period
+Shoulder Lanes (PPSL’s, functional class 24).</p></li>
+<li><p><strong>Heavy trucks:</strong> These trucks are assumed to have a
+PCE of 2.5 when calculating congestion. These trips do not have access
+to HOT lanes or PPSL’s.</p></li>
+</ol>
+<p>Trip tables from three sources are brought together for the
+assignment. The mode choice program designates single-occupancy vehicle
+(SOV) and carpool (HOV-2, HOV-3+) person trips for home-based trips
+(HBW, HBS, HBO, SCH, HBU, JTW, ATW, NWK). Commercial vehicle, medium and
+heavy trucks, and external trips (EI, IE) are brought in from trip
+distribution. Through (EE) trips are brought in from the trip generation
+step.</p>
+</div>
+<div id="internal-trips" class="section level3">
+<h3>Internal Trips</h3>
+<p>Carpool trips are divided into 2 person carpools and 3 or more person
+carpools during mode choice. The number of 3+ carpools must be
+“assigned” an average number of persons per car. An average 3+ carpool
+size is calculated for each trip purpose based on the 2023 household
+travel survey .</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Purpose
+</th>
+<th style="text-align:left;">
+Number of Persons
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HBW
+</td>
+<td style="text-align:left;">
+3.560 persons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBO
+</td>
+<td style="text-align:left;">
+3.560 persons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBU
+</td>
+<td style="text-align:left;">
+3.360 persons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBSch
+</td>
+<td style="text-align:left;">
+3.560 persons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBS
+</td>
+<td style="text-align:left;">
+3.560 persons
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATW
+</td>
+<td style="text-align:left;">
+3.660 persons
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="transit" class="section level2">
+<h2>Transit</h2>
+</div>
 
 
 
@@ -423,7 +602,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2,h3,h4",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {

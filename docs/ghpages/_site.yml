@@ -7,20 +7,14 @@ lib_dir: "site_libs"
 output:
   html_document:
     theme: cosmo
-    #css: "styles.css"
     highlight: tango
     toc: true
     toc_float: 
       collapsed: false  
       smooth_scroll: true  
-      number_sections: false  
-      highlight: true  
-    toc_depth: 3
+      number_sections: false
+    toc_depth: 4
     self_contained: false
-includes:
-    in_header: |
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.2/cosmo/bootstrap.min.css">
     
 navbar:
   title: "MRM"
@@ -34,17 +28,39 @@ navbar:
           href: 1_taz_se.html
         - text: "Networks"
           href: 1_networks.html
-        - text: "Route Systems"
+        - text: "Transit"
           href: 1_routes.html
-    - text: "Surveys"
+    - text: "Surveys & Data"
       menu:
-        - text: "Household Travel Survey"
-          href: 2_hhts.html
-        - text: "On Board Surveys"
-          href: 2_onboard.html
-    - text: "Contact"
-      href: contact.html
+        - text: "Surveys"
+          href: 2_surveys.html
+        - text: "Travel Data"
+          href: 2_traveldata.html
+    - text: "Models"
+      menu:
+       - text: "Household Synthesis"
+         href: 3_hhsynth.html
+       - text: "Tour Purpose"
+         href: 3_purpose.html
+       - text: "Destination Choice"
+         href: 3_dc.html
+       - text: "Intermediate Stops"
+         href: 3_stops.html
+       - text: "Mode Choice"
+         href: 3_mode.html
+    - text: "Other Models"
+      menu:
+       - text: "Externals"
+         href: 4_ext.html
+       - text: "Assignment"
+         href: 4_assignment.html
+       - text: "Validation"
+         href: 4_validation.html
+    - text: "MRM Versions"
+      menu:
+       - text: "MRM25v1.0"
+         href: 5_mrm25v1.html
+           
   right:
     - icon: fa-github
       href: https://github.com/Metrolina-Regional-Model-Team/MRM
-      

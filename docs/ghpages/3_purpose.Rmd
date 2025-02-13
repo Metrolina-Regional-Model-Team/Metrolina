@@ -1,0 +1,212 @@
+---
+title: "Tour Purpose & Frequency"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+
+## Tour Purpose
+Person tours made by residents of the region make up the majority of the tours in the MRM. The residential tours are further stratified by the principal purpose of the tour. Except in the case of At-Work (ATW) tours, which begin and end at the workplace, all internal tours originate at home. Unlike in a trip-based model, there are no non-home-based tours other than ATWs. There are six person-tour purposes, listed below in order of precedence (e.g. if a person makes a tour that includes both a primary work and a shopping destination, the tour would be a HBW tour with a stop for shopping). 
+
+* Home-Based Work (HBW): a tour between home and the primary workplace 
+* Home-Based School (SCH): a tour between home and primary/secondary school (including kindergarten but not daycare or pre-school) 
+* Home-Based University (HBU): a tour between home and college/university (including vocational/technical schools and other professional education) 
+* Home-Based Shop (HBS): a tour between home and shopping 
+* Home-Based Other (HBO): all other home-based tours not classified above 
+* At Work (ATW): this is a tour that both begins and ends at the workplace; a typical example is going from work to lunch and back on round-trip tours by purpose on a typical weekday. 
+
+## Tour Frequency
+The tour frequency model uses the synthetic household table to estimate the number of round-trip tours each household in the region will make, by purpose. All travel purposes, except At-Work tours (ATW), are assumed to begin and end at the traveler’s home. ATW tours begin and end at the traveler’s workplace.  
+
+The basic premise of the Tour Frequency model is to estimate the probability of a household making 0, 1, 2, and so on round-trip tours by purpose on a typical weekday. This model uses a multinomial logit model, and the utility is a function of the household characteristics, the home zone’s attributes, and the number of tours estimated for certain purposes.  
+
+The tour frequency model estimates person travel by residents of the region only. Travel by residents to destinations outside of the region (internal-to-external (I/X) tours) and by non-residents into (external-to-iternal (X/I) tours) and through (externtal-to-external (X/X) tours) the region is determined in the Tour Destination Choice model. 
+
+Caliper updated the tour frequency models using the 2023 household travel survey.. Estimation of the home- based work model was completed byMRM staff while Caliper estimated the remaining models. The sections below provide the relevant statistics for each model.
+
+### Work Tours
+The number of workers, frequency of school tours, and other relevant household characteristics influence the probability of making work tours. As workers and school tours increase, the probability of making work tours increase. Likewise, households which are larger in size and/ or located in rural areas are associated with greater work tour frequency. However, households with children tend to make less work tours, while those in the lowest income category and/or with only one worker present are significantly less likely to make two or more work tours.
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+   Variable = c("Workers", "Workers", "School_tours", "Life_cycle = 2", "Income = 1", 
+               "Workers = 1", "AreaType = 5", "AreaType = 5", "Size = 1", 
+               "Size = 1", "Constant (1)", "Constant (2)"),
+  Coefficient = c(0.387, 0.819, 0.652, -0.385, -1.008, -0.768, 0.209, 0.398, 
+                  0.158, 0.565, -1.291, -2.568),
+  `t-Statistic` = c(7.16, 6.53, 10.90, -5.60, -3.30, -4.35, 2.57, 3.79, 
+                   2.18, 4.39, -12.76, -9.44),
+ Tour0 = c("", "", "", "", "", "", "", "", "", "", "", ""),
+ Tour1 = c("X", "", "X", "X", "", "", "X", "", "X", "", "X", ""),
+ Tour2 = c("", "X", "X", "X", "X", "X", "", "X", "", "X", "", "X"))
+
+# Create the table with kable
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Tours", "1 Tour", "2+ Tours"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) 
+
+
+# Print the table
+table_model
+
+```
+*Rho^2 = .17*
+
+### School Tours 
+The school tour model is sensitive life cycle variables (presence of kids), size, income, and other variables that are expected to influence school making behavior. Most t-stats are strong, but the Life Cycle = 2 dummy variable in the 2+ utility equation is low. Still, the model maintains separate coefficients for 1 and 2+ tours because the relative sizes of the coefficients are intuitive. 
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+  Variable = c("Constant", "Constant", "Life Cycle = 2", "Workers = 3", "HH Size = 3 or 4", "Income = 1", 
+               "CBD", "Life Cycle = 1", "Life Cycle = 2", "Workers = 3", "HH Size = 3 or 4", "Income = 1", 
+               "CBD", "Life Cycle = 1", "HH Size = 2", "HH Size = 5"),
+  Coefficient = c(-1.692, -1.08, 0.65, 0.618, 0.325, 0.329, -1.13, -2.342, 0.318, -0.404, -1.763, 
+                  -0.417, -1.143, -1.399, -3.907, 0.671),
+  Tstat = c(-2.91, -1.84, 1.12, 3.19, 3.15, 1.48, -3.6, -3.98, 0.54, -1.67, -9.47, 
+                   -1.2, -2.18, -2.31, -7.42, 5.04),
+ Tour0 = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+ Tour1 = c("X", "", "X", "X", "X", "X", "X", "X", "", "", "", "", "", "", "", ""),
+ Tour2 = c("", "X", "", "", "", "", "", "", "X", "X", "X", "X", "X", "X", "X", "X"))
+
+# Create the table with kable
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Tours", "1 Tour", "2+ Tours"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3))
+
+# Print the table
+table_model
+
+```
+*Rho^2 = .52*
+
+### University Tours 
+The university model is simple, but it does consider the number of K12/school tours made by the household. Making these tours makes it less likely to make university tours. Not only do these tours take up time in the day making other tours less likely, but it also means that at least some children in the house are not university age. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+  Variable = c("Constant", "Size", "School Tours", "Income = 2", "Area Type = 2", "HH Size = 3", "Workers = 3"),
+  Coefficient = c(-5.570, 0.531, -0.107, 1.002, 0.817, 0.329, 0.741),
+  `t-Statistic` = c(-28.140, 8.012, -0.757, 4.645, 4.384, 1.828, 3.364),
+  `0 Tours` = c("", "", "", "", "", "", ""),
+  `1+ Tour` = c("X","X","X", "X", "X", "X", "X"))
+
+# Create the table with kable
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Tours", "1+ Tours"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 2))
+# Print the table
+table_model
+```
+*Rho^2 = .87*
+
+### Shopping Tours 
+School and work tours both detract from the propensity of a household to make shopping tours. It is more likely that these shopping needs are met as intermediate stops on those tours instead. Living in the most-dense areas lowers the number of shopping trips you make. This is an interesting result and may reflect the complex nature of outings with multiple stops in these areas. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+  Variable = c("Constant", "Constant", "HH Size", "Suburban", "HBSch + HBU Tours", "HBW Tours", "CBD", "Workers = 1", 
+               "HH Size", "Workers", "CBD", "Workers = 1"),
+  Coefficient = c(-0.348, -2.004, 0.064, 0.073, -0.379, -0.995, -0.18, -0.22, 0.576, -0.194, -0.644, -0.338),
+  `t-Statistic` = c(-4.79, -22.94, 2.39, 1.5, -6.8, -25.29, -1.61, -4.37, 17.66, -4.91, -3.43, -5.13),
+ `0 Tours` = c("", "", "", "", "", "", "", "", "", "", "", ""),
+  `1 Tour` = c("X", "", "X", "X", "X", "X", "X", "X", "", "", "", ""),
+  `2+ Tours` = c("", "X", "", "X", "X", "X", "", "", "X", "X", "X", "X"))
+
+# Create the table with kable
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Tours", "1 Tour", "2+ Tours"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3))
+
+# Print the table
+table_model
+```
+*Rho^2 = .2*
+
+### Other Tours 
+Other tours include all tours not captured in the other tour types. They are non-mandatory (meaning not for work or school) and they are not shopping. They do include activities like dining, entertainment, social, or general recreation. All other tour types negatively impact the ability to make other tours given the limited time during the day. Income and size also play important roles in predicting these tours. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+  Variable = c("Constant", "Constant", "Constant", "Constant", "Size", "Life Cycle = 2", "Workers", "Median Income", "HBSch + HBU Tours", "HBW Tours", "HBS Tours", "Income = 4", "Area Type = 5", "Suburban", "HH Size = 1",
+               "HH Size", "Income = 4", "Income = 1", "Size = 1", "Size", "size = 1"),
+  Coefficient = c(0.114, -0.124, -1.807, -3.079, 0.251, 0.401, 0.166, 0.0000017, -0.319, -1.338, -0.896, 0.296, 
+                  -0.379, -0.196, -1.047, 0.604, 0.635, -0.63, -0.758, 1.122, -1.197),
+  `t-Statistic` = c(1.27, -1.26, -11.33, -20.06, 6.48, 4.48, 5.28, 1.97, -4.81, -32.6, -25.1, 5.72, -4.62, -3.15, 
+                   -14.8, 11.02, 8.44, -3.71, -6.09, 23.29, -6.44),
+  `0 Tours` = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",""),
+  `1 Tour` = c("X", "", "", "", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X","", "", "", "", "","", ""),
+  `2 Tours` = c("", "X", "", "", "X", "X", "X", "X", "X", "X", "X", "X", "X","X","X","","","","","",""),
+  `3 tours` = c("", "", "X","","X","","", "X","X","X","X","", "X","X","","X","X","X","X","",""),
+  `4+ Tours` = c("", "", "", "X", "X", "", "", "X", "X", "X", "X", "", "X", "X", "","","X","X","","X","X"))
+
+# Create the table with kable
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Tours", "1 Tour", "2 Tours", "3 Tours", "4+ Tours"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 5))
+# Print the table
+table_model
+```
+*Rho^2 = .2*
+
+### At Work Subtours 
+The at-work subtour model is slightly different from the others above. Instead of predicting the number of subtours a household makes, this model predicts the probability that each work tour will generate an at-work subtour. This model is practically a constants model (asserting observed probabilities from the survey), does include an income effect that makes it slightly more likely for high-income workers to go out for lunch or do other things during the workday. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Data for the table
+data <- data.frame(
+  "Variable" = c("Constant", "Median Income"),
+  "Coefficient" = c(1.25, 0.000002),
+  "T-Stat" = c(27.57, 2.62)
+)
+
+# Create the table with kable
+table_model <- kable(data, 
+                     col.names = c("Variable", "Coefficient", "t-Statistic"),
+                     align = c("l", "r", "r")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_model
+```
+*Rho^2 = .27*

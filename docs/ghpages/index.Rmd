@@ -1,21 +1,93 @@
 ---
 title: "Metrolina Regional Model"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-:::{.section}
 
 ## About the MRM
 
 The Metrolina Regional Model (MRM) is the primary forecasting and analysis tool used for regional transportation planning processes in the Metrolina region. The MRM is used for the development of the Metropolitan Transportation Plan (MTP), Air Quality Conformity Analysis and Determination, and the Transportation Improvement Program (TIP). The model is also intended to be used as a tool for other transportation planning needs in the area including preparing traffic forecasts, studying transit and multi-modal systems, testing the impacts of system improvements, and analyzing socioeconomic changes in the Metrolina region. 
 
-
 ## Model Area
 The modeling area covers 13 counties in the bi-state region of North and South Carolina. These counties include Anson, Cabarrus, portions of Catawba, Cleveland, Gaston, Iredell, Lincoln, Mecklenburg, Rowan, Stanly, and Union counties from the North Carolina side and the northern panhandle of Lancaster and York counties from the South Carolina side.  
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(sf)
+library(leaflet)
+library(dplyr)
+```
+
+```{r load-and-process-data, warning=FALSE, message=FALSE, results='hide'}
+invisible(capture.output({
+  mrm_boundary <- st_read("C:/MRM/docs/ghpages/other/shps/Boundaries/MRMBoundary.shp")
+  mpo_rpo_boundary <- st_read("C:/MRM/docs/ghpages/other/shps/Boundaries/MPO_RPO.shp")
+
+# Ensure both shapefiles are in the same CRS (WGS84)
+  mrm_boundary <- st_transform( mrm_boundary, 4326)
+  mpo_rpo_boundary <- st_transform(mpo_rpo_boundary, 4326)
+}))
+```
+
+```{r create-map}
+# Create the interactive map
+map <- leaflet() %>%
+  # Add base tiles
+  addTiles() %>%
+  
+  # Add first shapefile
+  addPolygons(
+    data =  mrm_boundary,
+    color = "black",
+    weight = 3,
+    opacity = 1,
+    fillOpacity = 0,
+    highlightOptions = highlightOptions(
+      color = "white",
+      weight = 3,
+      bringToFront = TRUE
+    ),
+    group = "MRM Boundary",
+    labelOptions = labelOptions(noHide = FALSE, direction = "auto")
+  ) %>%
+  
+  # Add second shapefile
+  addPolygons(
+    data = mpo_rpo_boundary,
+    color = "red",
+    weight = 2,
+    opacity = 1,
+    fillOpacity = 0,
+    highlightOptions = highlightOptions(
+      color = "white",
+      weight = 3,
+      bringToFront = TRUE
+    ),
+    label = ~paste(NAME),
+    group = "mpo_rpo_boundary",
+    labelOptions = labelOptions(noHide = FALSE, direction = "auto")
+  ) %>%
+  
+  # Add layers control
+  addLayersControl(
+    overlayGroups = c("MRM Boundary", "MPO/RPO Boundary"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+# Display the map
+map
+
+```
 
 ## Model Team
 Charlotte Department of Transportation (CDOT) serves as the model custodian for the Metrolina Regional Model. The MRM is maintained and operated by a team of modelers from the following agencies: 
@@ -30,8 +102,8 @@ Charlotte Department of Transportation (CDOT) serves as the model custodian for 
 
 
 ## Note
-This documentation reflects MRM25v1.0. The official base year  is 2022. The horizon years include 2025, 2035, 2045, and 2055. For conformity purposes, the year 2026 is also modeled. 
+This documentation reflects MRM25v1.0. The official base year is 2022. The horizon years include 2025, 2035, 2045, and 2055. For conformity purposes, the year 2026 is also modeled. Please refer to the MRM Versions tab for more information on the project lists that are used for the respective model versions.
 
 Later versions of the model may not match the charts and tables exactly due to network and other changes. It is the sole responsibility of the user to ensure that the latest version of the MRM is being deployed for their respective projects/studies. 
-:::
+
 

@@ -4,6 +4,7 @@ output:
   html_document:
     theme: cosmo
     highlight: tango
+    css: "styles.css"
     toc: true
     toc_float:
       collapsed: false
@@ -16,16 +17,14 @@ The Traffic Analysis Zone (TAZ) layer is a geographic unit that represents a sma
 
 ## TAZ Database 
 
-The TAZ structure consists of 3,896 zones and spans 13 counties. Each TAZ is connected to the highway networks by centroid connectors. The TAZs were updated to reflect changes to the 2020  US Census block data. 
+The TAZ structure consists of 3,896 zones and spans 13 counties. Each TAZ is connected to the highway networks by centroid connectors. The TAZs were updated to align with the new 2020 US Census geographies and the addition of Anson County to the model region. This process involved the reshaping and splitting of the previous TAZ structure, adding and relocating centroids and centroid connectors, and a review/ revision process with regional partners.  
 
-External zones are defined using a polygon-based method. This means external stations are drawn as cordon TAZs just outside the study area, where traffic enters and leaves. 
+External zones are defined using a polygon-based method. This means external stations are drawn as cordon TAZs just outside the study area, where traffic enters and exits. 
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-```
 
-```{r load-packages, message=FALSE, warning=FALSE}
 library(sf)
 library(leaflet)
 library(dplyr)

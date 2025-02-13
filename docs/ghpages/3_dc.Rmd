@@ -1,0 +1,46 @@
+---
+title: "Destination Choice"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+ 
+
+Destination Choice is the second step in the model process. During the tour frequency model step, the number of tours by purpose each household makes was determined. In the destination choice step, the primary destination zone for each tour is identified.  
+
+Like tour frequency, the Metrolina tour destination choice model is a disaggregate logit model. The model identifies the attributes that affect a person’s selection of a destination zone. These attributes vary by tour purpose, but generally include household factors, travel times and accessibility measures, the number and kinds of employment in a zone, and area type.  The choice of destination zones is constrained. 
+
+### Choices 
+
+The first choice in the destination choice step that is made for each tour originating inside the region is whether or not the tour stays in the region (I/I) or exits the region (I/X). This model is a power function curve of the origin zone’s network distance to the nearest external cordon station.  
+
+The DC model is a logit model estimated from home interview travel survey data. This model identifies the attributes that affect a trip-maker’s selection of a destination zone. Typically, these attributes include the traveler’s HH attributes, travel time to the other zones, and the number of jobs and other attractions in other zones. Internal-to-external tours are grouped into Work (IXW) and non-Work (IXN). 
+
+The Metrolina’s DC model is a doubly-constrained model. Attractions for each zone is determined using the previous Metrolina trip-based model’s conventional trip attraction model. Once a tour’s destination to a particular zone is determined, an attraction is then subtracted from the destination zone. As a zone “fills up” with attractions, it gradually becomes less and less “attractive” until at some point the model says no one can go there and the remaining tours are sent to other zones. In order to remove bias, the households are sorted in random order. In addition, there are at least 1% more total attractions than total tours for each purpose so that the last remaining households are not left with only unreasonable choices. 
+
+### Friction Factors  
+
+Friction factors are functions of travel time that describe the trips travelling between two zones. Friction factors were developed for each purpose using observed trips from the home interview survey and calibrated to the observed trip lengths. As with most models, the friction factors for the MRM vary by trip purpose. The friction factors for Metrolina are entered in the TransCAD modeling process as a gamma function equation. Each trip purpose has a unique set of friction factors that were developed through an iterative process to replicate the average trip length and trip distribution profile of the travel survey data. The benefit of the gamma function is that it produces a smooth, continuous trip distribution curve that can be calibrated using mathematical functions. This has been used in many other urban areas with success and is generally considered the most advanced procedure to calculate F factors.  
+
+The gamma function equation is as follows: 
+
+
+$$
+F = a \cdot t^b \cdot e^{\gamma t}
+$$
+
+Where:
+
+- \( F \) = F factor (dimensionless)
+- \( t \) = composite time, in minutes
+- \( a \), \( b \), and \( \gamma \) are calibrated coefficients 
+
+Calibration of the gravity model generally consists of determining the shape of the F factor curve for each trip purpose. The gravity distribution models are only used for commercial vehicles (COM, MTK, HTK). 

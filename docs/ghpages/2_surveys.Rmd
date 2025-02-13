@@ -1,0 +1,123 @@
+---
+title: "Data Sources & Surveys"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+The MRM uses a variety of data sources and survey data to provide valuable insights into travel behavior, preferences, and socio-demographic factors. The 2020 Census included the collection of new travel behavior data as well as building on previously collected data. Tour frequency, destination choice, and time of day models are calibrated based on data collected in the 2023 Household Travel Survey. The mode choice component of the model is calibrated based on data collected in the 2023 Household Travel Survey and the 2022 Transit On-Board Survey. The table below  shows the major sources for data in the MRM, along with the years collected and developed.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(knitr)
+library(kableExtra)
+library(scales)
+
+data_source <- data.frame(
+  "Data Source" = c("U.S. Decennial Census", 
+                    "US Census Bureau, American Community Survey", 
+                    "External Station Survey", 
+                    "Transit On-board survey", 
+                    "Traffic Counts", 
+                    "InfoUSA Employment Data", 
+                    "Demographic and Economic Update", 
+                    "Locally provided student enrollment", 
+                    "Metrolina Regional Household Travel Survey"),
+  "Year(s)" = c("2020", 
+                "2018-2022, Five Year Estimates", 
+                "2001 (freeway), 2013 (non-freeway, freeway), 2022 StreetLight data", 
+                "2013, 2022", 
+                "2021-2023", 
+                "2022", 
+                "2022", 
+                "2022", 
+                "2023")
+)
+
+# Create the table with kable
+table_data_source <- kable(data_source, col.names = c("Data Source", "Year(s)")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_data_source
+```
+
+## Household Travel Survey 
+
+RSG conducted the 2023 Metrolina Regional Household Travel Survey (HTS) to collect current information about household and individual travel patterns for residents throughout the greater Metrolina region. A total of 5,232 households (HHs) in the Metrolina region completed the survey.  
+
+The survey included two sections a recruit section and a travel diary. The recruit survey collected key household-, person-, and vehicle-level information (e.g., number of household members, household member employment status, and vehicle make/model/year). The travel diary collected all location-based, trip-level, and travel-day information, as well as certain supplementary person- or household-level information (e.g., trip purpose and mode, telecommute time on travel day, residence type). 
+
+The final survey dataset comprises seven different “levels” of data: 
+
+* Household-level data. 
+* Person-level data. 
+* Vehicle-level data. 
+* Trip-level data (linked and unlinked). 
+* Tour-level data. 
+* Day-level data. 
+* Location-level data.
+
+The survey team placed high importance on transparency in design, data preparation, scripting, and quality control throughout the HTS to ensure high-quality data and consistency across survey waves. During collection, all data flowed into a single dataset, removing the need for formal data combination.  
+
+RSG applied a blend of human-driven and automated testing and validation to the survey instruments before collecting participant data. The survey instruments also had built-in validation to ensure high-quality data. In rMove, these features included advanced programming to ensure that trips were correctly identified, minimizing both false-positive and false-negatives (e.g., confirming movement with accelerometer to reduce false-positives from tower switching). In the online survey, these features included logic checks on trip lengths and geocoded origins and destinations. Following data collection, RSG again applied both human-driven and automated data cleaning processes. 
+
+### Expansion and Weighting 
+While the survey’s sampling methods aimed to collect a roughly representative fraction of the population in the unweighted sample, data expansion and weighting is always still necessary to ensure that the resulting datasets represent the entire population. The sample plan (which informs survey invitation strategies) addresses some of the population inconsistencies upfront, as do adjustments while the survey is in the field. The post-data-collection expansion and weighting processes address any remaining inconsistencies.  
+
+### Survey Results 
+The table below summarizes the unweighted samples and expanded counts across key dimensions. Note that all trip rates throughout this section are calculated by taking the average of trips taken on weekdays (Tuesdays – Thursdays) on which the entire household is complete. The dataset was used to support the model estimation work lead by Caliper.  
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+# Create the data
+metrics_data <- data.frame(
+  "Metric" = c("Households", "Mean HH Size", "Persons", "Vehicles", 
+               "Mean Vehicles per HH", "Unlinked Trips", "Linked Trips", 
+               "HH Unlinked Trip Rate", "Person Unlinked Trip Rate", 
+               "HH Linked Trip Rate", "Person Linked Trip Rate"),
+  "Sample" = c(5232, 2.22, 11624, 9371, 1.79, 74618, 73166, 7.17, 3.50, 7.03, 3.44),
+  "Expanded" = c(1047847, 2.38, 2434007, 1772192, 1.69, 8686944, 8506161, 8.29, 3.57, 8.12, 3.49)
+)
+
+# Function to add commas and conditionally round values
+add_commas <- function(x) {
+  if (x %% 1 == 0) {
+    return(scales::comma(x))  # No decimals, just add commas
+  } else {
+    return(formatC(x, format = "f", digits = 2, big.mark = ","))  # Add commas and show 2 decimals
+  }
+}
+
+# Apply the function to both columns
+metrics_data$Sample <- sapply(metrics_data$Sample, add_commas)
+metrics_data$Expanded <- sapply(metrics_data$Expanded, add_commas)
+
+# Create the table with kable
+table_metrics <- kable(metrics_data, col.names = c("Metric", "Sample", "2023 Expanded")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_metrics
+
+```
+
+
+To review the complete HHTS report prepared by RSG click [here](other/pdfs/Metrolina_HTS_Final_Report_040824.pdf)
+
+
+## On Board Survey 
+In the fall of 2022, the Charlotte Area Transit System (CATS), with consultant support from ETC Institute, conducted a regional on-board origin-destination (OD) survey of all fixed-route transit systems in the Charlotte region.The main purpose of this on-board transit survey was to support the mode choice component of the MRM.). The survey included information like routes used, direction, time of day, trip origin and destination locations and characteristics, access and egress modes, trip purposes, and a variety of respondent demographics. RSG provided consultant support to document and analyze the  transit data collected, and develop the weighting  process to represent ridership on the system and account for transfers and the results shown represent linked trips. 

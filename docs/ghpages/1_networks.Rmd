@@ -1,5 +1,5 @@
 ---
-title: "Scenario Roadway Layer"
+title: "Networks"
 output:
   html_document:
     theme: cosmo
@@ -9,26 +9,430 @@ output:
       collapsed: false
       smooth_scroll: true
       number_sections: false
-    toc_depth: 3
+    toc_depth: 4
+    css: "styles.css"
 ---
-
-To create a scenario roadway layer the MRM uses three files: the master roadway layer, the project list providing project details and build year, and the toll data file containing the toll facilities and toll rates. The master roadway layer, along with the project list and toll data file described below, combine the base year and all future year networks into a single, integrated database.
 
 ## Master Roadway Layer
 
-The master roadway layer consists of over 23,000 links and over 900 projects that are used for creating model scenarios. The master roadway layer has been developed to represent all regionally and locally significant roads in the study model area. Significance of facility is measured in terms of functional classification, average daily traffic, and connection with the transportation system.  
+The master roadway layer consists of over 23,000 links and over 900 projects that are used for creating model scenarios. This master layer, along with the project list and toll data file described below, combine the base year and all future year networks into a single, integrated database. 
 
-More information on coded attributes of the master roadway layer is provided [here](other/pdfs/MasterLayer.pdf).  In addition, the master roadway layer includes attribute descriptions within its bin file.  
+The master roadway layer has been developed to represent all regionally and locally significant roads in the model area. Significance of facility is measured in terms of functional classification, average daily traffic, and connection with the transportation system. It is reviewed annually in partnership with the regional partners.  
+
+
+The Master Roadway Layer contains link-level attributes related to classification, capacity, speed, and geography. Attributes such as functional class, number of lanes, speed limit, and intersection controls are included by default based on existing base year conditions and remain constant through horizon years unless changed due to a project build. Other attributes, such as area type, travel time, and time of day capacity, are filled during the creation of a scenario roadway layer and vary by horizon year.  
+
+More information on coded attributes of the master layer is provided [here](other/pdfs/MasterLayer.pdf). Details on the computation of attributes is included in Link Capacities and Speeds section below.  
 
 ## Project List Database
 The master roadway layer incorporates all the planned capacity-enhancing projects that are expected to be opened by each forecast year. Projects that do not add capacity, such as minor intersection improvements or small widenings, and that are not regionally significant roadways may be below the scope of the model and therefore deliberately omitted from analysis. 
 
 Projects included in the future year networks are based on the financially constrained Metropolitan Transportation Plans (MTP) for each of the respective MPOs. Highway projects in non-MPO (RPO) were added only if they were included in their respective NC or SC Transportation Improvement Plans (TIP) documents. Financial constraint calculations and project selection criteria can be found in the respective MTP documents. 
 
-### Project Coding
 The project list database has a list of unique project IDs stored in the “ProjNum” field. Each project ID corresponds to a set of project ID fields in the master roadway layer. A future build year for each project is also included in the project list database. Each link that will be included in a particular project gets coded with the project ID, and when the network is built, the link is updated with the appropriate network information. The MRM has the capability of storing three project IDs on a single link, which allows a single link to include three different and successive improvements over time.   
 
 ## Toll Database
-Tolls are represented in the model using either a single-point cost (gate) or a cost per mile rate. Toll costs are considered by the model at highway route level. Tolling is incorporated during highway assignment. Tolling on toll-only facilities is handled through the generalized cost function of the multi-modal-multi-class user equilibrium highway assignment. Tolling on express lanes is incorporated through a High Occupancy/Toll (HOT) Assignment Module that is run after the normal feedback process is completed.  
+Tolls are represented in the model using a cost per mile rate. Toll costs are considered by the model at highway route level. Tolling is incorporated during highway assignment. Tolling on toll-only facilities is handled through the generalized cost function of the multi-modal-multi-class user equilibrium highway assignment. Tolling on express lanes is incorporated through a High Occupancy/Toll (HOT) Assignment Module that is run after the normal feedback process is completed.  
 
 Toll data for toll only facilities is stored in a master toll file that corresponds to a unique identifier coded on the master highway networklayer (Toll_PRJID). Toll data for managed lanes is stored in the same master toll file that corresponds to the unique identifier, HOT_PRJID, also coded on the master highway layer. 
+
+### Toll Rates 
+Toll rates are based on the latest posted rates for each facility according to the NC Turnpike Authority and I-77 Mobility Partners. All tolls are converted to per mile rates based on the minimum cost of a 2-axle vehicle, equipped with a NC Quick Pass, traversing the entire length of a facility. The MRM does not utilize single-point costs or variable pricing.  
+
+<br>
+<div style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;"> To create a scenario roadway layer the MRM uses three files: the master roadway layer, the project list providing project details and build year, and the toll data file containing the toll facilities and toll rates. The master roadway layer, along with the project list and toll data file described below, combine the base year and all future year networks into a single, integrated database. </div>
+<br>
+
+
+## Link Capacities and Speeds
+The MRM uses comprehensive capacity settings that estimate the link capacity throughout the model based on the link attributes. Factors such as functional classification, speed and intersection controls are accounted for in the process to provide realistic link capacities in a regional modeling environment. Capacities are calculated for Level of Service (LOS) E and are calculated for each of the four time periods in the model. These capacities are used in conjunction with estimated free-flow and loaded speeds in the model to reflect the impacts of congestion on travel times and route choices in the model.  
+
+Following network selection and creation, model speeds and capacities (by link direction) are estimated using the following network characteristics: 
+
+* Number of lanes  
+* Speed limit 
+* Functional classification (freeway, major thoroughfare, local, etc.) 
+* Intersection control (signal, stop sign, yield, etc.) 
+* Median type (divided, turn lanes, etc.) 
+* Area type (CBD, CBD fringe, urban, suburban, rural) 
+
+
+#### Link Capacities
+Link capacities vary by several attributes including functional class, area type, number of lanes, facility type, intersection control and on-street parking. This section describes the capacity settings used in the MRM. Most of the factors were based initially on extensive surveys conducted in the 1970s by the North Central Texas Council of Government, but have since been reviewed and updated with local data and knowledge. Capacity is applied by direction of flow on the link (A to B and B to A).  The capacity calculation equation is:  
+
+*Cap1hr = Number of Lanes x LnCap1hr x Cap_FacLn x Cap_Cntl x Cap_Park*  
+
+Where: 
+
+* Number of Lanes: 	Number of lanes in each direction 
+* Cap1hr:			Directional capacity 
+* LnCap1hr:		Basic capacity per lane 
+* Cap_FacLn:		Capacity factor based on facility type and number of lanes 
+* Cap_Cntl:		Capacity factor based on intersection control 
+* Cap_Park:		Capacity Factor based on on-street parking 
+
+<br>
+**Lane Capacity (LnCap1hr) Lookup Table** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(scales)
+
+df <- data.frame(
+  Functional_Class = c("Freeway", "Expressway", "Class II", "Major", "Minor", "Collector", "Local", "Ramp", "Freeway Ramp", "HOV-2", "HOV-3+", "HOT-2", "HOT-3+"),
+  CBD = c(1900, 1600, 1450, 1250, 1200, 1000, 800, 1200, 1500, 1800, 1800, 1800, 1800),
+  Fringe = c(2200, 1900, 1850, 1250, 1200, 1100, 900, 1300, 1700, 1800, 1800, 1800, 1800),
+  Urban = c(2200, 1900, 1850, 1250, 1200, 1100, 900, 1300, 1700, 1800, 1800, 1800, 1800),
+  Suburban = c(2200, 1900, 1850, 1300, 1250, 1100, 900, 1300, 1700, 1800, 1800, 1800, 1800),
+  Rural = c(2200, 1900, 1850, 1350, 1300, 1200, 900, 1300, 1700, 1800, 1800, 1800, 1800)
+)
+
+df_formatted <- df
+df_formatted[, 2:6] <- lapply(df[, 2:6], comma)
+
+
+table<- kable(df_formatted, col.names = c("Functional Class", "CBD", "Fringe", "Urban", "Suburban", "Rural")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+table
+
+```
+
+Capacity is factored by facility type and number of lanes. Lanes are included in these factors because the effect on capacity varies depending on the number of lanes. For example, a roadway with two lanes in each direction (four-lane roadway) provides a driver with more opportunity to merge and pass another vehicle waiting to turn than a two-lane roadway with a median. This effects the overall capacity of the highway. 
+
+<br>
+**Capacity Factors Based on Facility Type and Number of Lanes**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df <- data.frame(
+  Facility_Type = c("Freeway", "Expressway", "Ramp", "Divided - no median breaks", 
+                    "Divided - median breaks only", "Divided - left turn bays", 
+                    "Undivided - left turn bays", "Undivided - continuous left", 
+                    "Undivided - no left provision"),
+  `1 Lane` = c(0.90, 0.95, 1.00, 1.05, 0.93, 1.03, 1.00, 1.00, 0.80),
+  `2 Lanes` = c(1.00, 1.025, 1.00, 1.025, 0.96, 1.02, 1.00, 1.00, 0.90),
+  `3+ Lanes` = c(1.00, 1.025, 1.00, 1.025, 0.98, 1.01, 1.00, 1.00, 0.93)
+)
+
+
+table <- kable(df, col.names = c("Facility Type", "1 Lane", "2 Lanes", "3+ Lanes")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 1, 
+                    "Number of Lanes by Direction" = 3)) %>%  
+  collapse_rows(columns = c(1), valign = "middle")  
+
+
+table
+```
+
+Intersection control has a major impact on capacity. The control method effects the overall traffic flow and roadway operations. Factors for different types of intersection controls are shown below. 
+
+<br>
+**Capacity Factors Based on Intersection Control**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df <- data.frame(
+  Intersection_Control_Type = c("T - Through", "L - Signal (light)", "S - Stop", 
+                                "F - Four way stop (all appr. stop)", "Y - Yield", "R - Roundabout"),
+  Factor = c(1, "*See below", 0.60, 0.7, 0.8, 0.7)
+)
+
+
+table<- kable(df, col.names = c("Intersection Control Type", "Factor")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+table
+
+```
+
+#### Signal Control Routines 
+At traffic signals, capacity is dependent on additional factors, primarily the amount of green time of the facility. Signal timing is a function of entering traffic.  As a surrogate, the MRM uses the functional class of the facility and the functional class of the crossing street. For example, it assumes that at an intersection between two major thoroughfares, each will get fifty percent of the green time. At an intersection between a major thoroughfare and a collector, the major thoroughfare will get sixty-eight percent of the green time and the collector will get thirty-two percent.  
+
+The opposing facility’s functional class is found in the CapSpeed program by accumulating approaching functional classes at each node.  
+
+<br>
+**Capacity Factors Based on Percentage of Green Time**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df <- data.frame(
+  Opposing_Facility = c("Expressway", "Class II", "Major", "Minor", "Collector", 
+                        "Local", "Ramp", "Freeway Ramp", "HOV-Freeway", "HOV-Arterial"),
+  Expressway = c(0.50, 0.45, 0.35, 0.30, 0.25, 0.10, 0.35, 0.38, 0.40, 0.45),
+  Class_II = c(0.55, 0.50, 0.35, 0.20, 0.10, 0.10, 0.35, 0.35, 0.45, 0.50),
+  Major = c(0.65, 0.65, 0.50, 0.38, 0.32, 0.22, 0.35, 0.35, 0.50, 0.65),
+  Minor = c(0.70, 0.80, 0.62, 0.50, 0.40, 0.30, 0.40, 0.45, 0.50, 0.80),
+  Collector = c(0.75, 0.90, 0.68, 0.60, 0.50, 0.35, 0.65, 0.65, 0.70, 0.90),
+  Local = c(0.90, 0.90, 0.78, 0.70, 0.65, 0.50, 0.75, 0.60, 0.75, 0.90),
+  Ramp = c(0.65, 0.65, 0.65, 0.60, 0.35, 0.25, 0.50, 0.70, 0.55, 0.65),
+  Freeway_Ramp = c(0.62, 0.65, 0.65, 0.55, 0.35, 0.40, 0.30, 0.50, 0.50, 0.50),
+  HOV_Freeway = c(0.60, 0.55, 0.50, 0.50, 0.30, 0.25, 0.45, 0.50, 0.50, 0.50),
+  HOV_Arterial = c(0.55, 0.50, 0.35, 0.20, 0.10, 0.10, 0.35, 0.35, 0.50, 0.50)
+)
+
+# Create the table with styling
+table <- kable(df,col.names = c("Approach Facility Functional Class", "Expressway", "Class II", "Major", "Minor", 
+                      "Collector", "Local", "Ramp", "Freeway Ramp", "HOV-Freeway", "HOV-Arterial")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"), 
+                full_width = TRUE, 
+                font_size = 14) %>%
+   add_header_above(c("Percentage of Green Time" = 1, 
+                    "Opposing Facility Functional Classification" = 10)) 
+table
+
+```
+
+The remaining capacity factors are based on data gathered by network surveyors. Future year values are estimated using land use projections. On-street parking accounts for a ten percent decrease in capacity.  
+
+<br>
+**Capacity Factors Based on On-Street Parking**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df<- data.frame(
+  Factor = c("Y", "N", "A", "P", "B"),
+  `Factor (park free)` = c(1.05, 1.00, 1.05, 1.05, 1.05),
+  `Factor (park peak)` = c(1.05, 1.00, 1.00, 1.00, 1.00)
+)
+
+table <- kable(df,col.names = c("Factor", "Factor (park free)", "Factor (park peak)")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"), 
+                full_width = TRUE, 
+                font_size = 14) 
+
+table
+```
+#### Time of Day Capacity Factors 
+The MRM generates trips that are representative of a typical weekday. Initially, the model produces traffic volumes for four time periods. Then, the model aggregates these volumes to generate the daily traffic volumes. This aggregation accounts for the differences in travel behavior patterns that result from varying travel conditions across different times of day. For example, the AM and PM peak periods experience higher travel demand than non-peak periods due to commuting to and from work. Using AM and PM peak periods improves the model output, resulting in a more accurate representation of travel demand in the region.  
+
+The four time of day periods are: 
+
+* AM peak: 6:30 – 9:30 AM 
+* Midday: 9:30 AM – 3:30 PM 
+* PM peak: 3:30 PM – 6:30 PM 
+* Night: 6:30 PM – 6:30 AM 
+
+The period capacity can be obtained by multiplying the hourly capacity by the number of hours. Period capacity calculation:	 
+
+Period Capacity = hourly capacity * hours of model capacity 
+
+This calculation can underestimate congestion. For this reason, a capacity factor is used to reasonably define the full capacity of the link for each time of day. The table below shows the capacity factors used in the MRM for the four time of day (TOD) models. 
+
+<br>
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df <- data.frame(
+  Time_Period = c("AM Peak", "Midday", "PM Peak", "Night"),
+  Hours_of_Model_Capacity = c(3, 5, 3, 5)
+)
+
+table<- kable(df, col.names = c("Time Period", "Hours of Model Capacity")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"), 
+                full_width = TRUE, 
+                font_size = 14) 
+table
+
+```
+
+#### Link Speeds and Intersection Delay 
+In the model’s path building program, TransCAD utilizes link travel time (in minutes) to determine the shortest path between trip origins and destinations. In the MRM, the link travel time includes delay at the intersection as well as the time needed for traversing the link. Delay at intersections is directional, which means that vehicles encounter delay in the direction approaching a specific traffic control, not going away from it.  
+
+Speeds are calculated for free-flow conditions and estimated congested conditions during the modeling process. These speeds are then used (along with lengths) to calculate travel times on each link. Travel times are expressed in minutes, length in miles, and speed in miles per hour. The basic equations for conversion are: 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*MPH = length / (TTmin / 60)* 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTmin = length / (MPH / 60)* 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Length = TTmin x (MPH / 60)* 
+
+At the speed/capacity creation stage in the model, two sets of travel time (and speed) are calculated: 
+
+* Free speed or the speed assuming no delays due to congestion 
+* Estimated loaded or congested speed 
+
+In building minimum path trees for trip distribution, free-flow speeds are used to select minimum paths for non-work trips. Free-speed travel times are also the starting point for highway assignment. The estimated loaded speed is used to select paths for work trips on the first iteration of the model run. This estimated speed is replaced using the speed resulting from the model assignment/feedback loop that
+
+#### Free-Flow Speed and Travel Time Calculation 
+Free speeds and travel times are dependent primarily on network characteristics. Two elements are calculated separately and summed – link travel time and intersection delay. The two are summed for total free speed travel time.  
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTfree 	= TTLinkFree + (IntDelayFr / 60)* 
+
+TTLinkFree is built from an estimate of speed because speeds are easier to review, and the factors are a little more intuitive (i.e. higher multipliers = higher speeds).   
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTLinkFree = ((Length / (SpdLimRun) x 60)x ParkingFac_TTFree x ATypeFac* 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SPLinkFree = Length/ (TTFree / 60)* 
+
+The components of the capacity calculation are shown below: 
+
+Posted Speed Limit:
+For future year facilities, speed limit is estimated using similar or comparable existing facilities. 
+
+Speed adjustment by functional class and area type – Speederfac (funcl, areatype): 
+The “speederfac” variable is a multiplier to estimate overall speed that differs from speed limit. On most freeways and arterials in uncongested times of day, average speed is faster than the posted speed limit. On local streets, where travelers are turning into driveways and streets are designed to keep traffic slow, speed is estimated at less than posted speed. Most local streets are not included in the model. Those that are included are there to provide better transit times for transit routes or to connect distant TAZs to the thoroughfare system. Actual through traffic on these types of links is generally limited, and keeping speeds down prevents the model from finding these facilities more attractive than they are in the real world. The table below shows multipliers for speeds. It varies by functional class and area type.  
+
+
+<br>
+**Free-flow Speed Adjustment by Facility Type and Area Type (Speederfac)** 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+df<- data.frame(
+  Funcl = c("Freeway", "Xprway", "Class II", "Major", "Minor", "Collector", 
+                "Local", "Ramp", "Frwy ramp", "HOV2Frwy", "HOV3Frwy", "HOT2Frwy", "HOT3Frwy"),
+  CBD = c(0.998, 1.053, 1.000, 1.177, 0.819, 0.906, 0.978, 0.799, 0.923, 0.930, 0.930, 0.930, 0.930),
+  Fringe = c(0.936, 0.968, 1.074, 0.968, 0.873, 1.069, 1.138, 0.751, 0.872, 0.930, 0.930, 0.930, 0.930),
+  Urban = c(0.953, 0.976, 1.010, 0.931, 0.864, 0.982, 1.094, 0.728, 0.874, 0.930, 0.930, 0.930, 0.930),
+  Suburban = c(0.952, 0.947, 0.934, 0.905, 0.867, 0.984, 1.113, 0.814, 0.864, 0.930, 0.930, 0.930, 0.930),
+  Rural = c(0.952, 0.958, 0.860, 0.860, 0.934, 1.017, 1.179, 0.783, 0.874, 0.930, 0.930, 0.930, 0.930)
+)
+
+table <- kable(df,col.names = c("Funcl", "CBD", "Fringe", "Urban", "Suburban", "Rural")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>%
+  add_header_above(c(" " = 1, "Area Type" = 5))
+  
+table
+
+```
+
+#### Intersection Delay 
+Intersection delay in the model has three components: (1) delay from the intersection control, (2) a factor for turn prohibitions, and (3) a factor for the presence (or lack of) turn lanes. Seconds of delay for intersection controls are shown below. 
+
+**Intersection Delay by Intersection Control Type**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Create the data
+data <- data.frame(
+  Control_Type = c("T", "L", "S", "F", "Y", "R"),
+  Delay_Sec = c(0, "Signal (light)", 20, "Four way stop (all appr. stop)", 8, "Roundabout")
+)
+
+# Create the table with kable
+table_control <- kable(data, col.names = c("Intersection Control Type", "Delay (sec)")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_control
+```
+
+Delay at signals is dependent on functional class and the functional class of the opposing facility. The MRM does not include signal progression of the facility to estimate that some vehicles approaching the intersection may arrive at green and incur no delay. Rather, it is assumed that average delay would occur at every signalized intersection. 
+
+The equation is:  
+
+  *Delay = (RedTime / CycleLength) x (RedTime / 2.0)* 
+
+	*RedTime = CycleLength – GreenTime* 
+
+	*GreenTime =  CycleLength x GreenPct* 
+
+
+The first part of the equation is the proportion of red time to total time. The second part of the equation assumes that half of the vehicles that approach the intersection will arrive half-way through the red cycle. Red time is based on total cycle length and the average percentage of green time, based on functional class of the approach link and functional class of the opposing link (See Table - Capacity Factors Based on Percentage of Green Time). 
+
+Cycle lengths are based on area type as shown in the table below. These cycle lengths are significantly lower than those that occur on the actual network. The model adds delay for every signalized intersection. In practice, drivers may approach the signal on green. The adjustment in cycle length for the MRM is based on corridor travel time surveys.  
+
+
+**Cycle Length by Area Type (seconds)**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Create the data frame
+data <- data.frame(
+  "Area Type" = c("CBD", "Fringe", "Urban", "Suburban", "Rural"),
+  "All Functional Classifications" = c(70, 80, 90, 100, 110)
+)
+
+# Create the table with kable
+table_cycle <- kable(data, col.names = c("Area Type", "Cycle Length")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+
+# Print the table
+table_cycle
+```
+Turn lanes reduce delay at the intersection by removing the slower turning traffic from the through lanes. Dual left turn lanes provide the ability to process more traffic through a turn phase. Turn lane benefits to intersection delay is applied by a factor (benefit is < 1). Factors are shown in table below. 
+
+**Intersection Delay Based on Number of Turn Lanes**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Create the data frame
+data <- data.frame(
+  "Turn Lanes" = c("One left turn lane", "Two or more left turn lanes", "One or more right turn lanes"),
+  "Signal" = c(1.10, 1.15, 1.05),
+  "Non-Signal" = c(1.08, 1.12, 1.05)
+)
+
+# Create the table with kable
+table_turn_lanes <- kable(data, col.names = c("Turn Lanes", "Signal", "Non-Signal")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_turn_lanes
+```
+#### Estimated Loaded Speed 
+Distribution of work trips and work-related trips is based on loaded network speeds. These speeds are estimated through a feedback loop from earlier loaded highway assignments. To shorten the number of iterations for the speed feedback loop, the initial “seed” speed for the first round of peak period distribution is based on an estimated loaded speed. The estimated loaded speed is the average difference in final loaded speed from the free speed (by functional class and area type). This speed does not include potential bottlenecks, but rather apportions overall delay across the network. By consistently beginning the process with the same estimated loaded speeds, different network scenarios should converge at a final speed consistently. Factors for estimated loaded speed are shown below.
+
+**Estimated Loaded Speed Factors**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+data <- data.frame(
+  "Funcl" = c("Freeway", "Expressway", "Class II", "Major", "Minor", "Collector", 
+              "Local", "Ramp", "Frwy Ramp", "HOT-2", "TOLL", "PPSL", "HOT-3"),
+  "CBD" = c(0.920, 0.436, 0.397, 0.397, 0.400, 0.531, 0.632, 0.990, 0.990, 1.000, 1.000, 1.000, 1.000),
+  "Fringe" = c(0.960, 0.492, 0.354, 0.304, 0.304, 0.580, 0.613, 0.990, 0.990, 1.000, 1.000, 1.000, 1.000),
+  "Urban" = c(0.960, 0.492, 0.349, 0.307, 0.318, 0.584, 0.548, 0.990, 0.990, 0.960, 1.000, 1.000, 1.000),
+  "Suburban" = c(0.980, 0.563, 0.421, 0.362, 0.363, 0.650, 0.460, 0.990, 0.990, 0.980, 1.000, 1.000, 1.000),
+  "Rural" = c(0.990, 0.682, 0.510, 0.468, 0.468, 0.765, 0.553, 0.990, 0.990, 1.000, 1.000, 1.000, 1.000)
+)
+
+# Create the table with kable
+table_area_type <- kable(data, col.names = c("Funcl", "CBD", "Fringe", "Urban", "Suburban", "Rural")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_area_type
+```
+
+## Network Connections & Costs
+
+### High-Occupancy Toll (HOT) Lanes 
+HOT Lanes are a variant of high-occupancy vehicle (HOV) lanes that allow user specified vehicles access to high-occupancy vehicle (HOV) lanes (See section below) with payment of a designated toll. In the Metrolina Regional Model, this is estimated based on the set toll, the travel time savings for the SOV trip if a toll is paid, and a diversion curve that represents the willingness to pay a toll to save said amount of time. It allows for HOT-2 assignment (single occupancy and commercial vehicles pay a toll) and HOT-3 assignment (single occupancy, double occupancy, and commercial vehicles pay a toll).   
+
+ 
+### High-Occupancy Vehicle (HOV) Lanes 
+Vehicles of a user-specified occupancy are granted free access to HOT lanes. Previous versions of the MRM included High-Occupancy Vehicle (HOV) lanes prior to the completion of the I-77 North HOT Lanes. Although traditional HOV lanes no longer exist in the region, the mode choice model still includes travel time savings for HOV travel as an inducement to carpool. The savings are estimated using two separate highway skims – one with the HOT lane(s) and one without. The travel time savings is the difference between the two. For areas without a nearby HOT lanes, travel time differences are zero. The mode choice model is capable of determine 2 person and 3+ person carpools. Currently, HOV time savings is used for work trips only.   
+
+### Centroid Connectors 
+Centroid connectors are links that representing loading points for TAZs in the MRM. They connect centroids to the network and represent local streets within a TAZ. Connectors are typically attached to the network mid-block and their placement attempts to be consistent with land use and local road density. They are also typically placed along lower functional classifications, such as collectors and minor arterials. They may connect to principal arterials if the arterial has numerous local crossroads and a considerable amount of abutting development. Centroid connectors should not be attached to limited access roads and ramps. Centroid Connectors can also be mode-specific.  Walk access and transit access connectors can be more comprehensive than auto access for any particular zone. 
+
+### Parking Cost 
+Parking costs are factored into auto skims for destination TAZ’s where the cost and/or availability of parking is expected to impact the overall cost of travel. These TAZ’s include Uptown/ CBD, South End, UNCC Campus, and CLT Airport. For these TAZ’s, the base parking cost file contains data on the availability of spaces, parking rates, and adjacent TAZ’s. The model utilizes this data and SE data to calculate peak and off-peak parking costs  for each zone, to be utilized in auto skims. These costs ultimately increase the relative utility of non-SOV modes and allow for auto trips to end in TAZ’s adjacent to the destination TAZ.  
+
+### Terminal Times 
+In a household survey, travel logs and trip travel time are noted for all trips made during the day. This travel time considers the access and egress time at either end of the trip. Since the model does not simulate each individual household or business, the time needed to access a vehicle and travel to the network must be considered. At the destination end, people must find parking and walk to their final destination. Consequently, there needs to be a way to account for travel time not occurring on the simulated model network. This accounting mechanism is referred to as terminal time. 
+
+Terminal time varies by setting. Typically, in an urban or CBD setting, it takes longer to find a parking space and walk to the final destination than in a rural setting where the parking is closer to the doorstep. NCHRP Report 36 – Travel Estimation Techniques for Urban Planning - provides some general guidelines for these terminal times. The terminal times used for the MRM are outlined in the table below. They are applied to both the production and attraction side – for example, a rural to urban trip would have a total terminal time of 4 minutes. 
+
+**Terminal Times (minutes)**
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Create the data
+data <- data.frame(
+  "Area Type" = c("CBD", "OBD", "Urban", "Suburban", "Rural"),
+  "TT (Prod)" = c(5, 4, 3, 2, 1),
+  "TT (Attr)" = c(5, 4, 3, 2, 1)
+)
+
+# Create the table with kable
+table_area <- kable(data, col.names = c("Area Type", "Travel Time (Productions)", "Travel Time (Attractions)")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table_area
+```
+
+### Transit Access (Walk and Drive) 
+Transit access is required from TAZs to the transit route network to load transit trips. Two means of approach to access transit (production TAZ to transit stop) are permitted – either by walking or driving. For egress (transit stop to attraction TAZ), only walking is permitted. The walk approach uses centroid connectors and the roadway network. Walking time over the network is assumed to be 3 MPH. In cases where the regular centroid connector does not provide a good connection to a nearby transit stop, special centroid to transit stop connectors were coded for walk access.   

@@ -1,0 +1,332 @@
+---
+title: "Household Synthesis"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+
+## MRM Household Synthesis 
+The MRM creates a synthetic list of households in the region based on Census and survey data. The synthesized households are stratified by four key household attributes: size (1-5+), income group, life cycle (retired, with children, other—no retirees or children), and workers (0-3+). There are four income groups (lowest 10% of region, low-middle 15%, high-middle 25%, and high 50%).
+
+The MRM uses a set of socioeconomic sub-models to estimate the number of households jointly by these attributes. The size and income sub-models use input zonal averages to stratify the households by size and income categories, respectively. Another sub-model calculates the joint distribution of households by size and income for geographic subregions within the Metrolina region. The life cycle sub-model uses another fixed set of percentages to estimate the households by life cycle category, for each size and income category. Finally, the worker sub-model uses a fixed set of percentages to estimate the households by number of workers, for each size, income, and life cycle category.
+
+In the Metrolina region, the marginal distribution curves estimated are:
+
+* Size (1-5+) 
+* Income group (lowest 10 % of region, low-middle 15%, high-middle 25%, and high 50%) 
+* Life cycle (retired, with children, no retirees or children) 
+* Workers (0-3+) 
+
+These curves are estimated using Census data from different data products and geographies depending on availability. Some manual edits were required to adjust curve behavior due to the low number of observations at different geographies. This same treatment was applied to create all marginal tables. The model implements the curves above using a look-up table.  
+
+## Household Size
+Each TAZ contains an average household size index based on census data, which reflects the distribution of household sizes in the area. The index is derived by calculating the percentage of households in each TAZ that fall into the defined size categories.
+
+In the graph below, each dot represents the proportion of households in a block group based on its average household size. A polynomial curve is fitted to each household category. These polynomials can be used to calculate the percentage of households in each size category for any given average household size.
+
+For example, for a zone with an average household size of 2, the percentage of households in each size category would be:
+
+* 1-person: 0.39 (dark green curve)
+* 2-person: 0.37 (orange curve)
+* 3-person: 0.13 (purple curve)
+* 4-person: 0.07 (pink curve)
+* 5+person: .04 (light green curve)
+
+<br>
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
+library(readxl)
+library(tidyr)
+library(plotly)
+library(ggplot2)
+library(kableExtra)
+```
+
+**Households by Average Size**
+```{r fig_size, echo=FALSE, message=FALSE}
+df <- read_excel("C:/MRM/TG/disagg_curves.xlsx", sheet = "hhsize")
+  
+hhsize <- df %>%
+  pivot_longer(
+    cols = -avg_hh,
+    names_to = "size",
+    values_to = "percent"
+  ) %>%
+  mutate(
+    percent = as.numeric(as.character(percent)),
+    percent = round(percent, 2), 
+    avg_hh = round(avg_hh, 2),
+    size = factor(size, 
+                 levels = c("one_hh", "two_hh", "three_hh", "four_hh", "five_hh"),
+                 labels = c("1 Person HH", "2 Person HH", "3 Person HH", "4 Person HH", "5+ Person HH"))
+  ) %>% 
+  filter(!is.na(percent)) %>% 
+  filter(avg_hh >= 1) 
+
+# First ensure avg_HH is numeric
+hhsize <- hhsize %>%
+  mutate(avg_hh = as.numeric(avg_hh))
+
+# Calculate trend lines without explicit error checking
+trend_lines <- hhsize %>%
+  group_by(size) %>%
+  do({
+    model <- lm(percent ~ poly(avg_hh, 3), data = .)
+    data.frame(
+      avg_hh = sort(.$avg_hh), 
+      fitted = predict(model, newdata = data.frame(avg_hh = sort(.$avg_hh)))
+    )
+  })
+
+p <- plot_ly (hhsize, 
+             x = ~avg_hh, 
+             y = ~percent, 
+             color = ~size,
+             type = "scatter", 
+             mode = "markers",
+             marker = list(
+                  opacity = .5,
+                  size = 6),
+             name = ~size,  # Add names for legend
+             legendgroup = ~size) %>%  
+  add_trace(data = trend_lines,
+            x = ~avg_hh,
+            y = ~fitted,
+            color = ~size,
+            type = "scatter",
+            mode = "lines",
+            line = list(shape = "spline", width =3),
+            name = ~size,
+            legendgroup = ~size,
+            showlegend = FALSE) %>%
+  layout(
+         autosize = TRUE,
+         xaxis = list(title = "Average Household Size", range = c(1, 4)),
+         yaxis = list(title = "Percent", tickformat = ".1", range = c(0, 1)),
+         hovermode = "closest",
+         showlegend = TRUE,
+         legend = list(x = 1, y = 1, xanchor = "right", yanchor = "top")  # Floating legend
+  )
+
+# Ensure the plot adapts to screen size
+p %>% config(responsive = TRUE)
+
+```
+*Source: Survey: 2018-2022 5-year ACS, Table B11016: Household Type by Household Size *
+
+The table below shows a segment of rows from the look-up table the model uses to dis-aggregate zonal data into households by size.
+
+**Average HH Size Lookup Table**
+```{r echo=FALSE, message=FALSE}
+df <- data.frame(
+  AVGSZ = c(2, 2.1, 2.2, 2.3, 2.4),
+  HHSZ1 = c(38.91, 35.17, 31.73, 28.58, 25.69),
+  HHSZ2 = c(36.97, 37.55, 37.79, 37.71, 37.31),
+  HHSZ3 = c(13.23, 14.27, 15.21, 16.04, 16.79),
+  HHSZ4 = c(7.35, 8.55, 9.81, 11.13, 12.50),
+  HHSZ5 = c(3.54, 4.45, 5.45, 6.54, 7.71)
+)
+
+# Generate a kable table with Bootstrap styling
+df %>%
+  kable(col.names = c("Avg HH Size", "1 Person HH", "2 Person HH", "3 Person HH", "4 Person HH", "5+ Person HH")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+```
+
+
+## Household Income
+The income groups were created as part of the 2012 transit model mode choice calibration and validation completed by AECOM. The income groupings are integral to understanding the relationship between socioeconomic factors and transit ridership patterns in the region. The stratification of households into income groups enables a more detailed analysis of how income influences transit usage.
+
+**Income by Proportion of Regional Income**
+```{r echo=FALSE, message=FALSE}
+
+df <- read_excel("C:/MRM/TG/disagg_curves.xlsx", sheet = "inc")
+
+# First create the data frame
+inc <- df %>%
+  pivot_longer(
+    cols = -inc_ratio,
+    names_to = "ratio",
+    values_to = "percent"
+  ) %>%
+  mutate(
+    percent = as.numeric(as.character(percent)),
+    size = factor(ratio, 
+                 levels = c("inc1", "inc2", "inc3", "inc4"),
+                 labels = c("Income 1", "Income 2", "Income 3", "Income 4"))
+  ) %>% 
+  filter(!is.na(percent)) %>% 
+  filter(inc_ratio >= .1) 
+
+# Calculate trend lines without explicit error checking
+trend_lines <- inc %>%
+  group_by(size) %>%
+  do({
+    model <- lm(percent ~ poly(inc_ratio, 3), data = .)
+    data.frame(
+      inc_ratio = sort(.$inc_ratio), 
+      fitted = predict(model, newdata = data.frame(inc_ratio = sort(.$inc_ratio)))
+    )
+  })
+
+p <- plot_ly(inc, 
+             x = ~inc_ratio, 
+             y = ~percent, 
+             color = ~size,
+             type = "scatter", 
+             mode = "markers",
+             marker = list(
+                  opacity = .5,
+                  size = 6),
+             name = ~size,  # Add names for legend
+             legendgroup = ~size) %>%  
+  add_trace(data = trend_lines,
+            x = ~inc_ratio,
+            y = ~fitted,
+            color = ~size,
+            type = "scatter",
+            mode = "lines",
+            line = list(shape = "spline", width = 3),
+            name = ~size,
+            legendgroup = ~size,
+            showlegend = FALSE) %>%
+  layout(autosize = TRUE,
+         xaxis = list(title = "Ratio of Median Income to Regional Median Income",
+                      range = c(0, 3.5)),
+         yaxis = list(title = "Percent",
+                      tickformat = ".1",
+                      range = c(0, 1)),
+         hovermode = "closest",
+         legend = list(x = 1, y = 1, xanchor = "right", yanchor = "top")  # Floating legend
+  )
+
+# Ensure the plot adapts to screen size
+p %>% config(responsive = TRUE)
+
+
+```
+*Source:  Survey: 2018-2022 5-year ACS, Table B19013 : Median Household Income, Table B19001 : Household Income *
+
+The table below shows a segment of rows from the look-up table the model uses to dis-aggregate zonal data into households by income. 
+
+**Average Income by Proportion of Regional Income Lookup Table**
+```{r echo=FALSE, message=FALSE}
+df <- data.frame(
+  IncRatio = c(2, 2.1, 2.2, 2.3, 2.4),
+  Inc1 = c(2.99,	2.90,	2.80,	2.70,	2.60),
+  Inc2 = c(5.09,	4.92,	4.75,	4.58,	4.41),
+  Inc3 = c(9.92,	9.62,	9.32,	9.02, 8.72),
+  Inc4 = c(81.99,	82.56,	83.13,	83.69,	84.26))
+
+# Generate a kable table with Bootstrap styling
+df %>%
+  kable(col.names = c("Income Ratio", "Income 1", "Income 2", "Income 3", "Income 4")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+```
+
+
+## Household Workers
+Similar to household size and income curves, ACS Census data tables were analyzed to estimate the distribution of households by the number of workers based on zonal average workers per household. The chart below illustrates the modeled trend lines.
+
+**Workers by Average Workers**
+```{r echo=FALSE, message=FALSE}
+
+df <- read_excel("C:/MRM/TG/disagg_curves.xlsx", sheet = "worker")
+
+# First create the data frame
+wrk <- df %>%
+  pivot_longer(
+    cols = -avg_workers,
+    names_to = "ratio",
+    values_to = "percent"
+  ) %>%
+  mutate(
+    percent = as.numeric(as.character(percent)),
+    size = factor(ratio, 
+                 levels = c("wrk0","wrk1", "wrk2", "wrk3"),
+                 labels = c("0 Workers", "1 Worker", "2 Workers", "3 Workers"))
+  ) %>% 
+  filter(!is.na(percent)) %>% 
+  filter(avg_workers >= .1) 
+
+# Calculate trend lines without explicit error checking
+trend_lines <- wrk %>%
+  group_by(size) %>%
+  do({
+    model <- lm(percent ~ poly(avg_workers, 3), data = .)
+    data.frame(
+      avg_workers = sort(.$avg_workers), 
+      fitted = predict(model, newdata = data.frame(avg_workers = sort(.$avg_workers)))
+    )
+  })
+
+p <- plot_ly(wrk, 
+             x = ~avg_workers, 
+             y = ~percent, 
+             color = ~size,
+             type = "scatter", 
+             mode = "markers",
+             marker = list(
+                  opacity = .5,
+                  size = 6),
+             name = ~size,  # Add names for legend
+             legendgroup = ~size) %>%  
+  add_trace(data = trend_lines,
+            x = ~avg_workers,
+            y = ~fitted,
+            color = ~size,
+            type = "scatter",
+            mode = "lines",
+            line = list(shape = "spline", width = 3),
+            name = ~size,
+            legendgroup = ~size,
+            showlegend = FALSE) %>%
+  layout(autosize = TRUE,
+         xaxis = list(title = "Average Workers",
+                      range = c(0.3, 3)),
+         yaxis = list(title = "Percent",
+                      tickformat = ".1",
+                      range = c(0, 1)),
+         hovermode = "closest",
+         legend = list(x = 1, y = 1, xanchor = "right", yanchor = "top")  # Floating legend
+  )
+
+# Ensure the plot adapts to screen size
+p %>% config(responsive = TRUE)
+
+
+```
+*Source:  Survey: 2017-2021 5-year PUMS, Table: Number of workers in household by Household size*
+
+The table below shows a segment of rows from the look-up table the model uses to dis-aggregate zonal data into households by workers. 
+
+**Workers by Average Workers Lookup Table**
+```{r echo=FALSE, message=FALSE}
+df <- data.frame(
+  wrk_ratio = c(2, 2.1, 2.2, 2.3, 2.4),
+  wrk0 = c(29.21,	25.04,	21.29,	17.94,	14.97),
+  wrk1 = c(44.84,	44.30,	43.11,	41.35,	39.06),
+  wrk2 = c(23.01,	26.91,	30.79,	34.62,	38.36),
+  wrk3 = c(2.93,	3.75,	4.81,	6.09,	7.61
+))
+
+# Generate a kable table with Bootstrap styling
+df %>%
+  kable(col.names = c("Worker Ratio", "0 Workers", "1 Worker", "2 Workers", "3 Workers")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+```

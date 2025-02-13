@@ -1,0 +1,63 @@
+---
+title: "Assignment"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+## Highway
+The traffic assignment process for the MRM is a multi-class “user equilibrium” assignment, which is a multipath procedure where vehicle trips are loaded from origin to destination through an iterative process. During each iteration, the trips for each origin-destination TAZ pair are assigned to a single shortest path along the network. The loadings from the iterations are weighted in a manner that results, at convergence, in the travel times along all paths being equal. This ensures that no driver could improve the travel time by changing the path. The MRM allows up to 250 iterations to ensure each assignment reaches the set convergence of 0.0001. As part of the assignment, the trip tables are assigned to the network. 
+
+ 
+### Highway Assignment Trip Tables 
+
+The assignment process is applied separately to each of the four time periods (AM, PM, MI, NT). Then, those results are added together to generate the total daily volume on each link.  
+
+For each of the time periods, six trip assignment tables are assigned: 
+
+1. **Single-occupancy vehicles (SOV):** These trips do not have access to HOT lanes. 
+
+2. **Two-person carpool vehicle trips (HOV-2):** Vehicles with two persons have free access to HOT-2 express lanes (functional class 22 and 82 for access). However, no HOT-2 lanes exist in the official model, as all existing and planned express lanes are HOT-3+. 
+
+3. **Three or more-person carpool vehicle trips (HOV-3):** Vehicles with three or more persons have free access to HOT-2 and HOT-3+ lanes (functional class 25 and 83 for access). HOT-3+ facilities in the model include the existing I-77 North Express Lanes, as well as the planned express lanes on I-77 South, US-74, and I-485 in build in future horizon years.  
+
+4. **Commercial vehicles:** These trips do not have access to HOT lanes during assignment. 
+
+5. **Medium trucks:** These trucks are assumed to have a passenger-car-equivalent (PCE) of 1.5 passenger cars when calculating congestion. These trips do not have access to HOT lanes or Peak Period Shoulder Lanes (PPSL’s, functional class 24). 
+
+6. **Heavy trucks:** These trucks are assumed to have a PCE of 2.5 when calculating congestion. These trips do not have access to HOT lanes or PPSL’s. 
+
+Trip tables from three sources are brought together for the assignment. The mode choice program designates single-occupancy vehicle (SOV) and carpool (HOV-2, HOV-3+) person trips for home-based trips (HBW, HBS, HBO, SCH, HBU, JTW, ATW, NWK).  Commercial vehicle, medium and heavy trucks, and external trips (EI, IE) are brought in from trip distribution. Through (EE) trips are brought in from the trip generation step. 
+
+### Internal Trips 
+Carpool trips are divided into 2 person carpools and 3 or more person carpools during mode choice.  The number of 3+ carpools must be “assigned” an average number of persons per car. An average 3+ carpool size is calculated for each trip purpose based on the 2023 household travel survey . 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(scales)
+
+data <- data.frame(
+  Purpose = c("HBW", "HBO", "HBU", "HBSch", "HBS", "ATW"),
+  Number_of_Persons = c("3.560 persons", "3.560 persons", "3.360 persons", "3.560 persons", "3.560 persons", "3.660 persons")
+)
+
+# Create the table using kable and apply Bootstrap styling
+table <- kable(data, col.names = c("Purpose", "Number of Persons")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14)
+
+# Print the table
+table
+```
+
+## Transit

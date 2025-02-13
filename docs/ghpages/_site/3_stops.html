@@ -11,7 +11,7 @@
 
 
 
-<title>2_onboard</title>
+<title>Intermediate Stops</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -51,6 +51,7 @@
 
 
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -328,27 +329,78 @@ div.tocify {
       <a href="1_networks.html">Networks</a>
     </li>
     <li>
-      <a href="1_routes.html">Route Systems</a>
+      <a href="1_routes.html">Transit</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Surveys
+    Surveys &amp; Data
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="2_hhts.html">Household Travel Survey</a>
+      <a href="2_surveys.html">Surveys</a>
     </li>
     <li>
-      <a href="2_onboard.html">On Board Surveys</a>
+      <a href="2_traveldata.html">Travel Data</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="contact.html">Contact</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="3_hhsynth.html">Household Synthesis</a>
+    </li>
+    <li>
+      <a href="3_purpose.html">Tour Purpose</a>
+    </li>
+    <li>
+      <a href="3_dc.html">Destination Choice</a>
+    </li>
+    <li>
+      <a href="3_stops.html">Intermediate Stops</a>
+    </li>
+    <li>
+      <a href="3_mode.html">Mode Choice</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Other Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="4_ext.html">Externals</a>
+    </li>
+    <li>
+      <a href="4_assignment.html">Assignment</a>
+    </li>
+    <li>
+      <a href="4_validation.html">Validation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MRM Versions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="5_mrm25v1.html">MRM25v1.0</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -367,12 +419,40 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">2_onboard</h1>
+<h1 class="title toc-ignore">Intermediate Stops</h1>
 
 </div>
 
 
-
+<p>The Tour Frequency and Tour Destination Choice steps estimate the
+start and end locations for each round-trip tour. The next step is to
+determine how many stops are made from origin to destination and from
+destination to origin for each individual tour. No separate estimate is
+made for the purpose of those intermediate stops; it is assumed that
+they are all for shopping or other such purposes (personal business,
+social, recreational, etc). In the context of this model, the specific
+purpose of those stops is not important.</p>
+<p>The Intermediate Stop (IS) model is stratified by purpose and
+direction (first half-tour, or PA direction vs. second half-tour, or AP
+direction). The model considers up to seven stops in each direction, as
+survey data showed that only a few tours made more stops than that.</p>
+<p>The IS model uses the standard multinomial logit process, based on
+the premise that the number of stops is related to the characteristics
+of the traveler, of the origin and destination zones, and of the area
+surrounding those zones. Similar to the Tour Frequency model, the IS
+logit model includes a certain number of stops and then fixed
+percentages are used to estimate the number of stops above that
+figure.</p>
+<div id="stop-location" class="section level3">
+<h3>Stop Location</h3>
+<p>The Stop Location (SL) model is similar to the Destination Choice
+model in that it is selecting a particular zone from a set of candidate
+zones. A key element of the SL model is detour time which is the time
+that a traveler goes out of his way to make a stop. In addition to
+detour time being a variable in the logit utility equation, there is a
+maximum detour time allowed for each SL model. Any zones outside of the
+detour maximum are not candidates for the choice.</p>
+</div>
 
 
 
@@ -423,7 +503,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2,h3,h4",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {

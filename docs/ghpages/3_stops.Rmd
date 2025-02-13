@@ -1,0 +1,24 @@
+---
+title: "Intermediate Stops"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+The Tour Frequency and Tour Destination Choice steps estimate the start and end locations for each round-trip tour. The next step is to determine how many stops are made from origin to destination and from destination to origin for each individual tour. No separate estimate is made for the purpose of those intermediate stops; it is assumed that they are all for shopping or other such purposes (personal business, social, recreational, etc). In the context of this model, the specific purpose of those stops is not important. 
+
+
+The Intermediate Stop (IS) model is stratified by purpose and direction (first half-tour, or PA direction vs. second half-tour, or AP direction). The model considers up to seven stops in each direction, as survey data showed that only a few tours made more stops than that.   
+
+The IS model uses the standard multinomial logit process, based on the premise that the number of stops is related to the characteristics of the traveler, of the origin and destination zones, and of the area surrounding those zones. Similar to the Tour Frequency model, the IS logit model includes a certain number of stops and then fixed percentages are used to estimate the number of stops above that figure.  
+
+### Stop Location  
+The Stop Location (SL) model is similar to the Destination Choice model in that it is selecting a particular zone from a set of candidate zones. A key element of the SL model is detour time which is the time that a traveler goes out of his way to make a stop. In addition to detour time being a variable in the logit utility equation, there is a maximum detour time allowed for each SL model. Any zones outside of the detour maximum are not candidates for the choice. 

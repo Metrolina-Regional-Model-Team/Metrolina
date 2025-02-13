@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Tour Purpose &amp; Frequency</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MRM</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Databases
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_taz_se.html">TAZs &amp; SE</a>
+    </li>
+    <li>
+      <a href="1_networks.html">Networks</a>
+    </li>
+    <li>
+      <a href="1_routes.html">Transit</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Surveys &amp; Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="2_surveys.html">Surveys</a>
+    </li>
+    <li>
+      <a href="2_traveldata.html">Travel Data</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="3_hhsynth.html">Household Synthesis</a>
+    </li>
+    <li>
+      <a href="3_purpose.html">Tour Purpose</a>
+    </li>
+    <li>
+      <a href="3_dc.html">Destination Choice</a>
+    </li>
+    <li>
+      <a href="3_stops.html">Intermediate Stops</a>
+    </li>
+    <li>
+      <a href="3_mode.html">Mode Choice</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Other Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="4_ext.html">Externals</a>
+    </li>
+    <li>
+      <a href="4_assignment.html">Assignment</a>
+    </li>
+    <li>
+      <a href="4_validation.html">Validation</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MRM Versions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="5_mrm25v1.html">MRM25v1.0</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/Metrolina-Regional-Model-Team/MRM">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Tour Purpose &amp; Frequency</h1>
+
+</div>
+
+
+<div id="tour-purpose" class="section level2">
+<h2>Tour Purpose</h2>
+<p>Person tours made by residents of the region make up the majority of
+the tours in the MRM. The residential tours are further stratified by
+the principal purpose of the tour. Except in the case of At-Work (ATW)
+tours, which begin and end at the workplace, all internal tours
+originate at home. Unlike in a trip-based model, there are no
+non-home-based tours other than ATWs. There are six person-tour
+purposes, listed below in order of precedence (e.g. if a person makes a
+tour that includes both a primary work and a shopping destination, the
+tour would be a HBW tour with a stop for shopping).</p>
+<ul>
+<li>Home-Based Work (HBW): a tour between home and the primary
+workplace</li>
+<li>Home-Based School (SCH): a tour between home and primary/secondary
+school (including kindergarten but not daycare or pre-school)</li>
+<li>Home-Based University (HBU): a tour between home and
+college/university (including vocational/technical schools and other
+professional education)</li>
+<li>Home-Based Shop (HBS): a tour between home and shopping</li>
+<li>Home-Based Other (HBO): all other home-based tours not classified
+above</li>
+<li>At Work (ATW): this is a tour that both begins and ends at the
+workplace; a typical example is going from work to lunch and back on
+round-trip tours by purpose on a typical weekday.</li>
+</ul>
+</div>
+<div id="tour-frequency" class="section level2">
+<h2>Tour Frequency</h2>
+<p>The tour frequency model uses the synthetic household table to
+estimate the number of round-trip tours each household in the region
+will make, by purpose. All travel purposes, except At-Work tours (ATW),
+are assumed to begin and end at the traveler’s home. ATW tours begin and
+end at the traveler’s workplace.</p>
+<p>The basic premise of the Tour Frequency model is to estimate the
+probability of a household making 0, 1, 2, and so on round-trip tours by
+purpose on a typical weekday. This model uses a multinomial logit model,
+and the utility is a function of the household characteristics, the home
+zone’s attributes, and the number of tours estimated for certain
+purposes.</p>
+<p>The tour frequency model estimates person travel by residents of the
+region only. Travel by residents to destinations outside of the region
+(internal-to-external (I/X) tours) and by non-residents into
+(external-to-iternal (X/I) tours) and through (externtal-to-external
+(X/X) tours) the region is determined in the Tour Destination Choice
+model.</p>
+<p>Caliper updated the tour frequency models using the 2023 household
+travel survey.. Estimation of the home- based work model was completed
+byMRM staff while Caliper estimated the remaining models. The sections
+below provide the relevant statistics for each model.</p>
+<div id="work-tours" class="section level3">
+<h3>Work Tours</h3>
+<p>The number of workers, frequency of school tours, and other relevant
+household characteristics influence the probability of making work
+tours. As workers and school tours increase, the probability of making
+work tours increase. Likewise, households which are larger in size and/
+or located in rural areas are associated with greater work tour
+frequency. However, households with children tend to make less work
+tours, while those in the lowest income category and/or with only one
+worker present are significantly less likely to make two or more work
+tours.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Alternatives
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+<th style="text-align:center;">
+0 Tours
+</th>
+<th style="text-align:center;">
+1 Tour
+</th>
+<th style="text-align:center;">
+2+ Tours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Workers
+</td>
+<td style="text-align:right;">
+0.387
+</td>
+<td style="text-align:right;">
+7.16
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers
+</td>
+<td style="text-align:right;">
+0.819
+</td>
+<td style="text-align:right;">
+6.53
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+School_tours
+</td>
+<td style="text-align:right;">
+0.652
+</td>
+<td style="text-align:right;">
+10.90
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life_cycle = 2
+</td>
+<td style="text-align:right;">
+-0.385
+</td>
+<td style="text-align:right;">
+-5.60
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 1
+</td>
+<td style="text-align:right;">
+-1.008
+</td>
+<td style="text-align:right;">
+-3.30
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 1
+</td>
+<td style="text-align:right;">
+-0.768
+</td>
+<td style="text-align:right;">
+-4.35
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AreaType = 5
+</td>
+<td style="text-align:right;">
+0.209
+</td>
+<td style="text-align:right;">
+2.57
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AreaType = 5
+</td>
+<td style="text-align:right;">
+0.398
+</td>
+<td style="text-align:right;">
+3.79
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size = 1
+</td>
+<td style="text-align:right;">
+0.158
+</td>
+<td style="text-align:right;">
+2.18
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size = 1
+</td>
+<td style="text-align:right;">
+0.565
+</td>
+<td style="text-align:right;">
+4.39
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant (1)
+</td>
+<td style="text-align:right;">
+-1.291
+</td>
+<td style="text-align:right;">
+-12.76
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant (2)
+</td>
+<td style="text-align:right;">
+-2.568
+</td>
+<td style="text-align:right;">
+-9.44
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .17</em></p>
+</div>
+<div id="school-tours" class="section level3">
+<h3>School Tours</h3>
+<p>The school tour model is sensitive life cycle variables (presence of
+kids), size, income, and other variables that are expected to influence
+school making behavior. Most t-stats are strong, but the Life Cycle = 2
+dummy variable in the 2+ utility equation is low. Still, the model
+maintains separate coefficients for 1 and 2+ tours because the relative
+sizes of the coefficients are intuitive.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Alternatives
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+<th style="text-align:center;">
+0 Tours
+</th>
+<th style="text-align:center;">
+1 Tour
+</th>
+<th style="text-align:center;">
+2+ Tours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-1.692
+</td>
+<td style="text-align:right;">
+-2.91
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-1.080
+</td>
+<td style="text-align:right;">
+-1.84
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life Cycle = 2
+</td>
+<td style="text-align:right;">
+0.650
+</td>
+<td style="text-align:right;">
+1.12
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 3
+</td>
+<td style="text-align:right;">
+0.618
+</td>
+<td style="text-align:right;">
+3.19
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 3 or 4
+</td>
+<td style="text-align:right;">
+0.325
+</td>
+<td style="text-align:right;">
+3.15
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 1
+</td>
+<td style="text-align:right;">
+0.329
+</td>
+<td style="text-align:right;">
+1.48
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CBD
+</td>
+<td style="text-align:right;">
+-1.130
+</td>
+<td style="text-align:right;">
+-3.60
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life Cycle = 1
+</td>
+<td style="text-align:right;">
+-2.342
+</td>
+<td style="text-align:right;">
+-3.98
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life Cycle = 2
+</td>
+<td style="text-align:right;">
+0.318
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 3
+</td>
+<td style="text-align:right;">
+-0.404
+</td>
+<td style="text-align:right;">
+-1.67
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 3 or 4
+</td>
+<td style="text-align:right;">
+-1.763
+</td>
+<td style="text-align:right;">
+-9.47
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 1
+</td>
+<td style="text-align:right;">
+-0.417
+</td>
+<td style="text-align:right;">
+-1.20
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CBD
+</td>
+<td style="text-align:right;">
+-1.143
+</td>
+<td style="text-align:right;">
+-2.18
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life Cycle = 1
+</td>
+<td style="text-align:right;">
+-1.399
+</td>
+<td style="text-align:right;">
+-2.31
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 2
+</td>
+<td style="text-align:right;">
+-3.907
+</td>
+<td style="text-align:right;">
+-7.42
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 5
+</td>
+<td style="text-align:right;">
+0.671
+</td>
+<td style="text-align:right;">
+5.04
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .52</em></p>
+</div>
+<div id="university-tours" class="section level3">
+<h3>University Tours</h3>
+<p>The university model is simple, but it does consider the number of
+K12/school tours made by the household. Making these tours makes it less
+likely to make university tours. Not only do these tours take up time in
+the day making other tours less likely, but it also means that at least
+some children in the house are not university age.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Alternatives
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+<th style="text-align:center;">
+0 Tours
+</th>
+<th style="text-align:center;">
+1+ Tours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-5.570
+</td>
+<td style="text-align:right;">
+-28.140
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size
+</td>
+<td style="text-align:right;">
+0.531
+</td>
+<td style="text-align:right;">
+8.012
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+School Tours
+</td>
+<td style="text-align:right;">
+-0.107
+</td>
+<td style="text-align:right;">
+-0.757
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 2
+</td>
+<td style="text-align:right;">
+1.002
+</td>
+<td style="text-align:right;">
+4.645
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Area Type = 2
+</td>
+<td style="text-align:right;">
+0.817
+</td>
+<td style="text-align:right;">
+4.384
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 3
+</td>
+<td style="text-align:right;">
+0.329
+</td>
+<td style="text-align:right;">
+1.828
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 3
+</td>
+<td style="text-align:right;">
+0.741
+</td>
+<td style="text-align:right;">
+3.364
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .87</em></p>
+</div>
+<div id="shopping-tours" class="section level3">
+<h3>Shopping Tours</h3>
+<p>School and work tours both detract from the propensity of a household
+to make shopping tours. It is more likely that these shopping needs are
+met as intermediate stops on those tours instead. Living in the
+most-dense areas lowers the number of shopping trips you make. This is
+an interesting result and may reflect the complex nature of outings with
+multiple stops in these areas.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Alternatives
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+<th style="text-align:center;">
+0 Tours
+</th>
+<th style="text-align:center;">
+1 Tour
+</th>
+<th style="text-align:center;">
+2+ Tours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-0.348
+</td>
+<td style="text-align:right;">
+-4.79
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-2.004
+</td>
+<td style="text-align:right;">
+-22.94
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size
+</td>
+<td style="text-align:right;">
+0.064
+</td>
+<td style="text-align:right;">
+2.39
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+0.073
+</td>
+<td style="text-align:right;">
+1.50
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBSch + HBU Tours
+</td>
+<td style="text-align:right;">
+-0.379
+</td>
+<td style="text-align:right;">
+-6.80
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBW Tours
+</td>
+<td style="text-align:right;">
+-0.995
+</td>
+<td style="text-align:right;">
+-25.29
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CBD
+</td>
+<td style="text-align:right;">
+-0.180
+</td>
+<td style="text-align:right;">
+-1.61
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 1
+</td>
+<td style="text-align:right;">
+-0.220
+</td>
+<td style="text-align:right;">
+-4.37
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size
+</td>
+<td style="text-align:right;">
+0.576
+</td>
+<td style="text-align:right;">
+17.66
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers
+</td>
+<td style="text-align:right;">
+-0.194
+</td>
+<td style="text-align:right;">
+-4.91
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CBD
+</td>
+<td style="text-align:right;">
+-0.644
+</td>
+<td style="text-align:right;">
+-3.43
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers = 1
+</td>
+<td style="text-align:right;">
+-0.338
+</td>
+<td style="text-align:right;">
+-5.13
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .2</em></p>
+</div>
+<div id="other-tours" class="section level3">
+<h3>Other Tours</h3>
+<p>Other tours include all tours not captured in the other tour types.
+They are non-mandatory (meaning not for work or school) and they are not
+shopping. They do include activities like dining, entertainment, social,
+or general recreation. All other tour types negatively impact the
+ability to make other tours given the limited time during the day.
+Income and size also play important roles in predicting these tours.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="3">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Alternatives
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+<th style="text-align:center;">
+0 Tours
+</th>
+<th style="text-align:center;">
+1 Tour
+</th>
+<th style="text-align:center;">
+2 Tours
+</th>
+<th style="text-align:left;">
+3 Tours
+</th>
+<th style="text-align:right;">
+4+ Tours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+0.1140000
+</td>
+<td style="text-align:right;">
+1.27
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-0.1240000
+</td>
+<td style="text-align:right;">
+-1.26
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-1.8070000
+</td>
+<td style="text-align:right;">
+-11.33
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+-3.0790000
+</td>
+<td style="text-align:right;">
+-20.06
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size
+</td>
+<td style="text-align:right;">
+0.2510000
+</td>
+<td style="text-align:right;">
+6.48
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Life Cycle = 2
+</td>
+<td style="text-align:right;">
+0.4010000
+</td>
+<td style="text-align:right;">
+4.48
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Workers
+</td>
+<td style="text-align:right;">
+0.1660000
+</td>
+<td style="text-align:right;">
+5.28
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median Income
+</td>
+<td style="text-align:right;">
+0.0000017
+</td>
+<td style="text-align:right;">
+1.97
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBSch + HBU Tours
+</td>
+<td style="text-align:right;">
+-0.3190000
+</td>
+<td style="text-align:right;">
+-4.81
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBW Tours
+</td>
+<td style="text-align:right;">
+-1.3380000
+</td>
+<td style="text-align:right;">
+-32.60
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HBS Tours
+</td>
+<td style="text-align:right;">
+-0.8960000
+</td>
+<td style="text-align:right;">
+-25.10
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 4
+</td>
+<td style="text-align:right;">
+0.2960000
+</td>
+<td style="text-align:right;">
+5.72
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Area Type = 5
+</td>
+<td style="text-align:right;">
+-0.3790000
+</td>
+<td style="text-align:right;">
+-4.62
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Suburban
+</td>
+<td style="text-align:right;">
+-0.1960000
+</td>
+<td style="text-align:right;">
+-3.15
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size = 1
+</td>
+<td style="text-align:right;">
+-1.0470000
+</td>
+<td style="text-align:right;">
+-14.80
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+X
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HH Size
+</td>
+<td style="text-align:right;">
+0.6040000
+</td>
+<td style="text-align:right;">
+11.02
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 4
+</td>
+<td style="text-align:right;">
+0.6350000
+</td>
+<td style="text-align:right;">
+8.44
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Income = 1
+</td>
+<td style="text-align:right;">
+-0.6300000
+</td>
+<td style="text-align:right;">
+-3.71
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size = 1
+</td>
+<td style="text-align:right;">
+-0.7580000
+</td>
+<td style="text-align:right;">
+-6.09
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Size
+</td>
+<td style="text-align:right;">
+1.1220000
+</td>
+<td style="text-align:right;">
+23.29
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+size = 1
+</td>
+<td style="text-align:right;">
+-1.1970000
+</td>
+<td style="text-align:right;">
+-6.44
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+X
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .2</em></p>
+</div>
+<div id="at-work-subtours" class="section level3">
+<h3>At Work Subtours</h3>
+<p>The at-work subtour model is slightly different from the others
+above. Instead of predicting the number of subtours a household makes,
+this model predicts the probability that each work tour will generate an
+at-work subtour. This model is practically a constants model (asserting
+observed probabilities from the survey), does include an income effect
+that makes it slightly more likely for high-income workers to go out for
+lunch or do other things during the workday.</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Coefficient
+</th>
+<th style="text-align:right;">
+t-Statistic
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Constant
+</td>
+<td style="text-align:right;">
+1.250000
+</td>
+<td style="text-align:right;">
+27.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median Income
+</td>
+<td style="text-align:right;">
+0.000002
+</td>
+<td style="text-align:right;">
+2.62
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Rho^2 = .27</em></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
