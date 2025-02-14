@@ -1,6 +1,6 @@
 # Metrolina Regional Model
 
-User's guide see:https://metrolina-regional-model-team.github.io/MRM/
+Official model documentation: https://metrolina-regional-model-team.github.io/MRM/
 
 Official model releases see: https://github.com/Metrolina-Regional-Model-Team/MRM/releases
 
