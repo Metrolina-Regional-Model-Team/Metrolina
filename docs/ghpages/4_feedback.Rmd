@@ -1,0 +1,18 @@
+---
+title: "Feedback"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      number_sections: false
+    toc_depth: 4
+    css: "styles.css"
+---
+
+Trip tables created in the Destination Choice step depend, to some degree, on the travel time between the zones. Feedback loops refers to the process of taking the congested travel time from the traffic assignment step and feeding it back to the trip distribution process. These travel times are iteratively fed back to the trip distribution step to recalculate the trip tables. The purpose of the feedback loop is to include more “realistic” travel times in the distribution, mode choice, and highway assignment steps.  
+
+## Feedback in Destination Choice

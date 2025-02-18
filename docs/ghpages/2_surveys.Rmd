@@ -118,6 +118,10 @@ table_metrics
 
 To review the complete HHTS report prepared by RSG click [here](other/pdfs/Metrolina_HTS_Final_Report_040824.pdf)
 
+### Model Estimation using Household Travel Survey 
+Caliper elected to use the weights developed by RSG after reviewing their weighting and expansion report. The survey was delivered largely pre-processed and identified tours, subtours, and other important variables that usually require post-processing. Still the model’s definition of some tours types (e.g. what qualified as an at-work subtour) were different and required custom processing. Caliper also performed various checks of the survey for things like logical trip consistency within tours, reasonability of behavior patterns, and other metrics and determined that the survey was high quality and able to be used for model estimation. 
+
+After creating the standard output tables like trips, tours, persons, and households, Caliper created estimation datasets for specific models. These were used internally, but for tour frequency and intermediate stop frequency, those tables were also provided to City of Charlotte staff who participated in the estimation.  
 
 ## On Board Survey 
 In the fall of 2022, the Charlotte Area Transit System (CATS), with consultant support from ETC Institute, conducted a regional on-board origin-destination (OD) survey of all fixed-route transit systems in the Charlotte region.The main purpose of this on-board transit survey was to support the mode choice component of the MRM.). The survey included information like routes used, direction, time of day, trip origin and destination locations and characteristics, access and egress modes, trip purposes, and a variety of respondent demographics. RSG provided consultant support to document and analyze the  transit data collected, and develop the weighting  process to represent ridership on the system and account for transfers and the results shown represent linked trips. 

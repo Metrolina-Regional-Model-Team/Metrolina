@@ -60,4 +60,152 @@ table <- kable(data, col.names = c("Purpose", "Number of Persons")) %>%
 table
 ```
 
-## Transit
+### HOT Assignment  
+The HOT assignment module is run after the normal feedback assignment process is completed. The HOT lanes modeling process is applied by time-of-day using the origin-destination matrices from the normal feedback assignment process as the base set of trips. It runs the assignment process five times for each time period (AM, PM, Midday, and Night). Travel time from each round feeds back to a skimming process that minimizes impedance for paths with or without using the HOT lanes. The new travel time is averaged with the travel time from the previous round to dampen oscillations between rounds.   
+
+After the skims are prepared, the origin-destination matrices are updated with a “Travel Time Savings” core that is used to identify the savings in travel time that are realized from using the HOT lanes. These savings are used to identify diversion based on the amount of the HOT toll and people’s willingness to pay. Following the HOT assignment, a new total assignment file (TOTASSN_HOT.bin) is created that contains the estimated link volumes. These volumes should be used in place of TOTASSN.bin for analysis and model results reporting. 
+
+### Transit Assignment 
+Transit Assignment in the MRM takes the transit production-attraction output from the mode choice model and assigns trips to particular transit route lines (bus, rail, etc.). Transit assignment differs from the highway assignment in that it must consider the access and egress modes in addition to the path.  
+
+The MRM uses a transit assignment method created by Caliper called “Pathfinder”. The Pathfinder method can compute specific walk paths for access and egress from any origin address to any destination address and can assess the drive component for park and ride access on the highway network and will yield the single best combination of park and ride lot and transit service to the destination. To determine the best path, transit assignment travel time is monetized so that it can be combined with transit fares to yield a generalized cost. Considerations other than transit fare and walk time include drive access time (park and ride), transit route transfers, transit wait times, and timed transfers. This allows transit assignment to have sensitivity to transit fare increases, route schedule changes, and changes to the highway network that impact transit route performance.  
+
+The transit assignment model assigns eighteen production-attraction matrices, which include: 
+
+1. **Peak Premium Walk Trips:** This trip table is created by adding walk-to-premium from peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+2. **Peak Premium Drive Trips:** This trip table is created by adding drive-to-premium trips from peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+3. **Peak Premium Drop-Off Trips:** This trip table is created by adding drop-to-premium trips from peak HBW (all income groups), HBO, HBU, and NHB modelsPeak Bus Walk Trips: This trip table is created by adding walk-to-bus trips from peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+4. **Peak Bus Drive Trips:** This trip table is created by adding drive-to-bus trips from peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+5. **Peak Bus Drop-Off Trips:** This trip table is created by adding drop-to-bus trips from peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+6. **Off-Peak Premium Walk Trips:** This trip table is created by adding walk-to-premium trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+7. **Off-Peak Premium Drive Trips:** This trip table is created by adding drive-to-premium trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+8. **Off-Peak Premium Drop-Off Trips:** This trip table is created by adding drop-to-premium trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+9. **Off-Peak Bus Walk Trips:** This trip table is created by adding walk-to-bus trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+10. **Off-Peak Bus Drive Trips:** This trip table is created by adding drive-to-bus trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+11. **Off-Peak Bus Drop-Off Trips:** This trip table is created by adding drop-to-bus trips from off-peak HBW (all income groups), HBO (all income groups), HBU, and NHB models. 
+
+### External Trips
+External trips consist of external-internal (EI) trips, internal-external (IE,) trips, and external-external (EE) trips. These three trip types comprise the external station counts of each facility crossing the modeling area boundary. EI trips begin outside of the modeling area and end inside of the modeling area at a TAZ. IE trips begin inside the modeling area at TAZ and end outside the modeling area. Both are captured at the external station as they exit or enter the area. Finally, EE trips, commonly referred to as through trips, both begin and end outside of the modeling area. These trips pass through the modeling area entering at one external station and exiting at another. 
+
+Using vehicle classification counts we divided the vehicles crossing the modeling area boundary at the external stations between autos, commercial vehicles, medium trucks and heavy trucks.  The home survey and external roadside survey provided enough information to further divide IE and EI auto trips, respectively, into work and non-work trips from productions to attractions. However, we were not able to obtain enough information from the external roadside survey to do the same for EI trips from attractions to productions. As such, we applied the IE attraction to production proportion obtained from the home survey to the EI attraction to productions trips.  
+
+In trip distribution, IE and EI work and non-work trips are modeled as person trips rather than vehicle trips to allow for the possible inclusion in mode choice at some future date. 
+
+### Volume Delay Functions
+The MRM uses the commonly used Bureau of Public Roads (BPR) formula as the volume-delay function to relate link travel time to the volume/capacity ratio. The BPR formula is shown below. 
+
+The basic BPR function is expressed as:
+
+\[
+t = t_0 \times \left( 1 + \alpha \times \left( \frac{v}{c} \right)^\beta \right)
+\]
+
+Where:
+
+- **t**: Travel time on the link  
+- **t₀**: Free flow travel time  
+- **v**: Traffic volume on the link  
+- **c**: Capacity of the link  
+- **α** and **β**: Calibration parameters, usually determined based on specific road characteristics  
+
+Different functionally classified roads are known to have different alpha and beta coefficients which describe the interaction between travel behavior, congestion, and speed on a particular corridor. ### Function Calibration Parameters
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+  Funcl = c("1", "1", "1", "1", 
+            "2", "2", "2",
+            "3","3","3","3","3",
+            "4","4","4","4","4",
+            "5","5","5","5","5","5",
+            "6", "6", "6", "6", 
+            "7", "7",
+            "8", "8", "8",
+            "9", "9",
+            "22/23", "22/23", "22/23",
+            "24","24","24","24","24",
+            "25","25","25","25", "25",
+            "82",
+            "83"),
+  Area_Type = c("2-3","1","4","5",
+                "1-3","4","5",
+                "1-4","5","1-3","4","5",
+                "1-2","3-4","5","3-4","5",
+                "1-2","3-4","5","1-2","3-4","5",
+                "1-4","5","1-4","5",
+                "1-4","5",
+                "1-4","5","5",
+                "1-4","5",
+                "1-3","4","5",
+                "1","2-3","4","5","2-3",
+                "1","2-3","4","5","2-3",
+                "",
+                ""),
+  Lanes = c(NA,NA,NA,NA,
+            NA,NA,NA,
+            NA,NA,3,3,3,
+            NA,NA,NA,3,3,
+            NA,NA,NA,3,3,3,
+            NA,NA,3,3,
+            NA,NA,
+            NA,NA,3,
+            NA,NA,
+            NA,NA,NA,
+            NA,NA,NA,NA,3,
+            NA,NA,NA,NA,3,
+            NA,
+            NA),
+  Alpha = c(0.83,0.747,0.85,0.88,0.83,0.83,0.8549,0.62,0.6386,0.7,0.65,0.67,1,0.6,0.68,0.65,0.72,0.75,0.65,0.73,0.75,0.65,0.77,0.76,0.73,0.8,0.82,0.95,0.98,0.79,0.8137,0.81,0.79,0.81,0.83,0.85,0.88,0.83,0.62,0.85,0.88,0.7,0.83,0.6,0.85,0.88,0.65,0.79,0.79),
+  Beta = c(10,9,10,10.3,8,8,8.24,7.13,7.3439,7.5,7.5,7.73,5,5,6.85,5.5,7.21,3,4,4.89,2.1,4,4.85,3.8,3.91,4,4.12,3.8,3.91,6.65,6.8495,6.85,9.5,9.79,10,10,10.3,10,7.13,10,10.3,7.5,10,5,10,10.3,5.5,9.5,9.5)
+)
+
+data[is.na(data)] <- ""
+
+data[, c("Alpha", "Beta")] <- lapply(data[, c("Alpha", "Beta")], function(column) {
+  sapply(column, function(x) {
+    if (x %in% c(0.747, 0.8549, 0.6386, 0.8137, 7.3439, 6.8495)) {
+      return(sprintf("%.4f", x))  # Show 4 decimals for these specific values
+    } else {
+      return(sprintf("%.2f", x))  # Round all other coefficients to 2 decimals
+    }
+  })
+})
+
+table<- kable(data, col.names = c("Functional Classification", "Area Type", "Lanes", "Alpha", "Beta")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>%
+  pack_rows("Freeway", 1, 5) %>%
+  pack_rows("Expressway", 5, 8) %>% 
+  pack_rows("Class II", 8, 12) %>% 
+  pack_rows("Major Arterial", 13, 18) %>%
+  pack_rows("Minor Arterial", 18, 23) %>%
+  pack_rows("Collector", 24, 27) %>% 
+  pack_rows("Local", 28, 29) %>% 
+  pack_rows("Ramp", 30, 31) %>% 
+  pack_rows("Freeway Ramp", 33, 34) %>%
+  pack_rows("HOT2- Freeway / Toll Only Lanes", 35, 38) %>%
+  pack_rows("Peak Period Shoulder Lanes", 38, 42) %>% 
+  pack_rows("Peak Period Shoulder Lanes", 43, 48) %>% 
+  pack_rows("HOT2 & HOT3 Access", 48, 48) %>%
+  column_spec(1, width = "10em", extra_css = "padding-left: 20px !important;")   
+
+  
+table
+```
+

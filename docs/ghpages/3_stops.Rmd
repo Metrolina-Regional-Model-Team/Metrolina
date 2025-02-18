@@ -16,9 +16,500 @@ output:
 The Tour Frequency and Tour Destination Choice steps estimate the start and end locations for each round-trip tour. The next step is to determine how many stops are made from origin to destination and from destination to origin for each individual tour. No separate estimate is made for the purpose of those intermediate stops; it is assumed that they are all for shopping or other such purposes (personal business, social, recreational, etc). In the context of this model, the specific purpose of those stops is not important. 
 
 
-The Intermediate Stop (IS) model is stratified by purpose and direction (first half-tour, or PA direction vs. second half-tour, or AP direction). The model considers up to seven stops in each direction, as survey data showed that only a few tours made more stops than that.   
+The Intermediate Stop (IS) model is stratified by purpose and direction (first half-tour, or PA direction vs. second half-tour, or AP direction). In other words, stops on the way to work are predicted separately from stops on the way home. This allows several of the AP direction models to consider the number of stops already made in the PA direction. The model considers up to seven stops in each direction, as survey data showed that only a few tours made more stops than that.  Based on the survey, transit tours were asserted to have no intermediate stops. 
 
-The IS model uses the standard multinomial logit process, based on the premise that the number of stops is related to the characteristics of the traveler, of the origin and destination zones, and of the area surrounding those zones. Similar to the Tour Frequency model, the IS logit model includes a certain number of stops and then fixed percentages are used to estimate the number of stops above that figure.  
+The IS model uses the standard multinomial logit process, based on the premise that the number of stops is related to the characteristics of the traveler, of the origin and destination zones, and of the area surrounding those zones. Similar to the Tour Frequency model, the IS logit model includes a certain number of stops and then fixed percentages are used to estimate the number of stops above that figure.   
 
-### Stop Location  
+## Stop Location  
 The Stop Location (SL) model is similar to the Destination Choice model in that it is selecting a particular zone from a set of candidate zones. A key element of the SL model is detour time which is the time that a traveler goes out of his way to make a stop. In addition to detour time being a variable in the logit utility equation, there is a maximum detour time allowed for each SL model. Any zones outside of the detour maximum are not candidates for the choice. 
+
+## Stop by Direction
+
+### Work Stops
+
+Work stops are sensitive to things like higher income (income = 4), the presence of kids (life cycle = 2), if the tour mode is HOV, and the amount of retail near the home. In the AP direction, making more work tours in a day reduces the likelihood of making an intermediate stop in the AP direction on each tour, which is an intuitive result. 
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+#### PA
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+   Variable = c("Constant","Constant","Income = 4","Life Cycle = 2", "Retail within 1.5 miles of Origin", "HOV", "HOV","Calibration Constant","Calibration Constant"),
+  Coefficient = c(-3.55,-4.81,-0.55,0.47,0.00005,1.24,1.60,0.74,0.95),
+  `t-Statistic` = c(-22.45,-19.99,-3.59,2.85,2.57,6.68,5.44,"",""),
+ Stop0 = c("", "", "", "", "", "", "","",""),
+ Stop1 = c("X","","X","X","X","X","","X",""),
+ Stop2 = c("","X","X","X","X","","X","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == 0.00005) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.79", 8, 9,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(8, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(9, align = "lrrccc", extra_css = "padding: 10px")
+
+
+table_model
+
+```
+
+#### AP
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","PA choice","Life Cycle = 2","Work Tours","Work Tours","HOV", "HOV", "Calibration Constant","Calibration Constant"),
+ Coefficient = c(-1.55,-0.96,0.27,-0.33,-0.18,-0.28,1.18,1.70,0.00,0.14),
+`t-Statistic` = c(-9.68,-7.44,2.35,-3.79,-2.18,-2.71,11.04,14.36,"",""),
+ Stop0 = c("", "", "", "", "", "", "","","",""),
+ Stop1 = c("","X","X","X","X","","X","","X",""),
+ Stop2 = c("X","","X","X","","X","","X","","X"))
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.23", 9,10,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(9, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(10, align = "lrrccc", extra_css = "padding: 10px")
+
+
+table_model
+
+```
+
+### School Stops 
+
+Area type variables and tour mode dominate the school stops model. For school trips made by SOV (generally 17-18 year old high school students), they are less likely to make intermediate stops.
+
+#### PA
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Retail within 3 miles of Origin","HOV","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-4.35880,-5.78,0.00,1.12,0.63,-0.12),
+`t-Statistic` = c(-12.22,-13.57,2.97,3.22,"",""),
+ Stop0 = c("", "", "", "", "", ""),
+ Stop1 = c("X","","X","X","X",""),
+ Stop2 = c("","X","X","X","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == -4.35880) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.8", 5, 6,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(5, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(6, align = "lrrccc", extra_css = "padding: 10px")
+
+
+table_model
+```
+
+#### AP
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","PA Choice","Life Cycle = 2","Work Tours","Work Tours","HOV","HOV","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-0.96,-1.55,0.27,-0.33,-0.18,-0.28,1.18,1.70,0.00,0.14),
+`t-Statistic` = c(-7.44,-9.68,2.35,-3.79,-2.18,-2.71,11.04,14.36,"",""),
+ Stop0 = c("","", "", "", "", "", "","","",""),
+ Stop1 = c("X","","X","X","X","","X","","X",""),
+ Stop2 = c("","X","X","X","","X","","X","","X"))
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.23", 9, 10,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(9, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(10, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+### University Stops 
+
+Income and area type are important for the university stop choice. The total number of tours made in a day also negatively impacts the likelihood of making a stop in the AP direction. 
+
+#### PA
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Income = 4","HOV","Origin AreaType = 1","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-3.08,-3.49,-1.26,1.17,2.37020,-0.31,1.62),
+`t-Statistic` = c(-5.61,-5.85,-2.05,1.98,2.22,"",""),
+ Stop0 = c("", "", "", "", "", "",""),
+ Stop1 = c("X","","X","X","X","X",""),
+ Stop2 = c("","X","X","X","X","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == 2.37020) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.70", 6, 7,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(6, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(7, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+#### AP
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","HOV","Total Tours","Destination AreaType = 1 or 2","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-1.00,-1.04,1.49,-0.28,-1.04550,0.30,0.45),
+`t-Statistic` = c(-2.26,-2.33,4.08,-2.42,-2.55,"",""),
+ Stop0 = c("", "", "", "", "", "",""),
+ Stop1 = c("X","","X","X","X","X",""),
+ Stop2 = c("","X","X","X","X","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == -1.04550) {
+    return(sprintf("%.4f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 3)) %>% 
+  pack_rows(
+    "Rho² 0.31", 6, 7,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(6, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(7, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+### Shopping Stops 
+
+For shopping trips, the longer the trip, the more likely it includes intermediate stops. Income, retail, number of tours made in a day, area type, and being an HOV tour all contribute to the likelihood of making stops. 
+
+#### PA
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Constant","Travel Time","Income = 1 or 2","Retail within 3 miles of Origin","Total Tours","HOV","Origin AreaType = 3 or 4","Calibration Constant","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-3.30,-3.97,-4.21,0.03,0.51,0.00024,-0.13,0.39,0.50,-1.12,-0.92,-.51),
+`t-Statistic` = c(-19.54,-22.56,-23.11,6.05,4.60,8.92,-4.50,4.23,4.74,"","",""),
+ Stop0 = c("", "", "", "", "", "","","","","","",""),
+ Stop1 = c("X","","","X","X","X","X","X","X","X","",""),
+ Stop2 = c("","X","","X","X","X","X","X","X","","X",""),
+ Stop3 = c("","","X","X","X","X","X","X","X","","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == 0.00024) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2 Stops","3+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c","c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 4)) %>% 
+  pack_rows(
+    "Rho² 0.70", 10, 11,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(10, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(11, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(12, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+#### AP
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Constant","PA choice","PA choice","Shop Tours","Total Tours","Life Cycle = 1","HOV","Travel Time","Travel Time","Travel Time","Calibration Constant","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-0.83,-1.98,-2.73,-0.24,-0.37,-0.34,-0.09,0.17,0.55,0.06,0.08,0.10,0.06,-0.32,0.05),
+`t-Statistic` = c(-5.92,-12.78,-16.48,-4.21,-5.69,-4.57,-4.29,2.49,7.67,10.52,12.96,16.17,"","",""),
+ Stop0 = c("", "", "", "", "", "","","","","","","","","",""),
+ Stop1 = c("X","","","X","","X","X","X","X","X","","","X","",""),
+ Stop2 = c("","X","","","X","X","X","X","X","","X","","","X",""),
+ Stop3 = c("","","X","","X","X","X","X","X","","","X","","","X"))
+
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2 Stops","3+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c","c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 4)) %>% 
+  pack_rows(
+    "Rho² 0.17", 13, 14,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(13, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(14, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(15, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+### Other Stops 
+
+Increasing travel time also increases the likelihood of stops on Other tours. Income, HOV, total tours, and area type variables also play a role. 
+
+#### PA
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Constant","Travel Time","CBD Destination","Total Tours","Total Tours","Total Tours","Income = 1 or 2","Origin AreaType = 1 or 2","HOV","Calibration Constant","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-3.70,-4.71,-4.41,0.03,-1.17,-0.20210,-0.26,-0.37,0.43,0.30,0.69,-0.44,-0.06,0.18),
+`t-Statistic` = c(-20.52,-17.32,-16.09,5.88,-3.07,-5.15,-3.76,-4.92,3.18,2.42,6.27,"","",""),
+ Stop0 = c("", "", "", "", "", "","","","","","","","",""),
+ Stop1 = c("X","","","X","X","X","","","X","X","X","X","",""),
+ Stop2 = c("","X","","X","X","X","X","","X","X","X","","X",""),
+ Stop3 = c("","","X","X","X","X","","X","X","X","X","","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == -0.20210) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2 Stops","3+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c","c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 4)) %>% 
+  pack_rows(
+    "Rho² 0.84", 12, 13,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(12, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(13, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(14, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+#### AP
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Constant","Constant","Travel Time","Travel Time","Travel Time","Intrazonal = 1","Total Tours","Retail within 3 miles of Origin","Life Cycle = 1","HOV","HOV","PA choice","PA choice","PA choice","Calibration Constant","Calibration Constant","Calibration Constant"),
+ Coefficient = c(-2.40,-3.53,-4.48,0.04,0.04,0.05,-0.33,-0.08850,0.00,0.16,0.50,0.67,0.34,0.36,0.94180,-0.37,-0.33,0.07),
+`t-Statistic` = c(-21.87,-26.53,-25.35,10.98,8.66,9.08,-3.27,-5.42,-2.88,2.71,8.50,4.95,4.68,3.41,11.51,"","",""),
+ Stop0 = c("", "", "", "", "", "","","","","","","","","","","","",""),
+ Stop1 = c("X","","","X","","","X","X","X","X","X","","X","","","X","",""),
+ Stop2 = c("","X","","","X","","X","X","X","X","X","","","X","","","X",""),
+ Stop3 = c("","","X","","","X","X","X","X","X","","X","","","X","","","X"))
+
+# Format the Coefficient column
+data$Coefficient <- sapply(data$Coefficient, function(x) {
+  if (x == -0.08850 | x == 0.94180) {
+    return(sprintf("%.5f", x))  # Show 5 decimals for this specific value
+  } else {
+    return(sprintf("%.2f", x))  # Round all other coefficients to 3 decimals
+  }
+})
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop", "2 Stops","3+ Stops"),
+                      align = c("l", "r", "r", "c", "c", "c","c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 4)) %>% 
+  pack_rows(
+    "Rho² 0.55", 16, 17,  
+    label_row_css = "
+      background-color: #888; /* Lighter gray background */
+      color: #fff; 
+      font-weight: bold; 
+      text-align: left; /* Aligns text to the left */
+      word-spacing: 20px; /* increases space between words */
+      border: 2px solid black; /* Adds a border around the entire cell */
+      border-radius: 5px; /* Optional: rounds the corners of the border */
+    "
+  ) %>% 
+  row_spec(16, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(17, align = "lrrccc", extra_css = "padding: 10px") %>% 
+  row_spec(18, align = "lrrccc", extra_css = "padding: 10px")
+
+table_model
+```
+
+### At Work Stops 
+
+As a rule, and due to the nature of at-work subtours, the model only predicts if a single stop is made in the PA direction or not. Travel time, tour mode, and retail near the origin are key variables. 
+
+#### PA 
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- data.frame(
+ Variable = c("Constant","Travel Time","Retail within 3 miles of Destination","SOV"),
+ Coefficient = c(-2.14,0.06,0.00,0.82),
+`t-Statistic` = c(-6.88,3.36,-2.01,3.56),
+ Stop0 = c("", "", "", ""),
+ Stop1 = c("X", "X", "X", "X"))
+
+table_model <- kable(data, 
+                      col.names = c("Variable", "Coefficient", "t-Statistic", "0 Stops", "1 Stop"),
+                      align = c("l", "r", "r", "c", "c")) %>%
+  kable_styling(bootstrap_options = c("bordered", "striped"),
+                full_width = TRUE,
+                font_size = 14) %>% 
+  add_header_above(c(" " = 3, "Alternatives" = 2)) 
+
+table_model
+```
+*Rho² = 0.28*

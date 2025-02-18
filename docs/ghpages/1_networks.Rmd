@@ -25,24 +25,21 @@ The Master Roadway Layer contains link-level attributes related to classificatio
 More information on coded attributes of the master layer is provided [here](other/pdfs/MasterLayer.pdf). Details on the computation of attributes is included in Link Capacities and Speeds section below.  
 
 ## Project List Database
-The master roadway layer incorporates all the planned capacity-enhancing projects that are expected to be opened by each forecast year. Projects that do not add capacity, such as minor intersection improvements or small widenings, and that are not regionally significant roadways may be below the scope of the model and therefore deliberately omitted from analysis. 
+The master roadway layer incorporates all the planned capacity-enhancing projects that are expected to be opened by each forecast year. Projects that do not add capacity, such as minor intersection improvements or small widening, and that are not regionally significant roadways may be below the scope of the model and therefore deliberately omitted from analysis. 
 
 Projects included in the future year networks are based on the financially constrained Metropolitan Transportation Plans (MTP) for each of the respective MPOs. Highway projects in non-MPO (RPO) were added only if they were included in their respective NC or SC Transportation Improvement Plans (TIP) documents. Financial constraint calculations and project selection criteria can be found in the respective MTP documents. 
 
-The project list database has a list of unique project IDs stored in the “ProjNum” field. Each project ID corresponds to a set of project ID fields in the master roadway layer. A future build year for each project is also included in the project list database. Each link that will be included in a particular project gets coded with the project ID, and when the network is built, the link is updated with the appropriate network information. The MRM has the capability of storing three project IDs on a single link, which allows a single link to include three different and successive improvements over time.   
+The project list database has a list of unique project IDs stored in the “ProjNum” field. Each project ID corresponds to a set of project ID fields in the master roadway layer. A future build year for each project is also included in the project list database. Each link that will be included in a particular project gets coded with the project ID, and when the network is built, the link is updated with the appropriate network information. The MRM has the capability of storing three project IDs on a single link, which allows a single link to include three different and successive improvements over time.  
+
+<div style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;"> To create a scenario roadway layer the MRM uses three files: the master roadway layer, the project list providing project details and build year, and the toll data file containing the toll facilities and toll rates. The master roadway layer, along with the project list and toll data file, combine the base year and all future year networks into a single, integrated database. To build a particular forecast roadway layer, the user would use the forecast year to extract the specific roadway layer from the master roadway layer. For instance, to generate a roadway layer for model build year 2025, the model copies all of the necessary attributes from the master roadway layer to the newly created analysis year  and removes any links that are not part of that network. </div>  
 
 ## Toll Database
-Tolls are represented in the model using a cost per mile rate. Toll costs are considered by the model at highway route level. Tolling is incorporated during highway assignment. Tolling on toll-only facilities is handled through the generalized cost function of the multi-modal-multi-class user equilibrium highway assignment. Tolling on express lanes is incorporated through a High Occupancy/Toll (HOT) Assignment Module that is run after the normal feedback process is completed.  
+Tolls are represented in the model either a single-point cost (gate) or a cost per mile rate.  Tolling is incorporated during highway assignment. Tolling on toll-only facilities is handled through the generalized cost function of the multi-modal-multi-class user equilibrium highway assignment. Tolling on express lanes is incorporated through a High Occupancy/Toll (HOT) Assignment Module that is run after the normal feedback process is completed.  
 
-Toll data for toll only facilities is stored in a master toll file that corresponds to a unique identifier coded on the master highway networklayer (Toll_PRJID). Toll data for managed lanes is stored in the same master toll file that corresponds to the unique identifier, HOT_PRJID, also coded on the master highway layer. 
+Toll data for toll only facilities is stored in a master toll file that corresponds to a unique identifier coded on the master highway layer (Toll_PRJID). Toll data for managed lanes is stored in the same master toll file that corresponds to the unique identifier, HOT_PRJID, also coded on the master highway layer. The master toll file enables a toll based on the year that is entered into the database. 
 
 ### Toll Rates 
 Toll rates are based on the latest posted rates for each facility according to the NC Turnpike Authority and I-77 Mobility Partners. All tolls are converted to per mile rates based on the minimum cost of a 2-axle vehicle, equipped with a NC Quick Pass, traversing the entire length of a facility. The MRM does not utilize single-point costs or variable pricing.  
-
-<br>
-<div style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;"> To create a scenario roadway layer the MRM uses three files: the master roadway layer, the project list providing project details and build year, and the toll data file containing the toll facilities and toll rates. The master roadway layer, along with the project list and toll data file described below, combine the base year and all future year networks into a single, integrated database. </div>
-<br>
-
 
 ## Link Capacities and Speeds
 The MRM uses comprehensive capacity settings that estimate the link capacity throughout the model based on the link attributes. Factors such as functional classification, speed and intersection controls are accounted for in the process to provide realistic link capacities in a regional modeling environment. Capacities are calculated for Level of Service (LOS) E and are calculated for each of the four time periods in the model. These capacities are used in conjunction with estimated free-flow and loaded speeds in the model to reflect the impacts of congestion on travel times and route choices in the model.  
@@ -58,20 +55,22 @@ Following network selection and creation, model speeds and capacities (by link d
 
 
 #### Link Capacities
-Link capacities vary by several attributes including functional class, area type, number of lanes, facility type, intersection control and on-street parking. This section describes the capacity settings used in the MRM. Most of the factors were based initially on extensive surveys conducted in the 1970s by the North Central Texas Council of Government, but have since been reviewed and updated with local data and knowledge. Capacity is applied by direction of flow on the link (A to B and B to A).  The capacity calculation equation is:  
+Link capacities vary by several attributes including functional class, area type, number of lanes, facility type, intersection control and on-street parking. This section describes the capacity settings used in the MRM. Most of the factors were based initially on extensive surveys conducted in the 1970s by the North Central Texas Council of Government but have since been reviewed and updated with local data and knowledge. Capacity is applied by direction of flow on the link (A to B and B to A). The capacity calculation equation is:  
 
-*Cap1hr = Number of Lanes x LnCap1hr x Cap_FacLn x Cap_Cntl x Cap_Park*  
+\[
+\text{Cap1hr} = \text{Number of Lanes} \times \text{LnCap1hr} \times \text{Cap_FacLn} \times \text{Cap_Cntl} \times \text{Cap_Park}
+\]
 
-Where: 
+Where:
 
-* Number of Lanes: 	Number of lanes in each direction 
-* Cap1hr:			Directional capacity 
-* LnCap1hr:		Basic capacity per lane 
-* Cap_FacLn:		Capacity factor based on facility type and number of lanes 
-* Cap_Cntl:		Capacity factor based on intersection control 
-* Cap_Park:		Capacity Factor based on on-street parking 
+- Number of Lanes: Number of lanes in each direction  
+- Cap1hr: Directional capacity  
+- LnCap1hr: Basic capacity per lane  
+- Cap_FacLn: Capacity factor based on facility type and number of lanes  
+- Cap_Cntl: Capacity factor based on intersection control  
+- Cap_Park: Capacity factor based on on-street parking  
 
-<br>
+
 **Lane Capacity (LnCap1hr) Lookup Table** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr)
@@ -100,9 +99,8 @@ table
 
 ```
 
-Capacity is factored by facility type and number of lanes. Lanes are included in these factors because the effect on capacity varies depending on the number of lanes. For example, a roadway with two lanes in each direction (four-lane roadway) provides a driver with more opportunity to merge and pass another vehicle waiting to turn than a two-lane roadway with a median. This effects the overall capacity of the highway. 
+Capacity is factored by facility type and number of lanes. Lanes are included in these factors because the effect on capacity varies depending on the number of lanes. For example, a roadway with two lanes in each direction (four-lane roadway) provides a driver with more opportunity to merge and pass another vehicle waiting to turn than a two-lane roadway with a median. This effects the overall capacity of the highway.  
 
-<br>
 **Capacity Factors Based on Facility Type and Number of Lanes**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 df <- data.frame(
@@ -128,9 +126,8 @@ table <- kable(df, col.names = c("Facility Type", "1 Lane", "2 Lanes", "3+ Lanes
 table
 ```
 
-Intersection control has a major impact on capacity. The control method effects the overall traffic flow and roadway operations. Factors for different types of intersection controls are shown below. 
+Intersection control has a major impact on capacity. The control method effects the overall traffic flow and roadway operations. Factors for different types of intersection controls are shown below.  
 
-<br>
 **Capacity Factors Based on Intersection Control**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 df <- data.frame(
@@ -154,7 +151,6 @@ At traffic signals, capacity is dependent on additional factors, primarily the a
 
 The opposing facility’s functional class is found in the CapSpeed program by accumulating approaching functional classes at each node.  
 
-<br>
 **Capacity Factors Based on Percentage of Green Time**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 df <- data.frame(
@@ -186,7 +182,6 @@ table
 
 The remaining capacity factors are based on data gathered by network surveyors. Future year values are estimated using land use projections. On-street parking accounts for a ten percent decrease in capacity.  
 
-<br>
 **Capacity Factors Based on On-Street Parking**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 df<- data.frame(
@@ -202,6 +197,7 @@ table <- kable(df,col.names = c("Factor", "Factor (park free)", "Factor (park pe
 
 table
 ```
+
 #### Time of Day Capacity Factors 
 The MRM generates trips that are representative of a typical weekday. Initially, the model produces traffic volumes for four time periods. Then, the model aggregates these volumes to generate the daily traffic volumes. This aggregation accounts for the differences in travel behavior patterns that result from varying travel conditions across different times of day. For example, the AM and PM peak periods experience higher travel demand than non-peak periods due to commuting to and from work. Using AM and PM peak periods improves the model output, resulting in a more accurate representation of travel demand in the region.  
 
@@ -214,11 +210,12 @@ The four time of day periods are:
 
 The period capacity can be obtained by multiplying the hourly capacity by the number of hours. Period capacity calculation:	 
 
-Period Capacity = hourly capacity * hours of model capacity 
+\[
+\text{Period Capacity} = \text{Hourly Capacity} \times \text{Hours of Model Capacity}
+\]
 
-This calculation can underestimate congestion. For this reason, a capacity factor is used to reasonably define the full capacity of the link for each time of day. The table below shows the capacity factors used in the MRM for the four time of day (TOD) models. 
+This calculation can underestimate congestion. For this reason, a capacity factor is used to reasonably define the full capacity of the link for each time of day. The table below shows the capacity factors used in the MRM for the four time of day (TOD) models.  
 
-<br>
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 df <- data.frame(
   Time_Period = c("AM Peak", "Midday", "PM Peak", "Night"),
@@ -238,11 +235,17 @@ In the model’s path building program, TransCAD utilizes link travel time (in m
 
 Speeds are calculated for free-flow conditions and estimated congested conditions during the modeling process. These speeds are then used (along with lengths) to calculate travel times on each link. Travel times are expressed in minutes, length in miles, and speed in miles per hour. The basic equations for conversion are: 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*MPH = length / (TTmin / 60)* 
+\[
+\text{MPH} = \frac{\text{length}}{\left(\frac{\text{TTmin}}{60}\right)}
+\]
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTmin = length / (MPH / 60)* 
+\[
+\text{TTmin} = \frac{\text{length}}{\left(\frac{\text{MPH}}{60}\right)}
+\]
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Length = TTmin x (MPH / 60)* 
+\[
+\text{Length} = \text{TTmin} \times \left(\frac{\text{MPH}}{60}\right)
+\]
 
 At the speed/capacity creation stage in the model, two sets of travel time (and speed) are calculated: 
 
@@ -254,13 +257,20 @@ In building minimum path trees for trip distribution, free-flow speeds are used 
 #### Free-Flow Speed and Travel Time Calculation 
 Free speeds and travel times are dependent primarily on network characteristics. Two elements are calculated separately and summed – link travel time and intersection delay. The two are summed for total free speed travel time.  
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTfree 	= TTLinkFree + (IntDelayFr / 60)* 
+\[
+\text{TTFree} = \text{TTLinkFree} + \left( \frac{\text{IntDelayFr}}{60} \right)
+\]
 
 TTLinkFree is built from an estimate of speed because speeds are easier to review, and the factors are a little more intuitive (i.e. higher multipliers = higher speeds).   
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*TTLinkFree = ((Length / (SpdLimRun) x 60)x ParkingFac_TTFree x ATypeFac* 
+\[
+\text{TTLinkFree} = \left( \frac{\text{Length}}{\text{SpdLimRun}} \times 60 \right) \times \text{ParkingFac\TTFree} \times \text{ATypeFac}
+\]
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SPLinkFree = Length/ (TTFree / 60)* 
+\[
+\text{SPLinkFree} = \frac{\text{Length}}{\left( \frac{\text{TTFree}}{60} \right)}
+\]
+
 
 The components of the capacity calculation are shown below: 
 
@@ -270,8 +280,6 @@ For future year facilities, speed limit is estimated using similar or comparable
 Speed adjustment by functional class and area type – Speederfac (funcl, areatype): 
 The “speederfac” variable is a multiplier to estimate overall speed that differs from speed limit. On most freeways and arterials in uncongested times of day, average speed is faster than the posted speed limit. On local streets, where travelers are turning into driveways and streets are designed to keep traffic slow, speed is estimated at less than posted speed. Most local streets are not included in the model. Those that are included are there to provide better transit times for transit routes or to connect distant TAZs to the thoroughfare system. Actual through traffic on these types of links is generally limited, and keeping speeds down prevents the model from finding these facilities more attractive than they are in the real world. The table below shows multipliers for speeds. It varies by functional class and area type.  
 
-
-<br>
 **Free-flow Speed Adjustment by Facility Type and Area Type (Speederfac)** 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -296,7 +304,7 @@ table
 ```
 
 #### Intersection Delay 
-Intersection delay in the model has three components: (1) delay from the intersection control, (2) a factor for turn prohibitions, and (3) a factor for the presence (or lack of) turn lanes. Seconds of delay for intersection controls are shown below. 
+Intersection delay in the model has three components: (1) delay from the intersection control, (2) a factor for turn prohibitions, and (3) a factor for the presence (or lack of) turn lanes. Seconds of delay for intersection controls are shown below.  
 
 **Intersection Delay by Intersection Control Type**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -318,19 +326,26 @@ table_control
 
 Delay at signals is dependent on functional class and the functional class of the opposing facility. The MRM does not include signal progression of the facility to estimate that some vehicles approaching the intersection may arrive at green and incur no delay. Rather, it is assumed that average delay would occur at every signalized intersection. 
 
-The equation is:  
+The delay equation:
 
-  *Delay = (RedTime / CycleLength) x (RedTime / 2.0)* 
+$$
+\text{Delay} = \left( \frac{\text{RedTime}}{\text{CycleLength}} \right) \times \left( \frac{\text{RedTime}}{2.0} \right)
+$$
 
-	*RedTime = CycleLength – GreenTime* 
+Where:
 
-	*GreenTime =  CycleLength x GreenPct* 
+$$
+\text{RedTime} = \text{CycleLength} - \text{GreenTime}
+$$
+
+$$
+\text{GreenTime} = \text{CycleLength} \times \text{GreenPct}
+$$
 
 
 The first part of the equation is the proportion of red time to total time. The second part of the equation assumes that half of the vehicles that approach the intersection will arrive half-way through the red cycle. Red time is based on total cycle length and the average percentage of green time, based on functional class of the approach link and functional class of the opposing link (See Table - Capacity Factors Based on Percentage of Green Time). 
 
 Cycle lengths are based on area type as shown in the table below. These cycle lengths are significantly lower than those that occur on the actual network. The model adds delay for every signalized intersection. In practice, drivers may approach the signal on green. The adjustment in cycle length for the MRM is based on corridor travel time surveys.  
-
 
 **Cycle Length by Area Type (seconds)**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -350,6 +365,7 @@ table_cycle <- kable(data, col.names = c("Area Type", "Cycle Length")) %>%
 # Print the table
 table_cycle
 ```
+
 Turn lanes reduce delay at the intersection by removing the slower turning traffic from the through lanes. Dual left turn lanes provide the ability to process more traffic through a turn phase. Turn lane benefits to intersection delay is applied by a factor (benefit is < 1). Factors are shown in table below. 
 
 **Intersection Delay Based on Number of Turn Lanes**
@@ -371,7 +387,7 @@ table_turn_lanes <- kable(data, col.names = c("Turn Lanes", "Signal", "Non-Signa
 table_turn_lanes
 ```
 #### Estimated Loaded Speed 
-Distribution of work trips and work-related trips is based on loaded network speeds. These speeds are estimated through a feedback loop from earlier loaded highway assignments. To shorten the number of iterations for the speed feedback loop, the initial “seed” speed for the first round of peak period distribution is based on an estimated loaded speed. The estimated loaded speed is the average difference in final loaded speed from the free speed (by functional class and area type). This speed does not include potential bottlenecks, but rather apportions overall delay across the network. By consistently beginning the process with the same estimated loaded speeds, different network scenarios should converge at a final speed consistently. Factors for estimated loaded speed are shown below.
+Distribution of work trips and work-related trips is based on loaded network speeds. These speeds are estimated through a feedback loop from earlier loaded highway assignments. To shorten the number of iterations for the speed feedback loop, the initial “seed” speed for the first round of peak period distribution is based on an estimated loaded speed. The estimated loaded speed is the average difference in final loaded speed from the free speed (by functional class and area type). This speed does not include potential bottlenecks, but rather apportions overall delay across the network. By consistently beginning the process with the same estimated loaded speeds, different network scenarios should converge at a final speed consistently. Factors for estimated loaded speed are shown below.  
 
 **Estimated Loaded Speed Factors**
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -396,11 +412,11 @@ table_area_type
 ```
 
 ## Network Connections & Costs
+The MRM incorporates various factors to accurately represent travel behavior and network performance. High-Occupancy Toll (HOT) lanes allow specified vehicles to access managed lanes for a toll, while High-Occupancy Vehicle (HOV) lanes offer free access for carpooling, influencing mode choice through travel time savings. Centroid connectors link Traffic Analysis Zones (TAZs) to the network, simulating local street access, while parking costs are factored into destination TAZs to influence mode selection. The model also applies turn penalties to regulate traffic movements and prevent excessive lane changes in HOT lanes. Additionally, terminal times account for non-network travel time, and transit access modeling ensures connectivity between TAZs and transit stops via walk and drive access.  
 
 ### High-Occupancy Toll (HOT) Lanes 
-HOT Lanes are a variant of high-occupancy vehicle (HOV) lanes that allow user specified vehicles access to high-occupancy vehicle (HOV) lanes (See section below) with payment of a designated toll. In the Metrolina Regional Model, this is estimated based on the set toll, the travel time savings for the SOV trip if a toll is paid, and a diversion curve that represents the willingness to pay a toll to save said amount of time. It allows for HOT-2 assignment (single occupancy and commercial vehicles pay a toll) and HOT-3 assignment (single occupancy, double occupancy, and commercial vehicles pay a toll).   
+HOT Lanes are a variant of high-occupancy vehicle (HOV) lanes that allow user specified vehicles access to high-occupancy vehicle (HOV) lanes (See section below) with payment of a designated toll. In the Metrolina Regional Model, this is estimated based on the set toll, the travel time savings for the SOV trip if a toll is paid, and a diversion curve that represents the willingness to pay a toll to save said amount of time. It allows for HOT-2 assignment (single occupancy and commercial vehicles pay a toll) and HOT-3 assignment (single occupancy, double occupancy, and commercial vehicles pay a toll). HOT Lanes are treated as HOV in the regular assignment module.  
 
- 
 ### High-Occupancy Vehicle (HOV) Lanes 
 Vehicles of a user-specified occupancy are granted free access to HOT lanes. Previous versions of the MRM included High-Occupancy Vehicle (HOV) lanes prior to the completion of the I-77 North HOT Lanes. Although traditional HOV lanes no longer exist in the region, the mode choice model still includes travel time savings for HOV travel as an inducement to carpool. The savings are estimated using two separate highway skims – one with the HOT lane(s) and one without. The travel time savings is the difference between the two. For areas without a nearby HOT lanes, travel time differences are zero. The mode choice model is capable of determine 2 person and 3+ person carpools. Currently, HOV time savings is used for work trips only.   
 
@@ -409,6 +425,13 @@ Centroid connectors are links that representing loading points for TAZs in the M
 
 ### Parking Cost 
 Parking costs are factored into auto skims for destination TAZ’s where the cost and/or availability of parking is expected to impact the overall cost of travel. These TAZ’s include Uptown/ CBD, South End, UNCC Campus, and CLT Airport. For these TAZ’s, the base parking cost file contains data on the availability of spaces, parking rates, and adjacent TAZ’s. The model utilizes this data and SE data to calculate peak and off-peak parking costs  for each zone, to be utilized in auto skims. These costs ultimately increase the relative utility of non-SOV modes and allow for auto trips to end in TAZ’s adjacent to the destination TAZ.  
+
+### Turn Penalty
+The Turn Penalty file (trnpnlty.bin) houses the turn prohibitions and time penalties for the Master Roadway Layer.  It consists of link combinations and their associated penalty in minutes, if applicable. All prohibited intersection movements stored in the link attributes must also be entered in the turn penalty file; otherwise, the movement will still be allowed during assignment. In addition, a 1-minute time penalty is applied to all HOT lane access points to help prevent over-saturation of the lanes and multiple ingress/ egress movements onto the lanes. Time penalties are not present in the network attributes; they are only located in the turn penalty file.  
+
+The turn penalty file is initially applied to the model during skims. Time penalties are added to travel times, while prohibited movements are excluded from the generation of travel time matrices. During assignment, trips cannot be assigned to a path involving a prohibited movement.  
+
+<div style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;"> The turn penalty file consists of three fields: “From” Link ID, “To” Link ID, and “Penalty”. To enter a prohibited movement, enter the 6-digit link ID’s for (1) the link with the stored prohibition into “From” and (2) the link to which movements are not allowed into “To”. Leave the “Penalty” field blank, as this field is only used for time penalties. If movements to multiple links at the same node are not allowed, enter each movement separately. To enter a time penalty, enter the “From” and “To” link as done for turn prohibitions, then enter the number of minutes in the “Penalty” field. </div> 
 
 ### Terminal Times 
 In a household survey, travel logs and trip travel time are noted for all trips made during the day. This travel time considers the access and egress time at either end of the trip. Since the model does not simulate each individual household or business, the time needed to access a vehicle and travel to the network must be considered. At the destination end, people must find parking and walk to their final destination. Consequently, there needs to be a way to account for travel time not occurring on the simulated model network. This accounting mechanism is referred to as terminal time. 

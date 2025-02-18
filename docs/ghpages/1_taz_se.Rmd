@@ -4,13 +4,13 @@ output:
   html_document:
     theme: cosmo
     highlight: tango
-    css: "styles.css"
     toc: true
     toc_float:
       collapsed: false
       smooth_scroll: true
       number_sections: false
-    toc_depth: 3
+    toc_depth: 4
+    css: "styles.css"
 ---
 
 The Traffic Analysis Zone (TAZ) layer is a geographic unit that represents a small area within the Metrolina region. It stores information related to the socioeconomic database and serves as the origin and destination for all tours. Each TAZ has a TAZ ID number that can be joined with the socioeconomic database. 
@@ -40,6 +40,8 @@ invisible(capture.output({
   TAZ3896 <- st_transform(TAZ3896, 4326)
 }))
 ```
+
+The map belows the changes made in the TAZ structure moving from 3,578 TAZs in MRM22v1.0 to 3,896 TAZs in MRM25v1.0 
 
 ```{r create-map}
 # Create the interactive map
@@ -94,7 +96,7 @@ map
 
 ## Socioeconomic Database 
 
-The Socioeconomic (SE) or land use data is a primary an input into the travel demand model. The SE data consists of estimates of population, households, student enrollment and employment. This information was developed by ....   
+The Socioeconomic (SE) or land use data is a primary an input into the travel demand model. The SE data consists of estimates of population, households, student enrollment and employment. In 2023, a study was conducted  by an independent demographer to provide updated  regional and sub-regional (county and district) population, household, student enrollment, and employment projections for the region. This study was completed under the  direction of the MRM's regional partners.  
 
 The household data consists of: 
 
@@ -104,7 +106,7 @@ The household data consists of:
 * Median Household Income  
 * Group Quarter Population 
 
-The employment data consists of eight primary categories of employment and correspond to the the North American Industry Classification System (NAICS). 
+The employment data consists of eight primary categories of employment and correspond to the the North American Industry Classification System (NAICS). To view the the MRM NAICS groupings [click here](other/pdfs/NAICS.pdf).
 
 * Low-Traffic Industrial Jobs  
 * High-Traffic Industrial 
@@ -115,7 +117,7 @@ The employment data consists of eight primary categories of employment and corre
 * Education 
 * Office  
 
-[View MRM - NAICS](other/pdfs/NAICS.pdf)
+To view the socioeconomic database structure within the MRM [click here](other/pdfs/SE.pdf).
 
 ## Area Type
 Area type is one of the inputs to the speed and capacity calculations of the network. Area type is calculated based on residential and employment density within a 1.5-mile radius of the TAZ center.  
@@ -128,7 +130,9 @@ Each TAZ is assigned one of five area types:
 * Suburban
 * Rural  
 
-The table below shows the criteria used for each area type. 
+The table below shows the criteria used for each area type.  
+
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr)
 library(kableExtra)
@@ -167,3 +171,5 @@ table <- kable(df, format = "html", escape = FALSE,
 table
 
 ```
+
+POPDEN is the population per square mile, and EMPDEN is the employment density per square mile. The area is the TAZ area after excluding water and protected open space. 

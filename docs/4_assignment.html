@@ -388,6 +388,9 @@ div.tocify {
       <a href="4_assignment.html">Assignment</a>
     </li>
     <li>
+      <a href="4_feedback.html">Feedback</a>
+    </li>
+    <li>
       <a href="4_validation.html">Validation</a>
     </li>
   </ul>
@@ -548,9 +551,1024 @@ ATW
 </tbody>
 </table>
 </div>
+<div id="hot-assignment" class="section level3">
+<h3>HOT Assignment</h3>
+<p>The HOT assignment module is run after the normal feedback assignment
+process is completed. The HOT lanes modeling process is applied by
+time-of-day using the origin-destination matrices from the normal
+feedback assignment process as the base set of trips. It runs the
+assignment process five times for each time period (AM, PM, Midday, and
+Night). Travel time from each round feeds back to a skimming process
+that minimizes impedance for paths with or without using the HOT lanes.
+The new travel time is averaged with the travel time from the previous
+round to dampen oscillations between rounds.</p>
+<p>After the skims are prepared, the origin-destination matrices are
+updated with a “Travel Time Savings” core that is used to identify the
+savings in travel time that are realized from using the HOT lanes. These
+savings are used to identify diversion based on the amount of the HOT
+toll and people’s willingness to pay. Following the HOT assignment, a
+new total assignment file (TOTASSN_HOT.bin) is created that contains the
+estimated link volumes. These volumes should be used in place of
+TOTASSN.bin for analysis and model results reporting.</p>
 </div>
-<div id="transit" class="section level2">
-<h2>Transit</h2>
+<div id="transit-assignment" class="section level3">
+<h3>Transit Assignment</h3>
+<p>Transit Assignment in the MRM takes the transit production-attraction
+output from the mode choice model and assigns trips to particular
+transit route lines (bus, rail, etc.). Transit assignment differs from
+the highway assignment in that it must consider the access and egress
+modes in addition to the path.</p>
+<p>The MRM uses a transit assignment method created by Caliper called
+“Pathfinder”. The Pathfinder method can compute specific walk paths for
+access and egress from any origin address to any destination address and
+can assess the drive component for park and ride access on the highway
+network and will yield the single best combination of park and ride lot
+and transit service to the destination. To determine the best path,
+transit assignment travel time is monetized so that it can be combined
+with transit fares to yield a generalized cost. Considerations other
+than transit fare and walk time include drive access time (park and
+ride), transit route transfers, transit wait times, and timed transfers.
+This allows transit assignment to have sensitivity to transit fare
+increases, route schedule changes, and changes to the highway network
+that impact transit route performance.</p>
+<p>The transit assignment model assigns eighteen production-attraction
+matrices, which include:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Peak Premium Walk Trips:</strong> This trip table is
+created by adding walk-to-premium from peak HBW (all income groups), HBO
+(all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Peak Premium Drive Trips:</strong> This trip table is
+created by adding drive-to-premium trips from peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Peak Premium Drop-Off Trips:</strong> This trip table is
+created by adding drop-to-premium trips from peak HBW (all income
+groups), HBO, HBU, and NHB modelsPeak Bus Walk Trips: This trip table is
+created by adding walk-to-bus trips from peak HBW (all income groups),
+HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Peak Bus Drive Trips:</strong> This trip table is created
+by adding drive-to-bus trips from peak HBW (all income groups), HBO (all
+income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Peak Bus Drop-Off Trips:</strong> This trip table is
+created by adding drop-to-bus trips from peak HBW (all income groups),
+HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Premium Walk Trips:</strong> This trip table is
+created by adding walk-to-premium trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Premium Drive Trips:</strong> This trip table is
+created by adding drive-to-premium trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Premium Drop-Off Trips:</strong> This trip table
+is created by adding drop-to-premium trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Bus Walk Trips:</strong> This trip table is
+created by adding walk-to-bus trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Bus Drive Trips:</strong> This trip table is
+created by adding drive-to-bus trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+<li><p><strong>Off-Peak Bus Drop-Off Trips:</strong> This trip table is
+created by adding drop-to-bus trips from off-peak HBW (all income
+groups), HBO (all income groups), HBU, and NHB models.</p></li>
+</ol>
+</div>
+<div id="external-trips" class="section level3">
+<h3>External Trips</h3>
+<p>External trips consist of external-internal (EI) trips,
+internal-external (IE,) trips, and external-external (EE) trips. These
+three trip types comprise the external station counts of each facility
+crossing the modeling area boundary. EI trips begin outside of the
+modeling area and end inside of the modeling area at a TAZ. IE trips
+begin inside the modeling area at TAZ and end outside the modeling area.
+Both are captured at the external station as they exit or enter the
+area. Finally, EE trips, commonly referred to as through trips, both
+begin and end outside of the modeling area. These trips pass through the
+modeling area entering at one external station and exiting at
+another.</p>
+<p>Using vehicle classification counts we divided the vehicles crossing
+the modeling area boundary at the external stations between autos,
+commercial vehicles, medium trucks and heavy trucks. The home survey and
+external roadside survey provided enough information to further divide
+IE and EI auto trips, respectively, into work and non-work trips from
+productions to attractions. However, we were not able to obtain enough
+information from the external roadside survey to do the same for EI
+trips from attractions to productions. As such, we applied the IE
+attraction to production proportion obtained from the home survey to the
+EI attraction to productions trips.</p>
+<p>In trip distribution, IE and EI work and non-work trips are modeled
+as person trips rather than vehicle trips to allow for the possible
+inclusion in mode choice at some future date.</p>
+</div>
+<div id="volume-delay-functions" class="section level3">
+<h3>Volume Delay Functions</h3>
+<p>The MRM uses the commonly used Bureau of Public Roads (BPR) formula
+as the volume-delay function to relate link travel time to the
+volume/capacity ratio. The BPR formula is shown below.</p>
+<p>The basic BPR function is expressed as:</p>
+<p><span class="math display">\[
+t = t_0 \times \left( 1 + \alpha \times \left( \frac{v}{c} \right)^\beta
+\right)
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li><strong>t</strong>: Travel time on the link<br />
+</li>
+<li><strong>t₀</strong>: Free flow travel time<br />
+</li>
+<li><strong>v</strong>: Traffic volume on the link<br />
+</li>
+<li><strong>c</strong>: Capacity of the link<br />
+</li>
+<li><strong>α</strong> and <strong>β</strong>: Calibration parameters,
+usually determined based on specific road characteristics</li>
+</ul>
+<p>Different functionally classified roads are known to have different
+alpha and beta coefficients which describe the interaction between
+travel behavior, congestion, and speed on a particular corridor. ###
+Function Calibration Parameters</p>
+<table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Functional Classification
+</th>
+<th style="text-align:left;">
+Area Type
+</th>
+<th style="text-align:left;">
+Lanes
+</th>
+<th style="text-align:left;">
+Alpha
+</th>
+<th style="text-align:left;">
+Beta
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="5">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Freeway</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+1
+</td>
+<td style="text-align:left;">
+2-3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.7470
+</td>
+<td style="text-align:left;">
+9.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+1
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+1
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+<td style="text-align:left;">
+10.30
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Expressway</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 10em; padding-left: 20px !important;" indentlevel="2">
+2
+</td>
+<td style="text-align:left;">
+1-3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+8.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+2
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+8.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+2
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.8549
+</td>
+<td style="text-align:left;">
+8.24
+</td>
+</tr>
+<tr grouplength="5">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Class II</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 10em; padding-left: 20px !important;" indentlevel="2">
+3
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.62
+</td>
+<td style="text-align:left;">
+7.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+3
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.6386
+</td>
+<td style="text-align:left;">
+7.3439
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+3
+</td>
+<td style="text-align:left;">
+1-3
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.70
+</td>
+<td style="text-align:left;">
+7.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+3
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+7.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+3
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.67
+</td>
+<td style="text-align:left;">
+7.73
+</td>
+</tr>
+<tr grouplength="6">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Major Arterial</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+4
+</td>
+<td style="text-align:left;">
+1-2
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+1.00
+</td>
+<td style="text-align:left;">
+5.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+4
+</td>
+<td style="text-align:left;">
+3-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.60
+</td>
+<td style="text-align:left;">
+5.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+4
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.68
+</td>
+<td style="text-align:left;">
+6.85
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+4
+</td>
+<td style="text-align:left;">
+3-4
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+5.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+4
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.72
+</td>
+<td style="text-align:left;">
+7.21
+</td>
+</tr>
+<tr grouplength="6">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Minor Arterial</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 10em; padding-left: 20px !important;" indentlevel="2">
+5
+</td>
+<td style="text-align:left;">
+1-2
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.75
+</td>
+<td style="text-align:left;">
+3.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+5
+</td>
+<td style="text-align:left;">
+3-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+4.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+5
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.73
+</td>
+<td style="text-align:left;">
+4.89
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+5
+</td>
+<td style="text-align:left;">
+1-2
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.75
+</td>
+<td style="text-align:left;">
+2.10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+5
+</td>
+<td style="text-align:left;">
+3-4
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+4.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+5
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.77
+</td>
+<td style="text-align:left;">
+4.85
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Collector</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+6
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.76
+</td>
+<td style="text-align:left;">
+3.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+6
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.73
+</td>
+<td style="text-align:left;">
+3.91
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+6
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.80
+</td>
+<td style="text-align:left;">
+4.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+6
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.82
+</td>
+<td style="text-align:left;">
+4.12
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Local</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+7
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.95
+</td>
+<td style="text-align:left;">
+3.80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+7
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.98
+</td>
+<td style="text-align:left;">
+3.91
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Ramp</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+8
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.79
+</td>
+<td style="text-align:left;">
+6.65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+8
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.8137
+</td>
+<td style="text-align:left;">
+6.8495
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; padding-left: 20px !important;">
+8
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.81
+</td>
+<td style="text-align:left;">
+6.85
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Freeway Ramp</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+9
+</td>
+<td style="text-align:left;">
+1-4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.79
+</td>
+<td style="text-align:left;">
+9.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+9
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.81
+</td>
+<td style="text-align:left;">
+9.79
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>HOT2- Freeway / Toll Only Lanes</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+22/23
+</td>
+<td style="text-align:left;">
+1-3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+22/23
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+22/23
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+<td style="text-align:left;">
+10.30
+</td>
+</tr>
+<tr grouplength="5">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Peak Period Shoulder Lanes</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 10em; padding-left: 20px !important;" indentlevel="2">
+24
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+24
+</td>
+<td style="text-align:left;">
+2-3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.62
+</td>
+<td style="text-align:left;">
+7.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+24
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+24
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+<td style="text-align:left;">
+10.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+24
+</td>
+<td style="text-align:left;">
+2-3
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.70
+</td>
+<td style="text-align:left;">
+7.50
+</td>
+</tr>
+<tr grouplength="6">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>Peak Period Shoulder Lanes</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+25
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+25
+</td>
+<td style="text-align:left;">
+2-3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.60
+</td>
+<td style="text-align:left;">
+5.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+25
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+10.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+25
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+<td style="text-align:left;">
+10.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;width: 10em; padding-left: 20px !important;" indentlevel="1">
+25
+</td>
+<td style="text-align:left;">
+2-3
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+5.50
+</td>
+</tr>
+<tr grouplength="1">
+<td colspan="5" style="border-bottom: 1px solid;">
+<strong>HOT2 &amp; HOT3 Access</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 10em; padding-left: 20px !important;" indentlevel="2">
+82
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.79
+</td>
+<td style="text-align:left;">
+9.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; padding-left: 20px !important;">
+83
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.79
+</td>
+<td style="text-align:left;">
+9.50
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 

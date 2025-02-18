@@ -388,6 +388,9 @@ div.tocify {
       <a href="4_assignment.html">Assignment</a>
     </li>
     <li>
+      <a href="4_feedback.html">Feedback</a>
+    </li>
+    <li>
       <a href="4_validation.html">Validation</a>
     </li>
   </ul>
@@ -456,9 +459,9 @@ section below.</p>
 <p>The master roadway layer incorporates all the planned
 capacity-enhancing projects that are expected to be opened by each
 forecast year. Projects that do not add capacity, such as minor
-intersection improvements or small widenings, and that are not
-regionally significant roadways may be below the scope of the model and
-therefore deliberately omitted from analysis.</p>
+intersection improvements or small widening, and that are not regionally
+significant roadways may be below the scope of the model and therefore
+deliberately omitted from analysis.</p>
 <p>Projects included in the future year networks are based on the
 financially constrained Metropolitan Transportation Plans (MTP) for each
 of the respective MPOs. Highway projects in non-MPO (RPO) were added
@@ -475,22 +478,36 @@ when the network is built, the link is updated with the appropriate
 network information. The MRM has the capability of storing three project
 IDs on a single link, which allows a single link to include three
 different and successive improvements over time.</p>
+<div
+style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;">
+To create a scenario roadway layer the MRM uses three files: the master
+roadway layer, the project list providing project details and build
+year, and the toll data file containing the toll facilities and toll
+rates. The master roadway layer, along with the project list and toll
+data file, combine the base year and all future year networks into a
+single, integrated database. To build a particular forecast roadway
+layer, the user would use the forecast year to extract the specific
+roadway layer from the master roadway layer. For instance, to generate a
+roadway layer for model build year 2025, the model copies all of the
+necessary attributes from the master roadway layer to the newly created
+analysis year and removes any links that are not part of that network.
+</div>
 </div>
 <div id="toll-database" class="section level2">
 <h2>Toll Database</h2>
-<p>Tolls are represented in the model using a cost per mile rate. Toll
-costs are considered by the model at highway route level. Tolling is
-incorporated during highway assignment. Tolling on toll-only facilities
-is handled through the generalized cost function of the
-multi-modal-multi-class user equilibrium highway assignment. Tolling on
-express lanes is incorporated through a High Occupancy/Toll (HOT)
-Assignment Module that is run after the normal feedback process is
-completed.</p>
+<p>Tolls are represented in the model either a single-point cost (gate)
+or a cost per mile rate. Tolling is incorporated during highway
+assignment. Tolling on toll-only facilities is handled through the
+generalized cost function of the multi-modal-multi-class user
+equilibrium highway assignment. Tolling on express lanes is incorporated
+through a High Occupancy/Toll (HOT) Assignment Module that is run after
+the normal feedback process is completed.</p>
 <p>Toll data for toll only facilities is stored in a master toll file
 that corresponds to a unique identifier coded on the master highway
-networklayer (Toll_PRJID). Toll data for managed lanes is stored in the
-same master toll file that corresponds to the unique identifier,
-HOT_PRJID, also coded on the master highway layer.</p>
+layer (Toll_PRJID). Toll data for managed lanes is stored in the same
+master toll file that corresponds to the unique identifier, HOT_PRJID,
+also coded on the master highway layer. The master toll file enables a
+toll based on the year that is entered into the database.</p>
 <div id="toll-rates" class="section level3">
 <h3>Toll Rates</h3>
 <p>Toll rates are based on the latest posted rates for each facility
@@ -499,17 +516,6 @@ tolls are converted to per mile rates based on the minimum cost of a
 2-axle vehicle, equipped with a NC Quick Pass, traversing the entire
 length of a facility. The MRM does not utilize single-point costs or
 variable pricing.</p>
-<br>
-<div
-style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;">
-To create a scenario roadway layer the MRM uses three files: the master
-roadway layer, the project list providing project details and build
-year, and the toll data file containing the toll facilities and toll
-rates. The master roadway layer, along with the project list and toll
-data file described below, combine the base year and all future year
-networks into a single, integrated database.
-</div>
-<p><br></p>
 </div>
 </div>
 <div id="link-capacities-and-speeds" class="section level2">
@@ -543,22 +549,29 @@ class, area type, number of lanes, facility type, intersection control
 and on-street parking. This section describes the capacity settings used
 in the MRM. Most of the factors were based initially on extensive
 surveys conducted in the 1970s by the North Central Texas Council of
-Government, but have since been reviewed and updated with local data and
+Government but have since been reviewed and updated with local data and
 knowledge. Capacity is applied by direction of flow on the link (A to B
 and B to A). The capacity calculation equation is:</p>
-<p><em>Cap1hr = Number of Lanes x LnCap1hr x Cap_FacLn x Cap_Cntl x
-Cap_Park</em></p>
+<p><span class="math display">\[
+\text{Cap1hr} = \text{Number of Lanes} \times \text{LnCap1hr} \times
+\text{Cap_FacLn} \times \text{Cap_Cntl} \times \text{Cap_Park}
+\]</span></p>
 <p>Where:</p>
 <ul>
-<li>Number of Lanes: Number of lanes in each direction</li>
-<li>Cap1hr: Directional capacity</li>
-<li>LnCap1hr: Basic capacity per lane</li>
+<li>Number of Lanes: Number of lanes in each direction<br />
+</li>
+<li>Cap1hr: Directional capacity<br />
+</li>
+<li>LnCap1hr: Basic capacity per lane<br />
+</li>
 <li>Cap_FacLn: Capacity factor based on facility type and number of
-lanes</li>
-<li>Cap_Cntl: Capacity factor based on intersection control</li>
-<li>Cap_Park: Capacity Factor based on on-street parking</li>
+lanes<br />
+</li>
+<li>Cap_Cntl: Capacity factor based on intersection control<br />
+</li>
+<li>Cap_Park: Capacity factor based on on-street parking</li>
 </ul>
-<br> <strong>Lane Capacity (LnCap1hr) Lookup Table</strong>
+<strong>Lane Capacity (LnCap1hr) Lookup Table</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -852,7 +865,7 @@ in each direction (four-lane roadway) provides a driver with more
 opportunity to merge and pass another vehicle waiting to turn than a
 two-lane roadway with a median. This effects the overall capacity of the
 highway.</p>
-<br> <strong>Capacity Factors Based on Facility Type and Number of
+<strong>Capacity Factors Based on Facility Type and Number of
 Lanes</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1012,7 +1025,7 @@ Undivided - no left provision
 <p>Intersection control has a major impact on capacity. The control
 method effects the overall traffic flow and roadway operations. Factors
 for different types of intersection controls are shown below.</p>
-<br> <strong>Capacity Factors Based on Intersection Control</strong>
+<strong>Capacity Factors Based on Intersection Control</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1089,7 +1102,7 @@ major thoroughfare will get sixty-eight percent of the green time and
 the collector will get thirty-two percent.</p>
 <p>The opposing facility’s functional class is found in the CapSpeed
 program by accumulating approaching functional classes at each node.</p>
-<br> <strong>Capacity Factors Based on Percentage of Green Time</strong>
+<strong>Capacity Factors Based on Percentage of Green Time</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1496,7 +1509,7 @@ HOV-Arterial
 <p>The remaining capacity factors are based on data gathered by network
 surveyors. Future year values are estimated using land use projections.
 On-street parking accounts for a ten percent decrease in capacity.</p>
-<br> <strong>Capacity Factors Based on On-Street Parking</strong>
+<strong>Capacity Factors Based on On-Street Parking</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1591,12 +1604,14 @@ the region.</p>
 </ul>
 <p>The period capacity can be obtained by multiplying the hourly
 capacity by the number of hours. Period capacity calculation:</p>
-<p>Period Capacity = hourly capacity * hours of model capacity</p>
+<p><span class="math display">\[
+\text{Period Capacity} = \text{Hourly Capacity} \times \text{Hours of
+Model Capacity}
+\]</span></p>
 <p>This calculation can underestimate congestion. For this reason, a
 capacity factor is used to reasonably define the full capacity of the
 link for each time of day. The table below shows the capacity factors
 used in the MRM for the four time of day (TOD) models.</p>
-<br>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1658,9 +1673,15 @@ congested conditions during the modeling process. These speeds are then
 used (along with lengths) to calculate travel times on each link. Travel
 times are expressed in minutes, length in miles, and speed in miles per
 hour. The basic equations for conversion are:</p>
-<p>        <em>MPH = length / (TTmin / 60)</em></p>
-<p>        <em>TTmin = length / (MPH / 60)</em></p>
-<p>        <em>Length = TTmin x (MPH / 60)</em></p>
+<p><span class="math display">\[
+\text{MPH} = \frac{\text{length}}{\left(\frac{\text{TTmin}}{60}\right)}
+\]</span></p>
+<p><span class="math display">\[
+\text{TTmin} = \frac{\text{length}}{\left(\frac{\text{MPH}}{60}\right)}
+\]</span></p>
+<p><span class="math display">\[
+\text{Length} = \text{TTmin} \times \left(\frac{\text{MPH}}{60}\right)
+\]</span></p>
 <p>At the speed/capacity creation stage in the model, two sets of travel
 time (and speed) are calculated:</p>
 <ul>
@@ -1681,13 +1702,21 @@ class="section level4">
 characteristics. Two elements are calculated separately and summed –
 link travel time and intersection delay. The two are summed for total
 free speed travel time.</p>
-<p>        <em>TTfree = TTLinkFree + (IntDelayFr / 60)</em></p>
+<p><span class="math display">\[
+\text{TTFree} = \text{TTLinkFree} + \left( \frac{\text{IntDelayFr}}{60}
+\right)
+\]</span></p>
 <p>TTLinkFree is built from an estimate of speed because speeds are
 easier to review, and the factors are a little more intuitive
 (i.e. higher multipliers = higher speeds).</p>
-<p>        <em>TTLinkFree = ((Length / (SpdLimRun) x 60)x
-ParkingFac_TTFree x ATypeFac</em></p>
-<p>        <em>SPLinkFree = Length/ (TTFree / 60)</em></p>
+<p><span class="math display">\[
+\text{TTLinkFree} = \left( \frac{\text{Length}}{\text{SpdLimRun}} \times
+60 \right) \times \text{ParkingFac\TTFree} \times \text{ATypeFac}
+\]</span></p>
+<p><span class="math display">\[
+\text{SPLinkFree} = \frac{\text{Length}}{\left( \frac{\text{TTFree}}{60}
+\right)}
+\]</span></p>
 <p>The components of the capacity calculation are shown below:</p>
 <p>Posted Speed Limit: For future year facilities, speed limit is
 estimated using similar or comparable existing facilities.</p>
@@ -1705,7 +1734,7 @@ generally limited, and keeping speeds down prevents the model from
 finding these facilities more attractive than they are in the real
 world. The table below shows multipliers for speeds. It varies by
 functional class and area type.</p>
-<br> <strong>Free-flow Speed Adjustment by Facility Type and Area Type
+<strong>Free-flow Speed Adjustment by Facility Type and Area Type
 (Speederfac)</strong>
 <table class="table table-bordered table-striped" style="font-size: 14px; color: black; margin-left: auto; margin-right: auto;">
 <thead>
@@ -2078,11 +2107,18 @@ progression of the facility to estimate that some vehicles approaching
 the intersection may arrive at green and incur no delay. Rather, it is
 assumed that average delay would occur at every signalized
 intersection.</p>
-<p>The equation is:</p>
-<p><em>Delay = (RedTime / CycleLength) x (RedTime / 2.0)</em></p>
-<pre><code>*RedTime = CycleLength – GreenTime* 
-
-*GreenTime =  CycleLength x GreenPct* </code></pre>
+<p>The delay equation:</p>
+<p><span class="math display">\[
+\text{Delay} = \left( \frac{\text{RedTime}}{\text{CycleLength}} \right)
+\times \left( \frac{\text{RedTime}}{2.0} \right)
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\text{RedTime} = \text{CycleLength} - \text{GreenTime}
+\]</span></p>
+<p><span class="math display">\[
+\text{GreenTime} = \text{CycleLength} \times \text{GreenPct}
+\]</span></p>
 <p>The first part of the equation is the proportion of red time to total
 time. The second part of the equation assumes that half of the vehicles
 that approach the intersection will arrive half-way through the red
@@ -2512,6 +2548,18 @@ HOT-3
 </div>
 <div id="network-connections-costs" class="section level2">
 <h2>Network Connections &amp; Costs</h2>
+<p>The MRM incorporates various factors to accurately represent travel
+behavior and network performance. High-Occupancy Toll (HOT) lanes allow
+specified vehicles to access managed lanes for a toll, while
+High-Occupancy Vehicle (HOV) lanes offer free access for carpooling,
+influencing mode choice through travel time savings. Centroid connectors
+link Traffic Analysis Zones (TAZs) to the network, simulating local
+street access, while parking costs are factored into destination TAZs to
+influence mode selection. The model also applies turn penalties to
+regulate traffic movements and prevent excessive lane changes in HOT
+lanes. Additionally, terminal times account for non-network travel time,
+and transit access modeling ensures connectivity between TAZs and
+transit stops via walk and drive access.</p>
 <div id="high-occupancy-toll-hot-lanes" class="section level3">
 <h3>High-Occupancy Toll (HOT) Lanes</h3>
 <p>HOT Lanes are a variant of high-occupancy vehicle (HOV) lanes that
@@ -2522,7 +2570,8 @@ travel time savings for the SOV trip if a toll is paid, and a diversion
 curve that represents the willingness to pay a toll to save said amount
 of time. It allows for HOT-2 assignment (single occupancy and commercial
 vehicles pay a toll) and HOT-3 assignment (single occupancy, double
-occupancy, and commercial vehicles pay a toll).</p>
+occupancy, and commercial vehicles pay a toll). HOT Lanes are treated as
+HOV in the regular assignment module.</p>
 </div>
 <div id="high-occupancy-vehicle-hov-lanes" class="section level3">
 <h3>High-Occupancy Vehicle (HOV) Lanes</h3>
@@ -2565,6 +2614,35 @@ off-peak parking costs for each zone, to be utilized in auto skims.
 These costs ultimately increase the relative utility of non-SOV modes
 and allow for auto trips to end in TAZ’s adjacent to the destination
 TAZ.</p>
+</div>
+<div id="turn-penalty" class="section level3">
+<h3>Turn Penalty</h3>
+<p>The Turn Penalty file (trnpnlty.bin) houses the turn prohibitions and
+time penalties for the Master Roadway Layer. It consists of link
+combinations and their associated penalty in minutes, if applicable. All
+prohibited intersection movements stored in the link attributes must
+also be entered in the turn penalty file; otherwise, the movement will
+still be allowed during assignment. In addition, a 1-minute time penalty
+is applied to all HOT lane access points to help prevent over-saturation
+of the lanes and multiple ingress/ egress movements onto the lanes. Time
+penalties are not present in the network attributes; they are only
+located in the turn penalty file.</p>
+<p>The turn penalty file is initially applied to the model during skims.
+Time penalties are added to travel times, while prohibited movements are
+excluded from the generation of travel time matrices. During assignment,
+trips cannot be assigned to a path involving a prohibited movement.</p>
+<div
+style="border: 2px solid black; padding: 15px; background-color: #f9f9f9; margin: 10px 0;">
+The turn penalty file consists of three fields: “From” Link ID, “To”
+Link ID, and “Penalty”. To enter a prohibited movement, enter the
+6-digit link ID’s for (1) the link with the stored prohibition into
+“From” and (2) the link to which movements are not allowed into “To”.
+Leave the “Penalty” field blank, as this field is only used for time
+penalties. If movements to multiple links at the same node are not
+allowed, enter each movement separately. To enter a time penalty, enter
+the “From” and “To” link as done for turn prohibitions, then enter the
+number of minutes in the “Penalty” field.
+</div>
 </div>
 <div id="terminal-times" class="section level3">
 <h3>Terminal Times</h3>

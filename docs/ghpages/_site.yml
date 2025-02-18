@@ -54,6 +54,8 @@ navbar:
          href: 4_ext.html
        - text: "Assignment"
          href: 4_assignment.html
+       - text: "Feedback"
+         href: 4_feedback.html
        - text: "Validation"
          href: 4_validation.html
     - text: "MRM Versions"
