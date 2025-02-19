@@ -217,11 +217,12 @@ Macro "CreateDir" (Args)
     dm.AddDataSource("rts", {FileName: MRMpath + "transys.rts", DataType: "RS"})
     route_file = DirUser + "\\" + "transys.rts"
     dm.CopyRouteSystem("rts", {TargetRS: route_file})
+    
     //net_file = Args.[Offpeak Hwy Name]
-    net_file = Args.[Hwy Name]
+    /*net_file = Args.[Hwy Name]
     {, , netname, } = SplitPath(net_file)
     ModifyRouteSystem(route_file, {{"Geography", net_file, netname},{"Link ID", "ID"}})
-
+    */
     // need to add year onto extsta vol files	
 
     YearTwo = Right(YearUser,2)
