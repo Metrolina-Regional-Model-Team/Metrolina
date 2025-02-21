@@ -227,8 +227,11 @@ Macro "CreateDir" (Args)
 
     YearTwo = Right(YearUser,2)
     rundir_files = 
-        {"station_database.dbf", "transit_corridor_id.dbf", "Track_ID.dbf"}
-    rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}   
+			{"station_database.dbf", "Track_ID.dbf", "transit_corridor_id.dbf", "transys.rtg", "transys.rts",
+             "transysL.bin", "transysL.BXU", "transysL.DCB",  "transysR.BXU", "transysR.DCB", "transysR.bin", 
+             "transysS.bin", "transysS.BXU", "transysS.cdd", "transysS.cdk", "transysS.dbd", "transysS.DCB", "transysS.dsc",		
+			 "transysS.dsk","transysS.grp", "transysS.lok", "transysS.pnk", "transysS.r0"}
+    rundir_files = rundir_files + {"Ext\\extstavol" + YearTwo + ".asc"} + {"Ext\\extstavol" + YearTwo + ".dct"}  
 
     //Standard runyear files
     MRMpath = MRMUser + "\\" + YearUser + "\\"
